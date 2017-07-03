@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Design.py
 # @Last modified by:   bonet
-# @Last modified time: 29-Jun-2017
+# @Last modified time: 30-Jun-2017
 
 import os
 import re
@@ -31,7 +31,7 @@ class Design( object ):
         self._sequence["sequence"] = re.sub( r'\[[^]]*\]', '', sequence )
         assert len(self._chains) == len(self._sequence["sequence"])
 
-    def get_sequence( self, seq_format="string", chains=None ):
+    def get_sequence( self, seq_format="string", chains=None, selection=None ):
         assert seq_format in ["string", "list"]
         seq = self._sequence["sequence"]
         if chains is not None:
@@ -39,7 +39,14 @@ class Design( object ):
             for rc, r in enumerate(seq):
                 if self._chains[rc] in chains:
                     nseq.append(r)
-            seq = nseq
+            seq = "".join(nseq)
+        if selection is not None:
+            nseq = []
+            for cx, x in enumerate(selection):
+                nseq.append(seq[x - 1])
+            seq = "".join(nseq)
+        if seq_format == "list":
+            seq = seq.split()
         return seq
 
     def get_annotated_sequence( self, seq_format="string", chains=None ):

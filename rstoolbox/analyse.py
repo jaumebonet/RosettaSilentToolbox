@@ -3,12 +3,12 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: analyse.py
 # @Last modified by:   bonet
-# @Last modified time: 29-Jun-2017
+# @Last modified time: 30-Jun-2017
 
 import pandas as pd
 
 def sequence_frequency_matrix( series ):
-    sserie = series.values
+    sserie = series["sequence"].values
     table = {
         'C' : [], 'D' : [], 'S' : [], 'Q' : [], 'K' : [],
         'I' : [], 'P' : [], 'T' : [], 'F' : [], 'N' : [],
@@ -26,4 +26,11 @@ def sequence_frequency_matrix( series ):
         for x in range(len(table[k])):
             if table[k][x] != 0:
                 table[k][x] /= float(len(sserie))
-    return pd.DataFrame( table )
+
+    keys = series["ranges"].iloc[0]
+    if keys is not None:
+        df = pd.DataFrame( table, index=keys )
+    else:
+        df = pd.DataFrame( table )
+
+    return df

@@ -3,12 +3,13 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: api.py
 # @Last modified by:   bonet
-# @Last modified time: 29-Jun-2017
+# @Last modified time: 30-Jun-2017
 
 import os
 
 from .io import read_silent_file, read_score_file
 from .components import *
+from .utils import *
 
 import yaml
 import pandas as pd
@@ -22,6 +23,8 @@ def read_rosetta_silent(filename, design_type="decoy", filterfile=None):
 def process_from_yaml_file( dlist, yamlfile ):
     assert os.path.isfile( yamlfile )
     defsdic = yaml.load("".join(open(yamlfile).readlines()))
+    if "sequence" in defsdic:
+        defsdic["sequence"]["range"] = selection2list(defsdic["sequence"]["range"]) if "range" in defsdic["sequence"] else None
     return process_from_definitions( dlist, defsdic )
 
 def process_from_definitions( dlist, defsdic ):
@@ -39,7 +42,9 @@ def process_from_definitions( dlist, defsdic ):
         if "sequence" in defsdic:
             seqinf = defsdic["sequence"]
             chains = seqinf["chains"] if "chains" in seqinf else None
-            data.setdefault("sequence", []).append(d.get_sequence(chains=chains))
+            selection  = seqinf["range"] if "range" in seqinf else None
+            data.setdefault("sequence", []).append(d.get_sequence(chains=chains, selection=selection))
+            data.setdefault("ranges", []).append(selection)
     df = pd.DataFrame( data )
 
     if "select" in defsdic:

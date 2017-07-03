@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: logo.py
 # @Last modified by:   bonet
-# @Last modified time: 29-Jun-2017
+# @Last modified time: 30-Jun-2017
 
 from __future__ import print_function
 import sys
@@ -46,7 +46,7 @@ def dataframe2logo( data ):
         odata.append(sorted(pdata, key=lambda x: x[1]))
     return odata
 
-def plot_logo( data, filename = None, ref_seq = None ):
+def plot_logo( data, filename, ref_seq = None ):
     if ref_seq is not None:
         assert len(ref_seq) == len(data)
 
@@ -60,7 +60,7 @@ def plot_logo( data, filename = None, ref_seq = None ):
 
     ax.set_xticks(range(1, len(data) + 1))
     ax.set_yticks( range(0, 2) )
-    ax.set_xticklabels( range(1, len(data) + 1 ) )
+    ax.set_xticklabels( data.index.values )
     ax.set_yticklabels( np.arange( 0, 2 , 1 ) )
     seaborn.despine(ax=ax, trim=True)
 
@@ -98,4 +98,4 @@ def plot_logo( data, filename = None, ref_seq = None ):
                                                   y=0,
                                                   units='points')
 
-    fig.savefig( "test.svg" )
+    fig.savefig( filename )
