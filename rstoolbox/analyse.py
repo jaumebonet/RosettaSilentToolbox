@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: analyse.py
 # @Last modified by:   bonet
-# @Last modified time: 30-Jun-2017
+# @Last modified time: 29-Sep-2017
 
 import pandas as pd
 
@@ -33,4 +33,5 @@ def sequence_frequency_matrix( series ):
     else:
         df = pd.DataFrame( table )
 
+    df.index = df.index + 1
     return df

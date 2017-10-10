@@ -3,19 +3,19 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: input.py
 # @Last modified by:   bonet
-# @Last modified time: 30-Jun-2017
+# @Last modified time: 10-Jul-2017
 
 import os
 import gzip
 
 from ..components import *
 
-def read_silent_file( filename, design_type="decoy" ):
+def read_silent_file( filename, design_type="", allow_repeats=False ):
 
     if not os.path.isfile( filename ):
         raise IOError( "Cannot find file {0}\n".format( filename ) )
 
-    dsgList = read_score_file( filename, design_type )
+    dsgList = read_score_file( filename, design_type, allow_repeats )
     if filename.endswith('.gz'):
         fd = gzip.open( filename )
     else:
@@ -36,7 +36,7 @@ def read_silent_file( filename, design_type="decoy" ):
     fd.close()
     return dsgList
 
-def read_score_file( filename, design_type="decoy" ):
+def read_score_file( filename, design_type="", allow_repeats=False ):
 
     if not os.path.isfile( filename ):
         raise IOError( "Cannot find file {0}\n".format( filename ) )
@@ -58,6 +58,6 @@ def read_score_file( filename, design_type="decoy" ):
                 for _ in range( len( spline ) ):
                     dsg.add( headers[_], spline[_] )
                 dsgList.add_design( dsg )
-    dsgList.sanity_check()
+    dsgList.sanity_check( allow_repeats )
     fd.close()
     return dsgList

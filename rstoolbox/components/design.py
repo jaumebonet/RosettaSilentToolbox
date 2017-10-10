@@ -3,15 +3,16 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Design.py
 # @Last modified by:   bonet
-# @Last modified time: 30-Jun-2017
+# @Last modified time: 25-Aug-2017
 
 import os
 import re
 
 class Design( object ):
-    def __init__( self, design_type="decoy" ):
+    def __init__( self, design_type="" ):
         self._scores   = {}
-        self._scores.setdefault( "design_type", [] ).append( design_type )
+        if design_type != "":
+            self._scores.setdefault( "design_type", [] ).append( design_type )
         self._sequence = {}
         self._chains   = ""
         self._endings  = []
@@ -29,7 +30,10 @@ class Design( object ):
         if "[" in sequence:  # is annotated sequence
             self._sequence["annotated"] = sequence
         self._sequence["sequence"] = re.sub( r'\[[^]]*\]', '', sequence )
-        assert len(self._chains) == len(self._sequence["sequence"])
+        if self._chains != "":
+            assert len(self._chains) == len(self._sequence["sequence"])
+        else:
+            self._chains = "".join(["A"] * len(self._sequence["sequence"]))
 
     def get_sequence( self, seq_format="string", chains=None, selection=None ):
         assert seq_format in ["string", "list"]

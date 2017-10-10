@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: DesignList.py
 # @Last modified by:   bonet
-# @Last modified time: 29-Jun-2017
+# @Last modified time: 10-Jul-2017
 
 import os
 import re
@@ -43,12 +43,12 @@ class DesignList( list ):
                 print( "{0} tag is not in the DesignList\n".format( tag ) )
         return newList
 
-    def sanity_check( self ):
+    def sanity_check( self, allow_repeats=False ):
         ids = Counter([ _.tag() for _ in self ])
         repeats = 0
         for _ in ids:
-            if ids[_] > 1:
+            if ids[_] > 1 and not allow_repeats:
                 print("Decoy id {0} has {1} repetitions".format( _, ids[_] ) )
                 repeats += 1
-        if repeats > 0:
+        if repeats > 0 and not allow_repeats:
             print( "Fix your input file to manage repeated decoy ids!!\n" )
