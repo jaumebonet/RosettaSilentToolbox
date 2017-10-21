@@ -2,8 +2,18 @@ from SimilarityMatrix import SimilarityMatrix as SM
 import pandas as pd
 import numpy as np
 
-def _calculate_linear_sequence_similarity( qseq, rseq, matrix ):
+def _extract_key_residue_sequence( seq, key_residues=None ):
+    if key_residues is None:
+        return seq
+    tmp_seq = ""
+    for k in key_residues:
+        tmp_seq += seq[k-1]
+    return tmp_seq
+
+def _calculate_linear_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
     score = 0;
+    qseq = _extract_key_residue_sequence( qseq, key_residues )
+    rseq = _extract_key_residue_sequence( rseq, key_residues )
     assert len(qseq) == len(rseq)
     for i in range(len(qseq)):
         score += matrix[qseq[i]][rseq[i]]
@@ -19,16 +29,16 @@ def _calculate_binary_sequence_similarity( qseq, rseq, matrix ):
             new_seq += "0"
     return new_seq
 
-def linear_sequence_similarity( df, ref_seq, matrix="BLOSUM62", new_columns_prefix="similarity", seq_column="sequence" ):
+def linear_sequence_similarity( df, ref_seq, matrix="BLOSUM62", seq_column="sequence", key_residues=None ):
     mat       = SM.get_matrix(matrix)
     all_seqs  = df[[seq_column]]
     sims      = []
-    max_value = _calculate_linear_sequence_similarity( ref_seq, ref_seq, mat )
+    max_value = _calculate_linear_sequence_similarity( ref_seq, ref_seq, mat, key_residues )
     for v in all_seqs.values:
-        sims.append( _calculate_linear_sequence_similarity( v[0], ref_seq, mat ) )
+        sims.append( _calculate_linear_sequence_similarity( v[0], ref_seq, mat, key_residues ) )
     simsperc = np.array(sims) / float(max_value)
-    df.insert( df.shape[1], new_columns_prefix + "_raw", pd.Series( sims, index=df.index ) )
-    df.insert( df.shape[1], new_columns_prefix + "_perc", pd.Series( simsperc, index=df.index ) )
+    df.insert( df.shape[1], matrix.lower() + "_raw", pd.Series( sims, index=df.index ) )
+    df.insert( df.shape[1], matrix.lower() + "_perc", pd.Series( simsperc, index=df.index ) )
     return df
 
 def binary_similarity( df, ref_seq, matrix="IDENTITY", seq_column="sequence" ):
@@ -39,6 +49,15 @@ def binary_similarity( df, ref_seq, matrix="IDENTITY", seq_column="sequence" ):
         sims.append( _calculate_binary_sequence_similarity( v[0], ref_seq, mat ) )
     df.insert( df.shape[1], matrix.lower() + "_binary", pd.Series( sims, index=df.index ) )
     return df
+
+def binary_overlap( df, column_name="identity_binary" ):
+    a = df[column_name].values
+    x = len(a[0])
+    result = [0] * x
+    for seq in a:
+        for _, b in enumerate(seq):
+            if bool(int(b)): result[_] = 1
+    return result
 
 def sequence_frequency_matrix( series, seq_column="sequence" ):
     sserie = series[seq_column].values

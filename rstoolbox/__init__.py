@@ -1,5 +1,5 @@
-
+from . import core
 from . import utils
 from . import api
-from . import plotting
+from . import plot
 from . import analysis
