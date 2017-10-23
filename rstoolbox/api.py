@@ -3,14 +3,14 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: api.py
 # @Last modified by:   bonet
-# @Last modified time: 21-Sep-2017
+# @Last modified time: 22-Oct-2017
 
 import os
 import copy
 
 from .io import read_silent_file, read_score_file
 from .components import *
-from .utils import *
+#from .utils import *
 
 import yaml
 import pandas as pd

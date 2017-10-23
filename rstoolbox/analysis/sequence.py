@@ -19,35 +19,45 @@ def _calculate_linear_sequence_similarity( qseq, rseq, matrix, key_residues=None
         score += matrix[qseq[i]][rseq[i]]
     return score
 
-def _calculate_binary_sequence_similarity( qseq, rseq, matrix ):
+def _calculate_binary_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
     new_seq = ""
+    qseq = _extract_key_residue_sequence( qseq, key_residues )
+    rseq = _extract_key_residue_sequence( rseq, key_residues )
     assert len(qseq) == len(rseq)
     for i in range(len(qseq)):
-        if  matrix[qseq[i]][rseq[i]] > 0:
+        if  matrix[qseq[i]][rseq[i]] >= 1:
             new_seq += "1"
         else:
             new_seq += "0"
     return new_seq
 
-def linear_sequence_similarity( df, ref_seq, matrix="BLOSUM62", seq_column="sequence", key_residues=None ):
+def linear_sequence_similarity( df, ref_seq, matrix="BLOSUM62", seq_column="sequence", prefix=None, key_residues=None ):
     mat       = SM.get_matrix(matrix)
     all_seqs  = df[[seq_column]]
     sims      = []
     max_value = _calculate_linear_sequence_similarity( ref_seq, ref_seq, mat, key_residues )
+    if prefix is None:
+        prefix = matrix.lower()
+    else:
+        prefix = str(prefix) + matrix.lower()
     for v in all_seqs.values:
         sims.append( _calculate_linear_sequence_similarity( v[0], ref_seq, mat, key_residues ) )
     simsperc = np.array(sims) / float(max_value)
-    df.insert( df.shape[1], matrix.lower() + "_raw", pd.Series( sims, index=df.index ) )
-    df.insert( df.shape[1], matrix.lower() + "_perc", pd.Series( simsperc, index=df.index ) )
+    df.insert( df.shape[1], prefix + "_raw", pd.Series( sims, index=df.index ) )
+    df.insert( df.shape[1], prefix + "_perc", pd.Series( simsperc, index=df.index ) )
     return df
 
-def binary_similarity( df, ref_seq, matrix="IDENTITY", seq_column="sequence" ):
+def binary_similarity( df, ref_seq, matrix="IDENTITY", seq_column="sequence", prefix=None, key_residues=None ):
     mat       = SM.get_matrix(matrix)
     all_seqs  = df[[seq_column]]
     sims      = []
+    if prefix is None:
+        prefix = matrix.lower()
+    else:
+        prefix = str(prefix) + matrix.lower()
     for v in all_seqs.values:
-        sims.append( _calculate_binary_sequence_similarity( v[0], ref_seq, mat ) )
-    df.insert( df.shape[1], matrix.lower() + "_binary", pd.Series( sims, index=df.index ) )
+        sims.append( _calculate_binary_sequence_similarity( v[0], ref_seq, mat, key_residues ) )
+    df.insert( df.shape[1], prefix + "_binary", pd.Series( sims, index=df.index ) )
     return df
 
 def binary_overlap( df, column_name="identity_binary" ):

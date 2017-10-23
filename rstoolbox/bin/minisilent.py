@@ -28,7 +28,7 @@ def get_options(*args, **kwds):
 def main( options ):
     fd = gzip.open( options.ofile, "w" ) if options.ofile.endswith(".gz") else open( options.ofile, "w" )
     infile = options.ifile if options.ifile is not None else options.ifiles
-    for line in open_rosetta_file( infile, options.ifile is None ):
+    for line, is_header in open_rosetta_file( infile, options.ifile is None ):
         fd.write( line )
 
 if __name__ == '__main__':
