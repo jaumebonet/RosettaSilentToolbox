@@ -89,11 +89,6 @@ def sequence_frequency_matrix( series, seq_column="sequence" ):
             if table[k][x] != 0:
                 table[k][x] /= float(len(sserie))
 
-    keys = series["ranges"].iloc[0]
-    if keys is not None:
-        df = pd.DataFrame( table, index=keys )
-    else:
-        df = pd.DataFrame( table )
-
+    df = pd.DataFrame( table )
     df.index = df.index + 1
     return df
