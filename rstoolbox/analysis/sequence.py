@@ -43,9 +43,12 @@ def linear_sequence_similarity( df, ref_seq, matrix="BLOSUM62", seq_column="sequ
     for v in all_seqs.values:
         sims.append( _calculate_linear_sequence_similarity( v[0], ref_seq, mat, key_residues ) )
     simsperc = np.array(sims) / float(max_value)
-    df.insert( df.shape[1], prefix + "_raw", pd.Series( sims, index=df.index ) )
-    df.insert( df.shape[1], prefix + "_perc", pd.Series( simsperc, index=df.index ) )
-    return df
+    wdf = df.copy()
+    if prefix + "_raw" in wdf:
+        wdf = wdf.drop([prefix + "_raw", prefix + "_perc"], axis=1)
+    wdf.insert( wdf.shape[1], prefix + "_raw", pd.Series( sims, index=wdf.index ) )
+    wdf.insert( wdf.shape[1], prefix + "_perc", pd.Series( simsperc, index=wdf.index ) )
+    return wdf
 
 def binary_similarity( df, ref_seq, matrix="IDENTITY", seq_column="sequence", prefix=None, key_residues=None ):
     mat       = SM.get_matrix(matrix)
@@ -57,8 +60,11 @@ def binary_similarity( df, ref_seq, matrix="IDENTITY", seq_column="sequence", pr
         prefix = str(prefix) + matrix.lower()
     for v in all_seqs.values:
         sims.append( _calculate_binary_sequence_similarity( v[0], ref_seq, mat, key_residues ) )
-    df.insert( df.shape[1], prefix + "_binary", pd.Series( sims, index=df.index ) )
-    return df
+    wdf = df.copy()
+    if prefix + "_binary" in df:
+        wdf = wdf.drop([prefix + "_binary"], axis=1)
+    wdf.insert( wdf.shape[1], prefix + "_binary", pd.Series( sims, index=wdf.index ) )
+    return wdf
 
 def binary_overlap( df, column_name="identity_binary" ):
     a = df[column_name].values

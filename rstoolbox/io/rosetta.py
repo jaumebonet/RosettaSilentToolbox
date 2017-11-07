@@ -34,13 +34,16 @@ def open_rosetta_file( filename, multi=False ):
             raise IOError("{0}: file not found.".format(filename))
         files.append( filename )
     else:
-        files = glob.glob( filename + "*" )
+        if isinstance(filename, basestring):
+            files = glob.glob( filename + "*" )
+        else:
+            files = filename
 
-    for f in files:
+    for file_count, f in enumerate( files ):
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
             if line.strip().split()[0].strip(":") in _headers:
-                yield line, line.strip().split()[-1] == "description"
+                yield line, line.strip().split()[-1] == "description", file_count
         fd.close()
 
 def parse_rosetta_file( filename, description, multi=False ):
@@ -49,7 +52,7 @@ def parse_rosetta_file( filename, description, multi=False ):
     header = []
     data   = {}
     chains = {"id": "", "seq": "", "stc": "", "done": False}
-    for line, is_header in open_rosetta_file( filename, multi ):
+    for line, is_header, count in open_rosetta_file( filename, multi ):
         if is_header:
             header = line.strip().split()[1:]
             continue

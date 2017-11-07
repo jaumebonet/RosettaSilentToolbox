@@ -1,3 +1,5 @@
+import os
+
 from rstoolbox.analysis import sequence_frequency_matrix, binary_overlap
 from .color_schemes import color_scheme
 
@@ -37,10 +39,10 @@ def _dataframe2logo( data ):
     for index, pos in data.iterrows():
         pdata = []
         for k in aa:
-            if pos[k] > 0.0:
+            if pos[k] > 0.0000000:
                 #pdata.append( ( k, float(format(pos[k] * 2.23, '.2f')) ) )
-                pdata.append( ( k, float(format(pos[k], '.2f')) ) )
-                #pdata.append( ( k, float(pos[k]) ) )
+                #pdata.append( ( k, float(format(pos[k], '.5f')) ) )
+                pdata.append( ( k, float(pos[k]) ) )
         odata.append(sorted(pdata, key=lambda x: x[1]))
     return odata
 
@@ -75,10 +77,19 @@ def sequence_frequency_plot( df, column_name, axis, ref_seq=None, key_residues=N
             axis.add_patch(Rectangle((i, order.index(ref_seq[i])), 1, 1, fill=False, edgecolor=border_color, lw=2))
 
 def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, colors="WEBLOGO" ):
+    mpl.rcParams['svg.fonttype'] = 'none'
     # Graphical Properties of resizable letters
-    fp = FontProperties(family="DejaVu Sans Mono", weight="bold")
-    globscale = 1.35
-    letters_shift = -0.3
+    path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        '../components/square.ttf'
+    )
+
+    #fp = FontProperties(family="DejaVu Sans Mono", weight="bold")
+    #globscale = 1.35
+    #letters_shift = -0.3
+    fp = FontProperties(fname=path, weight="bold")
+    globscale = 1.22
+    letters_shift = -0.5
 
     LETTERS = {}
     for aa in color_scheme(colors):
@@ -116,10 +127,9 @@ def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, c
         ax2.grid(False)
     ax.lines = []
     wdata = _dataframe2logo( data )
-    all_scores = wdata
     x = 1
     maxi = 0
-    for scores in all_scores:
+    for scores in wdata:
         y = 0
         for base, score in scores:
             _letterAt(base, x,y, score, ax, globscale, LETTERS, color_scheme(colors))
