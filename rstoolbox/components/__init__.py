@@ -1,3 +1,3 @@
-from .design import *
-from .designList import *
-from .Description import Description
+from .sequenceFrame import SequenceFrame
+from .designFrame import DesignFrame
+from .description import Description

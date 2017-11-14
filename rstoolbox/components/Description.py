@@ -8,8 +8,17 @@ class Description( object ):
         self.keys    = {}
         self.keysbr  = {}
         self.namings = {}
+        self.ignores = []
         self.chains  = []
+        self.labels  = []
+        self._auto   = False
         self._process_description( self._file_vs_json( ddict ) )
+
+    def fill_if_empty_scores( self, header ):
+        if self._auto:
+            for h in header:
+                if not h in self.keys and not h in self.ignores:
+                    self.keys[h] = h
 
     def is_requested_key( self, key ):
         return key in self.keys
@@ -19,6 +28,9 @@ class Description( object ):
             if key.startswith(k):
                 return k
         return False
+
+    def is_requested_label( self, label ):
+        return label.upper() in self.labels
 
     def get_expected_per_residue_key( self, key ):
         for k in self.keysbr:
@@ -58,28 +70,48 @@ class Description( object ):
         return data
 
     def _process_description( self, ddict ):
-        # scores is a list of scores to keep with that name
+        # Option 0: cover no definition: Then, all scores get picked.
+        if ddict is None:
+            self._auto = True
+            return
+        # Option 1: scores is a list of scores to keep with the same name
+        # Thus, it can have a list or "*" if all scores are meant to be kept.
+        # Alternatively, one can pick only scores to ignore with scores_ignore.
+        # Both options have to be incompatible.
         if "scores" in ddict:
-            for sc in ddict["scores"]:
-                self.keys[sc] = sc
-        # scores_rename is a list of scores to keep with a different name
+            if isinstance(ddict["scores"], list):
+                for sc in ddict["scores"]:
+                    self.keys[sc] = sc
+            else:
+                if ddict["scores"] == "*":
+                    self._auto = True
+        elif "scores_ignore" in ddict:
+            self.ignores = ddict["scores_ignore"]
+            self._auto = True
+        # Option 2: scores_rename is a list of scores to keep with a different name
         if "scores_rename" in ddict:
             for sc in ddict["scores_rename"]:
                 self.keys[sc] = ddict["scores_rename"][sc]
-        # scores_by_residue is the prefix of a score that has to be saved by residue
+        # Option 3: scores_by_residue is the prefix of a score that has to be saved
+        # by residue.
         if "scores_by_residue" in ddict:
             for sc in ddict["scores_by_residue"]:
                 sk = ddict["scores_by_residue"][sc]
                 if self.is_requested_key( sk ):
                     raise KeyError( "The per residue score {} already exists as a score column".format(sk))
                 self.keysbr[sc] = sk
+        # naming splits the definition by "_" and sets the names as new columns
         if "naming" in ddict:
             for cname, name in enumerate(ddict["naming"]):
                 if name != "":
                     if self.is_requested_key( name ):
                         raise KeyError( "The naming split {} already exists as a score column".format(name))
                     self.namings[cname] = name
+        # sequence define which sequence(s) the user wants to keep
         if "sequence" in ddict:
             self.chains = ddict["sequence"]
+        # labels selects from the REMARK LABELS line which are of interest
+        if "labels" in ddict:
+            self.labels = [x.upper() for x in ddict["labels"]]
         if "split" in ddict:
             pass

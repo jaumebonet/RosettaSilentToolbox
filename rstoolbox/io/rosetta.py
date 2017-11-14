@@ -11,9 +11,15 @@ import pandas as pd
 import rstoolbox.core as core
 import rstoolbox.components as cp
 
-_headers = ["SCORE", "REMARK", "RES_NUM", "FOLD_TREE", "RT", "ANNOTATED_SEQUENCE", "NONCANONICAL_CONNECTION", "CHAIN_ENDINGS"]
+_headers = ["SCORE", "REMARK", "RES_NUM", "FOLD_TREE", "RT",
+            "ANNOTATED_SEQUENCE", "NONCANONICAL_CONNECTION",
+            "CHAIN_ENDINGS"]
 
 def _check_type( value ):
+    """
+    Makes sure that, upon reading a value, it gets assigned
+    the correct type.
+    """
     try:
         int(value)
     except ValueError:
@@ -27,7 +33,6 @@ def _check_type( value ):
         return int(value)
 
 def open_rosetta_file( filename, multi=False ):
-
     files = []
     if not multi:
         if not os.path.isfile( filename ):
@@ -46,7 +51,7 @@ def open_rosetta_file( filename, multi=False ):
                 yield line, line.strip().split()[-1] == "description", file_count
         fd.close()
 
-def parse_rosetta_file( filename, description, multi=False ):
+def parse_rosetta_file( filename, description=None, multi=False ):
 
     desc   = cp.Description( description )
     header = []
@@ -55,6 +60,7 @@ def parse_rosetta_file( filename, description, multi=False ):
     for line, is_header, count in open_rosetta_file( filename, multi ):
         if is_header:
             header = line.strip().split()[1:]
+            desc.fill_if_empty_scores( header )
             continue
         if line.startswith("SCORE"):
             chains = {"id": "", "seq": "", "stc": "", "done": False}
@@ -63,6 +69,10 @@ def parse_rosetta_file( filename, description, multi=False ):
                     data.setdefault( desc.get_expected_key( header[cv]), [] ).append( _check_type( value ) )
             for namingID, namingVL in desc.get_naming_pairs( line.strip().split()[-1] ):
                 data.setdefault( namingID, [] ).append( _check_type( namingVL ) )
+            # Initialize here in case one design does not have any of the labels.
+            if len(desc.labels) > 0:
+                for lab in desc.labels:
+                    data.setdefault(lab, []).append("0")
             continue
         if line.startswith("RES_NUM"):
             chains["id"] = "".join(list(OrderedDict.fromkeys("".join([x.split(":")[0] for x in line.split()[1:-1]]))))
@@ -86,7 +96,14 @@ def parse_rosetta_file( filename, description, multi=False ):
             for seqname, seq in desc.get_expected_sequences( chains ):
                 data.setdefault( seqname, [] ).append( seq )
             continue
-    return pd.DataFrame( data )
+        if line.startswith("REMARK"):
+            content = line.strip().split()[1:]
+            if content[0] == "LABELS":
+                for label in content[1].split(";"):
+                    labinfo = label.split(":")
+                    if desc.is_requested_label(labinfo[0]):
+                        data[labinfo[0].upper()][-1] = labinfo[1]
+    return cp.DesignFrame( data )
 
 def make_structures( data, silentfiles, column="description", outdir=None, multi=False, tagsfilename="tags", keep_tagfile=True ):
 
