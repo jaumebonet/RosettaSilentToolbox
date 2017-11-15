@@ -4,6 +4,7 @@ import re
 import glob
 import gzip
 import json
+import string
 from collections import OrderedDict
 
 import pandas as pd
@@ -13,7 +14,7 @@ import rstoolbox.components as cp
 
 _headers = ["SCORE", "REMARK", "RES_NUM", "FOLD_TREE", "RT",
             "ANNOTATED_SEQUENCE", "NONCANONICAL_CONNECTION",
-            "CHAIN_ENDINGS"]
+            "SYMMETRY_INFO", "CHAIN_ENDINGS"]
 
 def _check_type( value ):
     """
@@ -77,8 +78,12 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         if line.startswith("RES_NUM"):
             chains["id"] = "".join(list(OrderedDict.fromkeys("".join([x.split(":")[0] for x in line.split()[1:-1]]))))
             continue
+        if line.startswith("SYMMETRY_INFO"): # When working with symmetry, RES_NUM is not there...
+            chains["id"] = "".join(string.uppercase[:int(line.split()[2])])
+            continue
         if line.startswith("ANNOTATED_SEQUENCE"):
             chains["seq"] = re.sub( r'\[[^]]*\]', '', line.strip().split()[1] )
+            chains["seq"] = chains["seq"].rstrip("X") # This is for symmetry data, as sometimes it adds XX residues
             if len(chains["id"]) == 1:
                 chains["stc"] = "".join([chains["id"]] * len(chains["seq"]))
                 for seqname, seq in desc.get_expected_sequences( chains ):
@@ -88,7 +93,8 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         if line.startswith("CHAIN_ENDINGS") and not chains["done"]:
             endings = [int(x) for x in line.split()[1:-1]]
             txains = []
-            endings.append(len(chains["seq"]))
+            if endings[-1] < len(chains["seq"]): # Normaly, this is true, except with symmetry
+                endings.append(len(chains["seq"]))
             for x in range(len(endings)):
                 if x > 0: endings[x] -= endings[x-1]
                 txains.extend([chains["id"][x]] * endings[x])
