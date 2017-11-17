@@ -8,6 +8,7 @@
 # Standard Libraries
 import os
 import re
+import string
 
 # External Libraries
 import pandas as pd
@@ -78,23 +79,33 @@ class DesignFrame( pd.DataFrame ):
                     axis=1
                 )]
 
-    def sequence_frequencies( self, seqID, seqType="protein" ):
+    def sequence_frequencies( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
         """
         Generates a :py:class:`.SequenceFrame` for the frequencies of
         the sequences in the __DesignFrame__ with seqID identifier.
         If there is a reference_sequence for this seqID, it will also
         be attached to the __SequenceFrame__.
+        All letters in the sequence will be capitalized. All symbols that
+        do not belong to string.ascii_uppercase will be transformed to "*"
+        as this is the symbol recognized by the substitution matrices.
+
         :param str seqID: Identifier of the sequence sets of interest.
         :param str seqType: Type of sequence: protein, dna, rna.
+        :param bool cleanExtra: Remove from the SequenceFrame the non-regular
+        amino/nucleic acids if they are empty for all positions.
+        :param bool cleanUnused: Remove from the SequenceFrame the regular
+        amino/nucleic acids if they are empty for all positions
         :return: :py:class:`.SequenceFrame`
         """
         sserie = self["sequence_{0}".format(seqID)].values
-        table = self._get_sequence_table( seqType )
+        table, extra = self._get_sequence_table( seqType )
         for x in range(len(sserie[0])):
             for k in table:
                 table[k].append(float(0))
             for y in range(len(sserie)):
-                aa = sserie[y][x]
+                aa = sserie[y][x].upper()
+                if aa in string.whitespace or aa in string.punctuation:
+                    aa = "*"
                 table[aa][-1] += float(1)
         for k in table:
             for x in range(len(table[k])):
@@ -102,12 +113,16 @@ class DesignFrame( pd.DataFrame ):
                     table[k][x] /= float(len(sserie))
 
         df = SequenceFrame(table)
+        df.measure("frequency")
+        df.extras( extra )
         if self.has_reference_sequence(seqID):
             df.reference_sequence(self.reference_sequence(seqID))
+        df.delete_extra( cleanExtra )
+        df.delete_empty( cleanUnused )
         df.index = df.index + 1
         return df
 
-    def sequence_bits( self, seqID, seqType="protein" ):
+    def sequence_bits( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
         """
         Generates a :py:class:`.SequenceFrame` for the bits of
         the sequences in the __DesignFrame__ with seqID identifier.
@@ -115,10 +130,14 @@ class DesignFrame( pd.DataFrame ):
         be attached to the __SequenceFrame__.
         :param str seqID: Identifier of the sequence sets of interest.
         :param str seqType: Type of sequence: protein, dna, rna.
+        :param bool cleanExtra: Remove from the SequenceFrame the non-regular
+        amino/nucleic acids if they are empty for all positions.
+        :param bool cleanUnused: Remove from the SequenceFrame the regular
+        amino/nucleic acids if they are empty for all positions
         :return: :py:class:`.SequenceFrame`
         """
         sserie = self["sequence_{0}".format(seqID)].values
-        table = self._get_sequence_table( seqType )
+        table, extra = self._get_sequence_table( seqType )
         pass
 
     def _get_sequence_table( self, seqType ):
@@ -130,25 +149,35 @@ class DesignFrame( pd.DataFrame ):
         :raise ValueError: If seqType is not known
         """
         table = {}
+        extra = []
         if seqType.lower() == "protein":
             table = {
                 'C' : [], 'D' : [], 'S' : [], 'Q' : [], 'K' : [],
                 'I' : [], 'P' : [], 'T' : [], 'F' : [], 'N' : [],
                 'G' : [], 'H' : [], 'L' : [], 'R' : [], 'W' : [],
                 'A' : [], 'V' : [], 'E' : [], 'Y' : [], 'M' : [],
-                'X' : [], '-' : []
+                'X' : [], '*' : [], 'B' : [], 'Z' : []
             }
-        elif seqType.lower() == "dna":
+            extra = ['X', '*', 'B', 'Z']
+        elif seqType.lower() in ["dna", "rna"]:
+            # B = C or G or T  # D = A or G or T
+            # H = A or C or T  # K = G or T
+            # M = A or C       # N = A or C or G or T
+            # R = A or G       # S = C or G
+            # V = A or C or G  # W = A or T
+            # Y = C or T
             table = {
-                'C' : [], 'A' : [], 'T' : [], 'G' : [], 'X' : [], '-' : []
+                'C' : [], 'A' : [], 'T' : [], 'G' : [], 'X' : [], '*' : [],
+                'B' : [], 'D' : [], 'H' : [], 'K' : [], 'M' : [], 'N' : [],
+                'R' : [], 'S' : [], 'V' : [], 'W' : [], 'Y' : []
             }
-        elif seqType.lower() == "rna":
-            table = {
-                'C' : [], 'A' : [], 'U' : [], 'G' : [], 'X' : [], '-' : []
-            }
+            if seqType.lower() == "rna":
+                table.setdefault( 'U' , [])
+                table.pop('T', None)
+            extra = ['X', '*', 'B', 'D', 'H', 'K', 'M', 'N', 'R', 'S', 'V', 'W', 'Y']
         else:
             raise ValueError("sequence type {0} unknown".format(seqType))
-        return table
+        return table, extra
 
     @property
     def _constructor(self):
