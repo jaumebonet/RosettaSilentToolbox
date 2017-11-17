@@ -54,16 +54,21 @@ def barcode_plot( df, column_name, axis, color="blue" ):
     axis.xaxis.set_ticklabels(np.arange(0, len(result)+1, 10) + 1, rotation=45)
     axis.set_xlabel("sequence")
 
-def sequence_frequency_plot( df, column_name, axis, ref_seq=None, key_residues=None, colormap = "Blues", border_color="green", nobar=False, cbar_ax=None, orientation="horizontal" ):
+def sequence_frequency_plot( df, column_name, axis, shift=None, ref_seq=None, key_residues=None, colormap = "Blues", border_color="green", nobar=False, cbar_ax=None, orientation="horizontal" ):
     order = ["A","V","I","L","M","F","Y","W","S","T","N","Q","R","H","K","D","E","C","G","P"]
     data = sequence_frequency_matrix( df, column_name ).transpose().reindex(order)
+    if shift:
+        data.columns = data.columns + shift
     if key_residues is not None:
-        data = data.ix[:, key_residues]
         if ref_seq is not None:
             tmp_seq = ""
             for k in key_residues:
                 tmp_seq += ref_seq[k-1]
             ref_seq = tmp_seq
+        if not shift:
+            data = data.ix[:, key_residues]
+        else:
+            data = data.ix[:, [i+shift for i in key_residues]]
     if cbar_ax == None:
         sns.heatmap(data, ax=axis, square=True, cbar=not nobar, cbar_kws={"orientation": orientation}, linewidths=1, cmap=colormap)
     else:

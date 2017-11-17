@@ -7,6 +7,7 @@ class Description( object ):
     def __init__( self, ddict ):
         self.keys    = {}
         self.keysbr  = {}
+        self.perresi = []
         self.namings = {}
         self.ignores = []
         self.chains  = []
@@ -14,19 +15,38 @@ class Description( object ):
         self._auto   = False
         self._process_description( self._file_vs_json( ddict ) )
 
+    def add_per_residues_keys( self, per_residues ):
+        self.perresi = per_residues
+
     def fill_if_empty_scores( self, header ):
         if self._auto:
             for h in header:
+                if self.is_per_residue_key( h ):
+                    hh = self.get_per_residue_name( h )
+                    if not hh in self.keysbr and not hh in self.ignores:
+                        self.keysbr[hh]=hh
+                        continue
                 if not h in self.keys and not h in self.ignores:
                     self.keys[h] = h
 
     def is_requested_key( self, key ):
         return key in self.keys
 
+    def is_per_residue_key( self, key ):
+        for k in self.perresi:
+            if key.startswith(k):
+                return True
+        return False
+
+    def get_per_residue_name( self, key ):
+        for k in self.perresi:
+            if key.startswith(k):
+                return k
+
     def is_requested_per_residue_key( self, key ):
         for k in self.keysbr:
             if key.startswith(k):
-                return k
+                return True
         return False
 
     def is_requested_label( self, label ):

@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: design.py
 # @Last modified by:   bonet
-# @Last modified time: 10-Nov-2017
+# @Last modified time: 17-Nov-2017
 
 # Standard Libraries
 import os
@@ -33,6 +33,7 @@ class DesignFrame( pd.DataFrame ):
         """
         Setter/Getter for a reference sequence attached to a particular
         sequence ID.
+
         :param str seqID: Identifier of the reference sequence
         :param str sequence: Reference sequence. By default is
             :py:data:`None`, which turns the function into a getter.
@@ -53,6 +54,29 @@ class DesignFrame( pd.DataFrame ):
         :return: bool
         """
         return seqID in self._reference_sequence
+
+    def get_sequence_with( self, column, selection, confidence=1 ):
+        """
+        Selects those decoys with a particular set of residue matches.
+        Basically, is meant to find, for example, all the decoys in which
+        position 25 is A and position 46 is T.
+
+        :param str column: Name of the target column containing sequences
+        :param str selection: List of tuples with position and residue
+            type (in 1 letter code)
+        :param float confidence: Percentage of the number of the selection
+            rules that we expect the matches to fulfill. Default is 1 (all).
+        :return: Filtered :py:class:`.DesignFrame`
+        """
+        def match_residues( value, selection, confidence ):
+            t = 0
+            for s in selection:
+                t += 1 if value[s[0]-1] == s[1] else 0
+            return t/float(len(selection)) >= float(confidence)
+        return self.loc[ self.apply(
+                    lambda row: match_residues(row[column], selection, confidence ),
+                    axis=1
+                )]
 
     def sequence_frequencies( self, seqID, seqType="protein" ):
         """
@@ -111,15 +135,16 @@ class DesignFrame( pd.DataFrame ):
                 'C' : [], 'D' : [], 'S' : [], 'Q' : [], 'K' : [],
                 'I' : [], 'P' : [], 'T' : [], 'F' : [], 'N' : [],
                 'G' : [], 'H' : [], 'L' : [], 'R' : [], 'W' : [],
-                'A' : [], 'V' : [], 'E' : [], 'Y' : [], 'M' : []
+                'A' : [], 'V' : [], 'E' : [], 'Y' : [], 'M' : [],
+                'X' : [], '-' : []
             }
         elif seqType.lower() == "dna":
             table = {
-                'C' : [], 'A' : [], 'T' : [], 'G' : []
+                'C' : [], 'A' : [], 'T' : [], 'G' : [], 'X' : [], '-' : []
             }
         elif seqType.lower() == "rna":
             table = {
-                'C' : [], 'A' : [], 'U' : [], 'G' : []
+                'C' : [], 'A' : [], 'U' : [], 'G' : [], 'X' : [], '-' : []
             }
         else:
             raise ValueError("sequence type {0} unknown".format(seqType))

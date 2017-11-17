@@ -15,6 +15,7 @@ import rstoolbox.components as cp
 _headers = ["SCORE", "REMARK", "RES_NUM", "FOLD_TREE", "RT",
             "ANNOTATED_SEQUENCE", "NONCANONICAL_CONNECTION",
             "SYMMETRY_INFO", "CHAIN_ENDINGS"]
+_per_residues = ["residue_ddg_"]
 
 def _check_type( value ):
     """
@@ -55,6 +56,7 @@ def open_rosetta_file( filename, multi=False ):
 def parse_rosetta_file( filename, description=None, multi=False ):
 
     desc   = cp.Description( description )
+    desc.add_per_residues_keys( _per_residues )
     header = []
     data   = {}
     chains = {"id": "", "seq": "", "stc": "", "done": False}
@@ -64,8 +66,13 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             desc.fill_if_empty_scores( header )
             continue
         if line.startswith("SCORE"):
-            chains = {"id": "", "seq": "", "stc": "", "done": False}
+            chains  = {"id": "", "seq": "", "stc": "", "done": False}
+            per_res = {}
             for cv, value in enumerate( line.strip().split()[1:] ):
+                if desc.is_requested_per_residue_key( header[cv] ):
+                    per_res.setdefault( desc.get_expected_per_residue_key( header[cv] ), {} )
+                    per_res[desc.get_expected_per_residue_key( header[cv] )][int(header[cv].split("_")[-1])] = _check_type( value )
+                    continue
                 if desc.is_requested_key( header[cv] ):
                     data.setdefault( desc.get_expected_key( header[cv]), [] ).append( _check_type( value ) )
             for namingID, namingVL in desc.get_naming_pairs( line.strip().split()[-1] ):
@@ -74,6 +81,9 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             if len(desc.labels) > 0:
                 for lab in desc.labels:
                     data.setdefault(lab, []).append("0")
+            # Process per residue scores
+            for k in per_res:
+                data.setdefault( k, [] ).append( OrderedDict(sorted(per_res[k].items())).values() )
             continue
         if line.startswith("RES_NUM"):
             chains["id"] = "".join(list(OrderedDict.fromkeys("".join([x.split(":")[0] for x in line.split()[1:-1]]))))
