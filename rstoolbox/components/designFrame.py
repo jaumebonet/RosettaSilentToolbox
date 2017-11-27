@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: design.py
 # @Last modified by:   bonet
-# @Last modified time: 17-Nov-2017
+# @Last modified time: 27-Nov-2017
 
 # Standard Libraries
 import os
@@ -28,7 +28,10 @@ class DesignFrame( pd.DataFrame ):
 
     """
     _metadata = ['_reference_sequence']
-    _reference_sequence = {}
+
+    def __init__(self, *args, **kw):
+        super(DesignFrame, self).__init__(*args, **kw)
+        self._reference_sequence = {}
 
     def reference_sequence( self, seqID, sequence=None ):
         """
@@ -78,6 +81,31 @@ class DesignFrame( pd.DataFrame ):
                     lambda row: match_residues(row[column], selection, confidence ),
                     axis=1
                 )]
+
+    def identify_mutants( self, seqID, ini_res=1 ):
+        """
+        Checks the sequence in column sequence_<seqID> againts the reference_sequence.
+        Adds to the :py:class:`.designFrame` two new columns: mutants_<seqID>, which lists
+        the mutations of the particular decoy vs. the reference_sequence and mutant_positions_<seqID>,
+        just with those same positions. Reference and design sequence must be of the same length.
+        :param str seqID: Identifier of the sequence of interest.
+        :param int ini_res: Numbering assign to the first residue of the chain. Default is 1.
+        :return: Changes :py:class:`.designFrame` and returns it
+        """
+        def mutations( reference, sequence, shift=1 ):
+            data = []
+            assert len(reference) == len(sequence)
+            for i in range(len(reference)):
+                if reference[i].upper() != sequence[i].upper():
+                    data.append(reference[i].upper() + str(i + shift) + sequence[i].upper())
+            return ",".join(data)
+
+        self["mutants_{0}".format(seqID)] = self.apply(
+            lambda row: mutations(self.reference_sequence(seqID), row["sequence_{0}".format(seqID)], ini_res),
+            axis=1 )
+        self["mutant_positions_{0}".format(seqID)] = self["mutants_{0}".format(seqID)].str.replace(r"[a-zA-Z]","")
+
+        return self
 
     def sequence_frequencies( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
         """

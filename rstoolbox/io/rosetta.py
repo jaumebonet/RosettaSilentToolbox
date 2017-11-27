@@ -126,7 +126,7 @@ def make_structures( data, silentfiles, column="description", outdir=None, multi
     if outdir is None:
         outdir = core.get_option("system", "output")
     if not os.path.isdir( outdir ):
-        os.mkdir( outdir )
+        os.makedirs( outdir )
     if not outdir.endswith("/"):
         outdir += "/"
     tagsfilename = os.path.join( outdir, tagsfilename )

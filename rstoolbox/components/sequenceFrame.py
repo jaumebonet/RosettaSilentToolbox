@@ -13,11 +13,14 @@ class SequenceFrame( pd.DataFrame ):
     slicing another, one should expect the index to start in 1.
     """
     _metadata = ['_reference_sequence', '_measure', '_extras', '_delextra', '_delempty']
-    _reference_sequence = ""
-    _measure = ""
-    _extras = []
-    _delextra = True
-    _delempty = False
+
+    def __init__(self, *args, **kw):
+        super(SequenceFrame, self).__init__(*args, **kw)
+        self._reference_sequence = ""
+        self._measure  = ""
+        self._extras   = []
+        self._delextra = True
+        self._delempty = False
 
     def reference_sequence( self, sequence=None ):
         """
