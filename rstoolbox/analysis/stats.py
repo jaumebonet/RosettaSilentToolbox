@@ -1,3 +1,11 @@
+# @Author: Jaume Bonet <bonet>
+# @Date:   19-Nov-2017
+# @Email:  jaume.bonet@gmail.com
+# @Filename: stats.py
+# @Last modified by:   bonet
+# @Last modified time: 13-Dec-2017
+
+
 import numpy as np
 
 def cumulative( values, bins=100, max_count=None, upper_limit=None, cumulative=1 ):

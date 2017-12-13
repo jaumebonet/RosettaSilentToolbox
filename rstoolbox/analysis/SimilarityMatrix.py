@@ -1,3 +1,11 @@
+# @Author: Jaume Bonet <bonet>
+# @Date:   11-May-2015
+# @Email:  jaume.bonet@gmail.com
+# @Filename: SimilarityMatrix.py
+# @Last modified by:   bonet
+# @Last modified time: 13-Dec-2017
+
+
 from collections import deque
 import os
 
