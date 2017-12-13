@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: design.py
 # @Last modified by:   bonet
-# @Last modified time: 27-Nov-2017
+# @Last modified time: 13-Dec-2017
 
 # Standard Libraries
 import os
@@ -27,69 +27,127 @@ class DesignFrame( pd.DataFrame ):
     attached to it.
 
     """
-    _metadata = ['_reference_sequence']
+    _metadata = ['_reference_sequence', '_source_files']
 
     def __init__(self, *args, **kw):
         super(DesignFrame, self).__init__(*args, **kw)
         self._reference_sequence = {}
+        self._source_files = set()
 
-    def reference_sequence( self, seqID, sequence=None ):
+    def reference_sequence( self, seqID, sequence=None, shift=1 ):
         """
         Setter/Getter for a reference sequence attached to a particular
-        sequence ID.
+        sequence ID. It also allows to provide the shift of the sequence
+        count with respect to a linear numbering (Rosetta numbering).
 
         :param str seqID: Identifier of the reference sequence
         :param str sequence: Reference sequence. By default is
             :py:data:`None`, which turns the function into a getter.
+        :param int shift: In case the sequence does not start in 1, how much
+            do we need to shift? Basically provide the number of the first
+            residue of the chain. Default is 1.
         :return: str
+        :raise KeyError: If seqID does not exist.
         """
         if sequence is not None:
-            self._reference_sequence[seqID] = sequence
+            self._reference_sequence.setdefault(seqID, {"seq": sequence, "sft": shift})
         else:
             if seqID not in self._reference_sequence:
                 raise KeyError("There is no reference sequence with ID: {}\n".format(seqID))
-        return self._reference_sequence[seqID]
+        return self._reference_sequence[seqID]["seq"]
+
+    def reference_shift( self, seqID, shift=None ):
+        """
+        Setter/Getter for a reference shift attached to a particular
+        sequence ID.
+
+        :param str seqID: Identifier of the reference sequence
+        :param int shift: In case the sequence does not start in 1, how much
+            do we need to shift? Basically provide the number of the first
+            residue of the chain. By default is :py:data:`None`, which turns
+            the function into a getter.
+        :return: int
+        :raise KeyError: If seqID does not exist.
+        """
+        if seqID in self._reference_sequence:
+            if shift not is None:
+                self._reference_sequence[seqID]["sft"] = shift
+            return self._reference_sequence[seqID]["sft"]
+
+        else:
+            raise KeyError("There is no reference sequence with ID: {}\n".format(seqID))
+
 
     def has_reference_sequence( self, seqID ):
         """
         Checks if there is a reference sequence for the provided
         sequence ID.
+
         :param str seqID: Identifier of the reference sequence
         :return: bool
         """
         return seqID in self._reference_sequence
 
-    def get_sequence_with( self, column, selection, confidence=1 ):
+    def add_source_file( self, file ):
+        """
+        Adds a source file to the :py:class:`.DesignFrame`. This can be used to know where to
+        extract the structure from if needed.
+
+        :param str file: Name of the file to add.
+        """
+        self._source_files.add( file )
+
+    def add_source_files( self, files ):
+        """
+        Adds source files to the :py:class:`.DesignFrame`. This can be used to know where to
+        extract the structure from if needed.
+
+        :param file: List of names of the files to add.
+        """
+        self._source_files = self._source_files.union( files )
+
+    def has_source_files( self ):
+        """
+        Checks if there are source files added.
+
+        :return: bool
+        """
+        return bool(self._source_files)
+
+    def get_sequence_with( self, seqID, selection, confidence=1 ):
         """
         Selects those decoys with a particular set of residue matches.
         Basically, is meant to find, for example, all the decoys in which
         position 25 is A and position 46 is T.
 
-        :param str column: Name of the target column containing sequences
+        :param str seqID: Identifier of the sequence of interest.
         :param str selection: List of tuples with position and residue
             type (in 1 letter code)
         :param float confidence: Percentage of the number of the selection
             rules that we expect the matches to fulfill. Default is 1 (all).
         :return: Filtered :py:class:`.DesignFrame`
         """
-        def match_residues( value, selection, confidence ):
+        def match_residues( value, seqID, confidence ):
             t = 0
             for s in selection:
                 t += 1 if value[s[0]-1] == s[1] else 0
             return t/float(len(selection)) >= float(confidence)
+
         return self.loc[ self.apply(
-                    lambda row: match_residues(row[column], selection, confidence ),
+                    lambda row: match_residues(row["sequence_{0}".format(seqID)], selection, confidence ),
                     axis=1
                 )]
 
-    def identify_mutants( self, seqID, ini_res=1 ):
+    def identify_mutants( self, seqID, shift=None ):
         """
         Checks the sequence in column sequence_<seqID> againts the reference_sequence.
         Adds to the :py:class:`.designFrame` two new columns: mutants_<seqID>, which lists
         the mutations of the particular decoy vs. the reference_sequence and mutant_positions_<seqID>,
         just with those same positions. Reference and design sequence must be of the same length.
+
         :param str seqID: Identifier of the sequence of interest.
-        :param int ini_res: Numbering assign to the first residue of the chain. Default is 1.
+        :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
+            shift from the reference sequence
         :return: Changes :py:class:`.designFrame` and returns it
         """
         def mutations( reference, sequence, shift=1 ):
@@ -100,14 +158,15 @@ class DesignFrame( pd.DataFrame ):
                     data.append(reference[i].upper() + str(i + shift) + sequence[i].upper())
             return ",".join(data)
 
+        this_shift = shift is shift is not None else self.reference_shift(seqID)
         self["mutants_{0}".format(seqID)] = self.apply(
-            lambda row: mutations(self.reference_sequence(seqID), row["sequence_{0}".format(seqID)], ini_res),
+            lambda row: mutations(self.reference_sequence(seqID), row["sequence_{0}".format(seqID)], this_shift),
             axis=1 )
         self["mutant_positions_{0}".format(seqID)] = self["mutants_{0}".format(seqID)].str.replace(r"[a-zA-Z]","")
 
         return self
 
-    def sequence_frequencies( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
+    def sequence_frequencies( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=False ):
         """
         Generates a :py:class:`.SequenceFrame` for the frequencies of
         the sequences in the __DesignFrame__ with seqID identifier.
@@ -119,10 +178,12 @@ class DesignFrame( pd.DataFrame ):
 
         :param str seqID: Identifier of the sequence sets of interest.
         :param str seqType: Type of sequence: protein, dna, rna.
+        :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
+            shift from the reference sequence
         :param bool cleanExtra: Remove from the SequenceFrame the non-regular
-        amino/nucleic acids if they are empty for all positions.
+            amino/nucleic acids if they are empty for all positions.
         :param bool cleanUnused: Remove from the SequenceFrame the regular
-        amino/nucleic acids if they are empty for all positions
+            amino/nucleic acids if they are empty for all positions
         :return: :py:class:`.SequenceFrame`
         """
         sserie = self["sequence_{0}".format(seqID)].values
@@ -144,20 +205,23 @@ class DesignFrame( pd.DataFrame ):
         df.measure("frequency")
         df.extras( extra )
         if self.has_reference_sequence(seqID):
-            df.reference_sequence(self.reference_sequence(seqID))
+            df.reference_sequence(self.reference_sequence(seqID), self.reference_shift(seqID))
         df.delete_extra( cleanExtra )
         df.delete_empty( cleanUnused )
-        df.index = df.index + 1
+        df.index = df.index + (shift is shift is not None else self.reference_shift(seqID))
         return df
 
-    def sequence_bits( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
+    def sequence_bits( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=False ):
         """
         Generates a :py:class:`.SequenceFrame` for the bits of
         the sequences in the __DesignFrame__ with seqID identifier.
         If there is a reference_sequence for this seqID, it will also
         be attached to the __SequenceFrame__.
+
         :param str seqID: Identifier of the sequence sets of interest.
         :param str seqType: Type of sequence: protein, dna, rna.
+        :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
+            shift from the reference sequence
         :param bool cleanExtra: Remove from the SequenceFrame the non-regular
         amino/nucleic acids if they are empty for all positions.
         :param bool cleanUnused: Remove from the SequenceFrame the regular
@@ -167,11 +231,21 @@ class DesignFrame( pd.DataFrame ):
         sserie = self["sequence_{0}".format(seqID)].values
         table, extra = self._get_sequence_table( seqType )
         pass
+        df = SequenceFrame(table)
+        df.measure("frequency")
+        df.extras( extra )
+        if self.has_reference_sequence(seqID):
+            df.reference_sequence(self.reference_sequence(seqID), self.reference_shift(seqID))
+        df.delete_extra( cleanExtra )
+        df.delete_empty( cleanUnused )
+        df.index = df.index + (shift is shift is not None else self.reference_shift(seqID))
+        return df
 
     def _get_sequence_table( self, seqType ):
         """
         Generates the table to fill sequence data in order to create
         a :py:class:`.SequenceFrame`
+
         :param str seqType: Type of sequence: protein, dna, rna.
         :return: dict
         :raise ValueError: If seqType is not known
@@ -179,6 +253,8 @@ class DesignFrame( pd.DataFrame ):
         table = {}
         extra = []
         if seqType.lower() == "protein":
+            # X = UNKNOWN  # * = GAP
+            # B = N or D   # Z = E or Q
             table = {
                 'C' : [], 'D' : [], 'S' : [], 'Q' : [], 'K' : [],
                 'I' : [], 'P' : [], 'T' : [], 'F' : [], 'N' : [],

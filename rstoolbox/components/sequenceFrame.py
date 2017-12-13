@@ -22,16 +22,48 @@ class SequenceFrame( pd.DataFrame ):
         self._delextra = True
         self._delempty = False
 
-    def reference_sequence( self, sequence=None ):
+    def reference_sequence( self, seqID, sequence=None, shift=1 ):
         """
-        Setter/Getter for a reference sequenceD.
+        Setter/Getter for a reference sequence attached to a particular
+        sequence ID. It also allows to provide the shift of the sequence
+        count with respect to a linear numbering (Rosetta numbering).
+
+        :param str seqID: Identifier of the reference sequence
         :param str sequence: Reference sequence. By default is
             :py:data:`None`, which turns the function into a getter.
+        :param int shift: In case the sequence does not start in 1, how much
+            do we need to shift? Basically provide the number of the first
+            residue of the chain. Default is 1.
+        :return: str
+        :raise KeyError: If seqID does not exist.
         """
         if sequence is not None:
-            assert(len(sequence) == self.shape[0])
-            self._reference_sequence = sequence
-        return self._reference_sequence
+            self._reference_sequence.setdefault(seqID, {"seq": sequence, "sft": shift})
+        else:
+            if seqID not in self._reference_sequence:
+                raise KeyError("There is no reference sequence with ID: {}\n".format(seqID))
+        return self._reference_sequence[seqID]["seq"]
+
+    def reference_shift( self, seqID, shift=None ):
+        """
+        Setter/Getter for a reference shift attached to a particular
+        sequence ID.
+
+        :param str seqID: Identifier of the reference sequence
+        :param int shift: In case the sequence does not start in 1, how much
+            do we need to shift? Basically provide the number of the first
+            residue of the chain. By default is :py:data:`None`, which turns
+            the function into a getter.
+        :return: int
+        :raise KeyError: If seqID does not exist.
+        """
+        if seqID in self._reference_sequence:
+            if shift not is None:
+                self._reference_sequence[seqID]["sft"] = shift
+            return self._reference_sequence[seqID]["sft"]
+
+        else:
+            raise KeyError("There is no reference sequence with ID: {}\n".format(seqID))
 
     def extras( self, extras=None ):
         """

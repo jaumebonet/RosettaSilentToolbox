@@ -34,7 +34,15 @@ def _check_type( value ):
     else:
         return int(value)
 
-def open_rosetta_file( filename, multi=False ):
+def _gather_file_list( filename,  multi=False ):
+    """
+    Provided a file name or pattern, generates a list
+    with all the files that are expected to be read.
+    :param str filename: file name or pattern (without "*")
+    :param bool multi: Tell if a file name or pattern is provided.
+        Default is 'False' (single file name)
+    :return: list of str names of files
+    """
     files = []
     if not multi:
         if not os.path.isfile( filename ):
@@ -45,7 +53,18 @@ def open_rosetta_file( filename, multi=False ):
             files = glob.glob( filename + "*" )
         else:
             files = filename
+    return files
 
+def open_rosetta_file( filename, multi=False ):
+    """
+    Reads through a Rosetta score or silent file yielding only the lines
+    that can be parsed by the rstoolbox.
+    :param str filename: file name or pattern (without "*")
+    :param bool multi: Tell if a file name or pattern is provided.
+        Default is 'False' (single file name)
+    :yields: [line content, bool is header, file count (for multi file inputs)]
+    """
+    files = _gather_file_list( filename, multi )
     for file_count, f in enumerate( files ):
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
@@ -54,7 +73,14 @@ def open_rosetta_file( filename, multi=False ):
         fd.close()
 
 def parse_rosetta_file( filename, description=None, multi=False ):
-
+    """
+    Reads a Rosetta score or silent file.
+    :param str filename: file name or pattern (without "*")
+    :param description: filename or dictionary with the parsing rules.
+    :param bool multi: Tell if a file name or pattern is provided.
+        Default is 'False' (single file name)
+    :return: :py:class:`.DesignFrame`
+    """
     desc   = cp.Description( description )
     desc.add_per_residues_keys( _per_residues )
     header = []
@@ -119,7 +145,9 @@ def parse_rosetta_file( filename, description=None, multi=False ):
                     labinfo = label.split(":")
                     if desc.is_requested_label(labinfo[0]):
                         data[labinfo[0].upper()][-1] = labinfo[1]
-    return cp.DesignFrame( data )
+    df = cp.DesignFrame( data )
+    df.add_source_files( _gather_file_list( filename, multi ) )
+    return df
 
 def make_structures( data, silentfiles, column="description", outdir=None, multi=False, tagsfilename="tags", keep_tagfile=True ):
 

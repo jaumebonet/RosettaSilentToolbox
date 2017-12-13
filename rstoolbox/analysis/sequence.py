@@ -75,26 +75,26 @@ def binary_overlap( df, column_name="identity_binary" ):
             if bool(int(b)): result[_] = 1
     return result
 
-def sequence_frequency_matrix( series, seq_column="sequence" ):
-    sserie = series[seq_column].values
-    table = {
-        'C' : [], 'D' : [], 'S' : [], 'Q' : [], 'K' : [],
-        'I' : [], 'P' : [], 'T' : [], 'F' : [], 'N' : [],
-        'G' : [], 'H' : [], 'L' : [], 'R' : [], 'W' : [],
-        'A' : [], 'V' : [], 'E' : [], 'Y' : [], 'M' : []
-    }
-
-    for x in range(len(sserie[0])):
-        for k in table:
-            table[k].append(float(0))
-        for y in range(len(sserie)):
-            aa = sserie[y][x]
-            table[aa][-1] += float(1)
-    for k in table:
-        for x in range(len(table[k])):
-            if table[k][x] != 0:
-                table[k][x] /= float(len(sserie))
-
-    df = pd.DataFrame( table )
-    df.index = df.index + 1
-    return df
+# def sequence_frequency_matrix( series, seq_column="sequence" ):
+#     sserie = series[seq_column].values
+#     table = {
+#         'C' : [], 'D' : [], 'S' : [], 'Q' : [], 'K' : [],
+#         'I' : [], 'P' : [], 'T' : [], 'F' : [], 'N' : [],
+#         'G' : [], 'H' : [], 'L' : [], 'R' : [], 'W' : [],
+#         'A' : [], 'V' : [], 'E' : [], 'Y' : [], 'M' : []
+#     }
+#
+#     for x in range(len(sserie[0])):
+#         for k in table:
+#             table[k].append(float(0))
+#         for y in range(len(sserie)):
+#             aa = sserie[y][x]
+#             table[aa][-1] += float(1)
+#     for k in table:
+#         for x in range(len(table[k])):
+#             if table[k][x] != 0:
+#                 table[k][x] /= float(len(sserie))
+#
+#     df = pd.DataFrame( table )
+#     df.index = df.index + 1
+#     return df
