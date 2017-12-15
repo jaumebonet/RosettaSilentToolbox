@@ -141,8 +141,9 @@ class DesignFrame( pd.DataFrame ):
         """
         Checks the sequence in column sequence_<seqID> againts the reference_sequence.
         Adds to the :py:class:`.designFrame` two new columns: mutants_<seqID>, which lists
-        the mutations of the particular decoy vs. the reference_sequence and mutant_positions_<seqID>,
-        just with those same positions. Reference and design sequence must be of the same length.
+        the mutations of the particular decoy vs. the reference_sequence, mutant_positions_<seqID>
+        just with those same positions and mutant_count_<seqID> with the count of the number of
+        mutations. Reference and design sequence must be of the same length.
 
         :param str seqID: Identifier of the sequence of interest.
         :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
@@ -156,12 +157,15 @@ class DesignFrame( pd.DataFrame ):
                 if reference[i].upper() != sequence[i].upper():
                     data.append(reference[i].upper() + str(i + shift) + sequence[i].upper())
             return ",".join(data)
+        def count_muts( mutations ):
+            return len(mutations.split(","))
 
         this_shift = shift if shift is not None else self.reference_shift(seqID)
         self["mutants_{0}".format(seqID)] = self.apply(
             lambda row: mutations(self.reference_sequence(seqID), row["sequence_{0}".format(seqID)], this_shift),
             axis=1 )
         self["mutant_positions_{0}".format(seqID)] = self["mutants_{0}".format(seqID)].str.replace(r"[a-zA-Z]","")
+        self["mutant_count_{0}".format(seqID)]     = self.apply(lambda row: count_muts(row["mutants_{0}".format(seqID)]), axis=1)
 
         return self
 
