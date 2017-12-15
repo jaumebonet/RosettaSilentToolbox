@@ -1,6 +1,16 @@
+# @Author: Jaume Bonet <bonet>
+# @Date:   09-Nov-2017
+# @Email:  jaume.bonet@gmail.com
+# @Filename: sequenceFrame.py
+# @Last modified by:   bonet
+# @Last modified time: 15-Dec-2017
+
+
 import os
 import re
+
 import pandas as pd
+import numpy as np
 
 class SequenceFrame( pd.DataFrame ):
     """
@@ -18,10 +28,10 @@ class SequenceFrame( pd.DataFrame ):
         super(SequenceFrame, self).__init__(*args, **kw)
         self._reference_sequence = ""
         self._reference_shift    = 1
-        self._measure  = ""
-        self._extras   = []
-        self._delextra = True
-        self._delempty = False
+        self._measure    = ""
+        self._extras     = []
+        self._delextra   = True
+        self._delempty   = False
 
     def reference_sequence( self, sequence=None, shift=1 ):
         """
@@ -53,7 +63,7 @@ class SequenceFrame( pd.DataFrame ):
         :return: int
         """
 
-        if shift not is None:
+        if shift is not None:
             self._reference_shift = shift
         return self._reference_shift
 
@@ -63,6 +73,7 @@ class SequenceFrame( pd.DataFrame ):
         Defines those names that are not regular/natural monomers.
         :param list measure: List of 1 letter names to be considered. By default is
             :py:data:`None`, which turns the function into a getter.
+        :return: list
         """
         if extras is not None:
             self._extras = extras
@@ -75,6 +86,7 @@ class SequenceFrame( pd.DataFrame ):
         have to be deleted if empty.
         :param bool pick: Whether or not to activate this option. By default is
             :py:data:`None`, which turns the function into a getter.
+        :return: bool
         """
         if pick is not None:
             self._delextra = pick
@@ -87,6 +99,7 @@ class SequenceFrame( pd.DataFrame ):
         have to be deleted if empty.
         :param bool pick: Whether or not to activate this option. By default is
             :py:data:`None`, which turns the function into a getter.
+        :return: bool
         """
         if pick is not None:
             self._delempty = pick
@@ -115,12 +128,66 @@ class SequenceFrame( pd.DataFrame ):
         """
         return self._reference_sequence != ""
 
+    def max_hight( self ):
+        """
+        Calculate the maximum expected value considering the amount of variants.
+        If :py:class:`.SequenceFrame` is of type "frequency", it will return 1.
+
+        For type "bits", this is calculated as:
+            log2 N
+        Where:
+            - N is the total number of options (4: DNA/RNA; 20: PROTEIN). This is automatically
+              picked from the number of columns, which means that adding/deleting columns for
+              different reasons will translate into different maximum expected height.
+
+        :return: float
+        """
+        if self.measure() == "frequency":
+            return 1
+        elif self.measure() == "bits":
+            return np.log2(self.shape[1])
+
+    def to_bits( self ):
+        """
+        Change the sequenceFrame from frequency to bits.
+        Bit calculation is performed as explained in http://www.genome.org/cgi/doi/10.1101/gr.849004
+
+        Rseq = Smax - Sobs = log2 N - (-sum(n=1,N):pn * log2 pn)
+
+        Where:
+            - N is the total number of options (4: DNA/RNA; 20: PROTEIN). This is automatically
+              picked from the number of columns, which means that adding/deleting columns for
+              different reasons will translate into different maximum expected height.
+            - pn is the observed frequency of the symbol n.
+
+        :return: a new :py:class:`.SequenceFrame`
+        """
+        def get_position_height( row ):
+            def individual_entropy( cell ):
+                return np.log2(cell) * cell
+            return np.sum(row.apply(lambda cell: individual_entropy(cell)))
+
+        if self.measure() == "bits":
+            return self
+
+        df = self.copy(deep=True)
+        df.measure("bits")
+        df["entropy"] = df.max_hight() + df.apply(lambda row: get_position_height( row ), axis=1)
+        aa_columns = [col for col in df.columns if len(col)==1]
+        return df[aa_columns].multiply(df["entropy"], axis=0)
+
     def clean( self ):
         """
         Apply the logic set by clean_extra and clean_empty.
-        :return: The properly filtered :py:class:`.SequenceFrame`
+        Modifications are applied "inplace"
+        :return: self
         """
-        pass
+        if self.delete_extra():
+            self.drop(self.extras(), axis=1, inplace=True)
+        if self.delete_empty():
+            s = pd.Series((self == 0).sum(axis=0) == self.shape[0])
+            self.drop(s[s==True].index.tolist(), axis=1, inplace=True)
+        return self
 
     def select_key_sequence_positions( self, selector ):
         """

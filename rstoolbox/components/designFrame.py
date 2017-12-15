@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: design.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Dec-2017
+# @Last modified time: 15-Dec-2017
 
 # Standard Libraries
 import os
@@ -12,6 +12,7 @@ import string
 
 # External Libraries
 import pandas as pd
+import numpy as np
 
 # This Library
 from .sequenceFrame import SequenceFrame
@@ -59,7 +60,8 @@ class DesignFrame( pd.DataFrame ):
     def reference_shift( self, seqID, shift=None ):
         """
         Setter/Getter for a reference shift attached to a particular
-        sequence ID.
+        sequence ID. If there is no reference sequence attached, it returns
+        1, as "no reference shift".
 
         :param str seqID: Identifier of the reference sequence
         :param int shift: In case the sequence does not start in 1, how much
@@ -67,16 +69,13 @@ class DesignFrame( pd.DataFrame ):
             residue of the chain. By default is :py:data:`None`, which turns
             the function into a getter.
         :return: int
-        :raise KeyError: If seqID does not exist.
         """
         if seqID in self._reference_sequence:
-            if shift not is None:
+            if shift is not None:
                 self._reference_sequence[seqID]["sft"] = shift
             return self._reference_sequence[seqID]["sft"]
-
         else:
-            raise KeyError("There is no reference sequence with ID: {}\n".format(seqID))
-
+            return 1
 
     def has_reference_sequence( self, seqID ):
         """
@@ -158,7 +157,7 @@ class DesignFrame( pd.DataFrame ):
                     data.append(reference[i].upper() + str(i + shift) + sequence[i].upper())
             return ",".join(data)
 
-        this_shift = shift is shift is not None else self.reference_shift(seqID)
+        this_shift = shift if shift is not None else self.reference_shift(seqID)
         self["mutants_{0}".format(seqID)] = self.apply(
             lambda row: mutations(self.reference_sequence(seqID), row["sequence_{0}".format(seqID)], this_shift),
             axis=1 )
@@ -208,7 +207,8 @@ class DesignFrame( pd.DataFrame ):
             df.reference_sequence(self.reference_sequence(seqID), self.reference_shift(seqID))
         df.delete_extra( cleanExtra )
         df.delete_empty( cleanUnused )
-        df.index = df.index + (shift is shift is not None else self.reference_shift(seqID))
+        df.clean()
+        df.index = df.index + (shift if shift is not None else self.reference_shift(seqID))
         return df
 
     def sequence_bits( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=False ):
@@ -217,6 +217,14 @@ class DesignFrame( pd.DataFrame ):
         the sequences in the __DesignFrame__ with seqID identifier.
         If there is a reference_sequence for this seqID, it will also
         be attached to the __SequenceFrame__.
+        Bit calculation is performed as explained in http://www.genome.org/cgi/doi/10.1101/gr.849004
+        such as:
+
+        Rseq = Smax - Sobs = log2 N - (-sum(n=1,N):pn * log2 pn)
+
+        Where:
+            - N is the total number of options (4: DNA/RNA; 20: PROTEIN).
+            - pn is the observed frequency of the symbol n.
 
         :param str seqID: Identifier of the sequence sets of interest.
         :param str seqType: Type of sequence: protein, dna, rna.
@@ -228,18 +236,8 @@ class DesignFrame( pd.DataFrame ):
         amino/nucleic acids if they are empty for all positions
         :return: :py:class:`.SequenceFrame`
         """
-        sserie = self["sequence_{0}".format(seqID)].values
-        table, extra = self._get_sequence_table( seqType )
-        pass
-        df = SequenceFrame(table)
-        df.measure("frequency")
-        df.extras( extra )
-        if self.has_reference_sequence(seqID):
-            df.reference_sequence(self.reference_sequence(seqID), self.reference_shift(seqID))
-        df.delete_extra( cleanExtra )
-        df.delete_empty( cleanUnused )
-        df.index = df.index + (shift is shift is not None else self.reference_shift(seqID))
-        return df
+        df = self.sequence_frequencies(seqID, seqType, shift, cleanExtra, cleanUnused)
+        return df.to_bits()
 
     def _get_sequence_table( self, seqType ):
         """

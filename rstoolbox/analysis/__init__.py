@@ -1,2 +1,2 @@
-from sequence import linear_sequence_similarity, binary_similarity, binary_overlap
+from sequence import sequence_frequency_matrix, linear_sequence_similarity, binary_similarity, binary_overlap
 from stats import cumulative

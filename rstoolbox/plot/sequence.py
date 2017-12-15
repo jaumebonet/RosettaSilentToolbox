@@ -56,7 +56,7 @@ def barcode_plot( df, column_name, axis, color="blue" ):
 
 def sequence_frequency_plot( df, column_name, axis, shift=None, ref_seq=None, key_residues=None, colormap = "Blues", border_color="green", nobar=False, cbar_ax=None, orientation="horizontal" ):
     order = ["A","V","I","L","M","F","Y","W","S","T","N","Q","R","H","K","D","E","C","G","P"]
-    data = sequence_frequency_matrix( df, column_name ).transpose().reindex(order)
+    data = df.sequence_frequencies( df, column_name ).transpose().reindex(order)
     if shift:
         data.columns = data.columns + shift
     if key_residues is not None:
@@ -89,9 +89,6 @@ def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, c
         '../components/square.ttf'
     )
 
-    #fp = FontProperties(family="DejaVu Sans Mono", weight="bold")
-    #globscale = 1.35
-    #letters_shift = -0.3
     fp = FontProperties(fname=path, weight="bold")
     globscale = 1.22
     letters_shift = -0.5
