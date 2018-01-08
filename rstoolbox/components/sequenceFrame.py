@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequenceFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 15-Dec-2017
+# @Last modified time: 08-Jan-2018
 
 
 import os
@@ -62,10 +62,28 @@ class SequenceFrame( pd.DataFrame ):
             the function into a getter.
         :return: int
         """
-
         if shift is not None:
             self._reference_shift = shift
         return self._reference_shift
+
+    def key_reference_sequence( self, key_residues, check=True ):
+        """
+        Select the provided list of key_residues according to the
+        reference_shift.
+        :param list key_residues: List of residues to retrieve (numbering takes shift)
+            into account.
+        :param bool check: If True (default), will rise error if there is no reference sequence.
+        :return: str
+        :raises: ValueError if  there is no reference sequence and check is True.
+        """
+        if self._reference_sequence == "" and check:
+            raise ValueError("Requested key residues of an unespecified reference sequence")
+        if key_residues is None:
+            return self._reference_sequence
+        if self._reference_sequence == "":
+            return self._reference_sequence
+        kr = np.array(key_residues) - self._reference_shift
+        return "".join([x for i, x in enumerate(self._reference_sequence) if i in kr])
 
     def extras( self, extras=None ):
         """
@@ -104,6 +122,19 @@ class SequenceFrame( pd.DataFrame ):
         if pick is not None:
             self._delempty = pick
         return self._delempty
+
+    def is_transposed( self ):
+        """
+        :py:class:`.SequenceFrame`, when created, has each column specify a residue type
+        and each row specify a sequence position. When it is the other way around, we assume
+        it is transposed.
+        :return: True if the object is transposed.
+        """
+        h = list(self)[0]
+        if isinstance(h, basestring):
+            return False
+        else:
+            return True
 
     def measure( self, measure=None ):
         """
@@ -199,6 +230,10 @@ class SequenceFrame( pd.DataFrame ):
         :return: :py:class:`.SequenceFrame`
         """
         pass
+
+    #
+    # Implement pandas methods
+    #
 
     @property
     def _constructor( self ):
