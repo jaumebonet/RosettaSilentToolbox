@@ -3,9 +3,10 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: design.py
 # @Last modified by:   bonet
-# @Last modified time: 15-Dec-2017
+# @Last modified time: 08-Jan-2018
 
 # Standard Libraries
+import itertools
 import os
 import re
 import string
@@ -104,6 +105,14 @@ class DesignFrame( pd.DataFrame ):
         :param file: List of names of the files to add.
         """
         self._source_files = self._source_files.union( files )
+
+    def get_source_files( self ):
+        """
+        Returns the set of source files linked to this :py:class:`.DesignFrame`.
+
+        :return: Set of files.
+        """
+        return self._source_files
 
     def has_source_files( self ):
         """
@@ -285,6 +294,42 @@ class DesignFrame( pd.DataFrame ):
             raise ValueError("sequence type {0} unknown".format(seqType))
         return table, extra
 
+    #
+    # Implement pandas methods
+    #
+
     @property
     def _constructor(self):
         return DesignFrame
+
+    def __finalize__(self, other, method=None, **kwargs):
+        """propagate metadata from other to self """
+        strict  = kwargs["strict"] if "strict" in kwargs else True
+        # concat operation:
+        #   (1) accumulate _source_files from all the concatenated DesignFrames (if there is any)
+        #   (2) check reference_sequence and reference_shift, merge and keep only if they are the same.
+        if method == 'concat':
+            source_files = set()
+            refseqs = []
+            reference_sequence = {}
+            for i, o in enumerate(other.objs):
+                source_files.update(getattr(o, "_source_files", set()))
+                refseqs.append(getattr(o, "_reference_sequence", {}))
+            # _source_files
+            object.__setattr__(self, "_source_files", source_files)
+            # _reference_sequence
+            ids = list(set(itertools.chain.from_iterable([x.keys() for x in refseqs])))
+            for r in refseqs:
+                for i in ids:
+                    if i in r:
+                        if not i in reference_sequence:
+                            reference_sequence.setdefault(i, r[i])
+                        else:
+                            if r[i] != reference_sequence[i]:
+                                raise ValueError("Concatenating designFrames with different ref sequence for the same seqID.")
+            object.__setattr__(self, "_reference_sequence", reference_sequence)
+
+        else:
+            for name in self._metadata:
+                object.__setattr__(self, name, getattr(other, name, None))
+        return self
