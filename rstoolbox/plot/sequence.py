@@ -40,23 +40,21 @@ def _dataframe2logo( data ):
         pdata = []
         for k in aa:
             if pos[k] > 0.0000000:
-                #pdata.append( ( k, float(format(pos[k] * 2.23, '.2f')) ) )
-                #pdata.append( ( k, float(format(pos[k], '.5f')) ) )
                 pdata.append( ( k, float(pos[k]) ) )
         odata.append(sorted(pdata, key=lambda x: x[1]))
     return odata
 
-def barcode_plot( df, column_name, axis, color="blue" ):
+def barcode_plot( df, column_name, ax, color="blue" ):
     result = binary_overlap( df, column_name )
-    pd.Series(result).plot("bar", ax=axis, ylim=(0,1), grid=False, color=color, width=1 )
-    axis.yaxis.set_ticks([])
-    axis.xaxis.set_ticks(np.arange(0, len(result)+1, 10))
-    axis.xaxis.set_ticklabels(np.arange(0, len(result)+1, 10) + 1, rotation=45)
-    axis.set_xlabel("sequence")
+    pd.Series(result).plot("bar", ax=ax, ylim=(0,1), grid=False, color=color, width=1 )
+    ax.yaxis.set_ticks([])
+    ax.xaxis.set_ticks(np.arange(0, len(result)+1, 10))
+    ax.xaxis.set_ticklabels(np.arange(0, len(result)+1, 10) + 1, rotation=45)
+    ax.set_xlabel("sequence")
 
-def sequence_frequency_plot( df, column_name, axis, shift=None, ref_seq=None, key_residues=None, colormap = "Blues", border_color="green", nobar=False, cbar_ax=None, orientation="horizontal" ):
+def sequence_frequency_plot( df, seqID, axis, shift=None, ref_seq=None, key_residues=None, colormap = "Blues", border_color="green", nobar=False, cbar_ax=None, orientation="horizontal" ):
     order = ["A","V","I","L","M","F","Y","W","S","T","N","Q","R","H","K","D","E","C","G","P"]
-    data = df.sequence_frequencies( df, column_name ).transpose().reindex(order)
+    data = df.sequence_frequencies( seqID ).transpose().reindex(order)
     if shift:
         data.columns = data.columns + shift
     if key_residues is not None:

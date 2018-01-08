@@ -33,8 +33,8 @@ class DesignFrame( pd.DataFrame ):
 
     def __init__(self, *args, **kw):
         super(DesignFrame, self).__init__(*args, **kw)
-        self._reference_sequence = {}
-        self._source_files = set()
+        self._reference_sequence = self._metadata_defaults("_reference_sequence")
+        self._source_files = self._metadata_defaults("_source_files")
 
     def reference_sequence( self, seqID, sequence=None, shift=1 ):
         """
@@ -298,6 +298,13 @@ class DesignFrame( pd.DataFrame ):
     # Implement pandas methods
     #
 
+    def _metadata_defaults(self, name):
+        if name == "_source_files":
+            return set()
+        if name == "_reference_sequence":
+            return {}
+        return None
+
     @property
     def _constructor(self):
         return DesignFrame
@@ -316,7 +323,7 @@ class DesignFrame( pd.DataFrame ):
                 source_files.update(getattr(o, "_source_files", set()))
                 refseqs.append(getattr(o, "_reference_sequence", {}))
             # _source_files
-            object.__setattr__(self, "_source_files", source_files)
+            setattr(self, "_source_files", source_files)
             # _reference_sequence
             ids = list(set(itertools.chain.from_iterable([x.keys() for x in refseqs])))
             for r in refseqs:
@@ -327,9 +334,13 @@ class DesignFrame( pd.DataFrame ):
                         else:
                             if r[i] != reference_sequence[i]:
                                 raise ValueError("Concatenating designFrames with different ref sequence for the same seqID.")
-            object.__setattr__(self, "_reference_sequence", reference_sequence)
-
+            setattr(self, "_reference_sequence", reference_sequence)
+        # merge operation:
+        # Keep metadata of the left object.
+        elif method == 'merge':
+            for name in self._metadata:
+                setattr(self, name, getattr(other.left, name, self._metadata_defaults(name)))
         else:
             for name in self._metadata:
-                object.__setattr__(self, name, getattr(other, name, None))
+                setattr(self, name, getattr(other, name, self._metadata_defaults(name)))
         return self
