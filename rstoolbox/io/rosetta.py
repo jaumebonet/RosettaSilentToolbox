@@ -149,36 +149,80 @@ def parse_rosetta_file( filename, description=None, multi=False ):
     df.add_source_files( _gather_file_list( filename, multi ) )
     return df
 
-def make_structures( data, silentfiles, column="description", outdir=None, multi=False, tagsfilename="tags", keep_tagfile=True ):
+def make_structures( df, silentfiles=None, column="description", outdir=None, multi=False, tagsfilename="tags", prefix=None, keep_tagfile=True ):
+    """
+    Extract the selected decoys.
 
+    :param DataFrame df: Ideally, a :py:class:`.DesignFrame`. Data content.
+    :param list silentfiles: file name or list of files from which to extract the structure. If None (default), get the files from
+        the :py:class:`.DesignFrame` source files.
+    :param str column: Name of the column containing the design IDs. Default is "description".
+    :param str outdir: Directory in which to save the PDB files. If none is provided, it will be loaded from the system.ouput global
+        option.
+    :param bool multi: Extract from multiple files? Default is False. It silentfiles is None, the parameter is ignored.
+    :param str tagsfilename: Name of the file (in outdir) containing the ids of the decoys of interest.
+    :param str prefix: If provided, a prefix is added to the PDB files.
+    :param bool keep_tagfile: If True (default) do not delete the tag file after using it.
+
+    :raise: IOError when trying to overwrite the tagsfilename if system.overwrite is False.
+    :raise: IOError if the rosetta executable is not found. Depends on rosetta.path and rosetta.compilation
+    :raise: IOError if the system cannot write the tagsfilename.
+    :raise: IOError if the provided silent files do not exist.
+    :raise: AttributeError if silent files from where to extract structures are not found.
+    """
+    # Manage output directory
     if outdir is None:
         outdir = core.get_option("system", "output")
     if not os.path.isdir( outdir ):
         os.makedirs( outdir )
     if not outdir.endswith("/"):
         outdir += "/"
+
+    # Manage tag file name
     tagsfilename = os.path.join( outdir, tagsfilename )
     if os.path.isfile( tagsfilename ) and not core.get_option("system", "overwrite"):
         raise IOError("Filename {0} already exists and cannot be overwrite.".format(tagsfilename))
 
+    # Manage prefix
+    if prefix is not None:
+        outdir = os.path.join(outdir, prefix)
+
+    # Check rosetta executable
     exe = os.path.join( core.get_option("rosetta", "path"), "extract_pdbs.{0}".format(core.get_option("rosetta", "compilation")))
     if not os.path.isfile(exe):
         raise IOError("The expected Rosetta executable {0} is not found".format(exe))
 
-    data[[column]].to_csv( tagsfilename, index=False, header=False)
-    if not os.path.isfile(exe):
+    # Print the tag file
+    if not column in df:
+        raise ValueError("The requested column does not exist in the DataFrame")
+    if True in df.duplicated(column).value_counts().index:
+        raise ValueError("There are repeated identifiers. This might indicate the merging of files with identical prefixes "
+        "and will be an issue with extracting the structures.")
+    df[[column]].to_csv( tagsfilename, index=False, header=False)
+    if not os.path.isfile(tagsfilename):
         raise IOError("Something went wrong writing the file {0}".format(tagsfilename))
 
+    # Manage source files
     sfiles = []
-    if not multi:
-        if not os.path.isfile( silentfiles ):
-            raise IOError("The expected silent file input {0} is not found".format(silentfiles))
-        sfiles.append( silentfiles )
+    # Get them from the DesignFrame
+    if silentfiles is None:
+        if not isinstance(df, cp.DesignFrame) or len(df.get_source_files()) == 0:
+            raise AttributeError("There are not source files from where to extract the structures.")
+        else:
+            sfiles = list(df.get_source_files())
+            multi = len(sfiles) > 1
+    # Check the provided ones
     else:
-        sfiles = glob.glob( silentfiles + "*" )
-    if len(sfiles) == 0:
-        raise IOError("No files found with the pattern {0}".format(silentfiles))
+        if not multi:
+            if not os.path.isfile( silentfiles ):
+                raise IOError("The expected silent file input {0} is not found".format(silentfiles))
+            sfiles.append( silentfiles )
+        else:
+            sfiles = glob.glob( silentfiles + "*" )
+        if len(sfiles) == 0:
+            raise IOError("No files found with the pattern {0}".format(silentfiles))
 
+    # Run process
     sfiles = " ".join(sfiles)
     command = "{0} -in:file:silent {1} -in:file:tagfile {2} -out:prefix {3}".format( exe, sfiles, tagsfilename, outdir )
     sys.stdout.write("Executing Rosetta's extract_pdbs app\n")
@@ -189,5 +233,6 @@ def make_structures( data, silentfiles, column="description", outdir=None, multi
     else:
         sys.stdout.write("Execution has failed\n")
 
+    # Remove extra files if requested
     if not keep_tagfile:
         os.unlink( tagsfilename )
