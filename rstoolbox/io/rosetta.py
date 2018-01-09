@@ -149,9 +149,70 @@ def parse_rosetta_file( filename, description=None, multi=False ):
     df.add_source_files( _gather_file_list( filename, multi ) )
     return df
 
+def parse_rosetta_fragments( filename ):
+    """
+    Read a Rosetta fragment-file and return the appropiate DataFrame. It supports
+    both fragment formats. Does not support varying size fragment sets.
+
+    :param str filename: File containing the Rosetta fragments.
+    :return: DataFrame.
+    :raise: IOError if filename cannot be found.
+    """
+    fformat = 1 # formats are identified as 1 and 0
+    data = OrderedDict({"frame":[], "neighbors":[], "position":[], "size":[],
+                        "aa":[], "sse":[], "phi":[], "psi":[], "omega":[]})
+
+    if not os.path.isfile(filename):
+        raise IOError("{} not found!".format(filename))
+
+    fframe, fne, fpos, fsize, faa, fsse, fphi, fpsi, fomega = None, None, None, None, None, None, None, None, None
+    fsaved_size = 0
+    fd = gzip.open( filename ) if filename.endswith(".gz") else open( filename )
+    for line in fd:
+        line = line.strip()
+        if line == "":
+            fpos = int(fframe)
+            if fsize != 0:
+                fsaved_size = fsize
+            fsize = 0
+            continue
+        line = line.split()
+        if line[0] == "FRAME":
+            fformat = 1
+            fframe = line[1]
+            fpos = int(fframe)
+            fsize = 0
+        elif line[0] == "position:":
+            fformat = 0
+            fframe = line[1]
+            fne = line[-1]
+        else:
+            data["frame"].append(int(fframe))
+            data["neighbors"].append(fne)
+            data["position"].append(int(line[0] if bool(fformat) else fpos))
+            data["aa"].append(line[3 + fformat])
+            data["sse"].append(line[4 + fformat])
+            data["phi"].append(float(line[5 + fformat]))
+            data["psi"].append(float(line[6 + fformat]))
+            data["omega"].append(float(line[7 + fformat]))
+
+            fpos += 1
+            fsize += 1
+    fd.close()
+    data["size"] = [fsaved_size,] * len(data["frame"])
+
+    df = pd.DataFrame(data)
+    if bool(fformat):
+        df2 = df.groupby(["frame", "size"]).size().reset_index(name="neighbors")
+        df2["neighbors"] = (df2["neighbors"]/df2["size"]).astype(int)
+        df = df.merge(df2, on=["frame", "size"])
+        df = df.drop(["neighbors_x"], axis=1)
+        df = df.rename({"neighbors_y": "neighbors"}, axis=1)
+    return df.reindex_axis(["frame", "neighbors", "position", "size", "aa", "sse", "phi", "psi", "omega"], axis=1)
+
 def make_structures( df, silentfiles=None, column="description", outdir=None, multi=False, tagsfilename="tags", prefix=None, keep_tagfile=True ):
     """
-    Extract the selected decoys.
+    Extract the selected decoys. If the selection produces no decoys, it does nothing.
 
     :param DataFrame df: Ideally, a :py:class:`.DesignFrame`. Data content.
     :param list silentfiles: file name or list of files from which to extract the structure. If None (default), get the files from
@@ -170,6 +231,11 @@ def make_structures( df, silentfiles=None, column="description", outdir=None, mu
     :raise: IOError if the provided silent files do not exist.
     :raise: AttributeError if silent files from where to extract structures are not found.
     """
+    # Check that the selection has at least one decoy
+    if df.shape[0] == 0:
+        sys.stdout.write("There are no decoys that fullfill the selection criteria.")
+        return
+
     # Manage output directory
     if outdir is None:
         outdir = core.get_option("system", "output")
