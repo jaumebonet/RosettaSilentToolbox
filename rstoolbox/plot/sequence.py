@@ -1,3 +1,4 @@
+from distutils.version import LooseVersion, StrictVersion
 import os
 
 import pandas as pd
@@ -110,7 +111,11 @@ def sequence_frequency_plot( df, seqID, ax, refseq=True, key_residues=None, bord
     sns.heatmap(data, ax=ax, **kwargs)
 
     # styling plot
-    order.reverse()
+    # seaborn made a change in the ticks from 0.7 to 0.8,
+    # this should take care that both versions work ok.
+    if LooseVersion(sns.__version__) < LooseVersion("0.8"):
+        order.reverse()
+    ax.yaxis.set_ticks(np.arange(0.5, len(order) + 0.5))
     ax.yaxis.set_ticklabels(order, rotation=0)
     ax.xaxis.set_ticklabels(data.columns.values.tolist())
     ax.set_ylabel("residue type")
