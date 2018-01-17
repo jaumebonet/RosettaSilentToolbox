@@ -108,6 +108,8 @@ class Description( object ):
         elif "scores_ignore" in ddict:
             self.ignores = ddict["scores_ignore"]
             self._auto = True
+        if "scores_ignore":
+            self.ignores = ddict["scores_ignore"]
         # Option 2: scores_rename is a list of scores to keep with a different name
         if "scores_rename" in ddict:
             for sc in ddict["scores_rename"]:

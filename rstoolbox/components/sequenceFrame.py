@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequenceFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 08-Jan-2018
+# @Last modified time: 16-Jan-2018
 
 
 import os
@@ -31,7 +31,7 @@ class SequenceFrame( pd.DataFrame ):
         self._measure    = ""
         self._extras     = []
         self._delextra   = True
-        self._delempty   = False
+        self._delempty   = -1
 
     def reference_sequence( self, sequence=None, shift=1 ):
         """
@@ -114,9 +114,11 @@ class SequenceFrame( pd.DataFrame ):
         """
         Setter/Getter for the delete empty configuration.
         Set the behaviour to decide whether or not regular positions
-        have to be deleted if empty.
-        :param bool pick: Whether or not to activate this option. By default is
-            :py:data:`None`, which turns the function into a getter.
+        have to be deleted if empty. This does not apply to amino acid types
+        present in the reference_sequence.
+        :param int pick: Remove from the SequenceFrame the regular
+            amino/nucleic acids if they frequency is equal or under the value . Default is -1,
+            so nothing is deleted.
         :return: bool
         """
         if pick is not None:
@@ -213,23 +215,20 @@ class SequenceFrame( pd.DataFrame ):
         Modifications are applied "inplace"
         :return: self
         """
-        if self.delete_extra():
-            self.drop(self.extras(), axis=1, inplace=True)
-        if self.delete_empty():
-            s = pd.Series((self == 0).sum(axis=0) == self.shape[0])
-            self.drop(s[s==True].index.tolist(), axis=1, inplace=True)
-        return self
+        if self.is_transposed():
+            return self.transpose().clean().transpose()
 
-    def select_key_sequence_positions( self, selector ):
-        """
-        By providing a list of key positions to keep, the
-        SequenceFrame is filtered so that only those positions
-        are kept
-        :param list selector: List of integers of the positions
-            of interest.
-        :return: :py:class:`.SequenceFrame`
-        """
-        pass
+        if set(self.extras()).issubset(self.columns):
+            if self.delete_extra():
+                self.drop(self.extras(), axis=1, inplace=True)
+
+        if self.delete_empty() >= 0:
+            s = pd.Series((self <= self.delete_empty()).sum(axis=0) == self.shape[0])
+            todel = s[s==True].index.tolist()
+            if self._reference_sequence != "":
+                todel = set(todel).difference(set(list(self._reference_sequence)))
+            self.drop(todel, axis=1, inplace=True)
+        return self
 
     #
     # Implement pandas methods

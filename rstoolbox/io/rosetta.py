@@ -120,6 +120,8 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         if line.startswith("ANNOTATED_SEQUENCE"):
             chains["seq"] = re.sub( r'\[[^]]*\]', '', line.strip().split()[1] )
             chains["seq"] = chains["seq"].rstrip("X") # This is for symmetry data, as sometimes it adds XX residues
+            if len(chains["id"]) == 0: # When info is chain A starting in 1, it is not printed in the silent file
+                chains["id"] = "A"
             if len(chains["id"]) == 1:
                 chains["stc"] = "".join([chains["id"]] * len(chains["seq"]))
                 for seqname, seq in desc.get_expected_sequences( chains ):
@@ -151,15 +153,15 @@ def parse_rosetta_file( filename, description=None, multi=False ):
 
 def parse_rosetta_fragments( filename ):
     """
-    Read a Rosetta fragment-file and return the appropiate DataFrame. It supports
-    both fragment formats. Does not support varying size fragment sets.
+    Read a Rosetta fragment-file and return the appropiate :py:class:`.FragmentFrame`.
+    It supports both fragment formats. Does not support varying size fragment sets.
 
     :param str filename: File containing the Rosetta fragments.
-    :return: DataFrame.
+    :return: :py:class:`.FragmentFrame`.
     :raise: IOError if filename cannot be found.
     """
     fformat = 1 # formats are identified as 1 and 0
-    data = OrderedDict({"frame":[], "neighbors":[], "position":[], "size":[],
+    data = OrderedDict({"frame":[], "neighbors":[], "neighbor":[], "position":[], "size":[],
                         "aa":[], "sse":[], "phi":[], "psi":[], "omega":[]})
 
     if not os.path.isfile(filename):
@@ -167,6 +169,8 @@ def parse_rosetta_fragments( filename ):
 
     fframe, fne, fpos, fsize, faa, fsse, fphi, fpsi, fomega = None, None, None, None, None, None, None, None, None
     fsaved_size = 0
+    nei = 0
+    was_space = False
     fd = gzip.open( filename ) if filename.endswith(".gz") else open( filename )
     for line in fd:
         line = line.strip()
@@ -175,6 +179,9 @@ def parse_rosetta_fragments( filename ):
             if fsize != 0:
                 fsaved_size = fsize
             fsize = 0
+            if not was_space:
+                nei += 1
+            was_space = True
             continue
         line = line.split()
         if line[0] == "FRAME":
@@ -182,13 +189,16 @@ def parse_rosetta_fragments( filename ):
             fframe = line[1]
             fpos = int(fframe)
             fsize = 0
+            nei = 0
         elif line[0] == "position:":
             fformat = 0
             fframe = line[1]
             fne = line[-1]
+            nei = -1
         else:
             data["frame"].append(int(fframe))
             data["neighbors"].append(fne)
+            data["neighbor"].append(nei + 1)
             data["position"].append(int(line[0] if bool(fformat) else fpos))
             data["aa"].append(line[3 + fformat])
             data["sse"].append(line[4 + fformat])
@@ -198,17 +208,18 @@ def parse_rosetta_fragments( filename ):
 
             fpos += 1
             fsize += 1
+        was_space = False
     fd.close()
     data["size"] = [fsaved_size,] * len(data["frame"])
 
-    df = pd.DataFrame(data)
+    df = cp.FragmentFrame(data, file=filename)
     if bool(fformat):
         df2 = df.groupby(["frame", "size"]).size().reset_index(name="neighbors")
         df2["neighbors"] = (df2["neighbors"]/df2["size"]).astype(int)
         df = df.merge(df2, on=["frame", "size"])
         df = df.drop(["neighbors_x"], axis=1)
         df = df.rename({"neighbors_y": "neighbors"}, axis=1)
-    return df.reindex_axis(["frame", "neighbors", "position", "size", "aa", "sse", "phi", "psi", "omega"], axis=1)
+    return df.reindex(["frame", "neighbors", "neighbor","position", "size", "aa", "sse", "phi", "psi", "omega"], axis=1)
 
 def make_structures( df, silentfiles=None, column="description", outdir=None, multi=False, tagsfilename="tags", prefix=None, keep_tagfile=True ):
     """

@@ -1,9 +1,9 @@
 # @Author: Jaume Bonet <bonet>
 # @Date:   29-Jun-2017
 # @Email:  jaume.bonet@gmail.com
-# @Filename: design.py
+# @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 08-Jan-2018
+# @Last modified time: 16-Jan-2018
 
 # Standard Libraries
 import itertools
@@ -178,7 +178,7 @@ class DesignFrame( pd.DataFrame ):
 
         return self
 
-    def sequence_frequencies( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=False ):
+    def sequence_frequencies( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=-1 ):
         """
         Generates a :py:class:`.SequenceFrame` for the frequencies of
         the sequences in the __DesignFrame__ with seqID identifier.
@@ -194,8 +194,9 @@ class DesignFrame( pd.DataFrame ):
             shift from the reference sequence
         :param bool cleanExtra: Remove from the SequenceFrame the non-regular
             amino/nucleic acids if they are empty for all positions.
-        :param bool cleanUnused: Remove from the SequenceFrame the regular
-            amino/nucleic acids if they are empty for all positions
+        :param int cleanUnused: Remove from the SequenceFrame the regular
+            amino/nucleic acids if they frequency is equal or under the value . Default is -1,
+            so nothing is deleted.
         :return: :py:class:`.SequenceFrame`
         """
         sserie = self["sequence_{0}".format(seqID)].values
@@ -294,16 +295,15 @@ class DesignFrame( pd.DataFrame ):
             raise ValueError("sequence type {0} unknown".format(seqType))
         return table, extra
 
-    #
-    # Implement pandas methods
-    #
-
     def _metadata_defaults(self, name):
         if name == "_source_files":
             return set()
         if name == "_reference_sequence":
             return {}
         return None
+    #
+    # Implement pandas methods
+    #
 
     @property
     def _constructor(self):
