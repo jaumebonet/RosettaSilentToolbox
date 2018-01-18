@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragments.py
 # @Last modified by:   bonet
-# @Last modified time: 17-Jan-2018
+# @Last modified time: 18-Jan-2018
 
 
 import pandas as pd
@@ -52,21 +52,25 @@ def plot_fragments(small_frags, large_frags, small_ax, large_ax, small_color=0, 
     sns.boxplot(x="frame", y="rmsd", data=large_frags, ax=large_ax, color=large_color, **kwargs)
 
     # Basic formating
-    small_ax.set_xticklabels("")
+    small_ax.set_xticks(range(0, max(small_frags["frame"]), 5))
+    small_ax.set_xticks(range(1, max(small_frags["frame"]) + 1, 5))
     small_ax.set_xlabel("sequence")
     small_ax.set_ylabel("RMSD")
     if small_max is not None:
         small_ax.set_ylim(0, small_max)
     else:
         small_ax.set_ylim(ymin=0)
+    small_ax.grid(which='both')
 
-    large_ax.set_xticklabels("")
+    large_ax.set_xticks(range(0, max(large_frags["frame"]), 5))
+    large_ax.set_xticks(range(1, max(large_frags["frame"]) + 1, 5))
     large_ax.set_xlabel("sequence")
     large_ax.set_ylabel("RMSD")
     if large_max is not None:
         large_ax.set_ylim(0, large_max)
     else:
         large_ax.set_ylim(ymin=0)
+    large_ax.grid(which='both')
 
     # Titles
     if titles.lower() == "top":

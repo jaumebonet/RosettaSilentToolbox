@@ -91,6 +91,27 @@ def parse_rosetta_file( filename, description=None, multi=False ):
     :type multi: :py:class:`bool`
 
     :return: :py:class:`.DesignFrame`.
+
+    :raise: :py:class:`IOError` if ``filename`` cannot be found.
+
+    Some basic usage cases::
+
+        # (1) The default scenario, just read scores from a single file.
+        df = rstoolbox.io.parse_rosetta_file("silentfile")
+
+        # (2) Reading from multiple files. Assumes all files start with
+        # the particular prefix.
+        df = rstoolbox.io.parse_rosetta_file("silentfile", multi=True)
+
+        # (3) Getting all scores and the sequence of each design.
+        description = {'sequence': 'A'}
+        df = rstoolbox.io.parse_rosetta_file("silentfile", description)
+
+        # (4) Get only total_score and RMSD, and rename total_score to score.
+        description = {'scores': ['RMSD'], 'scores_rename': {'total_score': 'score'}}
+        df = rstoolbox.io.parse_rosetta_file("silentfile", description)
+
+
     """
     desc   = cp.Description( description )
     desc.add_per_residues_keys( _per_residues )
