@@ -53,7 +53,7 @@ def plot_fragments(small_frags, large_frags, small_ax, large_ax, small_color=0, 
 
     # Basic formating
     small_ax.set_xticks(range(0, max(small_frags["frame"]), 5))
-    small_ax.set_xticks(range(1, max(small_frags["frame"]) + 1, 5))
+    small_ax.set_xticklabels(range(1, max(small_frags["frame"]) + 1, 5))
     small_ax.set_xlabel("sequence")
     small_ax.set_ylabel("RMSD")
     if small_max is not None:
@@ -63,7 +63,7 @@ def plot_fragments(small_frags, large_frags, small_ax, large_ax, small_color=0, 
     small_ax.grid(which='both')
 
     large_ax.set_xticks(range(0, max(large_frags["frame"]), 5))
-    large_ax.set_xticks(range(1, max(large_frags["frame"]) + 1, 5))
+    large_ax.set_xticklabels(range(1, max(large_frags["frame"]) + 1, 5))
     large_ax.set_xlabel("sequence")
     large_ax.set_ylabel("RMSD")
     if large_max is not None:
