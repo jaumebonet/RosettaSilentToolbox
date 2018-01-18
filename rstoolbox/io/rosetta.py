@@ -74,12 +74,23 @@ def open_rosetta_file( filename, multi=False ):
 
 def parse_rosetta_file( filename, description=None, multi=False ):
     """
-    Reads a Rosetta score or silent file.
-    :param str filename: file name or pattern (without "*")
-    :param description: filename or dictionary with the parsing rules.
-    :param bool multi: Tell if a file name or pattern is provided.
-        Default is 'False' (single file name)
-    :return: :py:class:`.DesignFrame`
+    Reads a Rosetta score or silent file and returns the appropiate object
+    containing the requested data: the :py:class:`.DesignFrame`.
+
+    The user can specify the columns of interest, change names on columns to
+    facilitate merging with other data sets and request extra information such
+    as sequence of the designs or residue labels.
+
+    :param filename: file name or file pattern to search.
+    :type filename: :py:class:`str`
+    :param description: Parsing rules. It can be a dictionary describing
+        the rules or the name of a file containing such dictionary.
+    :type description: Union[:py:class:`str`, :py:class:`float`]
+    :param multi: When :py:data:`True`, indicates that data is readed from
+        multiple files.
+    :type multi: :py:class:`bool`
+
+    :return: :py:class:`.DesignFrame`.
     """
     desc   = cp.Description( description )
     desc.add_per_residues_keys( _per_residues )
