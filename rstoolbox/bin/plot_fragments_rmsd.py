@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: plot_fragments_rmsd.py
 # @Last modified by:   bonet
-# @Last modified time: 17-Jan-2018
+# @Last modified time: 23-Jan-2018
 
 
 import argparse

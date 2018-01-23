@@ -1,3 +1,11 @@
+# @Author: Jaume Bonet <bonet>
+# @Date:   12-Oct-2017
+# @Email:  jaume.bonet@gmail.com
+# @Filename: minisilent.py
+# @Last modified by:   bonet
+# @Last modified time: 23-Jan-2018
+
+
 import argparse
 import gzip
 import os
