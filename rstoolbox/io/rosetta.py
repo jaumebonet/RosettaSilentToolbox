@@ -5,6 +5,7 @@ import glob
 import gzip
 import json
 import string
+import subprocess
 from collections import OrderedDict
 
 import pandas as pd
@@ -62,14 +63,17 @@ def open_rosetta_file( filename, multi=False ):
     :param str filename: file name or pattern (without "*")
     :param bool multi: Tell if a file name or pattern is provided.
         Default is 'False' (single file name)
-    :yields: [line content, bool is header, file count (for multi file inputs)]
+    :yields: [line content, bool is header, file count (for multi file inputs), symmetry]
     """
     files = _gather_file_list( filename, multi )
     for file_count, f in enumerate( files ):
+        cmd = "zgrep SYMMETRY_INFO {} |wc" if f.endswith(".gz") else "grep SYMMETRY_INFO {} |wc"
+        process = subprocess.Popen(cmd.format(f), stdout=subprocess.PIPE, shell=True)
+        symm = int(process.communicate()[0].strip().split()[0]) > 0
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
             if line.strip().split()[0].strip(":") in _headers:
-                yield line, line.strip().split()[-1] == "description", file_count
+                yield line, line.strip().split()[-1] == "description", file_count, symm
         fd.close()
 
 def parse_rosetta_file( filename, description=None, multi=False ):
@@ -118,7 +122,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
     header = []
     data   = {}
     chains = {"id": "", "seq": "", "stc": "", "done": False}
-    for line, is_header, count in open_rosetta_file( filename, multi ):
+    for line, is_header, count, symm in open_rosetta_file( filename, multi ):
         if is_header:
             header = line.strip().split()[1:]
             desc.fill_if_empty_scores( header )
@@ -143,11 +147,8 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             for k in per_res:
                 data.setdefault( k, [] ).append( OrderedDict(sorted(per_res[k].items())).values() )
             continue
-        if line.startswith("RES_NUM"):
+        if line.startswith("RES_NUM"): # In multichains and not starting in A1.
             chains["id"] = "".join(list(OrderedDict.fromkeys("".join([x.split(":")[0] for x in line.split()[1:-1]]))))
-            continue
-        if line.startswith("SYMMETRY_INFO"): # When working with symmetry, RES_NUM is not there...
-            chains["id"] = "".join(string.uppercase[:int(line.split()[2])])
             continue
         if line.startswith("ANNOTATED_SEQUENCE"):
             chains["seq"] = re.sub( r'\[[^]]*\]', '', line.strip().split()[1] )
@@ -156,14 +157,21 @@ def parse_rosetta_file( filename, description=None, multi=False ):
                 chains["id"] = "A"
             if len(chains["id"]) == 1:
                 chains["stc"] = "".join([chains["id"]] * len(chains["seq"]))
-                for seqname, seq in desc.get_expected_sequences( chains ):
-                    data.setdefault( seqname, [] ).append( seq )
-                chains["done"] = True
+                if not symm:
+                    for seqname, seq in desc.get_expected_sequences( chains ):
+                        data.setdefault( seqname, [] ).append( seq )
+                    chains["done"] = True
+                # else:
+                #     datadata.setdefault( "SYMM", [] ).append( seq )
+
             continue
-        if line.startswith("CHAIN_ENDINGS") and not chains["done"]:
+        if line.startswith("SYMMETRY_INFO"): # When working with symmetry, RES_NUM is not there...
+            chains["id"]  = "".join(string.uppercase[:int(line.split()[2])])
+            continue
+        if line.startswith("CHAIN_ENDINGS") and not chains["done"]: # This appears in multi-chain decoys
             endings = [int(x) for x in line.split()[1:-1]]
             txains = []
-            if endings[-1] < len(chains["seq"]): # Normaly, this is true, except with symmetry
+            if not symm:
                 endings.append(len(chains["seq"]))
             for x in range(len(endings)):
                 if x > 0: endings[x] -= endings[x-1]

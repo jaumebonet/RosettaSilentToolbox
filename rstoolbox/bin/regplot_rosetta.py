@@ -30,6 +30,7 @@ def get_options(*args, **kwds):
     parser.add_argument( '-in:y',       dest='y',      action='store',      help='Name of the score for Y axis',   default=None  )
     parser.add_argument( '-in:x',       dest='x',      action='store',      help='Name of the score for X axis',   default=None  )
     parser.add_argument( '-plot:title', dest='title',  action='store',      help='Title of the plot',              default=None  )
+    parser.add_argument( '-plot:color', dest='color',  action='store',      help='Color of the plot',              default=0     )
     parser.add_argument( '-plot:ylab',  dest='ylab',   action='store',      help='Label for Y axis',               default=None  )
     parser.add_argument( '-plot:xlab',  dest='xlab',   action='store',      help='Label for X axis',               default=None  )
     parser.add_argument( '-plot:ylim',  dest='ylim',   action='store',      help='Range for Y axis',   nargs=2,    default=[None, None]  )
@@ -60,7 +61,7 @@ def main( options ):
     fig  = plt.figure() if options.fsize[0] is None else plt.figure(figsize=[float(x) for x in options.fsize])
     ax   = plt.subplot2grid((1, 1), (0, 0))
 
-    sns.regplot(x=options.x, y=options.y, data=df, fit_reg=False, ax=ax)
+    sns.regplot(x=options.x, y=options.y, data=df, fit_reg=False, ax=ax, color=sns.color_palette()[int(options.color)])
     if options.ylim[0] is not None:
         ax.set_ylim(bottom=float(options.ylim[0]), top=float(options.ylim[1]))
     if options.xlim[0] is not None:
