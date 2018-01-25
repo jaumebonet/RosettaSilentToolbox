@@ -1,0 +1,79 @@
+import os
+import gzip
+
+import pandas as pd
+
+import rstoolbox.core as core
+import rstoolbox.components as cp
+from rstoolbox.io.rosetta import _gather_file_list
+
+
+def read_fasta( filename, multi=False ):
+    """
+    Reads one or more fasta files and returns the appropiate object
+    containing the requested data: the :py:class:`.DesignFrame`.
+
+    For the purposes of the :py:class:`.DesignFrame`, the ``seqID`` assigned
+    to the read sequences will be ``A``. The identifier of the sequences will
+    be stored in the ``description`` column to be coherent with Rosetta reads.
+
+    :param filename: file name or file pattern to search.
+    :type filename: :py:class:`str`
+    :param multi: When :py:data:`True`, indicates that data is readed from
+        multiple files.
+    :type multi: :py:class:`bool`
+
+    :return: :py:class:`.DesignFrame`.
+
+    :raises:
+        :IOError: if ``filename`` cannot be found.
+    """
+    files = _gather_file_list( filename, multi )
+    data = {"description": [], "sequence_A": []}
+    for file_count, f in enumerate( files ):
+        fd = gzip.open( f ) if f.endswith(".gz") else open( f )
+        for line in fd:
+            line = line.strip()
+            if line.startswith(">"):
+                data["description"].append(line[1:])
+                data["sequence_A"].append("")
+            elif len(line) > 0:
+                data["sequence_A"][-1] += line
+
+    df = cp.DesignFrame( data )
+    df.add_source_files( files )
+    return df
+
+def write_fasta( df, seqID, filename ):
+    """
+    Writes fasta files of the selected decoys.
+
+    It assumes that the provided data is contained in a :py:class:`.DesignFrame`
+    or a :py:class:`~pandas.DataFrame` with a **description** column for the
+    decoy's names and a **sequence_[seqID]** column for the proper sequence.
+
+    :param df: Data content.
+    :type df: Union[:py:class:`.DesignFrame`, :py:class:`~pandas.DataFrame`]
+    :param seqID: Identifier(s) of the sequences expected to be printed.
+    :type seqID: :py:class:`str`
+    :param filename: output file name.
+    :type filename: :py:class:`str`
+
+    :raises:
+        :IOError: if ``filename`` exists and global option *system.overwrite* \
+        is not :py:data:`True`.
+        :AttributeError: if requested seqID cannot be found.
+    """
+    if os.path.isfile(filename) and not core.get_option("system", "overwrite"):
+        raise IOError("File {} already exists".format(filename))
+
+    data = []
+    for chain in seqID:
+        query = "sequence_{}".format(chain)
+        if query not in df:
+            raise AttributeError("seqID {} not found in data".format(chain))
+        data.append("\n".join(list(df.apply(lambda row: ">" + row["description"] + "_" + chain + "\n" + row[query], axis=1))))
+
+    fd = open(filename, "w") if not filename.endswith(".gz") else gzip.open(filename, "wb")
+    fd.write("\n".join(data))
+    fd.close()

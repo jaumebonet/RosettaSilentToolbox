@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 16-Jan-2018
+# @Last modified time: 25-Jan-2018
 
 # Standard Libraries
 import itertools
@@ -97,12 +97,21 @@ class DesignFrame( pd.DataFrame ):
         """
         self._source_files.add( file )
 
-    def add_source_files( self, files ):
+    def replace_source_files( self, files ):
         """
-        Adds source files to the :py:class:`.DesignFrame`. This can be used to know where to
+        Replaces source files of the :py:class:`.DesignFrame`. These can be used to know where to
         extract the structure from if needed.
 
-        :param file: List of names of the files to add.
+        :param files: List of names of the files to add.
+        """
+        self._source_files = set( files )
+
+    def add_source_files( self, files ):
+        """
+        Adds source files to the :py:class:`.DesignFrame`. These can be used to know where to
+        extract the structure from if needed.
+
+        :param files: List of names of the files to add.
         """
         self._source_files = self._source_files.union( files )
 

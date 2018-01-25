@@ -51,7 +51,9 @@ def _gather_file_list( filename,  multi=False ):
         files.append( filename )
     else:
         if isinstance(filename, basestring):
-            files = glob.glob( filename + "*" )
+            if not filename.endswith("*"):
+                filename = filename + "*"
+            files = glob.glob( filename )
         else:
             files = filename
     return files
@@ -60,10 +62,24 @@ def open_rosetta_file( filename, multi=False ):
     """
     Reads through a Rosetta score or silent file yielding only the lines
     that can be parsed by the rstoolbox.
-    :param str filename: file name or pattern (without "*")
-    :param bool multi: Tell if a file name or pattern is provided.
-        Default is 'False' (single file name)
-    :yields: [line content, bool is header, file count (for multi file inputs), symmetry]
+
+    For each "parsable" line, 4 different values are provided:
+
+    #. line content: :py:class:`str` with the actual data of the file.
+    #. is header: a :py:class:`bool` identifying the provided line as header or not.
+    #. file counter: a :py:class:`int` indicating which file is being read (for multi file input)
+    #. is symmetry: a :py:class:`bool` indicating if the silent file contains symmetry info.
+
+    :param str filename: file name or file pattern to search.
+    :type filename: :py:class:`str`
+    :param multi: Tell if a file name (single file) or pattern (multifile) is provided.
+    :type multi: :py:class:`bool`
+
+    :yields: Union[:py:class:`str`, :py:class:`bool`, :py:class:`int`, :py:class:`bool`]
+
+    :raises:
+        :IOError: if ``filename`` cannot be found.
+
     """
     files = _gather_file_list( filename, multi )
     for file_count, f in enumerate( files ):
@@ -96,7 +112,8 @@ def parse_rosetta_file( filename, description=None, multi=False ):
 
     :return: :py:class:`.DesignFrame`.
 
-    :raise: :py:class:`IOError` if ``filename`` cannot be found.
+    :raises:
+        :IOError: if ``filename`` cannot be found.
 
     Some basic usage cases::
 
@@ -114,8 +131,6 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         # (4) Get only total_score and RMSD, and rename total_score to score.
         description = {'scores': ['RMSD'], 'scores_rename': {'total_score': 'score'}}
         df = rstoolbox.io.parse_rosetta_file("silentfile", description)
-
-
     """
     desc   = cp.Description( description )
     desc.add_per_residues_keys( _per_residues )
@@ -194,11 +209,14 @@ def parse_rosetta_file( filename, description=None, multi=False ):
 def parse_rosetta_fragments( filename ):
     """
     Read a Rosetta fragment-file and return the appropiate :py:class:`.FragmentFrame`.
-    It supports both fragment formats. Does not support varying size fragment sets.
+    It supports both old and new fragment formats. Does not support varying size fragment sets.
 
-    :param str filename: File containing the Rosetta fragments.
+    :param filename: File containing the Rosetta fragments.
+    :type filename: :py:class:`str`
     :return: :py:class:`.FragmentFrame`.
-    :raise: IOError if filename cannot be found.
+
+    :raises:
+        :IOError: if ``filename`` cannot be found.
     """
     fformat = 1 # formats are identified as 1 and 0
     data = OrderedDict({"frame":[], "neighbors":[], "neighbor":[], "position":[], "size":[],
@@ -261,35 +279,69 @@ def parse_rosetta_fragments( filename ):
         df = df.rename({"neighbors_y": "neighbors"}, axis=1)
     return df.reindex(["frame", "neighbors", "neighbor","position", "size", "aa", "sse", "phi", "psi", "omega"], axis=1)
 
-def make_structures( df, silentfiles=None, column="description", outdir=None, multi=False, tagsfilename="tags", prefix=None, keep_tagfile=True ):
+def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True ):
     """
-    Extract the selected decoys. If the selection produces no decoys, it does nothing.
+    Extract the selected decoys (if any).
+    It takes several assumptions:
 
-    :param DataFrame df: Ideally, a :py:class:`.DesignFrame`. Data content.
-    :param list silentfiles: file name or list of files from which to extract the structure. If None (default), get the files from
-        the :py:class:`.DesignFrame` source files.
-    :param str column: Name of the column containing the design IDs. Default is "description".
-    :param str outdir: Directory in which to save the PDB files. If none is provided, it will be loaded from the system.ouput global
-        option.
-    :param bool multi: Extract from multiple files? Default is False. It silentfiles is None, the parameter is ignored.
-    :param str tagsfilename: Name of the file (in outdir) containing the ids of the decoys of interest.
-    :param str prefix: If provided, a prefix is added to the PDB files.
-    :param bool keep_tagfile: If True (default) do not delete the tag file after using it.
+    #. There is a local instalation of Rosetta.
+    #. The global options *rosetta.path* and *rosetta.compilation* are correctly set up.
+    #. The provided data is contained in a :py:class:`.DesignFrame`. This should be direct if using this \
+    library, otherwise it is easy to cast from a :py:class:`~pandas.DataFrame`::
 
-    :raise: IOError when trying to overwrite the tagsfilename if system.overwrite is False.
-    :raise: IOError if the rosetta executable is not found. Depends on rosetta.path and rosetta.compilation
-    :raise: IOError if the system cannot write the tagsfilename.
-    :raise: IOError if the provided silent files do not exist.
-    :raise: AttributeError if silent files from where to extract structures are not found.
+        df = rstoolbox.components.DesignFrame(df).rename(columns={"identifier_col_name": "description"})
+
+    #. The :py:class:`.DesignFrame` has *silent files* attached from which to extract the data. Again, this \
+    should happen by default with the library, but can be set up with::
+
+        # (1) Read from a minisilent file that does not contain structural data: substitute
+        df.replace_source_files(["file1", "file2", ])
+        # (2) Add files to a recently casted DesignFrame
+        df.add_source_files(["file1", "file2", ])
+
+    :param df: Selected set of decoy that have to be extracted.
+    :type df: :py:class:`.DesignFrame`
+    :param outdir: Directory in which to save the PDB files. If none is provided, it will be loaded
+        from the *system.ouput* global option.
+    :type outdir: :py:class:`str`
+    :param tagsfilename: Name of the file containing the ids of the decoys of interest. It will be created
+        in the ``outdir``. An previously existing file will not be overwritten if the global option
+        *system.overwrite* is :py:data:`False`.
+    :type tagsfilename: :py:class:`str`
+    :param prefix: If provided, a prefix is added to the PDB files.
+    :type prefix: :py:class:`str`
+    :param keep_tagfile: If :py:data:`True`, do not delete the tag file after using it.
+    :type keep_tagfile: :py:class:`bool`
+
+    :raises:
+        :ValueError: if the provided data does not have a **description** column.
+        :ValueError: if the **description** column has repeated identifiers.
+        :AttributeError: if silent files from where to extract structures are not found.
+        :IOError: if the attached silent files do not exist.
+        :IOError: when trying to overwrite the ``tagsfilename`` if *system.overwrite* is :py:data:`False`.
+        :IOError: if the rosetta executable is not found. Depends on *rosetta.path* and *rosetta.compilation*.
+
     """
     # Check that the selection has at least one decoy
     if df.shape[0] == 0:
         sys.stdout.write("There are no decoys that fullfill the selection criteria.")
         return
 
+    # Check that a column named "description", from which the IDs are (must be unique)
+    column = "description"
+    if column not in df.columns:
+        raise ValueError("Identifiers of the decoys must be assigned to the column 'description'.")
+    if True in df.duplicated(column).value_counts().index:
+        raise ValueError("There are repeated identifiers. This might indicate the merging of files with identical prefixes "
+        "and will be an issue with extracting the structures.")
+
+    # Check that we have associated silent files to extract the data from
+    if not isinstance(df, cp.DesignFrame) or len(df.get_source_files()) == 0:
+        raise AttributeError("There are not source files from where to extract the structures.")
+    sfiles = list(df.get_source_files())
+
     # Manage output directory
-    if outdir is None:
-        outdir = core.get_option("system", "output")
+    outdir = outdir if outdir is not None else core.get_option("system", "output")
     if not os.path.isdir( outdir ):
         os.makedirs( outdir )
     if not outdir.endswith("/"):
@@ -310,34 +362,9 @@ def make_structures( df, silentfiles=None, column="description", outdir=None, mu
         raise IOError("The expected Rosetta executable {0} is not found".format(exe))
 
     # Print the tag file
-    if not column in df:
-        raise ValueError("The requested column does not exist in the DataFrame")
-    if True in df.duplicated(column).value_counts().index:
-        raise ValueError("There are repeated identifiers. This might indicate the merging of files with identical prefixes "
-        "and will be an issue with extracting the structures.")
     df[[column]].to_csv( tagsfilename, index=False, header=False)
     if not os.path.isfile(tagsfilename):
         raise IOError("Something went wrong writing the file {0}".format(tagsfilename))
-
-    # Manage source files
-    sfiles = []
-    # Get them from the DesignFrame
-    if silentfiles is None:
-        if not isinstance(df, cp.DesignFrame) or len(df.get_source_files()) == 0:
-            raise AttributeError("There are not source files from where to extract the structures.")
-        else:
-            sfiles = list(df.get_source_files())
-            multi = len(sfiles) > 1
-    # Check the provided ones
-    else:
-        if not multi:
-            if not os.path.isfile( silentfiles ):
-                raise IOError("The expected silent file input {0} is not found".format(silentfiles))
-            sfiles.append( silentfiles )
-        else:
-            sfiles = glob.glob( silentfiles + "*" )
-        if len(sfiles) == 0:
-            raise IOError("No files found with the pattern {0}".format(silentfiles))
 
     # Run process
     sfiles = " ".join(sfiles)
