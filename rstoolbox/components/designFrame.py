@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 25-Jan-2018
+# @Last modified time: 29-Jan-2018
 
 # Standard Libraries
 import itertools
@@ -17,17 +17,43 @@ import numpy as np
 
 # This Library
 from .sequenceFrame import SequenceFrame
+from rstoolbox.utils import add_column
 
 
 class DesignFrame( pd.DataFrame ):
     """
-    The :py:class:`.DesignFrame` extends :py:class:`pandas.DataFrame`
+    The :py:class:`.DesignFrame` extends the :py:class:`~pandas.DataFrame`
     adding some functionalities in order to improve its usability in
     the analysis of sets of design decoys.
+
     Filled through the functions provided through this library, each
     row represents a decoy while each column represents the scores
     attached to it.
 
+    As a rule, it is assumed that the object:
+
+    #. has a column named **description** \
+    that stores the identifier of the corresponding decoy.
+    #. holds sequences (a design decoy might be composed of \
+    multiple chains) in columns named **sequnece_[seqID]**.
+
+    This two assumptions are easily adapted if casting a
+    :py:class:`~pandas.DataFrame` into the class, and several functions
+    of the library depend on them.
+
+    The :py:class:`.DesignFrame` basically contains three extra attributes
+    (accessible through the appropiate functions):
+
+    #. **reference_sequence:** A reference sequence can be added for each ``seqID`` \
+    present in the :py:class:`.DesignFrame`. By adding this sequence, other functions \
+    of the library can add that information to its calculations.
+    #. **reference_shift:** A reference shift can be added for each ``seqID`` \
+    present in the :py:class:`.DesignFrame`. In short, this would be the initial number \
+    of the protein in the source PDB. This allows working with the right numbering. This \
+    value is, by default, 1 in all ``seqID``.
+    #. **source_files:** The object stores the source files from which it has been loaded \
+    (as long as it is loaded with :py:func:`.parse_rosetta_file`). This information can \
+    be used to extract the structures from the silent files.
     """
     _metadata = ['_reference_sequence', '_source_files']
 
@@ -176,6 +202,7 @@ class DesignFrame( pd.DataFrame ):
                     data.append(reference[i].upper() + str(i + shift) + sequence[i].upper())
             return ",".join(data)
         def count_muts( mutations ):
+            if mutations == "": return 0
             return len(mutations.split(","))
 
         this_shift = shift if shift is not None else self.reference_shift(seqID)
@@ -186,6 +213,53 @@ class DesignFrame( pd.DataFrame ):
         self["mutant_count_{0}".format(seqID)]     = self.apply(lambda row: count_muts(row["mutants_{0}".format(seqID)]), axis=1)
 
         return self
+
+    def generate_mutant_variants( self, seqID, mutations ):
+        """
+        Expands the selected sequences by ensuring that all the provided mutant combinations.
+        Thus, something such as::
+
+            df.generate_mutant_variants("A", [(20, "AIV"), (31, "EDQR")])
+
+        Will generate all the variant sequences of "A" that combine the expected mutations in
+        position 20 and 31 (according to the reference shift). That would be a total of 3*4
+        combinations plus the original sequence.
+
+        Alters the names of the designs in **description**.
+
+        :param seqID: Identifier of the sequence sets of interest.
+        :type seqID: :py:class:`str`
+        :param mutations: List of mutations to generate in a format (position, variants)
+        :type mutations: :py:class:`list`[(:py:class:`int`, :py:class:`str`),..]
+
+        :return: :py:class:`.DesignFrame`
+        """
+        def multiplex( row, seqID, muts, refshift):
+            seqNM = "sequence_{}".format(seqID)
+            seq   = list(row[seqNM])
+            for p in muts:
+                seq[p[0]-1] = p[1]
+            data = {seqNM: ["".join(x) for x in itertools.product(*seq)]}
+            data[seqNM].insert(0, row[seqNM])
+            data["description"] = [row["description"] + "_{0:04d}".format(x) for x in range(len(data[seqNM]))]
+            for col in row.index:
+                if col not in [seqNM, "description"]:
+                    data[col] = [row[col]] * len(data["description"])
+            df = DesignFrame(data)
+            df.reference_sequence(seqID, row[seqNM], refshift)
+            df = df.identify_mutants(seqID)
+            del(df._reference_sequence[seqID])
+            return df
+
+        designs = []
+        refshift = self.reference_shift(seqID)
+        for i, row in self.iterrows():
+            designs.append(multiplex(row, seqID, mutations, refshift))
+        df = pd.concat(designs)
+        if self.has_reference_sequence(seqID):
+            df.reference_sequence(seqID, self.reference_sequence(seqID), self.reference_shift(seqID))
+        df.drop_duplicates(["sequence_{}".format(seqID)], inplace=True)
+        return df.reset_index(drop=True)
 
     def sequence_frequencies( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=-1 ):
         """

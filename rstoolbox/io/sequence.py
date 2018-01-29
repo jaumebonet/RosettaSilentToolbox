@@ -8,7 +8,7 @@ import rstoolbox.components as cp
 from rstoolbox.io.rosetta import _gather_file_list
 
 
-def read_fasta( filename, multi=False ):
+def read_fasta( filename, split_char=None, split_position=1, multi=False ):
     """
     Reads one or more fasta files and returns the appropiate object
     containing the requested data: the :py:class:`.DesignFrame`.
@@ -19,6 +19,10 @@ def read_fasta( filename, multi=False ):
 
     :param filename: file name or file pattern to search.
     :type filename: :py:class:`str`
+    :param split_char: Split the design ID according to the given char.
+    :type split_char: :py:class:`str`
+    :param split_position: If split is not py:data:`None`, which position of the
+        split is the name? The rest will go to a column named **info**.
     :param multi: When :py:data:`True`, indicates that data is readed from
         multiple files.
     :type multi: :py:class:`bool`
@@ -29,17 +33,25 @@ def read_fasta( filename, multi=False ):
         :IOError: if ``filename`` cannot be found.
     """
     files = _gather_file_list( filename, multi )
-    data = {"description": [], "sequence_A": []}
+    data = {"description": [], "sequence_A": [], "info": []}
     for file_count, f in enumerate( files ):
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
             line = line.strip()
             if line.startswith(">"):
-                data["description"].append(line[1:])
+                line = line.strip(">")
+                if split_char is None:
+                    data["description"].append(line)
+                else:
+                    line = line.split(split_char)
+                    data["description"].append(line.pop(split_position - 1).replace(".pdb", ""))
+                    data["info"].append(split_char.join(line))
                 data["sequence_A"].append("")
             elif len(line) > 0:
                 data["sequence_A"][-1] += line
 
+    if len(data["info"]) == 0:
+        del(data["info"])
     df = cp.DesignFrame( data )
     df.add_source_files( files )
     return df

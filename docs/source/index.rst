@@ -14,6 +14,7 @@ Welcome to rstoolbox's documentation!
 .. toctree::
    :maxdepth: 3
 
+   components
    io
 
 Indices and tables
