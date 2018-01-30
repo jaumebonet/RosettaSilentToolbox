@@ -125,7 +125,7 @@ def sequence_frequency_plot( df, seqID, ax, refseq=True, key_residues=None, bord
         for i in range(len(ref_seq)):
             ax.add_patch(Rectangle((i, order.index(ref_seq[i])), 1, 1, fill=False, edgecolor=border_color, lw=2))
 
-def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, colors="WEBLOGO" ):
+def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, logotype="freq", colors="WEBLOGO" ):
     mpl.rcParams['svg.fonttype'] = 'none'
     # Graphical Properties of resizable letters
     path = os.path.join(
@@ -141,7 +141,12 @@ def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, c
     for aa in color_scheme(colors):
         LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
 
-    data = sequence_frequency_matrix( df, column_name )
+    if logotype == "freq":
+        data = sequence_frequency_matrix( df, column_name )
+    else:
+        data = df.sequence_bits(column_name.strip("sequence_"))
+        y_max = int(np.max(np.max(data)) + 1.)
+
     if key_residues is not None:
         data = data.loc[key_residues]
         if ref_seq is not None:
@@ -159,9 +164,14 @@ def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, c
     font.set_weight('bold')
 
     ax.set_xticks(range(1, len(data) + 2))
-    ax.set_yticks( range(0, 2) )
+    if logotype == "freq":
+        ax.set_yticks( range(0, 2) )
+        ax.set_yticklabels( np.arange( 0, 2 , 1 ) )
+    else:
+        ax.set_yticks( range(0, y_max) )
+        ax.set_yticklabels( np.arange( 0, y_max, 1 ) )
     ax.set_xticklabels( data.index.values )
-    ax.set_yticklabels( np.arange( 0, 2 , 1 ) )
+    #ax.set_yticklabels( np.arange( 0, 2 , 1 ) )
     if ref_seq is not None:
         ax2 = ax.twiny()
         ax2.set_xticks(ax.get_xticks())
