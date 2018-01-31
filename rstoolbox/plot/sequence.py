@@ -170,8 +170,8 @@ def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, l
     else:
         ax.set_yticks( range(0, y_max) )
         ax.set_yticklabels( np.arange( 0, y_max, 1 ) )
+
     ax.set_xticklabels( data.index.values )
-    #ax.set_yticklabels( np.arange( 0, 2 , 1 ) )
     if ref_seq is not None:
         ax2 = ax.twiny()
         ax2.set_xticks(ax.get_xticks())
