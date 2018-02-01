@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragmentFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 17-Jan-2018
+# @Last modified time: 01-Feb-2018
 
 
 import os
@@ -177,9 +177,26 @@ class FragmentFrame( pd.DataFrame ):
 
         self._crunched[what] = df
         return self._crunched[what]
+
+    def _metadata_defaults(self, name):
+        if name == "_source_file":
+            return None
+        return None
+
     #
     # Implement pandas methods
     #
     @property
     def _constructor(self):
         return FragmentFrame
+
+    def __finalize__(self, other, method=None, **kwargs):
+
+        if method == 'merge':
+            for name in self._metadata:
+                setattr(self, name, getattr(other.left, name, self._metadata_defaults(name)))
+        else:
+            for name in self._metadata:
+                setattr(self, name, getattr(other, name, self._metadata_defaults(name)))
+
+        return self
