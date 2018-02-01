@@ -48,6 +48,12 @@ def get_options(*args, **kwds):
     if not os.path.isfile(options.flarge):
         raise IOError("{} not found".format(options.flarge))
 
+    # Loading quality if not provided but exists
+    if options.qsmall is None and os.path.isfile(options.fsmall + ".qual" ):
+        options.qsmall = options.fsmall + ".qual"
+    if options.qlarge is None and os.path.isfile(options.flarge + ".qual" ):
+        options.qlarge = options.flarge + ".qual"
+
     if options.format not in ["v", "h"]:
         raise AttributeError("-out:format can only accept as value 'v' or 'h'.")
 
