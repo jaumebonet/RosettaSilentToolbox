@@ -48,7 +48,7 @@ def get_options(*args, **kwds):
     if not os.path.isfile(options.flarge):
         raise IOError("{} not found".format(options.flarge))
 
-    # Loading quality if not provided but exists
+    # loading quality files if they exist with the appropiate name
     if options.qsmall is None and os.path.isfile(options.fsmall + ".qual" ):
         options.qsmall = options.fsmall + ".qual"
     if options.qlarge is None and os.path.isfile(options.flarge + ".qual" ):
