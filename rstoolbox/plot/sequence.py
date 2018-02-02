@@ -69,7 +69,9 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
     (4) Need to make the ticks smaller?
     Add parameter: labelsize="small"
     (5) Need to rotate the x-axis labels?
-    Add paramenter: rotation=90 (to say some degree)
+    Add paramenter: xrotation=90 (to say some degree)
+    (6) Need to rotate the y-axis labels?
+    Add paramenter: yrotation=90 (to say some degree)
 
     :param DataFrame df: Ideally, a :py:class:`.DesignFrame` or :py:class:`.SequenceFrame`. Data content.
         requires the existence of a "sequence_{seqID}" column with the sequence to plot.
@@ -128,13 +130,17 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
     if not "cbar_kws" in kwargs:    # by default the color bar is horizontal
         kwargs["cbar_kws"] = {"orientation": "horizontal"}
     labelsize = None
-    rotation  = 0
+    xrotation  = 0
+    yrotation  = 0
     if "labelsize" in kwargs:       # Labelsize, in case we need to change it
         labelsize = kwargs["labelsize"]
         del(kwargs["labelsize"])
-    if "rotation" in kwargs:
-        rotation = kwargs["rotation"]
-        del(kwargs["rotation"])
+    if "xrotation" in kwargs:
+        xrotation = kwargs["xrotation"]
+        del(kwargs["xrotation"])
+    if "yrotation" in kwargs:
+        yrotation = kwargs["yrotation"]
+        del(kwargs["yrotation"])
 
     # plot
     if not aminosY:
@@ -148,21 +154,21 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
         order.reverse()
     if aminosY:
         ax.yaxis.set_ticks(np.arange(0.5, len(order) + 0.5))
-        ax.yaxis.set_ticklabels(order, rotation=0)
+        ax.yaxis.set_ticklabels(order, rotation=yrotation)
         for label in ax.get_yticklabels():
             label.set_fontproperties(fp)
         ax.xaxis.set_ticks(np.arange(0.5, len(data.columns.values.tolist()) + 0.5))
-        ax.xaxis.set_ticklabels(data.columns.values.tolist(), rotation=rotation)
+        ax.xaxis.set_ticklabels(data.columns.values.tolist(), rotation=xrotation)
         ax.set_ylabel("residue type")
         if labelsize is not None:
             ax.tick_params(labelsize=labelsize)
     else:
         ax.xaxis.set_ticks(np.arange(0.5, len(order) + 0.5))
-        ax.xaxis.set_ticklabels(order, rotation=rotation)
+        ax.xaxis.set_ticklabels(order, rotation=xrotation)
         for label in ax.get_xticklabels():
             label.set_fontproperties(fp)
         ax.yaxis.set_ticks(np.arange(0.5, len(data.index.values.tolist()) + 0.5))
-        ax.yaxis.set_ticklabels(data.index.values.tolist(), rotation=0)
+        ax.yaxis.set_ticklabels(data.index.values.tolist(), rotation=yrotation)
         ax.set_xlabel("residue type")
         if labelsize is not None:
             ax.tick_params(labelsize=labelsize)
