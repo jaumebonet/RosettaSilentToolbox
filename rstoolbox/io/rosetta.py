@@ -219,7 +219,7 @@ def parse_rosetta_fragments( filename ):
         :IOError: if ``filename`` cannot be found.
     """
     fformat = 1 # formats are identified as 1 and 0
-    data = OrderedDict({"pdb": [], "chain": [], "frame":[], "neighbors":[], "neighbor":[], "position":[], "size":[],
+    data = OrderedDict({"pdb": [], "frame":[], "neighbors":[], "neighbor":[], "position":[], "size":[],
                         "aa":[], "sse":[], "phi":[], "psi":[], "omega":[]})
 
     if not os.path.isfile(filename):
@@ -254,8 +254,10 @@ def parse_rosetta_fragments( filename ):
             fne = line[-1]
             nei = -1
         else:
-            data["pdb"].append(str(line[0]))
-            data["chain"].append(str(line[1]))
+            if fformat == 1:
+                data["pdb"].append(str(line[2]))
+            else:
+                data["pdb"].append(str(line[0]))
             data["frame"].append(int(fframe))
             data["neighbors"].append(fne)
             data["neighbor"].append(nei + 1)
@@ -279,7 +281,27 @@ def parse_rosetta_fragments( filename ):
         df = df.merge(df2, on=["frame", "size"])
         df = df.drop(["neighbors_x"], axis=1)
         df = df.rename({"neighbors_y": "neighbors"}, axis=1)
-    return df.reindex(["pdb", "chain", "frame", "neighbors", "neighbor","position", "size", "aa", "sse", "phi", "psi", "omega"], axis=1)
+    return df.reindex(["pdb", "frame", "neighbors", "neighbor","position", "size", "aa", "sse", "phi", "psi", "omega"], axis=1)
+
+def write_rosetta_fragements( df, fragsize ):
+    """
+    Writes a Rosetta fragment-file (new format) from an appropiate :py:class:`.FragmentFrame`.
+    Supports varying size fragment sets.
+
+    :param df: Selected set of fragments that have to be written.
+    :type df: :py:class:`.DesignFrame`
+    :param fragsize: Size of the fragments.
+    :type fragsize: :py:class:`int`
+    :param outfile: Filename for the Rosetta fragments file.
+    :type filename: :py:class:`str`
+    """
+    _STRING = " {:4s} {:1s} {:5d} {:1s} {:1s} {:8.3f} {:8.3f} {:8.3f}\n"
+    with open("mixfrags.{}mers".format(fragsize), "w") as f:
+        f.write("position:            1 neighbors:          200\n\n")
+        for i in range(len(df)):
+            f.write(_STRING.format(df.loc[i]["pdb"],"X",int(0),df.loc[i]["aa"],df.loc[i]["sse"],df.loc[i]["phi"],df.loc[i]["psi"],df.loc[i]["omega"]))
+            if i != 0 and (i+1)%fragsize == 0:
+                f.write("\n")
 
 def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True ):
     """
