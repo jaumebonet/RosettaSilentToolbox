@@ -292,8 +292,6 @@ def write_rosetta_fragements( df, fragsize ):
     :type df: :py:class:`.DesignFrame`
     :param fragsize: Size of the fragments.
     :type fragsize: :py:class:`int`
-    :param outfile: Filename for the Rosetta fragments file.
-    :type filename: :py:class:`str`
     """
     _STRING = " {:4s} {:1s} {:5d} {:1s} {:1s} {:8.3f} {:8.3f} {:8.3f}\n"
     with open("mixfrags.{}mers".format(fragsize), "w") as f:
