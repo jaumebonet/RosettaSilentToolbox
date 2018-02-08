@@ -18,6 +18,20 @@ _headers = ["SCORE", "REMARK", "RES_NUM", "FOLD_TREE", "RT",
             "SYMMETRY_INFO", "CHAIN_ENDINGS"]
 _per_residues = ["residue_ddg_"]
 
+def _file_vs_json( data ):
+    """
+    Transform file into json if needed.
+    """
+    if data is None:
+        return {}
+    if isinstance( data, str ):
+        if not os.path.isfile( data ):
+            raise IOError("{0}: file not found.".format(data))
+        fd = gzip.open( data ) if data.endswith(".gz") else open( data )
+        text = "".join([x.strip() for x in fd])
+        data = json.loads(text)
+    return data
+
 def _check_type( value ):
     """
     Makes sure that, upon reading a value, it gets assigned
@@ -132,76 +146,113 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         description = {'scores': ['RMSD'], 'scores_rename': {'total_score': 'score'}}
         df = rstoolbox.io.parse_rosetta_file("silentfile", description)
     """
-    desc   = cp.Description( description )
-    desc.add_per_residues_keys( _per_residues )
-    header = []
-    data   = {}
-    chains = {"id": "", "seq": "", "stc": "", "done": False}
+
+    manager = cp.Description( **_file_vs_json( description ) )
+    header  = []
+    data    = OrderedDict()
+
     for line, is_header, count, symm in open_rosetta_file( filename, multi ):
         if is_header:
             header = line.strip().split()[1:]
-            desc.fill_if_empty_scores( header )
             continue
+
         if line.startswith("SCORE"):
-            chains  = {"id": "", "seq": "", "stc": "", "done": False}
             per_res = {}
+            chains  = {"id": [], "seq": "", "dssp": "", "psipred": ""}
+
+            # General scores
             for cv, value in enumerate( line.strip().split()[1:] ):
-                if desc.is_requested_per_residue_key( header[cv] ):
-                    per_res.setdefault( desc.get_expected_per_residue_key( header[cv] ), {} )
-                    per_res[desc.get_expected_per_residue_key( header[cv] )][int(header[cv].split("_")[-1])] = _check_type( value )
+                if manager.wanted_per_residue_score( header[cv] ):
+                    per_res.setdefault( re.sub("\d+$", "", header[cv]), {} )
+                    per_res[re.sub("\d+$", "", header[cv])][int(re.findall('\d+$', header[cv])[0])] = _check_type( value )
                     continue
-                if desc.is_requested_key( header[cv] ):
-                    data.setdefault( desc.get_expected_key( header[cv]), [] ).append( _check_type( value ) )
-            for namingID, namingVL in desc.get_naming_pairs( line.strip().split()[-1] ):
+                if manager.wanted_score( header[cv] ):
+                    data.setdefault( manager.score_name( header[cv]), [] ).append( _check_type( value ) )
+
+            # Namings from the dscription
+            manager.check_naming( header )
+            for namingID, namingVL in manager.get_naming_pairs( line.strip().split()[-1] ):
                 data.setdefault( namingID, [] ).append( _check_type( namingVL ) )
-            # Initialize here in case one design does not have any of the labels.
-            if len(desc.labels) > 0:
-                for lab in desc.labels:
-                    data.setdefault(lab, []).append("0")
-            # Process per residue scores
+
+            # Fix per-residue
             for k in per_res:
                 data.setdefault( k, [] ).append( OrderedDict(sorted(per_res[k].items())).values() )
-            continue
-        if line.startswith("RES_NUM"): # In multichains and not starting in A1.
-            chains["id"] = "".join(list(OrderedDict.fromkeys("".join([x.split(":")[0] for x in line.split()[1:-1]]))))
-            continue
-        if line.startswith("ANNOTATED_SEQUENCE"):
-            chains["seq"] = re.sub( r'\[[^]]*\]', '', line.strip().split()[1] )
-            chains["seq"] = chains["seq"].rstrip("X") # This is for symmetry data, as sometimes it adds XX residues
-            if len(chains["id"]) == 0: # When info is chain A starting in 1, it is not printed in the silent file
-                chains["id"] = "A"
-            if len(chains["id"]) == 1:
-                chains["stc"] = "".join([chains["id"]] * len(chains["seq"]))
-                if not symm:
-                    for seqname, seq in desc.get_expected_sequences( chains ):
-                        data.setdefault( seqname, [] ).append( seq )
-                    chains["done"] = True
-                # else:
-                #     datadata.setdefault( "SYMM", [] ).append( seq )
 
+            # Setup labels
+            data = manager.setup_labels( data )
             continue
+
+        if line.startswith("RES_NUM"): # In multichains and not starting in A1.
+            for x in line.split()[1:-1]:
+                chain, numbers = x.split(":")
+                nums = numbers.split("-")
+                if len(nums) == 1 or nums[0] == "": nums = 1
+                else: nums = (int(nums[1]) - int(nums[0])) + 1
+                chains["id"].extend([chain,] * nums)
+            continue
+
         if line.startswith("SYMMETRY_INFO"): # When working with symmetry, RES_NUM is not there...
-            chains["id"]  = "".join(string.uppercase[:int(line.split()[2])])
-            continue
-        if line.startswith("CHAIN_ENDINGS") and not chains["done"]: # This appears in multi-chain decoys
-            endings = [int(x) for x in line.split()[1:-1]]
-            txains = []
-            if not symm:
-                endings.append(len(chains["seq"]))
-            for x in range(len(endings)):
-                if x > 0: endings[x] -= endings[x-1]
-                txains.extend([chains["id"][x]] * endings[x])
-            chains["stc"] = "".join(txains)
-            for seqname, seq in desc.get_expected_sequences( chains ):
+            chain = "".join(string.uppercase[:int(line.split()[2])])
+            for c in chain:
+                chains["id"].extend([c, ] * int(line.split()[4]))
+
+            # Correct by non polymer residues
+            nonPoly = [x for x, v in enumerate(chains["seq"]) if v == 'Z']
+            for index in sorted(nonPoly, reverse=True):
+                del chains["id"][index]
+                del chains["seq"][index]
+                if len(chains["dssp"]) > 0:
+                    del chains["dssp"][index]
+
+            for seqname, seq in manager.get_expected_sequences( chains ):
                 data.setdefault( seqname, [] ).append( seq )
+            if len(chains["dssp"]) > 0:
+                for ssename, str in manager.get_expected_structures( chains ):
+                    data.setdefault( ssename, [] ).append( str )
+            if len(chains["psipred"]) > 0:
+                for ssename, str in manager.get_expected_psipred( chains ):
+                    data.setdefault( ssename, [] ).append( str )
             continue
-        if line.startswith("REMARK"):
-            content = line.strip().split()[1:]
-            if content[0] == "LABELS":
-                for label in content[1].split(";"):
-                    labinfo = label.split(":")
-                    if desc.is_requested_label(labinfo[0]):
-                        data[labinfo[0].upper()][-1] = labinfo[1]
+
+        if line.startswith("ANNOTATED_SEQUENCE"):
+            chains["seq"] = list(re.sub( r'\[[^]]*\]', '', line.strip().split()[1] ))
+            if not symm:
+                if len(chains["id"]) == 0: # When info is chain A starting in 1, it is not printed in the silent file
+                    chains["id"].extend(["A",] * len(chains["seq"]))
+
+                # Correct by non polymer residues
+                nonPoly = [x for x, v in enumerate(chains["seq"]) if v == 'Z']
+                for index in sorted(nonPoly, reverse=True):
+                    del chains["id"][index]
+                    del chains["seq"][index]
+                    if len(chains["dssp"]) > 0:
+                        del chains["dssp"][index]
+
+                for seqname, seq in manager.get_expected_sequences( chains ):
+                    data.setdefault( seqname, [] ).append( seq )
+                if len(chains["dssp"]) > 0:
+                    for ssename, str in manager.get_expected_structures( chains):
+                        data.setdefault( ssename, [] ).append( str )
+                if len(chains["psipred"]) > 0:
+                    for ssename, str in manager.get_expected_psipred( chains ):
+                        data.setdefault( ssename, [] ).append( str )
+            else:
+                chains["seq"] = list("".join(chains["seq"]).rstrip("X"))
+            continue
+
+        if line.startswith("REMARK DSSP"):
+            chains["dssp"] = list(line.split()[2].strip())
+            continue
+        if line.startswith("REMARK PSIPRED"):
+            chains["psipred"] = list(line.split()[2].strip())
+            continue
+        if line.startswith("REMARK LABELS"):
+            for label in line.split()[2].split(";"):
+                labinfo = label.split(":")
+                if labinfo[0].upper() in data:
+                    data[labinfo[0].upper()][-1] = labinfo[1]
+            continue
+
     df = cp.DesignFrame( data )
     df.add_source_files( _gather_file_list( filename, multi ) )
     return df
@@ -278,6 +329,59 @@ def parse_rosetta_fragments( filename ):
         df = df.drop(["neighbors_x"], axis=1)
         df = df.rename({"neighbors_y": "neighbors"}, axis=1)
     return df.reindex(["frame", "neighbors", "neighbor","position", "size", "aa", "sse", "phi", "psi", "omega"], axis=1)
+
+def get_sequence_and_structure( pdbfile ):
+    """
+    Provided a PDB file, it will run a small RosettaScript to capture the sequence and structure that PDB.
+
+    It will generate an output file called: ``[pdbfile].dssp.minisilent``. If this file already exists, it will
+    be directly read. You can choose to compress it; ``[pdbfile].dssp.minisilent.gz`` will also work.
+
+    :param pdbfile: Name of the input structure.
+    :type pdbfile: :py:class:`str`
+
+    :return: :py:class:`.DesignFrame`.
+
+    :raises:
+        :IOError: if ``pdbfile`` cannot be found.
+        :IOError: if Rosetta executable cannot be found.
+        :ValueError: if Rosetta execution fails
+    """
+    if not os.path.isfile( pdbfile ):
+        raise IOError("Structure {} cannot be found".format(pdbfile))
+    minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.minisilent"
+    if os.path.isfile(minisilent):
+        return parse_rosetta_file(minisilent, {"sequence": "*", "structure": "*"})
+    elif os.path.isfile(minisilent + ".gz"):
+        return parse_rosetta_file(minisilent + ".gz", {"sequence": "*", "structure": "*"})
+
+    script = "<ROSETTASCRIPTS><MOVERS><WriteSSEMover dssp=\"1\" name=\"w\" /></MOVERS><PROTOCOLS><Add mover=\"w\" /></PROTOCOLS></ROSETTASCRIPTS>"
+    with open("dssp.xml", "w") as fd:
+        fd.write(script)
+
+    # Check rosetta executable & run
+    exe = os.path.join( core.get_option("rosetta", "path"), "rosetta_scripts.{0}".format(core.get_option("rosetta", "compilation")))
+    if not os.path.isfile(exe):
+        raise IOError("The expected Rosetta executable {0} is not found".format(exe))
+    command = "{0} -parser:protocol {1} -s {2} -out:file:silent {3} -ignore_unrecognized_res".format( exe, "dssp.xml", pdbfile, str(os.getpid()) + "_" )
+    sys.stdout.write("Running Rosetta\n")
+    sys.stdout.write(command + "\n")
+    error = os.system( command )
+    os.unlink("dssp.xml")
+    if not bool(error):
+        if os.path.isfile(str(os.getpid()) + "_"):
+            sys.stdout.write("Execution has finished\n")
+            fd = open( minisilent, "w" )
+            for line, is_header, count, symm in open_rosetta_file( str(os.getpid()) + "_" ):
+                fd.write( line )
+            fd.close()
+            os.unlink(str(os.getpid()) + "_")
+            return get_sequence_and_structure( pdbfile )
+        else:
+            raise ValueError("Execution has failed\n")
+    else:
+        raise ValueError("Execution has failed\n")
+
 
 def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True ):
     """
