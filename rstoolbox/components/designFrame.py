@@ -217,23 +217,28 @@ class DesignFrame( pd.DataFrame ):
     def sequence_distance( self, seqID ):
         """
         Generate a matrix counting the distance between each pair of sequences in the :py:class:`.designFrame`.
+        This is a time-consuming operation; better to execute it over a specific set of selected decoys that over
+        all your designs.
 
         :param str seqID: Identifier of the sequence of interest.
         :type seqID: :py:class:`str`
 
-        return: :py:class:`~pandas.DataFrame`
+        return: :py:class:`~pandas.DataFrame`. Header and row names are the identifiers of the designs.
 
         :raises:
             :KeyError: if ``seqID`` cannot be found.
+            :KeyError: if ``description`` column cannot be found.
         """
         def count_differences( sequence, df ):
             return df.apply(lambda x : sum(1 for i, j in zip(x["sequence_{}".format(seqID)], sequence) if i != j), axis=1)
 
-        try:
-            df = self.apply(lambda x: count_differences( x["sequence_{}".format(seqID)], self), axis=1)
-            return df.rename(self["description"], axis="columns").rename(self["description"], axis="rows")
-        except KeyError:
-            raise KeyError("There is no seqID {} to be found".format(seqID))
+        if "sequence_{}".format(seqID) not in self.columns:
+            raise KeyError("Sequence {} not found.".format(seqID))
+        if "description" not in self.columns:
+            raise KeyError("Column holding the design's identifiers must be called description.")
+        df = self.apply(lambda x: count_differences( x["sequence_{}".format(seqID)], self), axis=1)
+        return df.rename(self["description"], axis="columns").rename(self["description"], axis="rows")
+
 
     def generate_mutant_variants( self, seqID, mutations ):
         """
