@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 29-Jan-2018
+# @Last modified time: 12-Feb-2018
 
 # Standard Libraries
 import itertools
@@ -213,6 +213,27 @@ class DesignFrame( pd.DataFrame ):
         self["mutant_count_{0}".format(seqID)]     = self.apply(lambda row: count_muts(row["mutants_{0}".format(seqID)]), axis=1)
 
         return self
+
+    def sequence_distance( self, seqID ):
+        """
+        Generate a matrix counting the distance between each pair of sequences in the :py:class:`.designFrame`.
+
+        :param str seqID: Identifier of the sequence of interest.
+        :type seqID: :py:class:`str`
+
+        return: :py:class:`~pandas.DataFrame`
+
+        :raises:
+            :KeyError: if ``seqID`` cannot be found.
+        """
+        def count_differences( sequence, df ):
+            return df.apply(lambda x : sum(1 for i, j in zip(x["sequence_{}".format(seqID)], sequence) if i != j), axis=1)
+
+        try:
+            df = self.apply(lambda x: count_differences( x["sequence_{}".format(seqID)], self), axis=1)
+            return df.rename(self["description"], axis="columns").rename(self["description"], axis="rows")
+        except KeyError:
+            raise KeyError("There is no seqID {} to be found".format(seqID))
 
     def generate_mutant_variants( self, seqID, mutations ):
         """
