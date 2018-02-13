@@ -3,12 +3,17 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 14-Dec-2017
+# @Last modified time: 13-Feb-2018
 
+import string
+import os
 
-from SimilarityMatrix import SimilarityMatrix as SM
 import pandas as pd
 import numpy as np
+
+from rstoolbox.components import DesignFrame
+from SimilarityMatrix import SimilarityMatrix as SM
+
 
 def _extract_key_residue_sequence( seq, key_residues=None ):
     if key_residues is None:
@@ -18,14 +23,36 @@ def _extract_key_residue_sequence( seq, key_residues=None ):
         tmp_seq += seq[k-1]
     return tmp_seq
 
+def _pick_key_residues( seq, key_residues=None ):
+    if key_residues is None:
+        return seq
+    tmp_seq = ""
+    for k in key_residues:
+        tmp_seq += seq[k]
+    return tmp_seq
+
 def _calculate_linear_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
     score = 0;
     qseq = _extract_key_residue_sequence( qseq, key_residues )
     rseq = _extract_key_residue_sequence( rseq, key_residues )
     assert len(qseq) == len(rseq)
     for i in range(len(qseq)):
-        score += matrix[qseq[i]][rseq[i]]
+        score += matrix.get_value(qseq[i], rseq[i])
     return score
+
+def _sequence_similarity( qseq, rseq, matrix ):
+    assert len(qseq) == len(rseq)
+    raw, id, pos, neg = 0, 0, 0, 0
+    for i in range(len(qseq)):
+        sc = matrix.get_value(qseq[i], rseq[i])
+        raw += sc
+        if qseq[i] == rseq[i]:
+            id += 1
+        if sc > 0:
+            pos += 1
+        else:
+            neg += 1
+    return raw, id, pos, neg
 
 def _calculate_binary_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
     new_seq = ""
@@ -33,30 +60,98 @@ def _calculate_binary_sequence_similarity( qseq, rseq, matrix, key_residues=None
     rseq = _extract_key_residue_sequence( rseq, key_residues )
     assert len(qseq) == len(rseq)
     for i in range(len(qseq)):
-        if  matrix[qseq[i]][rseq[i]] >= 1:
+        if  matrix.get_value(qseq[i], rseq[i]) >= 1:
             new_seq += "1"
         else:
             new_seq += "0"
     return new_seq
 
-def linear_sequence_similarity( df, ref_seq, matrix="BLOSUM62", seq_column="sequence", prefix=None, key_residues=None ):
-    mat       = SM.get_matrix(matrix)
-    all_seqs  = df[[seq_column]]
-    sims      = []
-    max_value = _calculate_linear_sequence_similarity( ref_seq, ref_seq, mat, key_residues )
-    if prefix is None:
-        prefix = matrix.lower()
-    else:
-        prefix = str(prefix) + matrix.lower()
-    for v in all_seqs.values:
-        sims.append( _calculate_linear_sequence_similarity( v[0], ref_seq, mat, key_residues ) )
-    simsperc = np.array(sims) / float(max_value)
-    wdf = df.copy()
-    if prefix + "_raw" in wdf:
-        wdf = wdf.drop([prefix + "_raw", prefix + "_perc"], axis=1)
-    wdf.insert( wdf.shape[1], prefix + "_raw", pd.Series( sims, index=wdf.index ) )
-    wdf.insert( wdf.shape[1], prefix + "_perc", pd.Series( simsperc, index=wdf.index ) )
-    return wdf
+def pick_key_residues( df, seqID, key_residues=None ):
+    """
+    Select the residues of interest from sequence seqID.
+
+    :param seqID: Identifier of the sequence sets of interest.
+    :type seqID: :py:class:`str`
+    :param key_residues: Residues of interest. Are affected by the reference shift (if any).
+    One can provide a list of residues to work with or a string indicating a LABEL to use.
+    :type key_residues: Union[:py:class:`list`[:py:class:`int`], :py:class:`str`]
+
+    :raises:
+        :AttributeError: if the data passed is not a :py:class:`.DesignFrame`.
+        :KeyError: if ``seqID`` cannot be found.
+        :KeyError: if a label is requested and not found .
+    """
+    # TODO: implement labels.
+    if not isinstance(df, DesignFrame):
+        raise AttributeError("Input data has to be a DesignFrame with a reference sequence.")
+    if not "sequence_{}".format(seqID) in df:
+        raise KeyError("Sequence {} not found in decoys.".format(seqID))
+
+    if key_residues is None:
+        return pd.DataFrame(df["sequence_{}".format(seqID)])
+
+    selected_residues = np.array(key_residues) - df.reference_shift(seqID)
+
+    if np.any(selected_residues < 0):
+        raise IndexError("Selected residue out of specified bound")
+    if np.any(selected_residues > len(df["sequence_{}".format(seqID)].values[0]) + df.reference_shift(seqID) - 1):
+        raise IndexError("Selected residue out of specified bound")
+
+    sr = df.apply(lambda x : _pick_key_residues(x["sequence_{}".format(seqID)], selected_residues), axis=1)
+    return pd.DataFrame(sr).rename({0:"sequence_{}".format(seqID)}, axis="columns")
+
+
+def sequence_similarity( df, seqID, key_residues=None, matrix="BLOSUM62" ):
+    """
+    Evaluate the sequence similarity between each decoy and the reference sequence for a given seqID.
+    Will create several new columns:
+
+    #. **<matrix>_<seqID>_score_raw:** Contains the score obtained by comparing the sequence to the reference.
+    #. **<matrix>_<seqID>_score_perc:** Contains the score obtained by comparing the sequence to the reference.\
+    in relation to the maximum possible score (reference sequence against itself).
+    #. **<matrix>_<seqID>_identity:**  Count of the number of identity matches.
+    #. **<matrix>_<seqID>_positive:**  Count of the number of positive matches; those that score positively in the \
+    similarity matrix used. This will, by definition, include the identities too.
+    #. **<matrix>_<seqID>_negative:** Count of the number of negative matches, representing unfavoured substitutions \
+    according the to similarity matrix. Includes matches scored as 0. Logically, _positives_ + _negatives_ adds up \
+    to the total number of residues in the sequence.
+
+    Running this function multiple times (different key_residue selections, for example) adds suffix to the previously
+    mentioned columns following pandas' merge naming logic (_x, _y, _z, ...).
+
+    :param seqID: Identifier of the sequence sets of interest.
+    :type seqID: :py:class:`str`
+    :param matrix: Identifier of the matrix used to evaluate similarity. Default is BLOSUM62.
+    :type matrix: :py:class:`str`
+
+    return: :py:class:`.DesignFrame`.
+
+    :raises:
+        :AttributeError: if the data passed is not a :py:class:`.DesignFrame`.
+        :KeyError: if ``seqID`` cannot be found.
+        :AttributeError: if there is no reference for ``seqID``.
+    """
+    if not isinstance(df, DesignFrame):
+        raise AttributeError("Input data has to be a DesignFrame with a reference sequence.")
+    if not df.has_reference_sequence(seqID):
+        raise AttributeError("There is no reference sequence for seqID {}".format(seqID))
+    if not "sequence_{}".format(seqID) in df:
+        raise KeyError("Sequence {} not found in decoys.".format(seqID))
+
+    mat = SM.get_matrix(matrix)
+    ref_seq = df.key_reference_sequence(seqID, key_residues)
+    ref_raw, ref_id, ref_pos, ref_neg = _sequence_similarity(ref_seq, ref_seq, mat)
+    df2 = pd.DataFrame(pick_key_residues(df, seqID, key_residues).apply( lambda x: _sequence_similarity(x["sequence_{}".format(seqID)], ref_seq, mat), axis=1).values.tolist())
+
+    df2[4] = df2[0] / ref_raw
+    df2 = df2.rename(pd.Series(["{0}_{1}_raw".format(matrix.lower(), seqID),
+                                "{0}_{1}_identity".format(matrix.lower(), seqID),
+                                "{0}_{1}_positive".format(matrix.lower(), seqID),
+                                "{0}_{1}_negative".format(matrix.lower(), seqID),
+                                "{0}_{1}_perc".format(matrix.lower(), seqID)]), axis="columns").rename(pd.Series(df.index.values), axis="rows")
+    print df2
+    return df.merge(df2, left_index=True, right_index=True)
+
 
 def binary_similarity( df, ref_seq, matrix="IDENTITY", seq_column="sequence", prefix=None, key_residues=None ):
     mat       = SM.get_matrix(matrix)

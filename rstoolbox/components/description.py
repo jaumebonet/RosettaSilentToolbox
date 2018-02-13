@@ -93,7 +93,7 @@ class Description( object ):
     def setup_labels( self, data ):
         if self.labels is not None:
             for l in self.labels:
-                data.setdefault(l.upper(), []).append("0")
+                data.setdefault("lbl_" + l.upper(), []).append("0")
         return data
 
     def get_expected_sequences( self, chains ):

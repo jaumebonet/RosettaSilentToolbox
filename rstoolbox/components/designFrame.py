@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Feb-2018
+# @Last modified time: 13-Feb-2018
 
 # Standard Libraries
 import itertools
@@ -103,6 +103,33 @@ class DesignFrame( pd.DataFrame ):
             return self._reference_sequence[seqID]["sft"]
         else:
             return 1
+
+    def key_reference_sequence( self, seqID, key_residues, check=True ):
+        """
+        Select the provided list of key_residues from the reference sequence
+        according to the reference_shift.
+
+        :param seqID: Identifier of the reference sequence
+        :type seqID: :py:class:`str`
+        :param key_residues: List of residues to retrieve (takes shift into account).
+        :param key_residues: :py:class:`list`[:py:class:`int`]
+        :param check: If True (default), will rise error if there is no reference sequence.
+        :type check: :py:class:`bool`
+
+        :return: :py:class:`str`
+
+        :raises:
+            :ValueError: if there is no reference sequence and check is True.
+        """
+        if not seqID in self._reference_sequence:
+            if check:
+                raise ValueError("Reference sequence for {} unknown.".format(seqID))
+            else:
+                return ""
+        if key_residues is None:
+            return self._reference_sequence[seqID]["seq"]
+        kr = np.array(key_residues) - self._reference_sequence[seqID]["sft"]
+        return "".join([x for i, x in enumerate(self._reference_sequence[seqID]["seq"]) if i in kr])
 
     def has_reference_sequence( self, seqID ):
         """

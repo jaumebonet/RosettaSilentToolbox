@@ -3,11 +3,12 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: SimilarityMatrix.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Dec-2017
+# @Last modified time: 13-Feb-2018
 
 
 from collections import deque
 import os
+import string
 
 
 class SimilarityMatrix(object):
@@ -16,6 +17,8 @@ class SimilarityMatrix(object):
     ftp://ftp.ncbi.nih.gov/blast/matrices
     to a python dictionary
     '''
+    def __init__(self, data):
+        self._data = data
 
     @staticmethod
     def get_matrix(matrixID):
@@ -45,4 +48,11 @@ class SimilarityMatrix(object):
                     data[aalist[i]][aa] = int(l[i])
 
         fd.close()
-        return data
+        return SimilarityMatrix( data )
+
+    def get_value( self, k1, k2 ):
+        if k1 in string.whitespace or k1 in string.punctuation:
+            k1 = "*"
+        if k2 in string.whitespace or k2 in string.punctuation:
+            k2 = "*"
+        return self._data[k1][k2]

@@ -84,7 +84,7 @@ def open_rosetta_file( filename, multi=False ):
     #. file counter: a :py:class:`int` indicating which file is being read (for multi file input)
     #. is symmetry: a :py:class:`bool` indicating if the silent file contains symmetry info.
 
-    :param str filename: file name or file pattern to search.
+    :param filename: file name or file pattern to search.
     :type filename: :py:class:`str`
     :param multi: Tell if a file name (single file) or pattern (multifile) is provided.
     :type multi: :py:class:`bool`
@@ -250,7 +250,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             for label in line.split()[2].split(";"):
                 labinfo = label.split(":")
                 if labinfo[0].upper() in data:
-                    data[labinfo[0].upper()][-1] = labinfo[1]
+                    data["lbl_" + labinfo[0].upper()][-1] = labinfo[1]
             continue
 
     df = cp.DesignFrame( data )
