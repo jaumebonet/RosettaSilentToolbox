@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 29-Jan-2018
+# @Last modified time: 13-Feb-2018
 
 # Standard Libraries
 import itertools
@@ -103,6 +103,33 @@ class DesignFrame( pd.DataFrame ):
             return self._reference_sequence[seqID]["sft"]
         else:
             return 1
+
+    def key_reference_sequence( self, seqID, key_residues, check=True ):
+        """
+        Select the provided list of key_residues from the reference sequence
+        according to the reference_shift.
+
+        :param seqID: Identifier of the reference sequence
+        :type seqID: :py:class:`str`
+        :param key_residues: List of residues to retrieve (takes shift into account).
+        :param key_residues: :py:class:`list`[:py:class:`int`]
+        :param check: If True (default), will rise error if there is no reference sequence.
+        :type check: :py:class:`bool`
+
+        :return: :py:class:`str`
+
+        :raises:
+            :ValueError: if there is no reference sequence and check is True.
+        """
+        if not seqID in self._reference_sequence:
+            if check:
+                raise ValueError("Reference sequence for {} unknown.".format(seqID))
+            else:
+                return ""
+        if key_residues is None:
+            return self._reference_sequence[seqID]["seq"]
+        kr = np.array(key_residues) - self._reference_sequence[seqID]["sft"]
+        return "".join([x for i, x in enumerate(self._reference_sequence[seqID]["seq"]) if i in kr])
 
     def has_reference_sequence( self, seqID ):
         """
@@ -213,6 +240,32 @@ class DesignFrame( pd.DataFrame ):
         self["mutant_count_{0}".format(seqID)]     = self.apply(lambda row: count_muts(row["mutants_{0}".format(seqID)]), axis=1)
 
         return self
+
+    def sequence_distance( self, seqID ):
+        """
+        Generate a matrix counting the distance between each pair of sequences in the :py:class:`.designFrame`.
+        This is a time-consuming operation; better to execute it over a specific set of selected decoys that over
+        all your designs.
+
+        :param str seqID: Identifier of the sequence of interest.
+        :type seqID: :py:class:`str`
+
+        return: :py:class:`~pandas.DataFrame`. Header and row names are the identifiers of the designs.
+
+        :raises:
+            :KeyError: if ``seqID`` cannot be found.
+            :KeyError: if ``description`` column cannot be found.
+        """
+        def count_differences( sequence, df ):
+            return df.apply(lambda x : sum(1 for i, j in zip(x["sequence_{}".format(seqID)], sequence) if i != j), axis=1)
+
+        if "sequence_{}".format(seqID) not in self.columns:
+            raise KeyError("Sequence {} not found.".format(seqID))
+        if "description" not in self.columns:
+            raise KeyError("Column holding the design's identifiers must be called description.")
+        df = self.apply(lambda x: count_differences( x["sequence_{}".format(seqID)], self), axis=1)
+        return df.rename(self["description"], axis="columns").rename(self["description"], axis="rows")
+
 
     def generate_mutant_variants( self, seqID, mutations ):
         """
