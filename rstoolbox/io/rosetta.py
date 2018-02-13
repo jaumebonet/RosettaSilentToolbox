@@ -249,7 +249,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         if line.startswith("REMARK LABELS"):
             for label in line.split()[2].split(";"):
                 labinfo = label.split(":")
-                if labinfo[0].upper() in data:
+                if "lbl_" + labinfo[0].upper() in data:
                     data["lbl_" + labinfo[0].upper()][-1] = labinfo[1]
             continue
 
