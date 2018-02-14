@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: minisilent.py
 # @Last modified by:   bonet
-# @Last modified time: 24-Jan-2018
+# @Last modified time: 13-Feb-2018
 
 
 import argparse
@@ -34,9 +34,9 @@ def get_options(*args, **kwds):
     return options
 
 def main( options ):
-    fd = gzip.open( options.ofile, "w" ) if options.ofile.endswith(".gz") else open( options.ofile, "w" )
+    fd = gzip.open( options.ofile, "wb" ) if options.ofile.endswith(".gz") else open( options.ofile, "w" )
     infile = options.ifile if options.ifile is not None else options.ifiles
-    for line, is_header, count, symm in open_rosetta_file( infile, options.ifile is None ):
+    for line, is_header, count, symm in open_rosetta_file( infile, options.ifile is None, check_symmetry=False ):
         fd.write( line )
 
 if __name__ == '__main__':

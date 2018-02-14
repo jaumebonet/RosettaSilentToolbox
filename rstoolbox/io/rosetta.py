@@ -72,7 +72,7 @@ def _gather_file_list( filename,  multi=False ):
             files = filename
     return files
 
-def open_rosetta_file( filename, multi=False ):
+def open_rosetta_file( filename, multi=False, check_symmetry=True ):
     """
     Reads through a Rosetta score or silent file yielding only the lines
     that can be parsed by the rstoolbox.
@@ -88,18 +88,21 @@ def open_rosetta_file( filename, multi=False ):
     :type filename: :py:class:`str`
     :param multi: Tell if a file name (single file) or pattern (multifile) is provided.
     :type multi: :py:class:`bool`
+    :param check_symmetry: Check if the silent file contains symmetry info.
+    :type check_symmetry: :py:class:`bool`
 
     :yields: Union[:py:class:`str`, :py:class:`bool`, :py:class:`int`, :py:class:`bool`]
 
     :raises:
         :IOError: if ``filename`` cannot be found.
-
     """
+    symm = False
     files = _gather_file_list( filename, multi )
     for file_count, f in enumerate( files ):
-        cmd = "zgrep SYMMETRY_INFO {} |wc" if f.endswith(".gz") else "grep SYMMETRY_INFO {} |wc"
-        process = subprocess.Popen(cmd.format(f), stdout=subprocess.PIPE, shell=True)
-        symm = int(process.communicate()[0].strip().split()[0]) > 0
+        if check_symmetry:
+            cmd = "zgrep SYMMETRY_INFO {} |wc" if f.endswith(".gz") else "grep SYMMETRY_INFO {} |wc"
+            process = subprocess.Popen(cmd.format(f), stdout=subprocess.PIPE, shell=True)
+            symm = int(process.communicate()[0].strip().split()[0]) > 0
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
             if line.strip().split()[0].strip(":") in _headers:
