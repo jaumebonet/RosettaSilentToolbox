@@ -334,22 +334,28 @@ def parse_rosetta_fragments( filename ):
         df = df.rename({"neighbors_y": "neighbors"}, axis=1)
     return df.reindex(["pdb", "frame", "neighbors", "neighbor","position", "size", "aa", "sse", "phi", "psi", "omega"], axis=1)
 
-def write_rosetta_fragements( df, fragsize ):
+def write_rosetta_fragements( df, frag_size, n_frags=200 ):
     """
     Writes a Rosetta fragment-file (new format) from an appropiate :py:class:`.FragmentFrame`.
     Supports varying size fragment sets.
 
     :param df: Selected set of fragments that have to be written.
     :type df: :py:class:`.DesignFrame`
-    :param fragsize: Size of the fragments.
-    :type fragsize: :py:class:`int`
+    :param frag_size: Size of the fragments.
+    :type frag_size: :py:class:`int`
+    :param n_frags: Number of fragments per frame.
+        Default are 200 fragments per frame.
+    :type n_frags: :py:class:`int`
     """
     _STRING = " {:4s} {:1s} {:5d} {:1s} {:1s} {:8.3f} {:8.3f} {:8.3f}\n"
-    with open("mixfrags.{}mers".format(fragsize), "w") as f:
-        f.write("position:            1 neighbors:          200\n\n")
+    with open("rosetta_frags.{}mers".format(frag_size), "w") as f:
+        frame_count = 0
         for i in range(len(df)):
-            f.write(_STRING.format(df.loc[i]["pdb"],"X",int(0),df.loc[i]["aa"],df.loc[i]["sse"],df.loc[i]["phi"],df.loc[i]["psi"],df.loc[i]["omega"]))
-            if i != 0 and (i+1)%fragsize == 0:
+            if i%((frag_size*n_frags))==0:
+                frame_count += 1
+                f.write("position:            {} neighbors:          {}\n\n".format(frame_count, n_frags))
+            f.write(_STRING.format( df.loc[i]["pdb"], "X", int(0),df.loc[i]["aa"], df.loc[i]["sse"], df.loc[i]["phi"], df.loc[i]["psi"], df.loc[i]["omega"]) )
+            if i != 0 and (i+1)%frag_size == 0:
                 f.write("\n")
 
 def get_sequence_and_structure( pdbfile ):
