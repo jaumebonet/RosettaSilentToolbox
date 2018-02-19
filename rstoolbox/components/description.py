@@ -48,7 +48,7 @@ class Description( object ):
 
     def wanted_score( self, score_name ):
         for k in self._per_residues:
-            if score_name.startswith(k):
+            if score_name.startswith(k) and score_name not in self.scores:
                 return False
         if self.scores_ignore is not None:
             if self.scores_ignore == "*" or score_name in self.scores_ignore:
