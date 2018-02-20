@@ -98,8 +98,8 @@ def pick_key_residues( df, seqID, key_residues=None ):
         :KeyError: if ``seqID`` cannot be found.
         :KeyError: if a label is requested and not found .
     """
-    # TODO
-    # Implement label-based residue selection in pick_key_residues
+    # TODO: Implement label-based residue selection in pick_key_residues
+    # BODY: This will allow auto-selection from labels generated in RosettaScript
 
     if not isinstance(df, DesignFrame):
         raise AttributeError("Input data has to be a DesignFrame with a reference sequence.")
@@ -204,8 +204,8 @@ def positional_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM62" ):
         if not "sequence_{}".format(seqID) in df:
             raise KeyError("Sequence {} not found in decoys.".format(seqID))
 
-        # TODO
-        # Code positional_similarity for DesignFrame
+        # TODO: Code positional_similarity for DesignFrame
+        # BODY: Should behave the same way it does for the FragmentFrame
 
     elif isinstance(df, FragmentFrame):
         if ref_seq is None:
