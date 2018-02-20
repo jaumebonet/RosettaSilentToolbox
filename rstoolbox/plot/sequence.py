@@ -12,7 +12,7 @@ from matplotlib import transforms
 from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
-from rstoolbox.analysis import sequence_frequency_matrix, binary_overlap
+from rstoolbox.analysis import sequence_frequency_matrix, binary_overlap, positional_similarity
 from rstoolbox.components import DesignFrame, SequenceFrame
 from .color_schemes import color_scheme
 
@@ -180,6 +180,33 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
                 ax.add_patch(Rectangle((i, order.index(ref_seq[i])), 1, 1, fill=False, edgecolor=border_color, lw=2))
             else:
                 ax.add_patch(Rectangle((order.index(ref_seq[i]), i), 1, 1, fill=False, edgecolor=border_color, lw=2))
+
+def positional_similarity_plot( df, ax ):
+    """
+    Generates a plot covering the amount of identities and positives matches from a population of designs
+    to a reference sequence according to a substitution matrix.
+    Input data can/should be generated with :py:func:`.positional_similarity`.
+
+    :param df: Input data, where rows are positions and columns are `identity_perc` and `positive_perc`
+    :type df: :py:class:`.DesignFrame`
+    :param ax: matplotlib axis to which we will plot.
+    :type ax: :py:class:`~matplotlib.axes.Axes`
+
+    """
+
+    # @todo Expand controls for positional_similarity_plot
+    # @body add attributes to change positive and identity colors
+
+    y = df["positive_perc"].values
+    ax.plot(range(len(y)), y, color="orange", linestyle="solid", linewidth=2)
+    ax.fill_between(range(len(y)), 0, y, color="orange", alpha=1)
+
+    y = df["identity_perc"].values
+    ax.plot(range(len(y)), y, color="green", linestyle="solid", linewidth=2)
+    ax.fill_between(range(len(y)), 0, y, color="green", alpha=1)
+
+    ax.set_ylim(0, 1)
+    ax.set_xlim(0, len(y) - 1)
 
 def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, colors="WEBLOGO" ):
     mpl.rcParams['svg.fonttype'] = 'none'

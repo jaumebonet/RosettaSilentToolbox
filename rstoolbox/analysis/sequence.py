@@ -189,7 +189,7 @@ def positional_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM62" ):
     :param matrix: Identifier of the matrix used to evaluate similarity. Default is BLOSUM62.
     :type matrix: :py:class:`str`
 
-    :return: :py:class:`.DesignFrame` where rows are positions and columns are `identity_perc` and `positive_perc`.
+    :return: :py:class:`~pandas.DataFrame` where rows are positions and columns are `identity_perc` and `positive_perc`.
 
     :raises:
         :AttributeError: if the data passed is not in Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`].
