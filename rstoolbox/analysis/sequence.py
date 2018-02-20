@@ -108,8 +108,6 @@ def pick_key_residues( df, seqID, key_residues=None ):
     if key_residues is None:
         return pd.DataFrame(df["sequence_{}".format(seqID)])
 
-    # @todo: Implement label-based residue selection in pick_key_residues
-    # @body: This will allow auto-selection from labels generated in RosettaScript
     elif isinstance( key_residues, str ):
         pass
 
@@ -201,8 +199,6 @@ def positional_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM62" ):
     data = {"identity_perc": [], "positive_perc": []}
     mat = SM.get_matrix(matrix)
 
-    # @todo: Code positional_similarity for DesignFrame
-    # @body: Should behave the same way it does for the FragmentFrame
     if isinstance(df, DesignFrame):
         if seqID is None:
             raise AttributeError("seqID needs to be provided")
