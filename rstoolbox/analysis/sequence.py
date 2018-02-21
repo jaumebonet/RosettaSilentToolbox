@@ -176,7 +176,7 @@ def sequence_similarity( df, seqID, key_residues=None, matrix="BLOSUM62" ):
                                 "{0}_{1}_perc".format(matrix.lower(), seqID)]), axis="columns").rename(pd.Series(df.index.values), axis="rows")
     return df.merge(df2, left_index=True, right_index=True)
 
-def positional_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM62" ):
+def positional_sequence_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM62" ):
     """
     Generates per-position match data of the provided sequence over the reference sequence.
 
@@ -201,7 +201,7 @@ def positional_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM62" ):
     data = {"identity_perc": [], "positive_perc": []}
     mat = SM.get_matrix(matrix)
 
-    # @todo: Code positional_similarity for DesignFrame
+    # @todo: Code positional_sequence_similarity for DesignFrame
     # @body: Should behave the same way it does for the FragmentFrame
     if isinstance(df, DesignFrame):
         if seqID is None:

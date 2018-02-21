@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragments.py
 # @Last modified by:   bonet
-# @Last modified time: 01-Feb-2018
+# @Last modified time: 20-Feb-2018
 
 
 import pandas as pd
@@ -11,8 +11,12 @@ import numpy as np
 import seaborn as sns
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
 import rstoolbox.utils as ru
+import rstoolbox.analysis as ra
+from .sequence import positional_sequence_similarity_plot
+from .structure import positional_structural_similarity_plot
 
 def _sse_frequencies_match(sse_fit, frags):
 
@@ -43,6 +47,58 @@ def _seq_frequencies_match(seq_fit, frags):
     sse["position"] = sse["position"].apply( lambda x: x - 1 )
 
     return sse.fillna(0)
+
+def plot_fragment_profiles( fig, small_frags, large_frags, ref_seq, ref_sse, matrix="BLOSUM62" ):
+
+    # make subplots
+    grid = (4, 2)
+    ax00 = plt.subplot2grid(grid, (0, 0), fig=fig)
+    ax10 = plt.subplot2grid(grid, (1, 0), sharex=ax00, fig=fig)
+    ax20 = plt.subplot2grid(grid, (2, 0), rowspan=2, sharex=ax00, fig=fig)
+
+    ax01 = plt.subplot2grid(grid, (0, 1), sharey=ax00, fig=fig)
+    ax11 = plt.subplot2grid(grid, (1, 1), sharex=ax01, fig=fig)
+    ax21 = plt.subplot2grid(grid, (2, 1), rowspan=2, sharex=ax01, fig=fig)
+
+    # fill subplots
+    plot_fragments( small_frags, large_frags, ax20, ax21, titles=None )
+    positional_structural_similarity_plot(
+        pd.concat([ra.positional_structural_count(small_frags), ra.positional_structural_identity(small_frags, ref_sse=ref_sse)], axis=1),
+        ax10)
+    positional_structural_similarity_plot(
+        pd.concat([ra.positional_structural_count(large_frags), ra.positional_structural_identity(large_frags, ref_sse=ref_sse)], axis=1),
+        ax11)
+    positional_sequence_similarity_plot( ra.positional_sequence_similarity( small_frags, "A", ref_seq, matrix ), ax00 )
+    positional_sequence_similarity_plot( ra.positional_sequence_similarity( large_frags, "A", ref_seq, matrix ), ax01 )
+
+    # fix axis
+    plt.setp(ax00.get_xticklabels(), visible=False)
+    ax00.set_ylabel("aa freq")
+    ax00.set_xlim(xmin=-0.5)
+    ax00.set_ylim(0, 1.01)
+    plt.setp(ax01.get_xticklabels(), visible=False)
+    ax01.set_ylabel("aa freq")
+    ax01.set_xlim(xmin=-0.5)
+    ax01.set_ylim(0, 1.01)
+    plt.setp(ax10.get_xticklabels(), visible=False)
+    ax10.set_ylabel("sse freq")
+    ax10.set_ylim(0, 1.01)
+    plt.setp(ax11.get_xticklabels(), visible=False)
+    ax11.set_ylabel("sse freq")
+    ax11.set_ylim(0, 1.01)
+
+    # fix display
+    ru.add_top_title(ax00, "{}mers".format(small_frags["size"].values[0]))
+    ru.add_top_title(ax01, "{}mers".format(large_frags["size"].values[0]))
+    fig.subplots_adjust(wspace=0.1, hspace=0.1)
+
+    fig.legend(handles=[
+        mpatches.Patch(color="green",     label="aa identity"),
+        mpatches.Patch(color="orange",    label="aa similarity"),
+        mpatches.Patch(color="royalblue", label="sse helix content"),
+        mpatches.Patch(color="tomato",    label="sse beta content"),
+        mpatches.Patch(color="black",     label="sse match to expected")
+    ], ncol=5, loc='lower center', borderaxespad=0.)
 
 
 def plot_fragments(small_frags, large_frags, small_ax, large_ax, small_color=0, large_color=0,
@@ -154,11 +210,12 @@ def plot_fragments(small_frags, large_frags, small_ax, large_ax, small_color=0, 
 
 
     # Titles
-    if titles.lower() == "top":
-        ru.add_top_title(small_ax, "{}mers".format(small_frags["size"].values[0]))
-        ru.add_top_title(large_ax, "{}mers".format(large_frags["size"].values[0]))
-    elif titles.lower() == "right":
-        ru.add_right_title(small_ax, "{}mers".format(small_frags["size"].values[0]))
-        ru.add_right_title(large_ax, "{}mers".format(large_frags["size"].values[0]))
-    else:
-        pass
+    if titles is not None:
+        if titles.lower() == "top":
+            ru.add_top_title(small_ax, "{}mers".format(small_frags["size"].values[0]))
+            ru.add_top_title(large_ax, "{}mers".format(large_frags["size"].values[0]))
+        elif titles.lower() == "right":
+            ru.add_right_title(small_ax, "{}mers".format(small_frags["size"].values[0]))
+            ru.add_right_title(large_ax, "{}mers".format(large_frags["size"].values[0]))
+        else:
+            pass
