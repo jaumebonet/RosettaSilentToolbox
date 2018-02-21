@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragments.py
 # @Last modified by:   bonet
-# @Last modified time: 20-Feb-2018
+# @Last modified time: 21-Feb-2018
 
 
 import pandas as pd
@@ -158,14 +158,6 @@ def plot_fragments(small_frags, large_frags, small_ax, large_ax, small_color=0, 
         large_twin.xaxis.grid(False)
 
     if seq_fit is not None:
-        # small_seq = small_frags[["position", "aa"]].drop_duplicates(["position", "aa"]).groupby("position").count().reset_index()
-        # small_seq["aa"] = small_seq["aa"].apply(lambda x: float(x)/21.0 )
-        # small_seq["position"] = small_seq["position"].apply( lambda x: x - 1 )
-        # small_twin.plot( small_seq["position"], small_seq["aa"], linestyle="solid", linewidth=3, color=small_seq_color)
-        # large_seq = large_frags[["position", "aa"]].drop_duplicates(["position", "aa"]).groupby("position").count().reset_index()
-        # large_seq["aa"] = large_seq["aa"].apply(lambda x: float(x)/21.0 )
-        # large_seq["position"] = large_seq["position"].apply( lambda x: x - 1 )
-        # large_twin.plot( large_seq["position"], large_seq["aa"], linestyle="solid", linewidth=3, color=large_seq_color)
         small_seq = _seq_frequencies_match(seq_fit, small_frags)
         large_seq = _seq_frequencies_match(seq_fit,large_frags)
         small_twin.plot( small_seq["position"], small_seq["percs"], linestyle="solid", linewidth=3, color=small_seq_color)

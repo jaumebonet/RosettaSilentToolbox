@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import sys
 
@@ -52,6 +53,8 @@ class Description( object ):
                 return False
         if self.scores_ignore is not None:
             if self.scores_ignore == "*" or score_name in self.scores_ignore:
+                return False
+            elif any(re.match(s, score_name) for s in self.scores_ignore if "*" in s):
                 return False
         if self.scores_rename is not None:
             if score_name in self.scores_rename:
