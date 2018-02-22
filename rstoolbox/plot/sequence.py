@@ -13,7 +13,7 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
 from rstoolbox.analysis import sequence_frequency_matrix, binary_overlap
-from rstoolbox.components import DesignFrame, SequenceFrame
+from rstoolbox.components import DesignFrame, SequenceFrame, Selection
 from .color_schemes import color_scheme
 
 class Scale(matplotlib.patheffects.RendererBase):
@@ -108,6 +108,9 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
             data = data.reindex(order)
 
     # Refseq and key_residues management.
+    if isinstance(key_residues, Selection):
+        key_residues = key_residues + data.reference_shift()
+        key_residues = key_residues.to_list()
     ref_seq = data.key_reference_sequence(key_residues, False)
     if key_residues is not None:
         data = data[key_residues]

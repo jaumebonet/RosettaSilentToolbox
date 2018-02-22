@@ -17,38 +17,38 @@ import pandas as pd
 import numpy as np
 
 # This Library
+from .rsbase import RSBaseDesign
 from .apply import frame_apply
 from .sequenceFrame import SequenceFrame
-import rstoolbox.utils as ru
+# import rstoolbox.utils as ru
 
-class DesignSeries( pd.Series ):
+class DesignSeries( pd.Series, RSBaseDesign ):
+
+    _metadata = ['_reference']
+
+    def __new__( cls, *args, **kwargs ):
+        # This will avoid columns from the DesignFrame to become DesignSeries
+        if isinstance(kwargs.get('name', None), int):
+            obj = object.__new__(cls)
+            obj.__init__(*args, **kwargs)
+            return obj
+        return pd.Series(*args, **kwargs)
+
+    def __init__( self, *args, **kwargs ):
+        reference = kwargs.pop('reference', {})
+        super(DesignSeries, self).__init__(*args, **kwargs)
+        self._reference = reference
 
     @property
-    def _constructor(self):
+    def _constructor( self ):
         return DesignSeries
 
     @property
-    def _constructor_expanddim(self):
+    def _constructor_expanddim( self ):
         return DesignFrame
 
-if (sys.version_info > (3, 0)):
-    DesignSeries.get_sequence                        = ru.get_sequence
-    DesignSeries.get_available_sequences             = ru.get_available_sequences
-    DesignSeries.get_structure                       = ru.get_structure
-    DesignSeries.get_available_structures            = ru.get_available_structures
-    DesignSeries.get_structure_prediction            = ru.get_structure_prediction
-    DesignSeries.get_available_structure_predictions = ru.get_available_structure_predictions
-else:
-    import types
-    DesignSeries.get_sequence                        = types.MethodType(ru.get_sequence, None, DesignSeries)
-    DesignSeries.get_available_sequences             = types.MethodType(ru.get_available_sequences, None, DesignSeries)
-    DesignSeries.get_structure                       = types.MethodType(ru.get_structure, None, DesignSeries)
-    DesignSeries.get_available_structures            = types.MethodType(ru.get_available_structures, None, DesignSeries)
-    DesignSeries.get_structure_prediction            = types.MethodType(ru.get_structure_prediction, None, DesignSeries)
-    DesignSeries.get_available_structure_predictions = types.MethodType(ru.get_available_structure_predictions, None, DesignSeries)
 
-
-class DesignFrame( pd.DataFrame ):
+class DesignFrame( pd.DataFrame, RSBaseDesign ):
     """
     The :py:class:`.DesignFrame` extends the :py:class:`~pandas.DataFrame`
     adding some functionalities in order to improve its usability in
@@ -85,53 +85,12 @@ class DesignFrame( pd.DataFrame ):
     """
     _metadata = ['_reference', '_source_files']
 
-    def __init__(self, *args, **kw):
-        super(DesignFrame, self).__init__(*args, **kw)
-        self._reference = self._metadata_defaults("_reference")
-        self._source_files = self._metadata_defaults("_source_files")
-
-    def reference_sequence( self, seqID, sequence=None, shift=1 ):
-        """
-        Setter/Getter for a reference sequence attached to a particular
-        sequence ID. It also allows to provide the shift of the sequence
-        count with respect to a linear numbering (Rosetta numbering).
-
-        :param str seqID: Identifier of the reference sequence
-        :param str sequence: Reference sequence. By default is
-            :py:data:`None`, which turns the function into a getter.
-        :param int shift: In case the sequence does not start in 1, how much
-            do we need to shift? Basically provide the number of the first
-            residue of the chain. Default is 1.
-        :return: str
-        :raise KeyError: If seqID does not exist.
-        """
-        if sequence is not None:
-            self._reference.setdefault(seqID, {"seq": sequence, "sft": shift})
-        else:
-            if seqID not in self._reference:
-                raise KeyError("There is no reference sequence with ID: {}\n".format(seqID))
-        return self._reference[seqID]["seq"]
-
-    def reference_shift( self, seqID, shift=None ):
-        """
-        Setter/Getter for a reference shift attached to a particular
-        sequence ID. If there is no reference sequence attached, it returns
-        1, as "no reference shift".
-
-        :param str seqID: Identifier of the reference sequence
-        :param int shift: In case the sequence does not start in 1, how much
-            do we need to shift? Basically provide the number of the first
-            residue of the chain. By default is :py:data:`None`, which turns
-            the function into a getter.
-        :return: int
-        """
-        print self.get_sequence("A")[0]
-        if seqID in self._reference:
-            if shift is not None:
-                self._reference[seqID]["sft"] = shift
-            return self._reference[seqID]["sft"]
-        else:
-            return 1
+    def __init__(self, *args, **kwargs):
+        reference = kwargs.pop('reference', {})
+        source    = kwargs.pop('source', set())
+        super(DesignFrame, self).__init__(*args, **kwargs)
+        self._reference = reference
+        self._source_files = source
 
     def key_reference_sequence( self, seqID, key_residues, check=True ):
         """
@@ -251,7 +210,7 @@ class DesignFrame( pd.DataFrame ):
             if mutations == "": return 0
             return len(mutations.split(","))
 
-        this_shift = shift if shift is not None else self.reference_shift(seqID)
+        this_shift = shift if shift is not None else self.get_reference_shift(seqID)
         self["mutants_{0}".format(seqID)] = self.apply(
             lambda row: mutations(self.get_reference_sequence(seqID), row["sequence_{0}".format(seqID)], this_shift),
             axis=1 )
@@ -324,7 +283,7 @@ class DesignFrame( pd.DataFrame ):
             return df
 
         designs = []
-        refshift = self.reference_shift(seqID)
+        refshift = self.get_reference_shift(seqID)
         for i, row in self.iterrows():
             designs.append(multiplex(row, seqID, mutations, refshift))
         df = pd.concat(designs)
@@ -377,7 +336,7 @@ class DesignFrame( pd.DataFrame ):
         df.delete_extra( cleanExtra )
         df.delete_empty( cleanUnused )
         df.clean()
-        df.index = df.index + (shift if shift is not None else self.reference_shift(seqID))
+        df.index = df.index + (shift if shift is not None else self.get_reference_shift(seqID))
         return df
 
     def sequence_bits( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=False ):
@@ -464,7 +423,9 @@ class DesignFrame( pd.DataFrame ):
     def _constructor(self):
         return DesignFrame
 
-    _constructor_sliced = DesignSeries
+    @property
+    def _constructor_sliced(self):
+        return DesignSeries
 
     def __finalize__(self, other, method=None, **kwargs):
         """propagate metadata from other to self """
@@ -515,38 +476,4 @@ class DesignFrame( pd.DataFrame ):
                              args=args,
                              kwds=kwds)
             return op.get_result()
-
-if (sys.version_info > (3, 0)):
-    DesignFrame.get_sequence                        = ru.get_sequence
-    DesignFrame.get_available_sequences             = ru.get_available_sequences
-    DesignFrame.get_structure                       = ru.get_structure
-    DesignFrame.get_available_structures            = ru.get_available_structures
-    DesignFrame.get_structure_prediction            = ru.get_structure_prediction
-    DesignFrame.get_available_structure_predictions = ru.get_available_structure_predictions
-    DesignFrame.has_reference_sequence              = ru.has_reference_sequence
-    DesignFrame.add_reference_sequence              = ru.add_reference_sequence
-    DesignFrame.get_reference_sequence              = ru.get_reference_sequence
-    DesignFrame.has_reference_structure             = ru.has_reference_structure
-    DesignFrame.add_reference_structure             = ru.add_reference_structure
-    DesignFrame.get_reference_structure             = ru.get_reference_structure
-    DesignFrame.add_reference_shift                 = ru.add_reference_shift
-    DesignFrame.get_reference_shift                 = ru.get_reference_shift
-    DesignFrame.add_reference                       = ru.add_reference
-else:
-    import types
-    DesignFrame.get_sequence                        = types.MethodType(ru.get_sequence, None, DesignFrame)
-    DesignFrame.get_available_sequences             = types.MethodType(ru.get_available_sequences, None, DesignFrame)
-    DesignFrame.get_structure                       = types.MethodType(ru.get_structure, None, DesignFrame)
-    DesignFrame.get_available_structures            = types.MethodType(ru.get_available_structures, None, DesignFrame)
-    DesignFrame.get_structure_prediction            = types.MethodType(ru.get_structure_prediction, None, DesignFrame)
-    DesignFrame.get_available_structure_predictions = types.MethodType(ru.get_available_structure_predictions, None, DesignFrame)
-    DesignFrame.has_reference_sequence              = types.MethodType(ru.has_reference_sequence, None, DesignFrame)
-    DesignFrame.add_reference_sequence              = types.MethodType(ru.add_reference_sequence, None, DesignFrame)
-    DesignFrame.get_reference_sequence              = types.MethodType(ru.get_reference_sequence, None, DesignFrame)
-    DesignFrame.has_reference_structure             = types.MethodType(ru.has_reference_structure, None, DesignFrame)
-    DesignFrame.add_reference_structure             = types.MethodType(ru.add_reference_structure, None, DesignFrame)
-    DesignFrame.get_reference_structure             = types.MethodType(ru.get_reference_structure, None, DesignFrame)
-    DesignFrame.add_reference_shift                 = types.MethodType(ru.add_reference_shift, None, DesignFrame)
-    DesignFrame.get_reference_shift                 = types.MethodType(ru.get_reference_shift, None, DesignFrame)
-    DesignFrame.add_reference                       = types.MethodType(ru.add_reference, None, DesignFrame)
 

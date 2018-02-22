@@ -5,9 +5,11 @@
 # @Last modified by:   bonet
 # @Last modified time: 22-Feb-2018
 
+import copy
+import warnings
 
 import pandas as pd
-import warnings
+
 
 def has_reference_sequence( self, seqID ):
     """
@@ -234,3 +236,20 @@ def add_reference( self, seqID, sequence="", structure="", shift=1):
         self.add_reference_shift( seqID, shift )
     except AttributeError:
             warnings.warn( "Trying to assign reference shift to an object without the propery" )
+
+def transfer_reference( self, df ):
+    """
+    Transfer reference from one data container to another. This **overwrittes** previous references completely.
+    Use with care.
+
+    :param df: Data container. Derives from :py:class:`~pandas.DataFrame` or :py:class:`~pandas.Series`.
+    :type df: :py:class:`str`
+
+    :raises:
+        :AttributeError: If trying to add a reference type to/from a class without it
+    """
+    try:
+        self._reference = copy.deepcopy(df._reference)
+    except AttributeError:
+        warnings.warn( "Either the target or source object cannot hold a reference." )
+

@@ -3,10 +3,13 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Dec-2017
+# @Last modified time: 22-Feb-2018
 
 
 from itertools import groupby, count
+
+from pandas import Series
+import numpy as np
 
 class Selection(object):
     """
@@ -22,33 +25,23 @@ class Selection(object):
         have to be separated by space and ranges by '-'. Both things can
         be mixed.
     """
-    def __init__(self, seqID, selection):
-        super(Selection, self).__init__()
-        self._seqID    = seqID
+    def __init__(self, selection):
         self._asstring = ""
         self._aslist   = []
+        if isinstance(selection, Series):
+            if selection.shape[0] == 1:
+                selection = selection.values[0]
+            else:
+                selection = list(selection.values)
         if isinstance(selection, basestring):
             self._asstring = selection
             self._aslist   = self._string_to_list()
-        elif isinstance(selection, list):
+        elif isinstance(selection, (list, np.ndarray)):
             self._aslist   = sorted(list(set(selection)))
             self._asstring = self._list_to_string()
 
-    @property
-    def seqID(self):
-        """
-        Identifier of the sequence of interest
-        :return: str
-        """
-        return self._seqID
-
-    @seqID.setter
-    def seqID(self, value):
-        """
-        Identifier of the sequence of interest
-        :param str value: seqID
-        """
-        self._seqID = value
+    def to_list(self):
+        return self._aslist
 
     def _string_to_list(self):
         """
@@ -88,10 +81,30 @@ class Selection(object):
         return self._asstring
 
     def __repr__(self):
-        return self._list_to_string(self._seqID)
+        return self._list_to_string()
 
     def __iter__(self):
         return iter(self._aslist)
 
     def __len__(self):
         return len(self._aslist)
+
+    def __add__(self, other):
+        if isinstance(other, int):
+            return Selection(np.array(self.to_list()) + other)
+
+        if isinstance(other, (Series, basestring, list)):
+            other = Selection(other)
+        if not isinstance(other, Selection):
+            raise NotImplementedError
+        return Selection(list(set(self.to_list()).union(other.to_list())))
+
+    def __sub__(self, other):
+        if isinstance(other, int):
+            return Selection(np.array(self.to_list()) - other)
+
+        if isinstance(other, (Series, basestring, list)):
+            other = Selection(other)
+        if not isinstance(other, Selection):
+            raise NotImplementedError
+        return Selection(list(set(self.to_list()).difference(other.to_list())))

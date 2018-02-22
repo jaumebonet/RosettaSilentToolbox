@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 20-Feb-2018
+# @Last modified time: 22-Feb-2018
 
 import string
 import os
@@ -113,11 +113,11 @@ def pick_key_residues( df, seqID, key_residues=None ):
     elif isinstance( key_residues, str ):
         pass
 
-    selected_residues = np.array(key_residues) - df.reference_shift(seqID)
+    selected_residues = np.array(key_residues) - df.get_reference_shift(seqID)
 
     if np.any(selected_residues < 0):
         raise IndexError("Selected residue out of specified bound")
-    if np.any(selected_residues > len(df["sequence_{}".format(seqID)].values[0]) + df.reference_shift(seqID) - 1):
+    if np.any(selected_residues > len(df["sequence_{}".format(seqID)].values[0]) + df.get_reference_shift(seqID) - 1):
         raise IndexError("Selected residue out of specified bound")
 
     sr = df.apply(lambda x : _pick_key_residues(x["sequence_{}".format(seqID)], selected_residues), axis=1)

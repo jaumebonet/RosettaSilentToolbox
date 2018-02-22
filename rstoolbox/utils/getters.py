@@ -106,3 +106,23 @@ def get_structure_prediction( self, seqID ):
     if not col in self:
         raise KeyError("Structure prediction for {0} not found in data set. Column `psipred_{0}` is missing.".format(seqID))
     return self[col]
+
+def get_label( self, label ):
+    """
+    Return the content(s) of the labels of interest.
+
+    :param label: Label identifier. Will be uppercased.
+    :type label: :py:class:`str`
+
+    :return: py:class:`str` or :py:class:`~pandas.Series`
+
+    :raises:
+        :TypeError: If the data container is not :py:class:`~pandas.DataFrame` or :py:class:`~pandas.Series`
+        :KeyError: If the column `psipred_[seqID] is cannot be found.
+    """
+    col = "lbl_{}".format(label.upper())
+    if not isinstance(self, (pd.DataFrame, pd.Series)):
+        raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
+    if not col in self:
+        raise KeyError("Label {0} not found in data set. Column `lbl_{0}` is missing.".format(label.upper()))
+    return self[col]
