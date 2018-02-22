@@ -122,6 +122,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
         data = data.reindex(order)
 
 
+
     # heatmap parameters and others
     if not "cmap" in kwargs:        # define the color-range of the plot
         kwargs["cmap"] = "Blues"
