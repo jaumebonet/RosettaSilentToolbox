@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 22-Feb-2018
+# @Last modified time: 23-Feb-2018
 
 # Standard Libraries
 import itertools
@@ -14,6 +14,32 @@ import sys
 
 # External Libraries
 import pandas as pd
+from pandas.core.index import (Index, MultiIndex, _ensure_index,
+                               _ensure_index_from_sequences)
+from pandas.core.dtypes.common import (
+    is_categorical_dtype,
+    is_object_dtype,
+    is_extension_type,
+    is_datetimetz,
+    is_datetime64_any_dtype,
+    is_datetime64tz_dtype,
+    is_bool_dtype,
+    is_integer_dtype,
+    is_float_dtype,
+    is_integer,
+    is_scalar,
+    is_dtype_equal,
+    needs_i8_conversion,
+    _get_dtype_from_object,
+    _ensure_float,
+    _ensure_float64,
+    _ensure_int64,
+    _ensure_platform_int,
+    is_list_like,
+    is_nested_list_like,
+    is_iterator,
+    is_sequence,
+    is_named_tuple)
 import numpy as np
 
 # This Library
@@ -25,6 +51,7 @@ from .sequenceFrame import SequenceFrame
 class DesignSeries( pd.Series, RSBaseDesign ):
 
     _metadata = ['_reference']
+    _subtyp = 'design_series'
 
     def __new__( cls, *args, **kwargs ):
         # This will avoid columns from the DesignFrame to become DesignSeries
@@ -46,6 +73,11 @@ class DesignSeries( pd.Series, RSBaseDesign ):
     @property
     def _constructor_expanddim( self ):
         return DesignFrame
+
+    def __finalize__(self, other, method=None, **kwargs):
+        if method == "inherit":
+            self._reference = other._reference
+        return self
 
 
 class DesignFrame( pd.DataFrame, RSBaseDesign ):
@@ -84,6 +116,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
     be used to extract the structures from the silent files.
     """
     _metadata = ['_reference', '_source_files']
+    _subtyp = 'design_frame'
 
     def __init__(self, *args, **kwargs):
         reference = kwargs.pop('reference', {})
@@ -425,7 +458,90 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
 
     @property
     def _constructor_sliced(self):
-        return DesignSeries
+        def f(*args, **kwargs):
+        # workaround for https://github.com/pandas-dev/pandas/issues/13208
+            return DesignSeries(*args, **kwargs).__finalize__(self, method='inherit')
+        return f
+
+    def _box_col_values(self, values, items):
+        """ provide boxed values for a column """
+        return self._constructor_sliced(values, index=self.index,
+                                                    name=items, fastpath=True)
+
+    def _ixs(self, i, axis=0):
+        """
+        i : int, slice, or sequence of integers
+        axis : int
+        """
+
+        # irow
+        if axis == 0:
+            """
+            Notes
+            -----
+            If slice passed, the resulting data will be a view
+            """
+
+            if isinstance(i, slice):
+                return self[i]
+            else:
+                label = self.index[i]
+                print label
+                if isinstance(label, Index):
+                    # a location index by definition
+                    result = self.take(i, axis=axis)
+                    copy = True
+                else:
+                    print "there"
+                    new_values = self._data.fast_xs(i)
+                    print new_values
+                    if is_scalar(new_values):
+                        return new_values
+
+                    # if we are a copy, mark as such
+                    copy = (isinstance(new_values, np.ndarray) and
+                            new_values.base is None)
+                    result = self._constructor_sliced(new_values,
+                                                      index=self.columns,
+                                                      name=self.index[i],
+                                                      dtype=new_values.dtype)
+                result._set_is_copy(self, copy=copy)
+                return result
+
+        # icol
+        else:
+            """
+            Notes
+            -----
+            If slice passed, the resulting data will be a view
+            """
+
+            label = self.columns[i]
+            if isinstance(i, slice):
+                # need to return view
+                lab_slice = slice(label[0], label[-1])
+                return self.loc[:, lab_slice]
+            else:
+                if isinstance(label, Index):
+                    return self._take(i, axis=1, convert=True)
+
+                index_len = len(self.index)
+
+                # if the values returned are not the same length
+                # as the index (iow a not found value), iget returns
+                # a 0-len ndarray. This is effectively catching
+                # a numpy error (as numpy should really raise)
+                values = self._data.iget(i)
+
+                if index_len and not len(values):
+                    values = np.array([np.nan] * index_len, dtype=object)
+                result = self._constructor_sliced(
+                    values, index=self.index, name=label, fastpath=True)
+
+                # this is a cached value, mark it so
+                result._set_as_cached(label, self)
+
+                return result
 
     def __finalize__(self, other, method=None, **kwargs):
         """propagate metadata from other to self """

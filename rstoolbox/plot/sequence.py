@@ -109,7 +109,8 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
 
     # Refseq and key_residues management.
     if isinstance(key_residues, Selection):
-        key_residues = key_residues + data.reference_shift()
+        # labels already count from 1.
+        key_residues = key_residues + data.reference_shift() - 1
         key_residues = key_residues.to_list()
     ref_seq = data.key_reference_sequence(key_residues, False)
     if key_residues is not None:
@@ -185,7 +186,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
             else:
                 ax.add_patch(Rectangle((order.index(ref_seq[i]), i), 1, 1, fill=False, edgecolor=border_color, lw=2))
 
-def positional_sequence_similarity_plot( df, ax ):
+def positional_sequence_similarity_plot( df, ax, identity_color="green", similarity_color="orange" ):
     """
     Generates a plot covering the amount of identities and positives matches from a population of designs
     to a reference sequence according to a substitution matrix.
@@ -198,16 +199,19 @@ def positional_sequence_similarity_plot( df, ax ):
 
     """
 
-    # @todo Expand controls for positional_sequence_similarity_plot
-    # @body add attributes to change positive and identity colors
+    # Color management
+    if isinstance(identity_color, int):
+        identity_color = sns.color_palette()[identity_color]
+    if isinstance(similarity_color, int):
+        similarity_color = sns.color_palette()[similarity_color]
 
     y = df["positive_perc"].values
     ax.plot(range(len(y)), y, color="orange", linestyle="solid", linewidth=2)
-    ax.fill_between(range(len(y)), 0, y, color="orange", alpha=1)
+    ax.fill_between(range(len(y)), 0, y, color=similarity_color, alpha=1)
 
     y = df["identity_perc"].values
     ax.plot(range(len(y)), y, color="green", linestyle="solid", linewidth=2)
-    ax.fill_between(range(len(y)), 0, y, color="green", alpha=1)
+    ax.fill_between(range(len(y)), 0, y, color=identity_color, alpha=1)
 
     ax.set_ylim(0, 1)
     ax.set_xlim(0, len(y) - 1)

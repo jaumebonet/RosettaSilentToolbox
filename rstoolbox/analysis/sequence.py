@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 22-Feb-2018
+# @Last modified time: 23-Feb-2018
 
 import string
 import os
@@ -184,7 +184,8 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM
     :type df: Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`]
     :param seqID: Identifier of the sequence sets of interest. Required when input is :py:class:`.DesignFrame`
     :type seqID: :py:class:`str`
-    :param ref_seq: Reference sequence. Required when input is :py:class:`.FragmentFrame`
+    :param ref_seq: Reference sequence. Required when input is :py:class:`.FragmentFrame`. Will overwrite
+    the reference sequence of :py:class:`.DesignFrame` if provided.
     :type ref_seq: :py:class:`str`
     :param matrix: Identifier of the matrix used to evaluate similarity. Default is BLOSUM62.
     :type matrix: :py:class:`str`
@@ -210,6 +211,15 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM
             raise AttributeError("There is no reference sequence for seqID {}".format(seqID))
         if not "sequence_{}".format(seqID) in df:
             raise KeyError("Sequence {} not found in decoys.".format(seqID))
+
+        ref_seq = ref_seq if ref_seq is not None else df.get_reference_sequence(seqID)
+        seqdata = df.get_sequence(seqID)
+        seqdata = seqdata.apply(lambda x: pd.Series(list(x)))
+        for _, i in enumerate(seqdata.columns.values):
+            qseq = "".join(seqdata[i].tolist())
+            raw, idn, pos, neg = _positional_similarity( qseq, ref_seq[_], mat )
+            data["identity_perc"].append(float(idn)/float(len(qseq)))
+            data["positive_perc"].append(float(pos)/float(len(qseq)))
 
     elif isinstance(df, FragmentFrame):
         if ref_seq is None:
