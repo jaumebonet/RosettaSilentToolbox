@@ -164,7 +164,7 @@ class TestSelection( object ):
 
     def test_map_to_sequences( self ):
         a1 = [2, 3, 4, 5, 15, 21, 22, 23, 24, 50, 51, 68, 72, 110, 111, 112, 113]
-        a2 = [2, 3, 153]
+        a2 = [2, 3, 210]
         _1 = [2, 3, 4, 5, 15, 21, 22, 23, 24, 50]
         _2 = list(np.array([51, 68, 72]) - 50)
         _3 = list(np.array([110, 111, 112, 113]) - 100)
@@ -177,11 +177,14 @@ class TestSelection( object ):
         smap = ["A", ] * 50
         smap.extend(["B", ] * 50)
         smap.extend(["C", ] * 50)
+        smap.extend(["D", ] * 50)
+        cntr = "A:#(10),B:#(3),C:#(4),D:#(0)"
 
         s1a = s1.map_to_sequences(smap)
         assert s1a["A"] == _1
         assert s1a["B"] == _2
         assert s1a["C"] == _3
+        assert str(s1a) == cntr
 
         # Selection w/ seqID should raise an error
         with pytest.raises(KeyError):
