@@ -1,7 +1,12 @@
-import os
+# @Author: Jaume Bonet <bonet>
+# @Date:   19-Feb-2018
+# @Email:  jaume.bonet@gmail.com
+# @Filename: description.py
+# @Last modified by:   bonet
+# @Last modified time: 01-Mar-2018
+
+
 import re
-import json
-import sys
 
 import numpy as np
 
@@ -17,7 +22,9 @@ class Description( object ):
         # Avoid false attributes and misspellings
         for k in params:
             if k not in self._PARAMS:
-                raise AttributeError("Wrong attribute provided. Accepted keys are: {}".format(",".join(self._PARAMS)))
+                raise AttributeError(
+                    "Wrong attribute provided. Accepted keys are: "
+                    "{}".format(",".join(self._PARAMS)))
 
         # Load selections
         self.scores            = params.get("scores",            "*" )
@@ -40,14 +47,20 @@ class Description( object ):
                 if k not in self._per_residues:
                     raise AttributeError("Unknown per-residue score: {}".format(k))
 
-        if self.scores_ignore == "*":
+        # Fix user input in case strings instead of lists were provided
+        if isinstance(self.scores, basestring) and self.scores not in ["*", "-"]:
+            self.scores = self.scores.split(",")
+
+        # Negate all scores
+        if self.scores_ignore == "*" or self.scores == "-":
             self.scores = None
 
         # Labels will be set in UPPERCASE
-        if self.labels is not None and self.labels != "*":
+        if self.labels is not None:
             self.labels = [x.upper() for x in self.labels]
 
     def wanted_score( self, score_name ):
+        # skip per-residue values when nod asked for
         for k in self._per_residues:
             if score_name.startswith(k) and score_name not in self.scores:
                 return False
@@ -59,6 +72,8 @@ class Description( object ):
         if self.scores_rename is not None:
             if score_name in self.scores_rename:
                 return True
+        if self.scores is None:
+            return False
         if self.scores == "*" or score_name in self.scores:
             return True
         return False
@@ -82,7 +97,9 @@ class Description( object ):
         for h in self.naming:
             if h in header and self.wanted_score(h):
                 if h == self.score_name(h):
-                    raise AttributeError("New column {} cannot be created, a score has that name".format(h))
+                    raise AttributeError(
+                        "New column {} ".format(h) +
+                        "cannot be created, a score has that name")
 
     def get_naming_pairs( self, description ):
         if self.naming is not None:
@@ -104,8 +121,9 @@ class Description( object ):
             sele = set(chains["id"]) if self.sequence == "*" else set(self.sequence)
             seq  = chains["seq"]
             if len(sele.difference(chains["id"])) > 0:
-                raise ValueError("Requested a chain not present in the file. "
-                "Available chain are {}".format(",".join(list(set(chains["id"])))))
+                raise ValueError(
+                    "Requested a chain not present in the file. "
+                    "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
             for ch in sele:
                 guidep = np.where(guide == ch)[0]
@@ -116,8 +134,9 @@ class Description( object ):
             sele = set(chains["id"]) if self.structure == "*" else set(self.structure)
             seq  = chains["dssp"]
             if len(sele.difference(chains["id"])) > 0:
-                raise ValueError("Requested a chain not present in the file. "
-                "Available chain are {}".format(",".join(list(set(chains["id"])))))
+                raise ValueError(
+                    "Requested a chain not present in the file. "
+                    "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
             for ch in sele:
                 guidep = np.where(guide == ch)[0]
@@ -128,8 +147,9 @@ class Description( object ):
             sele = set(chains["id"]) if self.psipred == "*" else set(self.psipred)
             seq  = chains["psipred"]
             if len(sele.difference(chains["id"])) > 0:
-                raise ValueError("Requested a chain not present in the file. "
-                "Available chain are {}".format(",".join(list(set(chains["id"])))))
+                raise ValueError(
+                    "Requested a chain not present in the file. "
+                    "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
             for ch in sele:
                 guidep = np.where(guide == ch)[0]

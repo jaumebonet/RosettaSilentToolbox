@@ -17,6 +17,9 @@ scanner:
 pycodestyle:
     max-line-length: 100 # Let's think big screen, for now
     ignore:  # Errors and warnings to ignore
-        - E402 # Not importing files at top of file.
-        - E201 # whitespace after '('
-        - E202 # whitespace before ')'
+        - E402  # Not importing files at top of file.
+        - E201  # whitespace after '('
+        - E202  # whitespace before ')'
+        - E712, # comparisson to bool (for assertions)
+        - E221, # multiple spaces before operator
+        - E241  # Multiple spaces after ','
