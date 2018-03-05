@@ -3,12 +3,27 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: reference.py
 # @Last modified by:   bonet
-# @Last modified time: 22-Feb-2018
+# @Last modified time: 05-Mar-2018
 
 import copy
 import warnings
 
 import pandas as pd
+
+
+def _has_reference( self, ctype, seqID ):
+    try:
+        return seqID in self._reference and self._reference[seqID][ctype[:3]] != ""
+    except AttributeError:
+        raise TypeError("The query object does not store reference data.")
+
+
+def _get_reference( self, ctype, seqID ):
+    if not isinstance(self, (pd.DataFrame, pd.Series)):
+        raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
+    if not _has_reference(self, ctype, seqID):
+        raise KeyError("No reference found for {0} {1}".format(ctype, seqID))
+    return self._reference[seqID][ctype[:3]]
 
 
 def has_reference_sequence( self, seqID ):
@@ -24,10 +39,8 @@ def has_reference_sequence( self, seqID ):
     :raises:
         :TypeError: If applied over a data container without `_reference` attribute.
     """
-    try:
-        return seqID in self._reference and self._reference[seqID]["seq"] != ""
-    except AttributeError:
-        raise TypeError("The query object does not store reference data.")
+    return _has_reference(self, "sequence", seqID)
+
 
 def add_reference_sequence( self, seqID, sequence ):
     """
@@ -39,13 +52,14 @@ def add_reference_sequence( self, seqID, sequence ):
     :type sequence: :py:class:`str`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame` or :py:class:`~pandas.Series`
+        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
+        or :py:class:`~pandas.Series`
         :KeyError: If the data container does not contain sequence data for the given seqID.
         :IndexError: If a reference structure exists and sequence length do not match
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
-    if not seqID in self.get_available_sequences():
+    if seqID not in self.get_available_sequences():
         raise KeyError("Data container does not have data for sequence {}".format(seqID))
 
     if seqID in self._reference:
@@ -56,6 +70,7 @@ def add_reference_sequence( self, seqID, sequence ):
     else:
         self._reference.setdefault(seqID, {"seq": sequence, "str": "", "stf": 1})
 
+
 def get_reference_sequence( self, seqID ):
     """
     Get a reference sequence attached to a particular sequence ID.
@@ -64,15 +79,12 @@ def get_reference_sequence( self, seqID ):
     :type seqID: :py:class:`str`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame` or :py:class:`~pandas.Series`
+        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
+        or :py:class:`~pandas.Series`
         :KeyError: If there is no reference sequence for seqID.
     """
-    if not isinstance(self, (pd.DataFrame, pd.Series)):
-        raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
-    if not self.has_reference_sequence(seqID):
-        raise KeyError("Data container does not have reference data for sequence {}".format(seqID))
+    return _get_reference( self, "sequence", seqID )
 
-    return self._reference[seqID]["seq"]
 
 def has_reference_structure( self, seqID ):
     """
@@ -87,10 +99,8 @@ def has_reference_structure( self, seqID ):
     :raises:
         :TypeError: If applied over a data container without `_reference` attribute.
     """
-    try:
-        return seqID in self._reference and self._reference[seqID]["str"] != ""
-    except AttributeError:
-        raise TypeError("The query object does not store reference data.")
+    return _has_reference(self, "structure", seqID)
+
 
 def add_reference_structure( self, seqID, structure ):
     """
@@ -102,13 +112,14 @@ def add_reference_structure( self, seqID, structure ):
     :type structure: :py:class:`str`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame` or :py:class:`~pandas.Series`
+        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
+        or :py:class:`~pandas.Series`
         :KeyError: If the data container does not contain structure data for the given seqID.
         :IndexError: If a reference sequence exists and structure length do not match
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
-    if not seqID in self.get_available_structures():
+    if seqID not in self.get_available_structures():
         raise KeyError("Data container does not have data for structure {}".format(seqID))
 
     if seqID in self._reference:
@@ -119,6 +130,7 @@ def add_reference_structure( self, seqID, structure ):
     else:
         self._reference.setdefault(seqID, {"str": structure, "seq": "", "stf": 1})
 
+
 def get_reference_structure( self, seqID ):
     """
     Get a reference structure attached to a particular sequence ID.
@@ -127,23 +139,20 @@ def get_reference_structure( self, seqID ):
     :type seqID: :py:class:`str`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame` or :py:class:`~pandas.Series`
+        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
+        or :py:class:`~pandas.Series`
         :KeyError: If there is no reference structure for seqID.
     """
-    if not isinstance(self, (pd.DataFrame, pd.Series)):
-        raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
-    if not self.has_reference_structure(seqID):
-        raise KeyError("Data container does not have reference data for structure {}".format(seqID))
+    return _get_reference( self, "structure", seqID )
 
-    return self._reference[seqID]["str"]
 
-def add_reference_shift( self, seqID, shift ):
+def add_reference_shift( self, seqID, shift, shift_labels=True ):
     """
     Add a reference shift attached to a particular sequence ID.
 
     **What is shift?** In case the sequence does not start in 1,
     shift defines how to count it. It is a way to keep plotting
-    and analysis showing residue number compatible with the PDB.
+    an analysis showing residue number compatible with the PDB.
     There are two main ways to set the shift:
 
     #. Provide the number of the first residue of the chain; the \
@@ -155,23 +164,29 @@ def add_reference_shift( self, seqID, shift ):
     :type seqID: :py:class:`str`
     :param shift: Starting residue number or per-residue number assignment.
     :type shift: Union[:py:class:`int`, :py:class:`list`]
+    :param shift_labels: When adding the shift, apply it to any label
+    :py:class:`.Selection` in the data (if it is not previously shifted).
+    :type shift: :py:class:`bool`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame` or :py:class:`~pandas.Series`
+        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
+        or :py:class:`~pandas.Series`
         :KeyError: If there is no reference structure or sequence for seqID.
-        :KeyError: If shift is a list and the data container does not contain structure or sequence data for
-        the given seqID.
-        :IndexError: If shift is a list and the length is different than the reference sequence/structure
+        :KeyError: If shift is a list and the data container does not contain structure
+        or sequence data for the given seqID.
+        :IndexError: If shift is a list and the length is different than the reference
+        sequence/structure
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
-    if not seqID in self.get_available_structures() and not seqID in self.get_available_sequences():
-        raise KeyError("Data container does not have data for structure {}".format(seqID))
+    if seqID not in self.get_available_structures() and seqID not in self.get_available_sequences():
+        raise KeyError("No reference found for sequece/structure {}".format(seqID))
 
     if isinstance(shift, list):
         if not self.has_reference_structure(seqID) and not self.has_reference_sequence(seqID):
-            raise KeyError("Data container does not have reference data for structure {}".format(seqID))
-        current_length = max(len(self.get_reference_sequence(seqID)), len(self.get_reference_structure(seqID)))
+            raise KeyError("No reference data for sequence/structure {}".format(seqID))
+        current_length = max(len(self.get_reference_sequence(seqID)),
+                             len(self.get_reference_structure(seqID)))
         if len(shift) != current_length:
             raise IndexError("Number of positions do not match reference sequence/structure length")
         self._reference[seqID]["sft"] = shift
@@ -180,6 +195,18 @@ def add_reference_shift( self, seqID, shift ):
             self._reference[seqID]["sft"] = shift
         else:
             self._reference.setdefault(seqID, {"str": "", "seq": "", "stf": shift})
+
+    if shift_labels:
+        labels = self.get_available_labels()
+        for lbl in labels:
+            clnm = "lbl_{}".format(lbl)
+            print "b-", self[clnm]
+            if isinstance(self, pd.DataFrame):
+                self.apply(lambda x: x[clnm].shift(seqID, shift - 1), axis=1)
+            else:
+                self[clnm].shift(seqID, shift - 1)
+            print "a-", self[clnm]
+
 
 def get_reference_shift( self, seqID ):
     """
@@ -192,18 +219,20 @@ def get_reference_shift( self, seqID ):
     :type shift: Union[:py:class:`int`, :py:class:`list`]
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame` or :py:class:`~pandas.Series`
+        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
+        or :py:class:`~pandas.Series`
         :KeyError: If there is no reference structure or sequence for seqID.
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
-    if not seqID in self.get_available_structures() and not seqID in self.get_available_sequences():
+    if seqID not in self.get_available_structures() and seqID not in self.get_available_sequences():
         raise KeyError("Data container does not have data for structure {}".format(seqID))
 
     if seqID in self._reference:
         return self._reference[seqID]["sft"]
     else:
         return 1
+
 
 def add_reference( self, seqID, sequence="", structure="", shift=1):
     """
@@ -237,12 +266,14 @@ def add_reference( self, seqID, sequence="", structure="", shift=1):
     except AttributeError:
             warnings.warn( "Trying to assign reference shift to an object without the propery" )
 
+
 def transfer_reference( self, df ):
     """
-    Transfer reference from one data container to another. This **overwrittes** previous references completely.
-    Use with care.
+    Transfer reference from one data container to another. This **overwrittes** previous
+    references completely. Use with care.
 
-    :param df: Data container. Derives from :py:class:`~pandas.DataFrame` or :py:class:`~pandas.Series`.
+    :param df: Data container. Derives from :py:class:`~pandas.DataFrame`
+    or :py:class:`~pandas.Series`.
     :type df: :py:class:`str`
 
     :raises:
@@ -252,4 +283,3 @@ def transfer_reference( self, df ):
         self._reference = copy.deepcopy(df._reference)
     except AttributeError:
         warnings.warn( "Either the target or source object cannot hold a reference." )
-

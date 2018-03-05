@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 28-Feb-2018
+# @Last modified time: 05-Mar-2018
 
 
 import copy
@@ -355,6 +355,25 @@ class SelectionContainer(dict):
     """
     Helper class to manage representation of selectors in pandas.
     """
+    def shift( self, seqID, value ):
+        """
+        Helper to ease the apply function. Shifts by value the labels
+        assigned to a given seqID.
+
+        :param seqID: Identifier of the reference sequence
+        :type seqID: :py:class:`str`
+        :param value: Identifier of the reference sequence
+        :type value: Union[:py:class:`int`, :py:class:`list`(:py:class:`int`)]
+
+        :raises:
+            :ValueError: If the :py:class:`.Selection` is already shifted
+        """
+        if seqID in self:
+            if self[seqID].is_shifted():
+                raise ValueError("Selection is alreay shifted.")
+            self[seqID] = self[seqID] >> value
+            self[seqID]._seqID = seqID
+
     def __str__( self ):
         return ",".join(["{0}:#({1})".format(x, len(self[x])) for x in sorted(self)])
 

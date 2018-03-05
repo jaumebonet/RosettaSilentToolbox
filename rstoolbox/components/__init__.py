@@ -1,4 +1,4 @@
-from .selection import Selection
+from .selection import Selection, SelectionContainer
 from .fragmentFrame import FragmentFrame
 from .sequenceFrame import SequenceFrame
 from .designFrame import DesignSeries, DesignFrame

@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_selection.py
 # @Last modified by:   bonet
-# @Last modified time: 28-Feb-2018
+# @Last modified time: 05-Mar-2018
 
 
 import pytest
@@ -183,6 +183,13 @@ class TestSelection( object ):
         s1a = s1.map_to_sequences(smap)
         assert s1a["A"] == _1
         assert s1a["B"] == _2
+        assert s1a["C"] == _3
+        assert str(s1a) == cntr
+
+        s1a.shift("A", 5)
+        s1a.shift("B", 2)
+        assert s1a["A"].to_list() == list(np.array(_1) + 5)
+        assert s1a["B"].to_list() == list(np.array(_2) + 2)
         assert s1a["C"] == _3
         assert str(s1a) == cntr
 

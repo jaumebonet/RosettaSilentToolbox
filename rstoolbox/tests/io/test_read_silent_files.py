@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: silent_files.py
 # @Last modified by:   bonet
-# @Last modified time: 01-Mar-2018
+# @Last modified time: 05-Mar-2018
 
 
 import pytest
@@ -21,7 +21,7 @@ class TestReadSilentFiles( object ):
     """
 
     def setup_method( self, method ):
-        self.dirpath = os.path.join(os.path.dirname(__file__), 'data')
+        self.dirpath = os.path.join(os.path.dirname(__file__), '..', 'data')
         self.silent1 = os.path.join(self.dirpath, 'input_2seq.minisilent.gz')
         self.silent2 = os.path.join(self.dirpath, 'input_sse.minsilent.gz')
         self.silent3 = os.path.join(self.dirpath, 'input_symmetry.minisilent.gz')
@@ -157,7 +157,7 @@ class TestReadSilentFiles( object ):
 
         sc_des = {"scores_ignore": "*", "sequence": "C", "structure": "C"}
         df = ri.parse_rosetta_file(self.silent2, sc_des)
-        assert len(df.columns.values) == 2º
+        assert len(df.columns.values) == 2
         assert len(df["sequence_C"]) == len(df["structure_C"])
 
     def test_read_labels( self ):
