@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: reference.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Mar-2018
+# @Last modified time: 06-Mar-2018
 
 import copy
 import warnings
@@ -11,19 +11,40 @@ import warnings
 import pandas as pd
 
 
-def _has_reference( self, ctype, seqID ):
+def _has_reference( obj, ctype, seqID ):
     try:
-        return seqID in self._reference and self._reference[seqID][ctype[:3]] != ""
+        return seqID in obj._reference and obj._reference[seqID][ctype[:3]] != ""
     except AttributeError:
         raise TypeError("The query object does not store reference data.")
 
 
-def _get_reference( self, ctype, seqID ):
-    if not isinstance(self, (pd.DataFrame, pd.Series)):
+def _get_reference( obj, ctype, seqID ):
+    if not isinstance(obj, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
-    if not _has_reference(self, ctype, seqID):
+    if not _has_reference(obj, ctype, seqID):
         raise KeyError("No reference found for {0} {1}".format(ctype, seqID))
-    return self._reference[seqID][ctype[:3]]
+    return obj._reference[seqID][ctype[:3]]
+
+
+def _get_key_reference( obj, ctype, seqID, key_residues ):
+    from rstoolbox.components import Selection
+
+    seq = _get_reference(obj, ctype, seqID)
+    sft = _get_reference(obj, "sft", seqID)
+    if key_residues is None:
+        return seq
+
+    if isinstance(key_residues, int):
+        key_residues = [int, ]
+    if isinstance(key_residues, list):
+        key_residues = Selection(key_residues)
+    if isinstance(key_residues, Selection):
+        kr = key_residues.unshift(seqID, sft)
+        kr = kr.to_list()
+    else:
+        raise NotImplementedError
+
+    return "".join([x for i, x in enumerate(seq) if i + 1 in kr])
 
 
 def has_reference_sequence( self, seqID ):
@@ -68,22 +89,28 @@ def add_reference_sequence( self, seqID, sequence ):
             raise IndexError("Structure length do not match sequence length")
         self._reference[seqID]["seq"] = sequence
     else:
-        self._reference.setdefault(seqID, {"seq": sequence, "str": "", "stf": 1})
+        self._reference.setdefault(seqID, {"seq": sequence, "str": "", "sft": 1})
 
 
-def get_reference_sequence( self, seqID ):
+def get_reference_sequence( self, seqID, key_residues=None ):
     """
     Get a reference sequence attached to a particular sequence ID.
 
     :param seqID: Identifier of the reference sequence
     :type seqID: :py:class:`str`
+    :param key_residues: Residues of interest to pick
+    :type key_residues: Union[:py:class:`int`,
+        :py:class:`list`(:py:class:`int`), :py:class:`.Selection` ]
 
     :raises:
         :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
         or :py:class:`~pandas.Series`
         :KeyError: If there is no reference sequence for seqID.
     """
-    return _get_reference( self, "sequence", seqID )
+    if key_residues is None:
+        return _get_reference(self, "sequence", seqID)
+    else:
+        return _get_key_reference(self, "sequence", seqID, key_residues)
 
 
 def has_reference_structure( self, seqID ):
@@ -128,22 +155,28 @@ def add_reference_structure( self, seqID, structure ):
             raise IndexError("Structure length do not match sequence length")
         self._reference[seqID]["str"] = structure
     else:
-        self._reference.setdefault(seqID, {"str": structure, "seq": "", "stf": 1})
+        self._reference.setdefault(seqID, {"str": structure, "seq": "", "sft": 1})
 
 
-def get_reference_structure( self, seqID ):
+def get_reference_structure( self, seqID, key_residues=None ):
     """
     Get a reference structure attached to a particular sequence ID.
 
     :param seqID: Identifier of the reference structure
     :type seqID: :py:class:`str`
+    :param key_residues: Residues of interest to pick
+    :type key_residues: Union[:py:class:`int`,
+        :py:class:`list`(:py:class:`int`), :py:class:`.Selection` ]
 
     :raises:
         :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
         or :py:class:`~pandas.Series`
         :KeyError: If there is no reference structure for seqID.
     """
-    return _get_reference( self, "structure", seqID )
+    if key_residues is None:
+        return _get_reference( self, "structure", seqID )
+    else:
+        return _get_key_reference(self, "sequence", seqID, key_residues)
 
 
 def add_reference_shift( self, seqID, shift, shift_labels=True ):
@@ -185,8 +218,11 @@ def add_reference_shift( self, seqID, shift, shift_labels=True ):
     if isinstance(shift, list):
         if not self.has_reference_structure(seqID) and not self.has_reference_sequence(seqID):
             raise KeyError("No reference data for sequence/structure {}".format(seqID))
-        current_length = max(len(self.get_reference_sequence(seqID)),
-                             len(self.get_reference_structure(seqID)))
+        current_length = 0
+        if self.has_reference_sequence(seqID):
+            current_length = len(self.get_reference_sequence(seqID))
+        elif self.has_reference_structure(seqID):
+            current_length = len(self.get_reference_structure(seqID))
         if len(shift) != current_length:
             raise IndexError("Number of positions do not match reference sequence/structure length")
         self._reference[seqID]["sft"] = shift
@@ -194,18 +230,16 @@ def add_reference_shift( self, seqID, shift, shift_labels=True ):
         if seqID in self._reference:
             self._reference[seqID]["sft"] = shift
         else:
-            self._reference.setdefault(seqID, {"str": "", "seq": "", "stf": shift})
+            self._reference.setdefault(seqID, {"str": "", "seq": "", "sft": shift})
 
     if shift_labels:
         labels = self.get_available_labels()
         for lbl in labels:
             clnm = "lbl_{}".format(lbl)
-            print "b-", self[clnm]
             if isinstance(self, pd.DataFrame):
-                self.apply(lambda x: x[clnm].shift(seqID, shift - 1), axis=1)
+                self.apply(lambda x: x[clnm].shift(seqID, shift), axis=1)
             else:
-                self[clnm].shift(seqID, shift - 1)
-            print "a-", self[clnm]
+                self[clnm].shift(seqID, shift)
 
 
 def get_reference_shift( self, seqID ):

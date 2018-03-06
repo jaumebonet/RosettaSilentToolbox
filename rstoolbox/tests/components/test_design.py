@@ -3,12 +3,13 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Mar-2018
+# @Last modified time: 06-Mar-2018
 
 
 import os
 
 import pandas as pd
+import numpy as np
 import pytest
 
 import rstoolbox.io as ri
@@ -95,8 +96,9 @@ class TestDesign( object ):
         # Without sequence/structure data, there are no references.
         df = ri.parse_rosetta_file(self.silent1)
         sr = df.iloc[0]
-        refseq = "PKPEEAMREAYKLIKKYMLKAQKEAQEEWERMRRTDGTKEEKDMFPEKMIAQALRAIGE" \
-                 "IFNAYYWAFLKLQEFKKYPSVRWEEQEEARKRLKIMMKIGAEWAREIAREMKERIKRA"
+        refseq = "AYSTREILLALCIRDSRVHGNGTLHPVLELAARETPLRLSPEDTVVLRYHVLLEEIIERN" \
+                 "SETFTETWNRFITHTEHVDLDFNSVFLEIFHRGDPSLGRALAWMAWCMHACRTLCCNQST" \
+                 "PYYVVDLSVRGMLEASEGLDGWIHQQGGWSTLIEDNI"
         with pytest.raises(KeyError):
             df.add_reference_sequence("A", refseq)
         with pytest.raises(KeyError):
@@ -104,9 +106,10 @@ class TestDesign( object ):
         with pytest.raises(KeyError):
             df.add_reference_shift("A", 2)
 
-        # Get label and sequence/structure data to play with.
+        # Get label and sequence/structure data to play with integer shift.
         sc_des  = {"labels": ["MOTIF", "CONTACT", "CONTEXT"], "sequence": "A"}
         _a = "9-26,28-29,31-32,35,37-40,67-68,70-71,89,91-116"
+        _b = "AYSTREILLALCIRDSRVH"
         df = ri.parse_rosetta_file(self.silent1, sc_des)
         df.add_reference_sequence("A", refseq)
         sr = df.iloc[0]
@@ -114,6 +117,7 @@ class TestDesign( object ):
         # Shift tests
         assert str(df.get_label("CONTACT", "A")[0]) == "1-19"
         assert str(df.get_label("CONTACT", "B")[0]) == _a
+        assert df.get_reference_sequence("A", df.get_label("CONTACT", "A")[0]) == _b
         df.add_reference_shift("A", 5)
         # Expected behaviour: all DesignSeries from a DesignFrame share reference data
         # and SelectionContainer
@@ -122,3 +126,20 @@ class TestDesign( object ):
         assert str(df.get_label("CONTACT", "A")[0]) == "5A-23A"
         assert str(df.get_label("CONTACT", "B")[0]) == _a
         assert str(df.get_label("CONTACT", "A")[0]) == str(sr.get_label("CONTACT", "A"))
+        assert df.get_reference_sequence("A", df.get_label("CONTACT", "A")[0]) == _b
+
+        # Let's work with an array-type shift
+        ashift = range(1, len(refseq) + 1)
+        ashift[30:] = list(np.array(ashift[30:]) + 5)
+        with pytest.raises(ValueError):
+            ashift.index(32)
+
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        _c = "LHPVLELAARETPLRLSPEDTVVLRYHVLLEEI"
+        df.add_reference_sequence("A", refseq)
+        sr = df.iloc[1]
+        assert str(sr.get_label("CONTACT", "A")) == "24-56"
+        assert sr.get_reference_sequence("A", sr.get_label("CONTACT", "A")) == _c
+        df.add_reference_shift("A", ashift)
+        assert str(sr.get_label("CONTACT", "A")) == "24A-30A,36A-61A"
+        assert sr.get_reference_sequence("A", sr.get_label("CONTACT", "A")) == _c

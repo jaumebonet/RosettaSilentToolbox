@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Mar-2018
+# @Last modified time: 06-Mar-2018
 
 
 import copy
@@ -174,6 +174,46 @@ class Selection( object ):
         for _ in set(sequence_map).difference(x):
             x[_] = Selection()
         return x
+
+    def shift( self, seqID, shift ):
+        """
+        Shifts the :py:class:`.Selection` according to a shift and sets
+        up the belonging chain.
+
+        :param seqID: Identifier of the reference sequence
+        :type seqID: :py:class:`str`
+        :param value: Identifier of the reference sequence
+        :type value: Union[:py:class:`int`, :py:class:`list`(:py:class:`int`)]
+
+        :return: New shifted :py:class:`.Selection`.
+        """
+        newsele = Selection()
+        if isinstance(shift, int):
+            newsele = self >> (shift - 1)
+        if isinstance(shift, list) and len(self) > 0:
+            newsele._asarr = [shift[x - 1] for x in self._asarr]
+        newsele._seqID = seqID
+        return newsele
+
+    def unshift( self, seqID, shift ):
+        """
+        Unshifts the :py:class:`.Selection` according to a shift and sets
+        up the belonging chain.
+
+        :param seqID: Identifier of the reference sequence
+        :type seqID: :py:class:`str`
+        :param value: Identifier of the reference sequence
+        :type value: Union[:py:class:`int`, :py:class:`list`(:py:class:`int`)]
+
+        :return: New shifted :py:class:`.Selection`.
+        """
+        newsele = Selection()
+        if isinstance(shift, int):
+            newsele = self << (shift - 1)
+        if isinstance(shift, list) and len(self) > 0:
+            newsele._asarr = [shift.index(x) + 1 for x in self._asarr]
+        newsele._seqID = seqID
+        return newsele
 
     #
     # PRIVATE METHODS
@@ -371,8 +411,7 @@ class SelectionContainer(dict):
         if seqID in self:
             if self[seqID].is_shifted():
                 raise ValueError("Selection is alreay shifted.")
-            self[seqID] = self[seqID] >> value
-            self[seqID]._seqID = seqID
+            self[seqID] = self[seqID].shift(seqID, value)
 
     def __str__( self ):
         return ",".join(["{0}:#({1})".format(x, len(self[x])) for x in sorted(self)])
