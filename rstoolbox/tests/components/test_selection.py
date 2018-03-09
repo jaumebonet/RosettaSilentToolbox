@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_selection.py
 # @Last modified by:   bonet
-# @Last modified time: 06-Mar-2018
+# @Last modified time: 09-Mar-2018
 
 
 import pytest
@@ -178,13 +178,14 @@ class TestSelection( object ):
         smap.extend(["B", ] * 50)
         smap.extend(["C", ] * 50)
         smap.extend(["D", ] * 50)
-        cntr = "A:#(10),B:#(3),C:#(4),D:#(0)"
+        cntr1 = "A:#(10),B:#(3),C:#(4),D:#(0)"
+        cntr2 = "A:@(10),B:@(3),C:#(4),D:#(0)"
 
         s1a = s1.map_to_sequences(smap)
         assert s1a["A"] == _1
         assert s1a["B"] == _2
         assert s1a["C"] == _3
-        assert str(s1a) == cntr
+        assert str(s1a) == cntr1
 
         # shift assumes first position is 1, not 0
         s1a.shift("A", 5)
@@ -192,7 +193,7 @@ class TestSelection( object ):
         assert s1a["A"].to_list() == list(np.array(_1) + (5 - 1))
         assert s1a["B"].to_list() == list(np.array(_2) + (2 - 1))
         assert s1a["C"] == _3
-        assert str(s1a) == cntr
+        assert str(s1a) == cntr2
 
         # Selection w/ seqID should raise an error
         with pytest.raises(KeyError):

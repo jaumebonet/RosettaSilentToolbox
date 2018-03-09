@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: getters.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Mar-2018
+# @Last modified time: 09-Mar-2018
 
 
 import pandas as pd
@@ -27,6 +27,25 @@ def _get_available( obj, ctype ):
         return ["_".join(x.split("_")[1:]) for x in obj.columns.values if x.startswith(ctype)]
     else:
         return ["_".join(x.split("_")[1:]) for x in obj.index.values if x.startswith(ctype)]
+
+
+def get_id( self ):
+    """
+    Return identifier data for the design(s).
+
+    :return: :py:class:`str` or :py:class:`~pandas.Series`
+
+    :raises:
+        :TypeError: If the data container is not `~pandas.DataFrame`
+        or :py:class:`~pandas.Series`
+        :KeyError: If the column `sequence_[seqID]` is cannot be found.
+    """
+    _check_type(self)
+    if "description" not in self:
+        raise KeyError(
+            "Identifiers not found in data set. "
+            "Column `description` is missing.")
+    return self["description"]
 
 
 def get_available_sequences( self ):

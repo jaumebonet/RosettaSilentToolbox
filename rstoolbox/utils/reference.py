@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: reference.py
 # @Last modified by:   bonet
-# @Last modified time: 06-Mar-2018
+# @Last modified time: 09-Mar-2018
 
 import copy
 import warnings
@@ -197,9 +197,9 @@ def add_reference_shift( self, seqID, shift, shift_labels=True ):
     :type seqID: :py:class:`str`
     :param shift: Starting residue number or per-residue number assignment.
     :type shift: Union[:py:class:`int`, :py:class:`list`]
-    :param shift_labels: When adding the shift, apply it to any label
-    :py:class:`.Selection` in the data (if it is not previously shifted).
     :type shift: :py:class:`bool`
+    :param shift_labels: When adding the shift, apply it to any label
+    :type shift_labels: :py:class:`bool`
 
     :raises:
         :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
@@ -268,7 +268,7 @@ def get_reference_shift( self, seqID ):
         return 1
 
 
-def add_reference( self, seqID, sequence="", structure="", shift=1):
+def add_reference( self, seqID, sequence="", structure="", shift=1, shift_labels=True ):
     """
     Single access to :py:func:`.add_reference_sequence`, :py:func:`.add_reference_structure`
     and :py:func:`.add_reference_shift`.
@@ -281,6 +281,8 @@ def add_reference( self, seqID, sequence="", structure="", shift=1):
     :type structure: :py:class:`str`
     :param shift: Starting residue number or per-residue number assignment.
     :type shift: Union[:py:class:`int`, :py:class:`list`]
+    :param shift_labels: When adding the shift, apply it to any label
+    :type shift_labels: :py:class:`bool`
 
     :raises:
         :AttributeError: If trying to add a reference type to a class without it
@@ -296,7 +298,7 @@ def add_reference( self, seqID, sequence="", structure="", shift=1):
         except AttributeError:
             warnings.warn( "Trying to assign reference structure to an object without the propery" )
     try:
-        self.add_reference_shift( seqID, shift )
+        self.add_reference_shift( seqID, shift, shift_labels )
     except AttributeError:
             warnings.warn( "Trying to assign reference shift to an object without the propery" )
 

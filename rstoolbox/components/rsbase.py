@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rsbase.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Mar-2018
+# @Last modified time: 09-Mar-2018
 
 
 import sys
@@ -16,6 +16,7 @@ class RSBaseDesign(object):
 
 
 if (sys.version_info > (3, 0)):
+    RSBaseDesign.get_id                              = ru.get_id
     RSBaseDesign.get_sequence                        = ru.get_sequence
     RSBaseDesign.get_available_sequences             = ru.get_available_sequences
     RSBaseDesign.get_structure                       = ru.get_structure
@@ -35,8 +36,18 @@ if (sys.version_info > (3, 0)):
     RSBaseDesign.get_reference_shift                 = ru.get_reference_shift
     RSBaseDesign.add_reference                       = ru.add_reference
     RSBaseDesign.transfer_reference                  = ru.transfer_reference
+
+    RSBaseDesign.get_identified_mutants              = ru.get_identified_mutants
+    RSBaseDesign.get_mutations                       = ru.get_mutations
+    RSBaseDesign.get_mutation_positions              = ru.get_mutation_positions
+    RSBaseDesign.get_mutation_count                  = ru.get_mutation_count
+    RSBaseDesign.identify_mutants                    = ru.identify_mutants
+    RSBaseDesign.generate_mutant_variants            = ru.generate_mutant_variants
+
 else:
     from types import MethodType
+    RSBaseDesign.get_id = MethodType(
+        ru.get_id, None, RSBaseDesign)
     RSBaseDesign.get_sequence = MethodType(
         ru.get_sequence, None, RSBaseDesign)
     RSBaseDesign.get_available_sequences = MethodType(
@@ -74,3 +85,16 @@ else:
         ru.add_reference, None, RSBaseDesign)
     RSBaseDesign.transfer_reference = MethodType(
         ru.transfer_reference, None, RSBaseDesign)
+
+    RSBaseDesign.get_identified_mutants = MethodType(
+        ru.get_identified_mutants, None, RSBaseDesign)
+    RSBaseDesign.get_mutations = MethodType(
+        ru.get_mutations, None, RSBaseDesign)
+    RSBaseDesign.get_mutation_positions = MethodType(
+        ru.get_mutation_positions, None, RSBaseDesign)
+    RSBaseDesign.get_mutation_count = MethodType(
+        ru.get_mutation_count, None, RSBaseDesign)
+    RSBaseDesign.identify_mutants = MethodType(
+        ru.identify_mutants, None, RSBaseDesign)
+    RSBaseDesign.generate_mutant_variants = MethodType(
+        ru.generate_mutant_variants, None, RSBaseDesign)
