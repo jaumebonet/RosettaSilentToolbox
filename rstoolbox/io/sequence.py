@@ -1,7 +1,13 @@
+# @Author: Jaume Bonet <bonet>
+# @Date:   19-Feb-2018
+# @Email:  jaume.bonet@gmail.com
+# @Filename: sequence.py
+# @Last modified by:   bonet
+# @Last modified time: 06-Mar-2018
+
+
 import os
 import gzip
-
-import pandas as pd
 
 import rstoolbox.core as core
 import rstoolbox.components as cp
@@ -56,6 +62,7 @@ def read_fasta( filename, split_char=None, split_position=1, multi=False ):
     df.add_source_files( files )
     return df
 
+
 def write_fasta( df, seqID, filename ):
     """
     Writes fasta files of the selected decoys.
@@ -82,9 +89,11 @@ def write_fasta( df, seqID, filename ):
     data = []
     for chain in seqID:
         query = "sequence_{}".format(chain)
+        name  = "description"
         if query not in df:
             raise AttributeError("seqID {} not found in data".format(chain))
-        data.append("\n".join(list(df.apply(lambda row: ">" + row["description"] + "_" + chain + "\n" + row[query], axis=1))))
+        eachfa = df.apply(lambda row: ">" + row[name] + "_" + chain + "\n" + row[query], axis=1)
+        data.append("\n".join(list(eachfa)))
 
     fd = open(filename, "w") if not filename.endswith(".gz") else gzip.open(filename, "wb")
     fd.write("\n".join(data))
