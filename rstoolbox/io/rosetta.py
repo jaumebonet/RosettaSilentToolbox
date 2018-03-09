@@ -3,13 +3,12 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rosetta.py
 # @Last modified by:   bonet
-# @Last modified time: 01-Mar-2018
+# @Last modified time: 09-Mar-2018
 
 
 import os
 import sys
 import re
-import copy
 import glob
 import gzip
 import json
@@ -249,22 +248,6 @@ def parse_rosetta_file( filename, description=None, multi=False ):
                 chains["id"].extend([c, ] * int(line.split()[4]))
 
             data = _add_sequences( manager, data, chains )
-            # # Correct by non polymer residues
-            # chain["nonpoly"] = [x for x, v in enumerate(chains["seq"]) if v == 'Z']
-            # for index in sorted(chain["nonpoly"], reverse=True):
-            #     del chains["id"][index]
-            #     del chains["seq"][index]
-            #     if len(chains["dssp"]) > 0:
-            #         del chains["dssp"][index]
-            #
-            # for seqname, seq in manager.get_expected_sequences( chains ):
-            #     data.setdefault( seqname, [] ).append( seq )
-            # if len(chains["dssp"]) > 0:
-            #     for ssename, str in manager.get_expected_structures( chains ):
-            #         data.setdefault( ssename, [] ).append( str )
-            # if len(chains["psipred"]) > 0:
-            #     for ssename, str in manager.get_expected_psipred( chains ):
-            #         data.setdefault( ssename, [] ).append( str )
             continue
 
         if line.startswith("ANNOTATED_SEQUENCE"):
@@ -275,22 +258,6 @@ def parse_rosetta_file( filename, description=None, multi=False ):
                     chains["id"].extend(["A", ] * len(chains["seq"]))
 
                 data = _add_sequences( manager, data, chains )
-                # # Correct by non polymer residues
-                # chain["nonpoly"] = [x for x, v in enumerate(chains["seq"]) if v == 'Z']
-                # for index in sorted(chain["nonpoly"], reverse=True):
-                #     del chains["id"][index]
-                #     del chains["seq"][index]
-                #     if len(chains["dssp"]) > 0:
-                #         del chains["dssp"][index]
-                #
-                # for seqname, seq in manager.get_expected_sequences( chains ):
-                #     data.setdefault( seqname, [] ).append( seq )
-                # if len(chains["dssp"]) > 0:
-                #     for ssename, str3d in manager.get_expected_structures( chains):
-                #         data.setdefault( ssename, [] ).append( str3d )
-                # if len(chains["psipred"]) > 0:
-                #     for ssename, str3d in manager.get_expected_psipred( chains ):
-                #         data.setdefault( ssename, [] ).append( str3d )
             else:
                 chains["seq"] = list("".join(chains["seq"]).rstrip("X"))
 
@@ -306,7 +273,6 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             for label in line.split()[2].split(";"):
                 labinfo = label.split(":")
                 if "lbl_" + labinfo[0].upper() in data:
-                    #lbldata = rc.Selection(labinfo[1]).map_to_sequences(chains["id"])
                     data["lbl_" + labinfo[0].upper()][-1] = labinfo[1]
             continue
 
@@ -328,7 +294,8 @@ def parse_rosetta_contacts( filename ):
     :param filename: File containing the Rosetta fragments.
     :type filename: :py:class:`str`
 
-    :return: :py:class:`~pandas.DataFrame`, :py:class:`list`[:py:class:`str`], :py:class:`list`[:py:class:`str`]
+    :return: :py:class:`~pandas.DataFrame`, :py:class:`list`[:py:class:`str`],
+        :py:class:`list`[:py:class:`str`]
 
     :raises:
         :IOError: if ``filename`` cannot be found.
@@ -362,13 +329,13 @@ def parse_rosetta_fragments( filename ):
         :IOError: if ``filename`` cannot be found.
     """
     fformat = 1  # formats are identified as 1 and 0
-    data = OrderedDict({"pdb": [], "frame": [], "neighbors": [], "neighbor": [], "position": [], "size": [],
-                        "aa": [], "sse": [], "phi": [], "psi": [], "omega": []})
+    data = OrderedDict({"pdb": [], "frame": [], "neighbors": [], "neighbor": [], "position": [],
+                        "size": [], "aa": [], "sse": [], "phi": [], "psi": [], "omega": []})
 
     if not os.path.isfile(filename):
         raise IOError("{} not found!".format(filename))
 
-    fframe, fne, fpos, fsize, faa, fsse, fphi, fpsi, fomega = None, None, None, None, None, None, None, None, None
+    fframe, fne, fpos, fsize = None, None, None, None
     fsaved_size = 0
     nei = 0
     was_space = False
@@ -424,7 +391,8 @@ def parse_rosetta_fragments( filename ):
         df = df.merge(df2, on=["frame", "size"])
         df = df.drop(["neighbors_x"], axis=1)
         df = df.rename({"neighbors_y": "neighbors"}, axis=1)
-    return df.reindex(["pdb", "frame", "neighbors", "neighbor", "position", "size", "aa", "sse", "phi", "psi", "omega"], axis=1)
+    return df.reindex(["pdb", "frame", "neighbors", "neighbor", "position", "size",
+                       "aa", "sse", "phi", "psi", "omega"], axis=1)
 
 
 def write_rosetta_fragements( df, frag_size, n_frags=200 ):
@@ -441,23 +409,27 @@ def write_rosetta_fragements( df, frag_size, n_frags=200 ):
     :type n_frags: :py:class:`int`
     """
     _STRING = " {:4s} {:1s} {:5d} {:1s} {:1s} {:8.3f} {:8.3f} {:8.3f}\n"
+    _HEADER = "position:            {} neighbors:          {}\n\n"
     with open("rosetta_frags.{}mers".format(frag_size), "w") as f:
         frame_count = 0
         for i in range(len(df)):
             if i % ((frag_size * n_frags)) == 0:
                 frame_count += 1
-                f.write("position:            {} neighbors:          {}\n\n".format(frame_count, n_frags))
-            f.write(_STRING.format( df.loc[i]["pdb"], "X", int(0), df.loc[i]["aa"], df.loc[i]["sse"], df.loc[i]["phi"], df.loc[i]["psi"], df.loc[i]["omega"]) )
+                f.write(_HEADER.format(frame_count, n_frags))
+            f.write(_STRING.format( df.loc[i]["pdb"], "X", int(0), df.loc[i]["aa"],
+                    df.loc[i]["sse"], df.loc[i]["phi"], df.loc[i]["psi"], df.loc[i]["omega"]) )
             if i != 0 and (i + 1) % frag_size == 0:
                 f.write("\n")
 
 
 def get_sequence_and_structure( pdbfile ):
     """
-    Provided a PDB file, it will run a small RosettaScript to capture the sequence and structure that PDB.
+    Provided a PDB file, it will run a small RosettaScript to capture the sequence and
+    structure that PDB.
 
-    It will generate an output file called: ``[pdbfile].dssp.minisilent``. If this file already exists, it will
-    be directly read. You can choose to compress it; ``[pdbfile].dssp.minisilent.gz`` will also work.
+    It will generate an output file called: ``[pdbfile].dssp.minisilent``. If this file
+    already exists, it will be directly read. You can choose to compress it;
+    ``[pdbfile].dssp.minisilent.gz`` will also work.
 
     :param pdbfile: Name of the input structure.
     :type pdbfile: :py:class:`str`
@@ -477,15 +449,19 @@ def get_sequence_and_structure( pdbfile ):
     elif os.path.isfile(minisilent + ".gz"):
         return parse_rosetta_file(minisilent + ".gz", {"sequence": "*", "structure": "*"})
 
-    script = "<ROSETTASCRIPTS><MOVERS><WriteSSEMover dssp=\"1\" name=\"w\" /></MOVERS><PROTOCOLS><Add mover=\"w\" /></PROTOCOLS></ROSETTASCRIPTS>"
+    script = "<ROSETTASCRIPTS><MOVERS><WriteSSEMover dssp=\"1\" name=\"w\" /></MOVERS>" \
+             "<PROTOCOLS><Add mover=\"w\" /></PROTOCOLS></ROSETTASCRIPTS>"
     with open("dssp.xml", "w") as fd:
         fd.write(script)
 
     # Check rosetta executable & run
-    exe = os.path.join( core.get_option("rosetta", "path"), "rosetta_scripts.{0}".format(core.get_option("rosetta", "compilation")))
+    path = core.get_option("rosetta", "path")
+    comp = core.get_option("rosetta", "compilation")
+    exe = os.path.join(path, "rosetta_scripts.{0}".format(comp))
     if not os.path.isfile(exe):
         raise IOError("The expected Rosetta executable {0} is not found".format(exe))
-    command = "{0} -parser:protocol {1} -s {2} -out:file:silent {3} -ignore_unrecognized_res".format( exe, "dssp.xml", pdbfile, str(os.getpid()) + "_" )
+    command = "{0} -parser:protocol {1} -s {2} -out:file:silent {3} -ignore_unrecognized_res"
+    command = command.format( exe, "dssp.xml", pdbfile, str(os.getpid()) + "_" )
     sys.stdout.write("Running Rosetta\n")
     sys.stdout.write(command + "\n")
     error = os.system( command )
@@ -512,13 +488,13 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
 
     #. There is a local instalation of Rosetta.
     #. The global options *rosetta.path* and *rosetta.compilation* are correctly set up.
-    #. The provided data is contained in a :py:class:`.DesignFrame`. This should be direct if using this \
-    library, otherwise it is easy to cast from a :py:class:`~pandas.DataFrame`::
+    #. The provided data is contained in a :py:class:`.DesignFrame`. This should be direct if \
+    using this library, otherwise it is easy to cast from a :py:class:`~pandas.DataFrame`::
 
         df = rstoolbox.components.DesignFrame(df).rename(columns={"identifier_col_name": "description"})
 
-    #. The :py:class:`.DesignFrame` has *silent files* attached from which to extract the data. Again, this \
-    should happen by default with the library, but can be set up with::
+    #. The :py:class:`.DesignFrame` has *silent files* attached from which to extract the data. \
+    Again, this should happen by default with the library, but can be set up with::
 
         # (1) Read from a minisilent file that does not contain structural data: substitute
         df.replace_source_files(["file1", "file2", ])
@@ -530,9 +506,9 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
     :param outdir: Directory in which to save the PDB files. If none is provided, it will be loaded
         from the *system.ouput* global option.
     :type outdir: :py:class:`str`
-    :param tagsfilename: Name of the file containing the ids of the decoys of interest. It will be created
-        in the ``outdir``. An previously existing file will not be overwritten if the global option
-        *system.overwrite* is :py:data:`False`.
+    :param tagsfilename: Name of the file containing the ids of the decoys of interest. It will be
+        created in the ``outdir``. An previously existing file will not be overwritten if the global
+        option *system.overwrite* is :py:data:`False`.
     :type tagsfilename: :py:class:`str`
     :param prefix: If provided, a prefix is added to the PDB files.
     :type prefix: :py:class:`str`
@@ -544,8 +520,10 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
         :ValueError: if the **description** column has repeated identifiers.
         :AttributeError: if silent files from where to extract structures are not found.
         :IOError: if the attached silent files do not exist.
-        :IOError: when trying to overwrite the ``tagsfilename`` if *system.overwrite* is :py:data:`False`.
-        :IOError: if the rosetta executable is not found. Depends on *rosetta.path* and *rosetta.compilation*.
+        :IOError: when trying to overwrite the ``tagsfilename`` if *system.overwrite* is
+        :py:data:`False`.
+        :IOError: if the rosetta executable is not found. Depends on *rosetta.path* and
+        *rosetta.compilation*.
 
     """
     # Check that the selection has at least one decoy
@@ -558,8 +536,9 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
     if column not in df.columns:
         raise ValueError("Identifiers of the decoys must be assigned to the column 'description'.")
     if True in df.duplicated(column).value_counts().index:
-        raise ValueError("There are repeated identifiers. This might indicate the merging of files with identical prefixes "
-                         "and will be an issue with extracting the structures.")
+        raise ValueError("There are repeated identifiers. This might indicate the merging of files "
+                         "with identical prefixes and will be an issue with extracting "
+                         " the structures.")
 
     # Check that we have associated silent files to extract the data from
     if not isinstance(df, rc.DesignFrame) or len(df.get_source_files()) == 0:
@@ -583,7 +562,9 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
         outdir = os.path.join(outdir, prefix)
 
     # Check rosetta executable
-    exe = os.path.join( core.get_option("rosetta", "path"), "extract_pdbs.{0}".format(core.get_option("rosetta", "compilation")))
+    path = core.get_option("rosetta", "path")
+    comp = core.get_option("rosetta", "compilation")
+    exe = os.path.join( path, "extract_pdbs.{0}".format(comp))
     if not os.path.isfile(exe):
         raise IOError("The expected Rosetta executable {0} is not found".format(exe))
 
@@ -594,9 +575,11 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
 
     # Run process
     sfiles = " ".join(sfiles)
-    command = "{0} -in:file:silent {1} -in:file:tagfile {2} -out:prefix {3}".format( exe, sfiles, tagsfilename, outdir )
+    command = "{0} -in:file:silent {1} -in:file:tagfile {2} -out:prefix {3}"
+    command = command.format( exe, sfiles, tagsfilename, outdir )
     sys.stdout.write("Executing Rosetta's extract_pdbs app\n")
-    sys.stdout.write("(depending on the total number of decoys and how many have been requested this might take a while...)\n")
+    sys.stdout.write("(depending on the total number of decoys and how many have "
+                     "been requested this might take a while...)\n")
     error = os.system( command )
     if not bool(error):
         sys.stdout.write("Execution has finished\n")
