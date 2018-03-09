@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 06-Mar-2018
+# @Last modified time: 09-Mar-2018
 
 
 import copy
@@ -391,10 +391,13 @@ class Selection( object ):
         raise NotImplementedError
 
 
-class SelectionContainer(dict):
+class SelectionContainer( object ):
     """
     Helper class to manage representation of selectors in pandas.
     """
+    def __init__( self, *args ):
+        self._content = dict(args)
+
     def shift( self, seqID, value ):
         """
         Helper to ease the apply function. Shifts by value the labels
@@ -412,6 +415,25 @@ class SelectionContainer(dict):
             if self[seqID].is_shifted():
                 raise ValueError("Selection is alreay shifted.")
             self[seqID] = self[seqID].shift(seqID, value)
+
+    def setdefault( self, k, d ):
+        self._content.setdefault(k, d)
+        return self._content[k]
+
+    def __getitem__( self, key ):
+        return self._content[key]
+
+    def __setitem__(self, key, value):
+            self._content[key] = value
+
+    def __iter__( self ):
+        return self._content.__iter__()
+
+    def __cmp__( self, other ):
+        if isinstance(other, SelectionContainer):
+            return cmp(self._content, other._content)
+        else:
+            raise NotImplementedError
 
     def __str__( self ):
         return ",".join(["{0}:#({1})".format(x, len(self[x])) for x in sorted(self)])
