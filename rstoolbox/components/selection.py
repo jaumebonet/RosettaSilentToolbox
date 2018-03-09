@@ -284,6 +284,12 @@ class Selection( object ):
         seqID = self._seqID if self._seqID is not None else ""
         return ','.join(as_range(g, seqID) for _, g in value)
 
+    def _compressed_str( self ):
+        if self.is_shifted():
+            return "@({})".format(len(self))
+        else:
+            return "#({})".format(len(self))
+
     #
     # MAGIC METHODS
     #
@@ -436,7 +442,7 @@ class SelectionContainer( object ):
             raise NotImplementedError
 
     def __str__( self ):
-        return ",".join(["{0}:#({1})".format(x, len(self[x])) for x in sorted(self)])
+        return ",".join(["{0}:{1}".format(x, self[x]._compressed_str()) for x in sorted(self)])
 
     def __repr__( self ):
         return str(self)
