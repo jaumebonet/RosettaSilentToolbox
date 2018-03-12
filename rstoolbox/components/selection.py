@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 09-Mar-2018
+# @Last modified time: 12-Mar-2018
 
 
 import copy
@@ -421,6 +421,23 @@ class SelectionContainer( object ):
             if self[seqID].is_shifted():
                 raise ValueError("Selection is alreay shifted.")
             self[seqID] = self[seqID].shift(seqID, value)
+
+    def unshift( self, seqID, value ):
+        """
+        Helper to ease the apply function. Unshifts by value the labels
+        assigned to a given seqID.
+
+        :param seqID: Identifier of the reference sequence
+        :type seqID: :py:class:`str`
+        :param value: Identifier of the reference sequence
+        :type value: Union[:py:class:`int`, :py:class:`list`(:py:class:`int`)]
+
+        :raises:
+            :ValueError: If the :py:class:`.Selection` is already shifted
+        """
+        if seqID in self:
+            if self[seqID].is_shifted():
+                self[seqID] = self[seqID].unshift(None, value)
 
     def setdefault( self, k, d ):
         self._content.setdefault(k, d)

@@ -131,6 +131,12 @@ class TestDesign( object ):
         assert df.get_reference_sequence("A", df.get_label("CONTACT", "A")[0]) == _b
         assert str(ctcopy) == "1-19"
         assert df.get_reference_sequence("A", ctcopy) == _b
+        df.delete_reference("A", shift_labels=True)
+        assert str(df.get_label("CONTACT", "A")[0]) == "1-19"
+        assert str(df.get_label("CONTACT", "B")[0]) == _a
+        assert df.get_reference_shift("A") == 1
+        with pytest.raises(KeyError):
+            df.get_reference_sequence("A")
 
         # Let's work with an array-type shift
         ashift = range(1, len(refseq) + 1)
@@ -147,3 +153,8 @@ class TestDesign( object ):
         df.add_reference_shift("A", ashift, shift_labels=True)
         assert str(sr.get_label("CONTACT", "A")) == "24A-30A,36A-61A"
         assert sr.get_reference_sequence("A", sr.get_label("CONTACT", "A")) == _c
+        df.delete_reference("A", shift_labels=True)
+        assert str(sr.get_label("CONTACT", "A")) == "24-56"
+        assert df.get_reference_shift("A") == 1
+        with pytest.raises(KeyError):
+            df.get_reference_sequence("A")

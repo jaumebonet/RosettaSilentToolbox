@@ -275,7 +275,7 @@ def get_reference_shift( self, seqID ):
         return 1
 
 
-def add_reference( self, seqID, sequence="", structure="", shift=1, shift_labels=True ):
+def add_reference( self, seqID, sequence="", structure="", shift=1, shift_labels=False ):
     """
     Single access to :py:func:`.add_reference_sequence`, :py:func:`.add_reference_structure`
     and :py:func:`.add_reference_shift`.
@@ -326,3 +326,35 @@ def transfer_reference( self, df ):
         self._reference = copy.deepcopy(df._reference)
     except AttributeError:
         warnings.warn( "Either the target or source object cannot hold a reference." )
+
+
+def delete_reference( self, seqID, shift_labels=False ):
+    """
+    Remove all reference data regarding a particular seqID.
+
+    :param seqID: Identifier of the reference sequence
+    :type seqID: :py:class:`str`
+    :param shift_labels: When removing the shift, apply it to any label that has been shifted
+    :type shift_labels: :py:class:`bool`
+
+    :raises:
+        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
+        or :py:class:`~pandas.Series`
+    """
+    if not isinstance(self, (pd.DataFrame, pd.Series)):
+        raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
+
+    if seqID not in self._reference:
+        return
+
+    shift = self.get_reference_shift(seqID)
+    del(self._reference[seqID])
+
+    if shift_labels:
+        labels = self.get_available_labels()
+        for lbl in labels:
+            clnm = "lbl_{}".format(lbl)
+            if isinstance(self, pd.DataFrame):
+                self.apply(lambda x: x[clnm].unshift(seqID, shift), axis=1)
+            else:
+                self[clnm].unshift(seqID, shift)

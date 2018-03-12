@@ -40,6 +40,7 @@ if (sys.version_info > (3, 0)):
     RSBaseDesign.get_reference_shift                 = ru.get_reference_shift
     RSBaseDesign.add_reference                       = ru.add_reference
     RSBaseDesign.transfer_reference                  = ru.transfer_reference
+    RSBaseDesign.delete_reference                    = ru.delete_reference
 
     RSBaseDesign.get_identified_mutants              = ru.get_identified_mutants
     RSBaseDesign.get_mutations                       = ru.get_mutations
@@ -58,6 +59,7 @@ if (sys.version_info > (3, 0)):
     RSBaseFrequency.get_reference_shift              = ru.get_reference_shift
     RSBaseFrequency.add_reference                    = ru.add_reference
     RSBaseFrequency.transfer_reference               = ru.transfer_reference
+    RSBaseFrequency.delete_reference                    = ru.delete_reference
 
 else:
     from types import MethodType
@@ -100,6 +102,8 @@ else:
         ru.add_reference, None, RSBaseDesign)
     RSBaseDesign.transfer_reference = MethodType(
         ru.transfer_reference, None, RSBaseDesign)
+    RSBaseDesign.delete_reference = MethodType(
+        ru.delete_reference, None, RSBaseDesign)
 
     RSBaseDesign.get_identified_mutants = MethodType(
         ru.get_identified_mutants, None, RSBaseDesign)
@@ -134,3 +138,5 @@ else:
         ru.add_reference, None, RSBaseFrequency)
     RSBaseFrequency.transfer_reference = MethodType(
         ru.transfer_reference, None, RSBaseFrequency)
+    RSBaseFrequency.delete_reference = MethodType(
+        ru.delete_reference, None, RSBaseFrequency)

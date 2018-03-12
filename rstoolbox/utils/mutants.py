@@ -161,8 +161,7 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
         df = row._constructor_expanddim(data)
         df.add_reference(seqID, sequence=row[seqNM], shift=shift, shift_labels=False)
         df = df.identify_mutants(seqID)
-        # TODO: proper delete reference management
-        del(df._reference[seqID])
+        df.delete_reference(seqID)
         return df
 
     if isinstance(self, pd.DataFrame):
