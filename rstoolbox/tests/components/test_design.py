@@ -3,10 +3,11 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 06-Mar-2018
+# @Last modified time: 12-Mar-2018
 
 
 import os
+import copy
 
 import pandas as pd
 import numpy as np
@@ -116,9 +117,10 @@ class TestDesign( object ):
         assert df.get_reference_sequence("A") == sr.get_reference_sequence("A")
         # Shift tests
         assert str(df.get_label("CONTACT", "A")[0]) == "1-19"
+        ctcopy = copy.deepcopy(df.get_label("CONTACT", "A")[0])
         assert str(df.get_label("CONTACT", "B")[0]) == _a
         assert df.get_reference_sequence("A", df.get_label("CONTACT", "A")[0]) == _b
-        df.add_reference_shift("A", 5)
+        df.add_reference_shift("A", 5, shift_labels=True)
         # Expected behaviour: all DesignSeries from a DesignFrame share reference data
         # and SelectionContainer
         assert df.get_reference_shift("A") == 5
@@ -127,6 +129,8 @@ class TestDesign( object ):
         assert str(df.get_label("CONTACT", "B")[0]) == _a
         assert str(df.get_label("CONTACT", "A")[0]) == str(sr.get_label("CONTACT", "A"))
         assert df.get_reference_sequence("A", df.get_label("CONTACT", "A")[0]) == _b
+        assert str(ctcopy) == "1-19"
+        assert df.get_reference_sequence("A", ctcopy) == _b
 
         # Let's work with an array-type shift
         ashift = range(1, len(refseq) + 1)
@@ -140,6 +144,6 @@ class TestDesign( object ):
         sr = df.iloc[1]
         assert str(sr.get_label("CONTACT", "A")) == "24-56"
         assert sr.get_reference_sequence("A", sr.get_label("CONTACT", "A")) == _c
-        df.add_reference_shift("A", ashift)
+        df.add_reference_shift("A", ashift, shift_labels=True)
         assert str(sr.get_label("CONTACT", "A")) == "24A-30A,36A-61A"
         assert sr.get_reference_sequence("A", sr.get_label("CONTACT", "A")) == _c

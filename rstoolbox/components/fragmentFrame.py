@@ -3,9 +3,9 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragmentFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 01-Feb-2018
+# @Last modified time: 12-Mar-2018
 
-
+# Standard Libraries
 import os
 import sys
 
@@ -13,7 +13,9 @@ import sys
 import pandas as pd
 import numpy as np
 
+# This Library
 import rstoolbox.core as core
+
 
 class FragmentFrame( pd.DataFrame ):
     """

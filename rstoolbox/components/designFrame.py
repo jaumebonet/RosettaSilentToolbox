@@ -3,11 +3,12 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 09-Mar-2018
+# @Last modified time: 12-Mar-2018
 
 # Standard Libraries
+import collections
+import copy
 import itertools
-import string
 
 # External Libraries
 import pandas as pd
@@ -170,30 +171,35 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
 
     def sequence_distance( self, seqID ):
         """
-        Generate a matrix counting the distance between each pair of sequences in the :py:class:`.designFrame`.
-        This is a time-consuming operation; better to execute it over a specific set of selected decoys that over
-        all your designs.
+        Generate a matrix counting the distance between each pair of sequences in the
+        :py:class:`.designFrame`. This is a time-consuming operation; better to execute it over a
+        specific set of selected decoys that over all your designs.
 
-        :param str seqID: Identifier of the sequence of interest.
+        :param seqID: Identifier of the sequence of interest.
         :type seqID: :py:class:`str`
 
-        return: :py:class:`~pandas.DataFrame`. Header and row names are the identifiers of the designs.
+        return: :py:class:`~pandas.DataFrame`.
 
         :raises:
             :KeyError: if ``seqID`` cannot be found.
             :KeyError: if ``description`` column cannot be found.
         """
-        def count_differences( sequence, df ):
-            return df.apply(lambda x: sum(1 for i, j in zip(x["sequence_{}".format(seqID)], sequence) if i != j), axis=1)
+        # https://stackoverflow.com/questions/49235538/pandas-series-compare-values-all-vs-all
+        a = np.array(list(map(list, self.get_sequence(seqID).values)))
+        ids = self.get_id().values
 
-        if "sequence_{}".format(seqID) not in self.columns:
-            raise KeyError("Sequence {} not found.".format(seqID))
-        if "description" not in self.columns:
-            raise KeyError("Column holding the design's identifiers must be called description.")
-        df = self.apply(lambda x: count_differences( x["sequence_{}".format(seqID)], self), axis=1)
-        return df.rename(self["description"], axis="columns").rename(self["description"], axis="rows")
+        n = len(a)
+        d = {(i, j): np.sum(a[i] != a[j]) for i in range(n) for j in range(n) if j > i}
 
-    def sequence_frequencies( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=-1 ):
+        res = np.zeros((n, n))
+        keys = list(zip(*d.keys()))
+
+        res[keys[0], keys[1]] = list(d.values())
+        res += res.T
+
+        return pd.DataFrame(res, columns=ids, index=ids, dtype=int)
+
+    def sequence_frequencies( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=-1 ):
         """
         Generates a :py:class:`.SequenceFrame` for the frequencies of
         the sequences in the __DesignFrame__ with seqID identifier.
@@ -205,8 +211,6 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
 
         :param str seqID: Identifier of the sequence sets of interest.
         :param str seqType: Type of sequence: protein, dna, rna.
-        :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
-            shift from the reference sequence
         :param bool cleanExtra: Remove from the SequenceFrame the non-regular
             amino/nucleic acids if they are empty for all positions.
         :param int cleanUnused: Remove from the SequenceFrame the regular
@@ -214,35 +218,37 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
             so nothing is deleted.
         :return: :py:class:`.SequenceFrame`
         """
-        # @todo sequence_frequencies take empty seqs into account
-        # body master fasta results provides entries with no sequence. does not work
-        sserie = self.get_sequence(seqID).values
-        table, extra = self._get_sequence_table( seqType )
-        for x in range(len(sserie[0])):
-            for k in table:
-                table[k].append(float(0))
-            for y in range(len(sserie)):
-                aa = sserie[y][x].upper()
-                if aa in string.whitespace or aa in string.punctuation:
-                    aa = "*"
-                table[aa][-1] += float(1)
-        for k in table:
-            for x in range(len(table[k])):
-                if table[k][x] != 0:
-                    table[k][x] /= float(len(sserie))
 
-        df = SequenceFrame(table)
+        def count_instances( seq, table ):
+            t = copy.deepcopy(table)
+            c = collections.Counter(seq)
+            for aa in table:
+                _ = c[aa]
+                if _ > 0:
+                    t[aa] = float(_) / len(seq)
+                else:
+                    t[aa] = 0
+            return t
+
+        sserie = self.get_sequence(seqID).replace('', np.nan).dropna().str.upper()
+        table, extra = self._get_sequence_table( seqType )
+        sserie = sserie.apply(lambda x: pd.Series(list(x)))
+        sserie = sserie.apply(lambda x: pd.Series(count_instances(x.str.cat(), table))).T
+
+        df = SequenceFrame(sserie)
         df.measure("frequency")
         df.extras( extra )
         if self.has_reference_sequence(seqID):
-            df.reference_sequence(self.get_reference_sequence(seqID), self.get_reference_shift(seqID))
+            df.reference_sequence(
+                self.get_reference_sequence(seqID),
+                self.get_reference_shift(seqID))
         df.delete_extra( cleanExtra )
         df.delete_empty( cleanUnused )
         df.clean()
-        df.index = df.index + (shift if shift is not None else self.get_reference_shift(seqID))
+        df.index = df.index + self.get_reference_shift(seqID)
         return df
 
-    def sequence_bits( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=False ):
+    def sequence_bits( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
         """
         Generates a :py:class:`.SequenceFrame` for the bits of
         the sequences in the __DesignFrame__ with seqID identifier.
@@ -268,7 +274,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
 
         :return: :py:class:`.SequenceFrame`
         """
-        df = self.sequence_frequencies(seqID, seqType, shift, cleanExtra, cleanUnused)
+        df = self.sequence_frequencies(seqID, seqType, cleanExtra, cleanUnused)
         return df.to_bits()
 
     def _get_sequence_table( self, seqType ):
@@ -276,7 +282,8 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         Generates the table to fill sequence data in order to create
         a :py:class:`.SequenceFrame`
 
-        :param str seqType: Type of sequence: protein, dna, rna.
+        :param seqType: Type of sequence: protein, protein_sse, dna, rna.
+        :type seqType: :py:class:`str`
         :return: dict
         :raise ValueError: If seqType is not known
         """
@@ -309,6 +316,11 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
                 table.setdefault( 'U', [])
                 table.pop('T', None)
             extra = ['X', '*', 'B', 'D', 'H', 'K', 'M', 'N', 'R', 'S', 'V', 'W', 'Y']
+        elif seqType.lower == "protein_sse":
+            table = {
+                'H': [], 'E': [], 'L': [], '*': [], 'G': []
+            }
+            extra = ['*', 'G']
         else:
             raise ValueError("sequence type {0} unknown".format(seqType))
         return table, extra
@@ -319,6 +331,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         if name == "_reference":
             return {}
         return None
+
     #
     # Implement pandas methods
     #

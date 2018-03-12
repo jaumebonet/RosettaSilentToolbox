@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: reference.py
 # @Last modified by:   bonet
-# @Last modified time: 09-Mar-2018
+# @Last modified time: 12-Mar-2018
 
 import copy
 import warnings
@@ -27,19 +27,26 @@ def _get_reference( obj, ctype, seqID ):
 
 
 def _get_key_reference( obj, ctype, seqID, key_residues ):
-    from rstoolbox.components import Selection
+    from rstoolbox.components import Selection, SelectionContainer
 
     seq = _get_reference(obj, ctype, seqID)
     sft = _get_reference(obj, "sft", seqID)
     if key_residues is None:
         return seq
 
+    print key_residues
     if isinstance(key_residues, int):
         key_residues = [int, ]
     if isinstance(key_residues, list):
         key_residues = Selection(key_residues)
+    if isinstance(key_residues, SelectionContainer):
+        key_residues = key_residues[seqID]
     if isinstance(key_residues, Selection):
-        kr = key_residues.unshift(seqID, sft)
+        if key_residues.is_shifted():
+            kr = key_residues.unshift(seqID, sft)
+        else:
+            kr = key_residues.unshift(None, 1)
+        print kr
         kr = kr.to_list()
     else:
         raise NotImplementedError
@@ -179,7 +186,7 @@ def get_reference_structure( self, seqID, key_residues=None ):
         return _get_key_reference(self, "sequence", seqID, key_residues)
 
 
-def add_reference_shift( self, seqID, shift, shift_labels=True ):
+def add_reference_shift( self, seqID, shift, shift_labels=False ):
     """
     Add a reference shift attached to a particular sequence ID.
 

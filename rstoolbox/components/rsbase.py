@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rsbase.py
 # @Last modified by:   bonet
-# @Last modified time: 09-Mar-2018
+# @Last modified time: 12-Mar-2018
 
 
 import sys
@@ -11,7 +11,11 @@ import sys
 import rstoolbox.utils as ru
 
 
-class RSBaseDesign(object):
+class RSBaseDesign( object ):
+    pass
+
+
+class RSBaseFrequency( object ):
     pass
 
 
@@ -43,6 +47,17 @@ if (sys.version_info > (3, 0)):
     RSBaseDesign.get_mutation_count                  = ru.get_mutation_count
     RSBaseDesign.identify_mutants                    = ru.identify_mutants
     RSBaseDesign.generate_mutant_variants            = ru.generate_mutant_variants
+
+    RSBaseFrequency.has_reference_sequence           = ru.has_reference_sequence
+    RSBaseFrequency.add_reference_sequence           = ru.add_reference_sequence
+    RSBaseFrequency.get_reference_sequence           = ru.get_reference_sequence
+    RSBaseFrequency.has_reference_structure          = ru.has_reference_structure
+    RSBaseFrequency.add_reference_structure          = ru.add_reference_structure
+    RSBaseFrequency.get_reference_structure          = ru.get_reference_structure
+    RSBaseFrequency.add_reference_shift              = ru.add_reference_shift
+    RSBaseFrequency.get_reference_shift              = ru.get_reference_shift
+    RSBaseFrequency.add_reference                    = ru.add_reference
+    RSBaseFrequency.transfer_reference               = ru.transfer_reference
 
 else:
     from types import MethodType
@@ -98,3 +113,24 @@ else:
         ru.identify_mutants, None, RSBaseDesign)
     RSBaseDesign.generate_mutant_variants = MethodType(
         ru.generate_mutant_variants, None, RSBaseDesign)
+
+    RSBaseFrequency.has_reference_sequence = MethodType(
+        ru.has_reference_sequence, None, RSBaseFrequency)
+    RSBaseFrequency.add_reference_sequence = MethodType(
+        ru.add_reference_sequence, None, RSBaseFrequency)
+    RSBaseFrequency.get_reference_sequence = MethodType(
+        ru.get_reference_sequence, None, RSBaseFrequency)
+    RSBaseFrequency.has_reference_structure = MethodType(
+        ru.has_reference_structure, None, RSBaseFrequency)
+    RSBaseFrequency.add_reference_structure = MethodType(
+        ru.add_reference_structure, None, RSBaseFrequency)
+    RSBaseFrequency.get_reference_structure = MethodType(
+        ru.get_reference_structure, None, RSBaseFrequency)
+    RSBaseFrequency.add_reference_shift = MethodType(
+        ru.add_reference_shift, None, RSBaseFrequency)
+    RSBaseFrequency.get_reference_shift = MethodType(
+        ru.get_reference_shift, None, RSBaseFrequency)
+    RSBaseFrequency.add_reference = MethodType(
+        ru.add_reference, None, RSBaseFrequency)
+    RSBaseFrequency.transfer_reference = MethodType(
+        ru.transfer_reference, None, RSBaseFrequency)

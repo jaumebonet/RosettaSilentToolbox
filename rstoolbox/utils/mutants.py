@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: mutants.py
 # @Last modified by:   bonet
-# @Last modified time: 09-Mar-2018
+# @Last modified time: 12-Mar-2018
 
 
 import itertools
@@ -91,6 +91,7 @@ def identify_mutants( self, seqID ):
 
     :param seqID: Identifier of the sequence of interest.
     :type seqID: py:class:`str`
+
     :return: Changes the container and returns it
     """
     def mutations( reference, sequence, shift=1 ):

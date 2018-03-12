@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 23-Feb-2018
+# @Last modified time: 26-Feb-2018
 
 import string
 import os

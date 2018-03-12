@@ -3,14 +3,19 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequenceFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 16-Jan-2018
+# @Last modified time: 12-Mar-2018
 
-
+# Standard Libraries
 import os
 import re
 
+# External Libraries
 import pandas as pd
 import numpy as np
+
+# This Library
+from .rsbase import RSBaseFrequency
+
 
 class SequenceFrame( pd.DataFrame ):
     """

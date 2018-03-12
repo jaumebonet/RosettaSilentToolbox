@@ -22,7 +22,7 @@ class Scale(matplotlib.patheffects.RendererBase):
         self._sy = sy
 
     def draw_path(self, renderer, gc, tpath, affine, rgbFace):
-        affine = affine.identity().scale(self._sx, self._sy)+affine
+        affine = affine.identity().scale(self._sx, self._sy) + affine
         renderer.draw_path(gc, tpath, affine, rgbFace)
 
 def _letterAt(letter, x, y, yscale=1, ax=None, globscale=1.35, LETTERS=None, COLOR_SCHEME=None):
