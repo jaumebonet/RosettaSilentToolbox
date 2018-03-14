@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rsbase.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Mar-2018
+# @Last modified time: 14-Mar-2018
 
 
 import sys
@@ -27,6 +27,7 @@ if (sys.version_info > (3, 0)):
     RSBaseDesign.get_available_structures            = ru.get_available_structures
     RSBaseDesign.get_structure_prediction            = ru.get_structure_prediction
     RSBaseDesign.get_available_structure_predictions = ru.get_available_structure_predictions
+    RSBaseDesign.get_sequential_data                 = ru.get_sequential_data
     RSBaseDesign.get_label                           = ru.get_label
     RSBaseDesign.get_available_labels                = ru.get_available_labels
 
@@ -77,6 +78,8 @@ else:
         ru.get_structure_prediction, None, RSBaseDesign)
     RSBaseDesign.get_available_structure_predictions = MethodType(
         ru.get_available_structure_predictions, None, RSBaseDesign)
+    RSBaseDesign.get_sequential_data = MethodType(
+        ru.get_sequential_data, None, RSBaseDesign)
     RSBaseDesign.get_label = MethodType(
         ru.get_label, None, RSBaseDesign)
     RSBaseDesign.get_available_labels = MethodType(

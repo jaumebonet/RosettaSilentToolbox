@@ -12,9 +12,10 @@ from matplotlib import transforms
 from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
-from rstoolbox.analysis import sequence_frequency_matrix, binary_overlap
+from rstoolbox.analysis import binary_overlap
 from rstoolbox.components import DesignFrame, SequenceFrame, Selection
 from .color_schemes import color_scheme
+
 
 class Scale(matplotlib.patheffects.RendererBase):
     def __init__(self, sx, sy=None):

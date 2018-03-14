@@ -3,15 +3,13 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: structure.py
 # @Last modified by:   bonet
-# @Last modified time: 20-Feb-2018
+# @Last modified time: 14-Mar-2018
 
 
 import collections
 
 import pandas as pd
-import numpy as np
 
-from rstoolbox.components import DesignFrame, FragmentFrame
 
 def positional_structural_count( df, seqID=None ):
     """
@@ -29,6 +27,7 @@ def positional_structural_count( df, seqID=None ):
         :AttributeError: if input is :py:class:`.DesignFrame` and ``seqID`` is not provided.
         :KeyError: if input is :py:class:`.DesignFrame` and ``seqID`` cannot be found.
     """
+    from rstoolbox.components import DesignFrame, FragmentFrame
     data = {"H": [], "E": [], "L": []}
 
     # @todo: Code positional_structural_count for DesignFrame
@@ -71,7 +70,7 @@ def positional_structural_identity( df, seqID=None, ref_sse=None ):
         :KeyError: if input is :py:class:`.DesignFrame` and ``seqID`` cannot be found.
         :AttributeError if ``ref_sse`` is not provided.
     """
-
+    from rstoolbox.components import DesignFrame, FragmentFrame
     data = {"sse": [], "max_sse": [], "identity_perc": []}
 
     # @todo: Code positional_structural_identity for DesignFrame

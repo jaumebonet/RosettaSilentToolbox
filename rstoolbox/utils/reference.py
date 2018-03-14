@@ -3,12 +3,13 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: reference.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Mar-2018
+# @Last modified time: 14-Mar-2018
 
 import copy
 import warnings
 
 import pandas as pd
+import numpy as np
 
 
 def _has_reference( obj, ctype, seqID ):
@@ -34,7 +35,6 @@ def _get_key_reference( obj, ctype, seqID, key_residues ):
     if key_residues is None:
         return seq
 
-    print key_residues
     if isinstance(key_residues, int):
         key_residues = [int, ]
     if isinstance(key_residues, list):
@@ -46,12 +46,11 @@ def _get_key_reference( obj, ctype, seqID, key_residues ):
             kr = key_residues.unshift(seqID, sft)
         else:
             kr = key_residues.unshift(None, 1)
-        print kr
-        kr = kr.to_list()
+        kr = np.array(kr.to_list(len(seq)))
     else:
         raise NotImplementedError
 
-    return "".join([x for i, x in enumerate(seq) if i + 1 in kr])
+    return "".join(np.array(list(seq))[kr - 1])
 
 
 def has_reference_sequence( self, seqID ):

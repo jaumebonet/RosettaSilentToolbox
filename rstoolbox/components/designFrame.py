@@ -3,11 +3,9 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Mar-2018
+# @Last modified time: 13-Mar-2018
 
 # Standard Libraries
-import collections
-import copy
 import itertools
 
 # External Libraries
@@ -19,7 +17,7 @@ import numpy as np
 # This Library
 from .rsbase import RSBaseDesign
 from .apply import frame_apply
-from .sequenceFrame import SequenceFrame
+import rstoolbox.analysis as ra
 
 
 class DesignSeries( pd.Series, RSBaseDesign ):
@@ -218,35 +216,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
             so nothing is deleted.
         :return: :py:class:`.SequenceFrame`
         """
-
-        def count_instances( seq, table ):
-            t = copy.deepcopy(table)
-            c = collections.Counter(seq)
-            for aa in table:
-                _ = c[aa]
-                if _ > 0:
-                    t[aa] = float(_) / len(seq)
-                else:
-                    t[aa] = 0
-            return t
-
-        sserie = self.get_sequence(seqID).replace('', np.nan).dropna().str.upper()
-        table, extra = self._get_sequence_table( seqType )
-        sserie = sserie.apply(lambda x: pd.Series(list(x)))
-        sserie = sserie.apply(lambda x: pd.Series(count_instances(x.str.cat(), table))).T
-
-        df = SequenceFrame(sserie)
-        df.measure("frequency")
-        df.extras( extra )
-        if self.has_reference_sequence(seqID):
-            df.reference_sequence(
-                self.get_reference_sequence(seqID),
-                self.get_reference_shift(seqID))
-        df.delete_extra( cleanExtra )
-        df.delete_empty( cleanUnused )
-        df.clean()
-        df.index = df.index + self.get_reference_shift(seqID)
-        return df
+        return ra.sequential_frequencies(self, seqID, "sequence", seqType, cleanExtra, cleanUnused)
 
     def sequence_bits( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
         """
@@ -277,53 +247,56 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         df = self.sequence_frequencies(seqID, seqType, cleanExtra, cleanUnused)
         return df.to_bits()
 
-    def _get_sequence_table( self, seqType ):
+    def structure_frequencies( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=-1 ):
         """
-        Generates the table to fill sequence data in order to create
-        a :py:class:`.SequenceFrame`
+        Generates a :py:class:`.SequenceFrame` for the frequencies of
+        the secondary structure in the __DesignFrame__ with seqID identifier.
+        If there is a reference_structure for this seqID, it will also
+        be attached to the __SequenceFrame__.
+        All letters in the secondary structure will be capitalized. All symbols that
+        do not belong to string.ascii_uppercase will be transformed to "*"
+        as this is the symbol recognized by the substitution matrices.
 
-        :param seqType: Type of sequence: protein, protein_sse, dna, rna.
-        :type seqType: :py:class:`str`
-        :return: dict
-        :raise ValueError: If seqType is not known
+        :param str seqID: Identifier of the secondary structure sets of interest.
+        :param str seqType: Type of sequence: protein.
+        :param bool cleanExtra: Remove from the SequenceFrame the non-regular
+            amino/nucleic acids if they are empty for all positions.
+        :param int cleanUnused: Remove from the SequenceFrame the regular
+            amino/nucleic acids if they frequency is equal or under the value . Default is -1,
+            so nothing is deleted.
+        :return: :py:class:`.SequenceFrame`
         """
-        table = {}
-        extra = []
-        if seqType.lower() == "protein":
-            # X = UNKNOWN  # * = GAP
-            # B = N or D   # Z = E or Q
-            table = {
-                'C': [], 'D': [], 'S': [], 'Q': [], 'K': [],
-                'I': [], 'P': [], 'T': [], 'F': [], 'N': [],
-                'G': [], 'H': [], 'L': [], 'R': [], 'W': [],
-                'A': [], 'V': [], 'E': [], 'Y': [], 'M': [],
-                'X': [], '*': [], 'B': [], 'Z': []
-            }
-            extra = ['X', '*', 'B', 'Z']
-        elif seqType.lower() in ["dna", "rna"]:
-            # B = C or G or T  # D = A or G or T
-            # H = A or C or T  # K = G or T
-            # M = A or C       # N = A or C or G or T
-            # R = A or G       # S = C or G
-            # V = A or C or G  # W = A or T
-            # Y = C or T
-            table = {
-                'C': [], 'A': [], 'T': [], 'G': [], 'X': [], '*': [],
-                'B': [], 'D': [], 'H': [], 'K': [], 'M': [], 'N': [],
-                'R': [], 'S': [], 'V': [], 'W': [], 'Y': []
-            }
-            if seqType.lower() == "rna":
-                table.setdefault( 'U', [])
-                table.pop('T', None)
-            extra = ['X', '*', 'B', 'D', 'H', 'K', 'M', 'N', 'R', 'S', 'V', 'W', 'Y']
-        elif seqType.lower == "protein_sse":
-            table = {
-                'H': [], 'E': [], 'L': [], '*': [], 'G': []
-            }
-            extra = ['*', 'G']
-        else:
-            raise ValueError("sequence type {0} unknown".format(seqType))
-        return table, extra
+        seqType = seqType + "_sse"
+        return ra.sequential_frequencies(self, seqID, "structure", seqType, cleanExtra, cleanUnused)
+
+    def structure_bits( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
+        """
+        Generates a :py:class:`.SequenceFrame` for the bits of
+        the secondary structure in the __DesignFrame__ with seqID identifier.
+        If there is a reference_structure for this seqID, it will also
+        be attached to the __SequenceFrame__.
+        Bit calculation is performed as explained in http://www.genome.org/cgi/doi/10.1101/gr.849004
+        such as:
+
+        Rseq = Smax - Sobs = log2 N - (-sum(n=1,N):pn * log2 pn)
+
+        Where:
+            - N is the total number of options (4: DNA/RNA; 20: PROTEIN).
+            - pn is the observed frequency of the symbol n.
+
+        :param str seqID: Identifier of the sequence sets of interest.
+        :param str seqType: Type of sequence: protein, dna, rna.
+        :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
+            shift from the reference sequence
+        :param bool cleanExtra: Remove from the SequenceFrame the non-regular
+        amino/nucleic acids if they are empty for all positions.
+        :param bool cleanUnused: Remove from the SequenceFrame the regular
+        amino/nucleic acids if they are empty for all positions
+
+        :return: :py:class:`.SequenceFrame`
+        """
+        df = self.structure_frequencies(seqID, seqType, cleanExtra, cleanUnused)
+        return df.to_bits()
 
     def _metadata_defaults(self, name):
         if name == "_source_files":

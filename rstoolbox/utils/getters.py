@@ -3,10 +3,11 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: getters.py
 # @Last modified by:   bonet
-# @Last modified time: 09-Mar-2018
+# @Last modified time: 14-Mar-2018
 
 
 import pandas as pd
+import numpy as np
 
 
 def _check_type( obj ):
@@ -27,6 +28,37 @@ def _get_available( obj, ctype ):
         return ["_".join(x.split("_")[1:]) for x in obj.columns.values if x.startswith(ctype)]
     else:
         return ["_".join(x.split("_")[1:]) for x in obj.index.values if x.startswith(ctype)]
+
+
+def _get_key_sequence( obj, ctype, seqID, key_residues ):
+    from rstoolbox.components import Selection, SelectionContainer
+    from .reference import _get_reference
+
+    seq = obj[_check_column(obj, ctype, seqID)]
+    sft = _get_reference(obj, "sft", seqID)
+
+    if isinstance(key_residues, int):
+        key_residues = [int, ]
+    if isinstance(key_residues, list):
+        key_residues = Selection(key_residues)
+    if isinstance(key_residues, SelectionContainer):
+        key_residues = key_residues[seqID]
+    if isinstance(key_residues, Selection):
+        if key_residues.is_shifted():
+            kr = key_residues.unshift(seqID, sft)
+        else:
+            kr = key_residues.unshift(None, 1)
+        if isinstance(obj, pd.Series):
+            kr = np.array(kr.to_list(len(seq)))
+        else:
+            kr = np.array(kr.to_list(len(seq.iloc[0])))
+    else:
+        raise NotImplementedError
+
+    if isinstance(obj, pd.Series):
+        return "".join(np.array(list(seq))[kr - 1])
+    else:
+        return seq.apply(lambda seq: "".join(np.array(list(seq))[kr - 1]))
 
 
 def get_id( self ):
@@ -62,12 +94,14 @@ def get_available_sequences( self ):
     return _get_available(self, "sequence_")
 
 
-def get_sequence( self, seqID ):
+def get_sequence( self, seqID, key_residues=None ):
     """
     Return the sequence data for `seqID` available in the container.
 
     :param seqID: Identifier of the sequence of interest.
     :type seqID: :py:class:`str`
+    :param key_residues: Residues of interest. Are affected by the reference shift (if any).
+    :type key_residues: Union[:py:class:`list`[:py:class:`int`], :py:class:`str`]
 
     :return: :py:class:`str` or :py:class:`~pandas.Series`
 
@@ -77,7 +111,10 @@ def get_sequence( self, seqID ):
         :KeyError: If the column `sequence_[seqID]` is cannot be found.
     """
     _check_type(self)
-    return self[_check_column(self, "sequence", seqID)]
+    if key_residues is None:
+        return self[_check_column(self, "sequence", seqID)]
+    else:
+        return _get_key_sequence(self, "sequence", seqID, key_residues)
 
 
 def get_available_structures( self ):
@@ -94,12 +131,14 @@ def get_available_structures( self ):
     return _get_available(self, "structure_")
 
 
-def get_structure( self, seqID ):
+def get_structure( self, seqID, key_residues=None ):
     """
     Return the structure(s) data.
 
     :param seqID: Identifier of the structure of interest.
     :type seqID: :py:class:`str`
+    :param key_residues: Residues of interest. Are affected by the reference shift (if any).
+    :type key_residues: Union[:py:class:`list`[:py:class:`int`], :py:class:`str`]
 
     :return: py:class:`str` or :py:class:`~pandas.Series`
 
@@ -109,7 +148,10 @@ def get_structure( self, seqID ):
         :KeyError: If the column `structure_[seqID] is cannot be found.
     """
     _check_type(self)
-    return self[_check_column(self, "structure", seqID)]
+    if key_residues is None:
+        return self[_check_column(self, "structure", seqID)]
+    else:
+        return _get_key_sequence(self, "structure", seqID, key_residues)
 
 
 def get_available_structure_predictions( self ):
@@ -126,12 +168,14 @@ def get_available_structure_predictions( self ):
     return _get_available(self, "psipred_")
 
 
-def get_structure_prediction( self, seqID ):
+def get_structure_prediction( self, seqID, key_residues=None ):
     """
     Return the structure prediction(s) data.
 
     :param seqID: Identifier of the structure of interest.
     :type seqID: :py:class:`str`
+    :param key_residues: Residues of interest. Are affected by the reference shift (if any).
+    :type key_residues: Union[:py:class:`list`[:py:class:`int`], :py:class:`str`]
 
     :return: py:class:`str` or :py:class:`~pandas.Series`
 
@@ -141,7 +185,38 @@ def get_structure_prediction( self, seqID ):
         :KeyError: If the column `psipred_[seqID] is cannot be found.
     """
     _check_type(self)
-    return self[_check_column(self, "psipred", seqID)]
+    if key_residues is None:
+        return self[_check_column(self, "psipred", seqID)]
+    else:
+        return _get_key_sequence(self, "psipred", seqID, key_residues)
+
+
+def get_sequential_data( self, query, seqID ):
+    """
+    Provides data on the requested query.
+
+    :param query: Query type: `sequence`, `structure`, `structure_prediction`.
+    :type query: :py:class:`str`
+    :param seqID: Identifier of the structure of interest.
+    :type seqID: :py:class:`str`
+
+    :return: py:class:`str` or :py:class:`~pandas.Series`
+
+    :raises:
+        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
+        or :py:class:`~pandas.Series`
+        :KeyError: If `query` has a non-accepted value.
+    """
+    queries = ["sequence", "structure", "structure_prediction"]
+    if query.lower() not in queries:
+        raise KeyError("Available queries are: {}".format(",".join(queries)))
+
+    if query.lower() == "sequence":
+        return self.get_sequence(seqID)
+    if query.lower() == "structure":
+        return self.get_structure(seqID)
+    if query.lower() == "structure_prediction":
+        return self.get_structure_prediction(seqID)
 
 
 def get_available_labels( self ):

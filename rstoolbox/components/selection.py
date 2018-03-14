@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Mar-2018
+# @Last modified time: 14-Mar-2018
 
 
 import copy
@@ -80,6 +80,8 @@ class Selection( object ):
         self._asarr = []     # Selected Residues.
         self._seqID = None   # Sequence ID; if present do NOT apply shift.
         self._revrs = False  # Select all but Selection.
+        self._isarr = None   # Reverse selection, if needed
+        self._ialen = None   # Length used on reversed
 
         if isinstance(selection, Series):
             if selection.shape[0] == 1:
@@ -96,14 +98,31 @@ class Selection( object ):
         else:
             raise AttributeError("Unable to processs the provided selection")
 
-    def to_list( self ):
+    def to_list( self, length=None ):
         """
         Provide the values of the :py:class:`.Selection` as a
         list of integers.
 
+        :param length: Expected total length of the sequence to which the
+        :py:class:`.Selection` will be applied
+        :type length: :py:class:`int`
+
         :return: :py:class:`list`(:py:class:`int`)
+
+        :raises:
+            :AttributeError: If the :py:class:`.Selection` is reversed and no
+            `length` is provided.
         """
-        return self._asarr
+        if not self._revrs:
+            return self._asarr
+        else:
+            if self._isarr is None and length is None:
+                raise AttributeError("Reversed Selections need to know the "
+                                     "sequence length")
+            if self._isarr is None or self._ialen != length:
+                self._isarr = [x for x in range(1, length + 1) if x not in self._asarr]
+                self._ialen = length
+            return self._isarr
 
     def to_string( self ):
         """
@@ -193,6 +212,7 @@ class Selection( object ):
         if isinstance(shift, list) and len(self) > 0:
             newsele._asarr = [shift[x - 1] for x in self._asarr]
         newsele._seqID = seqID
+        newsele._revrs = self._revrs
         return newsele
 
     def unshift( self, seqID, shift ):
@@ -213,6 +233,7 @@ class Selection( object ):
         if isinstance(shift, list) and len(self) > 0:
             newsele._asarr = [shift.index(x) + 1 for x in self._asarr]
         newsele._seqID = seqID
+        newsele._revrs = self._revrs
         return newsele
 
     #
@@ -286,9 +307,10 @@ class Selection( object ):
 
     def _compressed_str( self ):
         if self.is_shifted():
-            return "@({})".format(len(self))
+            show = "@({})".format(len(self))
         else:
-            return "#({})".format(len(self))
+            show = "#({})".format(len(self))
+        return "~" + show if self._revrs else show
 
     #
     # MAGIC METHODS
@@ -331,6 +353,7 @@ class Selection( object ):
         if isinstance(other, int):
             s = Selection(list(np.array(self._asarr) - other))
             s._seqID = self._seqID
+            s._revrs = self._revrs
             return s
         raise NotImplementedError
 
@@ -338,6 +361,7 @@ class Selection( object ):
         if isinstance(other, int):
             s = Selection(list(np.array(self._asarr) + other))
             s._seqID = self._seqID
+            s._revrs = self._revrs
             return s
         raise NotImplementedError
 
@@ -388,8 +412,8 @@ class Selection( object ):
                 s = Selection(list(set(self.to_list()).union(other.to_list())))
             s._seqID = self._seqID
             s._revrs = self._revrs
-
             return s
+
         if isinstance(other, int):
             return self - Selection([other, ])
         if isinstance(other, (Series, basestring, list)):

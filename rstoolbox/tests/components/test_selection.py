@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_selection.py
 # @Last modified by:   bonet
-# @Last modified time: 09-Mar-2018
+# @Last modified time: 14-Mar-2018
 
 
 import pytest
@@ -118,7 +118,9 @@ class TestSelection( object ):
 
         # invert
         sn1 = ~s1
-        assert len(set(sn1.to_list()).intersection(s1.to_list())) == len(s1)
+        picks = sn1.to_list(100)
+        assert len(set(picks).intersection(s1.to_list())) == 0
+        assert len(set(picks).union(s1.to_list())) == 100
         assert sn1 != s1
 
         # add, sub
@@ -146,9 +148,11 @@ class TestSelection( object ):
         assert s3a.to_list() == _12
         s3a = s3 - "15A"  # opearte w/ string
         assert s3a.to_list() == _13
-        # operate with invert
-        assert (s1 + s2) == (s1 - ~s2)
-        assert (s1 - s2) == (s1 + ~s2)
+        # operate w/ invert (does not have the working length)
+        with pytest.raises(AttributeError):
+            assert (s1 + s2) == (s1 - ~s2)
+        with pytest.raises(AttributeError):
+            assert (s1 - s2) == (s1 + ~s2)
 
         # shift
         s4a = s1 << 1
