@@ -3,10 +3,11 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: mutants.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Mar-2018
+# @Last modified time: 19-Mar-2018
 
 
 import itertools
+import re
 
 import pandas as pd
 
@@ -149,34 +150,97 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
         shift = row.get_reference_shift(seqID)
         seq   = list(row[seqNM])
         for p in muts:
-            seq[p[0] - 1] = p[1]
+            seq[p[0] - shift] = p[1]
         data = {seqNM: ["".join(x) for x in itertools.product(*seq)]}
         data[seqNM].insert(0, row[seqNM])
-        data[idNM] = [row.get_id() + "_v{0:04d}".format(x) for x in range(len(data[seqNM]))]
-        data[idNM][0] = row.get_id()
+        name = row.get_id()
+        if not bool(re.search("_v\d+$", row.get_id())):
+            data[idNM] = [name + "_v{0:04d}".format(x) for x in range(len(data[seqNM]))]
+            data[idNM][0] = name
+        else:
+            data[idNM] = [name + "_v{0:04d}".format(x) for x in range(1, len(data[seqNM]) + 1)]
         if keep_scores:
             for col in row.index:
                 if col not in [seqNM, idNM]:
                     data[col] = [row[col]] * len(data[idNM])
+        else:
+            for seq in row.get_available_sequences():
+                if seq != seqID:
+                    data[_check_column(row, "sequence", seq)] = row.get_sequence(seq)
         df = row._constructor_expanddim(data)
-        df.add_reference(seqID, sequence=row[seqNM], shift=shift, shift_labels=False)
-        df = df.identify_mutants(seqID)
-        df.delete_reference(seqID)
         return df
 
     if isinstance(self, pd.DataFrame):
         designs = []
         for i, row in self.iterrows():
-            designs.append(row.generate_mutant_variants(seqID, mutations, keep_scores))
+            designs.append(multiplex(row, seqID, mutations))
         df = pd.concat(designs)
     elif isinstance(self, pd.Series):
         df = multiplex(self, seqID, mutations)
     else:
         raise NotImplementedError
 
-    if self.has_reference_sequence(seqID):
-        df.add_reference(seqID,
-                         sequence=self.get_reference_sequence(seqID),
-                         shift=self.get_reference_shift(seqID), shift_labels=False)
-    df.drop_duplicates([_check_column(df, "sequence", seqID)], inplace=True)
+    df.transfer_reference(self)
+
+    avail_seqs = df.get_available_sequences()
+    seqs = [_check_column(df, "sequence", seq) for seq in avail_seqs]
+    df.drop_duplicates(seqs, inplace=True)
+    for seq in avail_seqs:
+        df = df.identify_mutants(seq)
+    if len(avail_seqs) > 1:
+        muts = ["mutant_count_{}".format(seq) for seq in avail_seqs]
+        df["mutant_count_all"] = df[muts].sum(axis=1)
+
     return df.reset_index(drop=True)
+
+
+def generate_wt_reversions( self, seqID=None ):
+    """
+    Expand the selected sequences by generating all the combinatorial options to revert to
+    the reference (WT) sequence.
+
+    Alters the names of the designs in **description**.
+
+    :param seqID: Identifier of the sequence sets of interest. If none is provided, WT reversion
+    is applied to all available sequences.
+    :type seqID: :py:class:`str`
+
+    :return: :py:class:`.DesignFrame`
+    """
+    def format_mutations( mutations ):
+        mutations = mutations.split(",")
+        muts = []
+        for m in mutations:
+            m = m.strip()
+            muts.append((int(re.search("(\d+)", m).group(1)),
+                        "".join([m[0], m[-1]])))
+        return muts
+
+    if seqID is None:
+        seqID = self.get_available_sequences()
+        adf = self.copy()
+        for seq in seqID:
+            adf = adf.generate_wt_reversions(seq)
+    else:
+        adf = []
+        if "mutants_{}".format(seqID) not in self:
+            self.identify_mutants(seqID)
+
+        if isinstance(self, pd.DataFrame):
+            designs = []
+            for i, row in self.iterrows():
+                mutations = format_mutations(row["mutants_{}".format(seqID)])
+                designs.append(row.generate_mutant_variants(seqID, mutations))
+            df = pd.concat(designs)
+        elif isinstance(self, pd.Series):
+            mutations = format_mutations(self["mutants_{}".format(seqID)])
+            df = self.generate_mutant_variants(seqID, mutations)
+        else:
+            raise NotImplementedError
+        adf.append(df)
+        adf = pd.concat(adf)
+
+    avail_seqs = adf.get_available_sequences()
+    seqs = [_check_column(adf, "sequence", seq) for seq in avail_seqs]
+    adf.drop_duplicates(seqs, inplace=True)
+    return adf.reset_index(drop=True)

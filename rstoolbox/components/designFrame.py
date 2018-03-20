@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Mar-2018
+# @Last modified time: 19-Mar-2018
 
 # Standard Libraries
 import itertools
@@ -51,7 +51,9 @@ class DesignSeries( pd.Series, RSBaseDesign ):
             # Avoid columns from DesignFrame to become DesignSeries
             if not isinstance(self.name, int):
                 return pd.Series(self)
-        self._reference = other._reference
+
+        for name in self._metadata:
+            setattr(self, name, getattr(other, name, {}))
         return self
 
 

@@ -1,5 +1,6 @@
 from distutils.version import LooseVersion, StrictVersion
 import os
+import copy
 
 import pandas as pd
 import numpy as np
@@ -55,11 +56,15 @@ def barcode_plot( df, column_name, ax, color="blue" ):
     ax.xaxis.set_ticklabels(np.arange(0, len(result)+1, 10) + 1, rotation=45)
     ax.set_xlabel("sequence")
 
-def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refseq=True, key_residues=None, border_color="green", **kwargs ):
+
+def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
+                             refseq=True, key_residues=None, border_color="green", **kwargs ):
     """
-    Makes a heatmap subplot into the provided axis showing the sequence distribution of each residue type
-    for each position. A part from the function arguments, any argument that can be provided to the
+    Makes a heatmap subplot into the provided axis showing the sequence distribution
+    of each residue type for each position.
+    A part from the function arguments, any argument that can be provided to the
     seaborn.heatmap function can also be provided here.
+
     As a tip:
     (1) Do you want to set the orientation of the color bar horizontal?
     Add the parameter: cbar_kws={"orientation": "horizontal"}
@@ -74,21 +79,26 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
     (6) Need to rotate the y-axis labels?
     Add paramenter: yrotation=90 (to say some degree)
 
-    :param DataFrame df: Ideally, a :py:class:`.DesignFrame` or :py:class:`.SequenceFrame`. Data content.
-        requires the existence of a "sequence_{seqID}" column with the sequence to plot.
-    :param str seqID: Identifier of the query sequence.
+    :param df: Data content.
+    :type df: Union[:py:class:`.DesignFrame`, :py:class:`.SequenceFrame`]
+    :param seqID: Identifier of the query sequence.
+    :type seqID: :py:class:`str`
     :param axis ax: matplotlib axis to which we will plot.
-    :param bool aminosY: When True amino acid type is in the Y axis, when False they are in the X axis.
-    :param int clean_unused: Remove amino acids from the plot when they never get over a given frequency.
-        Default is -1, so all are plotted. Residues present in the reference sequence are not taken into account.
-    :param bool refseq: if True (default), mark the original residues according to the reference sequence.
+    :param bool aminosY: When True amino acid type is in the Y axis, when False they
+        are in the X axis.
+    :param int clean_unused: Remove amino acids from the plot when they never get over a given
+        frequency. Default is -1, so all are plotted. Residues present in the reference sequence
+        are not taken into account.
+    :param bool refseq: if True (default), mark the original residues according to
+        the reference sequence.
     :param list key_residues: List to limit the plotted positions to those of interest.
     :param str border_color: Color to use to mark the original residue types.
     :raises: ValueError if input is not a DataFrame derived object.
     """
 
-    order = ["A","V","I","L","M","F","Y","W","S","T","N","Q","R","H","K","D","E","C","G","P"]
-    data = df.copy()
+    order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
+             "Q", "R", "H", "K", "D", "E", "C", "G", "P"]
+    data = copy.deepcopy(df)
 
     fp = FontProperties()
     fp.set_family("monospace")
@@ -98,9 +108,12 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
         raise ValueError("Input data must be in a DataFrame, DesignFrame or SequenceFrame")
     else:
         if not isinstance(data, (DesignFrame, SequenceFrame)):
-            data = DesignFrame( data )
+            if len(set(data.columns.values).intersction(set(order))) == len(order):
+                data = SequenceFrame(data)
+            else:
+                data = DesignFrame(data)
     if isinstance(data, DesignFrame):
-        data = data.sequence_frequencies( seqID )
+        data = data.sequence_frequencies(seqID)
     if isinstance(data, SequenceFrame):
         order = sorted(data.columns.values.tolist(), key=lambda x: order.index(x))
         if not data.is_transposed():
@@ -109,32 +122,24 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
             data = data.reindex(order)
 
     # Refseq and key_residues management.
-    if isinstance(key_residues, Selection):
-        # labels already count from 1.
-        key_residues = key_residues + data.reference_shift() - 1
-        key_residues = key_residues.to_list()
-    ref_seq = data.key_reference_sequence(key_residues, False)
-    if key_residues is not None:
-        data = data[key_residues]
-    if refseq:
-        data.reference_sequence(ref_seq)
-    else:
-        data.reference_sequence("")
+    ref_seq = data.get_reference_sequence(seqID, key_residues) if refseq else ""
+
+    # data and key_residues management.
+    data = data.get_key_residues(key_residues)
+
     if clean_unused >= 0:
         data.delete_empty(clean_unused)
         data = data.clean()
         order = sorted(data.index.values.tolist(), key=lambda x: order.index(x))
         data = data.reindex(order)
 
-
-
     # heatmap parameters and others
-    if not "cmap" in kwargs:        # define the color-range of the plot
-        kwargs["cmap"] = "Blues"
-    kwargs["linewidths"] = 1        # linewidths are fixed to 1, overwrite user selection
-    kwargs["square"] = True         # square is True, overwrite user selection
-    if not "cbar_kws" in kwargs:    # by default the color bar is horizontal
-        kwargs["cbar_kws"] = {"orientation": "horizontal"}
+    kwargs.setdefault("cmap", "Blues")  # define the color-range of the plot
+    kwargs.setdefault("linewidths", 1)  # linewidths are fixed to 1, overwrite user selection
+    kwargs.setdefault("square", True)   # square is True, overwrite user selection
+    # by default the color bar is horizontal
+    kwargs.setdefault("cbar_kws", {"orientation": "horizontal"})
+
     labelsize = None
     xrotation  = 0
     yrotation  = 0
@@ -183,9 +188,12 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
     if ref_seq is not "" and refseq:
         for i in range(len(ref_seq)):
             if aminosY:
-                ax.add_patch(Rectangle((i, order.index(ref_seq[i])), 1, 1, fill=False, edgecolor=border_color, lw=2))
+                aa_position = (i, order.index(ref_seq[i]))
             else:
-                ax.add_patch(Rectangle((order.index(ref_seq[i]), i), 1, 1, fill=False, edgecolor=border_color, lw=2))
+                aa_position = (order.index(ref_seq[i]), i)
+            ax.add_patch(Rectangle(aa_position, 1, 1, fill=False,
+                                   edgecolor=border_color, lw=2, zorder=100))
+
 
 def positional_sequence_similarity_plot( df, ax, identity_color="green", similarity_color="orange" ):
     """
@@ -270,13 +278,14 @@ def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, c
     for scores in wdata:
         y = 0
         for base, score in scores:
-            _letterAt(base, x,y, score, ax, globscale, LETTERS, color_scheme(colors))
+            _letterAt(base, x, y, score, ax, globscale, LETTERS, color_scheme(colors))
             y += score
         x += 1
         maxi = max(maxi, y)
     if outfile is not None:
         fig.savefig( outfile )
     return fig, ax
+
 
 def per_residue_value( df ):
     pass

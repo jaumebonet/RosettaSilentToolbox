@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rsbase.py
 # @Last modified by:   bonet
-# @Last modified time: 14-Mar-2018
+# @Last modified time: 19-Mar-2018
 
 
 import sys
@@ -31,6 +31,7 @@ if (sys.version_info > (3, 0)):
     RSBaseDesign.get_label                           = ru.get_label
     RSBaseDesign.get_available_labels                = ru.get_available_labels
 
+    RSBaseDesign.get_available_references            = ru.get_available_references
     RSBaseDesign.has_reference_sequence              = ru.has_reference_sequence
     RSBaseDesign.add_reference_sequence              = ru.add_reference_sequence
     RSBaseDesign.get_reference_sequence              = ru.get_reference_sequence
@@ -49,7 +50,9 @@ if (sys.version_info > (3, 0)):
     RSBaseDesign.get_mutation_count                  = ru.get_mutation_count
     RSBaseDesign.identify_mutants                    = ru.identify_mutants
     RSBaseDesign.generate_mutant_variants            = ru.generate_mutant_variants
+    RSBaseDesign.generate_wt_reversions              = ru.generate_wt_reversions
 
+    RSBaseFrequency.get_available_references         = ru.get_available_references
     RSBaseFrequency.has_reference_sequence           = ru.has_reference_sequence
     RSBaseFrequency.add_reference_sequence           = ru.add_reference_sequence
     RSBaseFrequency.get_reference_sequence           = ru.get_reference_sequence
@@ -85,6 +88,8 @@ else:
     RSBaseDesign.get_available_labels = MethodType(
         ru.get_available_labels, None, RSBaseDesign)
 
+    RSBaseDesign.get_available_references = MethodType(
+        ru.get_available_references, None, RSBaseDesign)
     RSBaseDesign.has_reference_sequence = MethodType(
         ru.has_reference_sequence, None, RSBaseDesign)
     RSBaseDesign.add_reference_sequence = MethodType(
@@ -120,7 +125,11 @@ else:
         ru.identify_mutants, None, RSBaseDesign)
     RSBaseDesign.generate_mutant_variants = MethodType(
         ru.generate_mutant_variants, None, RSBaseDesign)
+    RSBaseDesign.generate_wt_reversions = MethodType(
+        ru.generate_wt_reversions, None, RSBaseDesign)
 
+    RSBaseFrequency.get_available_references = MethodType(
+        ru.get_available_references, None, RSBaseFrequency)
     RSBaseFrequency.has_reference_sequence = MethodType(
         ru.has_reference_sequence, None, RSBaseFrequency)
     RSBaseFrequency.add_reference_sequence = MethodType(

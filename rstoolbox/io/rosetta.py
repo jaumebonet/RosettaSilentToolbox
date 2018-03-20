@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rosetta.py
 # @Last modified by:   bonet
-# @Last modified time: 09-Mar-2018
+# @Last modified time: 17-Mar-2018
 
 
 import os
@@ -395,7 +395,7 @@ def parse_rosetta_fragments( filename ):
                        "aa", "sse", "phi", "psi", "omega"], axis=1)
 
 
-def write_rosetta_fragements( df, frag_size, n_frags=200 ):
+def write_rosetta_fragments( df, frag_size, n_frags=200 ):
     """
     Writes a Rosetta fragment-file (new format) from an appropiate :py:class:`.FragmentFrame`.
     Supports varying size fragment sets.

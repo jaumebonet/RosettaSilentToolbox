@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 14-Mar-2018
+# @Last modified time: 18-Mar-2018
 
 import copy
 import collections
@@ -105,7 +105,7 @@ def sequential_frequencies( self, seqID, qType="sequence", seqType="protein",
     If there is a reference_sequence for this seqID, it will also
     be attached to the :py:class:`.SequenceFrame`.
     All letters in the sequence will be capitalized. All symbols that
-    do not belong to string.ascii_uppercase will be transformed to "*"
+    do not belong to ``string.ascii_uppercase`` will be transformed to "*"
     as this is the symbol recognized by the substitution matrices.
 
     :param str seqID: Identifier of the sequence sets of interest.
@@ -139,13 +139,17 @@ def sequential_frequencies( self, seqID, qType="sequence", seqType="protein",
     df.measure("frequency")
     df.extras( extra )
     if self.has_reference_sequence(seqID):
-        df.reference_sequence(
-            self.get_reference_sequence(seqID),
-            self.get_reference_shift(seqID))
+        df.add_reference(seqID,
+                         sequence=self.get_reference_sequence(seqID),
+                         shift=self.get_reference_shift(seqID))
     df.delete_extra( cleanExtra )
     df.delete_empty( cleanUnused )
     df.clean()
-    df.index = df.index + self.get_reference_shift(seqID)
+    shft = self.get_reference_shift(seqID)
+    if isinstance(shft, int):
+        df.index = df.index + shft
+    else:
+        df.index = shft
     return df
 
 
@@ -244,8 +248,6 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM
     data = {"identity_perc": [], "positive_perc": []}
     mat = SM.get_matrix(matrix)
 
-    # @todo: Code positional_sequence_similarity for DesignFrame
-    # @body: Should behave the same way it does for the FragmentFrame
     if isinstance(df, DesignFrame):
         if seqID is None:
             raise AttributeError("seqID needs to be provided")
@@ -278,6 +280,7 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM
                              "reference sequence or a FragmentFrame.")
 
     dfo = pd.DataFrame(data)
+    # TODO: get key_residues
     dfo.index = dfo.index + 1
     return dfo
 # old
@@ -288,28 +291,19 @@ def _extract_key_residue_sequence( seq, key_residues=None ):
         return seq
     tmp_seq = ""
     for k in key_residues:
-        tmp_seq += seq[k-1]
+        tmp_seq += seq[k - 1]
     return tmp_seq
 
-
-def _pick_key_residues( seq, key_residues=None ):
-    if key_residues is None:
-        return seq
-    tmp_seq = ""
-    for k in key_residues:
-        tmp_seq += seq[k]
-    return tmp_seq
 
 
 def _calculate_linear_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
-    score = 0;
+    score = 0
     qseq = _extract_key_residue_sequence( qseq, key_residues )
     rseq = _extract_key_residue_sequence( rseq, key_residues )
     assert len(qseq) == len(rseq)
     for i in range(len(qseq)):
         score += matrix.get_value(qseq[i], rseq[i])
     return score
-
 
 
 def _calculate_binary_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
@@ -323,56 +317,6 @@ def _calculate_binary_sequence_similarity( qseq, rseq, matrix, key_residues=None
         else:
             new_seq += "0"
     return new_seq
-
-
-def pick_key_residues( df, seqID, key_residues=None ):
-    """
-    Select the residues of interest from sequence seqID.
-
-    :param df: designs data.
-    :type df: :py:class:`.DesignFrame`
-    :param seqID: Identifier of the sequence sets of interest.
-    :type seqID: :py:class:`str`
-    :param key_residues: Residues of interest. Are affected by the reference shift (if any).
-    One can provide a list of residues to work with or a string indicating a LABEL to use.
-    :type key_residues: Union[:py:class:`list`[:py:class:`int`], :py:class:`str`]
-
-    :return: :py:class:`~pandas.DataFrame` with a single column named `sequence_[seqID]`.
-
-    :raises:
-        :AttributeError: if the data passed is not a :py:class:`.DesignFrame`.
-        :KeyError: if ``seqID`` cannot be found.
-        :KeyError: if a label is requested and not found .
-    """
-    from rstoolbox.components import DesignFrame
-    if not isinstance(df, DesignFrame):
-        raise AttributeError("Input data has to be a DesignFrame with a reference sequence.")
-    if not "sequence_{}".format(seqID) in df:
-        raise KeyError("Sequence {} not found in decoys.".format(seqID))
-
-
-    if key_residues is None:
-        return pd.DataFrame(df["sequence_{}".format(seqID)])
-
-    # @todo: Implement label-based residue selection in pick_key_residues
-    # @body: This will allow auto-selection from labels generated in RosettaScript
-    elif isinstance( key_residues, str ):
-        pass
-
-    selected_residues = np.array(key_residues) - df.get_reference_shift(seqID)
-
-    if np.any(selected_residues < 0):
-        raise IndexError("Selected residue out of specified bound")
-    if np.any(selected_residues > len(df["sequence_{}".format(seqID)].values[0]) + df.get_reference_shift(seqID) - 1):
-        raise IndexError("Selected residue out of specified bound")
-
-    sr = df.apply(lambda x : _pick_key_residues(x["sequence_{}".format(seqID)], selected_residues), axis=1)
-    return pd.DataFrame(sr).rename({0:"sequence_{}".format(seqID)}, axis="columns")
-
-
-
-
-
 
 
 def binary_similarity( df, ref_seq, matrix="IDENTITY", seq_column="sequence", prefix=None, key_residues=None ):
