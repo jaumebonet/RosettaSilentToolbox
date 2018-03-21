@@ -183,7 +183,7 @@ class Selection( object ):
         Identifier of the sequence to which :class:`.Selection` is assigned.
 
         A :class:`.Selection` only has ``seqID`` if :meth:`~Selection.is_shifted`,
-        otherwise ``seqID`` is :class:`None`.
+        otherwise ``seqID`` is :data:`None`.
 
         .. ipython::
 

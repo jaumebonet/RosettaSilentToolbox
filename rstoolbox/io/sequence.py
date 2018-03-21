@@ -3,10 +3,11 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 06-Mar-2018
+# @Last modified time: 21-Mar-2018
 
 
 import os
+import re
 import gzip
 
 import rstoolbox.core as core
@@ -14,87 +15,163 @@ import rstoolbox.components as cp
 from rstoolbox.io.rosetta import _gather_file_list
 
 
-def read_fasta( filename, split_char=None, split_position=1, multi=False ):
+def read_fasta( filename, expand=False, multi=False ):
     """
-    Reads one or more fasta files and returns the appropiate object
-    containing the requested data: the :py:class:`.DesignFrame`.
+    Reads one or more **FASTA** files and returns the appropiate object
+    containing the requested data: the :class:`.DesignFrame`.
 
-    For the purposes of the :py:class:`.DesignFrame`, the ``seqID`` assigned
-    to the read sequences will be ``A``. The identifier of the sequences will
-    be stored in the ``description`` column to be coherent with Rosetta reads.
+    The default generated :class:`.DesignFrame` will contain two columns:
+
+    ===============  ===================================================
+    Column Name      Data Content
+    ===============  ===================================================
+    **description**  Sequence identifier.
+    **sequence_A**   Sequence content.
+    ===============  ===================================================
+
+    The sequence column assigned as ``sequence_A`` is an arbitrary decision that
+    has to do compatibility issues with the rest of functions and methods of
+    :class:`.DesignFrame`.
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import read_fasta
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = read_fasta("../rstoolbox/tests/data/*fa", multi=True)
+           ...: df
+
+    If the **FASTA** comes or is formated as **PDB FASTA** (as in the example avobe),
+    it is possible to better assign the column names to the actual sequence ID. To force
+    that behaviour, activate the ``expand`` option.
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import read_fasta
+           ...: df = read_fasta("../rstoolbox/tests/data/*fa", expand=True, multi=True)
+           ...: df
+
+    .. note::
+        Notice everything from the original ``description`` after the ``|`` symbol
+        is lost after that process.
 
     :param filename: file name or file pattern to search.
-    :type filename: :py:class:`str`
-    :param split_char: Split the design ID according to the given char.
-    :type split_char: :py:class:`str`
-    :param split_position: If split is not py:data:`None`, which position of the
-        split is the name? The rest will go to a column named **info**.
-    :param multi: When :py:data:`True`, indicates that data is readed from
+    :type filename: :class:`str`
+    :param expand: Try to better associate sequence ID if format is **PDB FASTA**.
+    :type expand: :class:`bool`
+    :param multi: When :data:`True`, indicates that data is readed from
         multiple files.
-    :type multi: :py:class:`bool`
+    :type multi: :class:`bool`
 
     :return: :py:class:`.DesignFrame`.
 
     :raises:
         :IOError: if ``filename`` cannot be found.
+
+    .. seealso::
+        :func:`~.write_fasta`
     """
     files = _gather_file_list( filename, multi )
-    data = {"description": [], "sequence_A": [], "info": []}
+    data = {"description": [], "sequence_A": []}
     for file_count, f in enumerate( files ):
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
             line = line.strip()
             if line.startswith(">"):
                 line = line.strip(">")
-                if split_char is None:
-                    data["description"].append(line)
-                else:
-                    line = line.split(split_char)
-                    data["description"].append(line.pop(split_position - 1).replace(".pdb", ""))
-                    data["info"].append(split_char.join(line))
+                data["description"].append(line)
                 data["sequence_A"].append("")
             elif len(line) > 0:
                 data["sequence_A"][-1] += line
 
-    if len(data["info"]) == 0:
-        del(data["info"])
     df = cp.DesignFrame( data )
+    if expand and bool(re.search("^\S{4}\:\S{1}", df.iloc[0]["description"])):
+        df["description"] = df["description"].apply(lambda col: col.split("|")[0])
+        df[['description', 'seq']] = df['description'].str.split(':', expand=True)
+        df = df.pivot('description', 'seq',
+                      'sequence_A').add_prefix("sequence_").rename_axis(None,
+                                                                        axis=1).reset_index()
+        df = cp.DesignFrame(df)
     df.add_source_files( files )
     return df
 
 
-def write_fasta( df, seqID, filename ):
+def write_fasta( df, seqID, separator=None, filename=None ):
     """
     Writes fasta files of the selected decoys.
 
-    It assumes that the provided data is contained in a :py:class:`.DesignFrame`
-    or a :py:class:`~pandas.DataFrame` with a **description** column for the
-    decoy's names and a **sequence_[seqID]** column for the proper sequence.
+    It assumes that the provided data is contained in a :class:`.DesignFrame`
+    or a :class:`~pandas.DataFrame`.
+
+    Mandatory columns are:
+
+    ====================  ===================================================
+    Column Name           Data Content
+    ====================  ===================================================
+    **description**       Sequence identifier.
+    **sequence_<seqID>**  Sequence content.
+    ====================  ===================================================
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import read_fasta, write_fasta
+           ...: df = read_fasta("../rstoolbox/tests/data/*fa", multi=True)
+           ...: print write_fasta(df, "A")
+
+    When working with multiple ``seqID``, one can select which ones to be printed;
+    empty sequences will be skipped.
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import read_fasta, write_fasta
+           ...: df = read_fasta("../rstoolbox/tests/data/*fa", expand=True, multi=True)
+           ...: print write_fasta(df, "AC")
 
     :param df: Data content.
-    :type df: Union[:py:class:`.DesignFrame`, :py:class:`~pandas.DataFrame`]
+    :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
     :param seqID: Identifier(s) of the sequences expected to be printed.
-    :type seqID: :py:class:`str`
-    :param filename: output file name.
-    :type filename: :py:class:`str`
+    :type seqID: :class:`str`
+    :param separator: Add ``seqID`` to sequence identifier through a particular
+        string separator. If multiple ``seqID`` are provided, it defaults to ``:``.
+    :type separator: :class:`str`
+    :param filename: Output file name.
+    :type filename: :class:`str`
+
+    :return: :py:class:`str` - **FASTA** formated string if no output file is provided.
 
     :raises:
-        :IOError: if ``filename`` exists and global option *system.overwrite* \
-        is not :py:data:`True`.
-        :AttributeError: if requested seqID cannot be found.
+        :IOError: If ``filename`` exists and global option :ref:`system.overwrite <options>`
+            is not :data:`True`.
+        :AttributeError: If any of the requested seqID cannot be found.
+
+    .. seealso::
+        :func:`~.write_fasta`
     """
-    if os.path.isfile(filename) and not core.get_option("system", "overwrite"):
-        raise IOError("File {} already exists".format(filename))
+    def nomenclator(row, seqID, separator):
+        sequence = row.get_sequence(seqID)
+        if sequence is None or len(sequence) == 0:
+            return ""
+        name = ">" + row.get_id()
+        if separator is not None:
+            name = name + separator + seqID
+        return name + "\n" + row.get_sequence(seqID)
+
+    if filename is not None:
+        if os.path.isfile(filename) and not core.get_option("system", "overwrite"):
+            raise IOError("File {} already exists".format(filename))
+    if not isinstance(df, cp.DesignFrame):
+        df = cp.DesignFrame(df)
+    if len(seqID) > 0 and separator is None:
+        separator = ":"
 
     data = []
     for chain in seqID:
-        query = "sequence_{}".format(chain)
-        name  = "description"
-        if query not in df:
-            raise AttributeError("seqID {} not found in data".format(chain))
-        eachfa = df.apply(lambda row: ">" + row[name] + "_" + chain + "\n" + row[query], axis=1)
-        data.append("\n".join(list(eachfa)))
+        eachfa = df.apply(lambda row: nomenclator(row, chain, separator), axis=1)
+        data.append("\n".join([_ for _ in list(eachfa) if len(_) > 0]))
 
-    fd = open(filename, "w") if not filename.endswith(".gz") else gzip.open(filename, "wb")
-    fd.write("\n".join(data))
-    fd.close()
+    if filename is not None:
+        fd = open(filename, "w") if not filename.endswith(".gz") else gzip.open(filename, "wb")
+        fd.write("\n".join(data))
+        fd.close()
+    else:
+        return "\n".join(data)

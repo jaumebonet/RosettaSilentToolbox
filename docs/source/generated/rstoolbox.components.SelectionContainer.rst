@@ -5,9 +5,6 @@ rstoolbox.components.SelectionContainer
 
 .. autoclass:: SelectionContainer
 
-
-
-
    .. rubric:: Methods
 
    .. autosummary::

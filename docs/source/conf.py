@@ -203,4 +203,5 @@ texinfo_documents = [
 
 
 def setup(app):
+    app.add_javascript('functions.js')
     app.add_stylesheet('style.css')
