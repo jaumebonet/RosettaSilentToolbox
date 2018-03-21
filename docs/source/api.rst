@@ -21,7 +21,6 @@ These are the list of dedicated objects provided to manage design data. They can
    ~components.DesignFrame
 
 
-
 IO: Sequence
 ------------
 
@@ -41,6 +40,7 @@ Helper functions to read/write data generated with `Rosetta <https://www.rosetta
 .. autosummary::
    :toctree: generated/
 
+   ~io.open_rosetta_file
    ~io.parse_rosetta_file
    ~io.parse_rosetta_contacts
    ~io.parse_rosetta_fragments

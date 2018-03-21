@@ -4,5 +4,4 @@ from .rosetta import parse_rosetta_contacts
 from .rosetta import get_sequence_and_structure
 from .rosetta import make_structures
 from .sequence import read_fasta, write_fasta
-from .globals import multiple_distributions
 from .pymol   import pymol_mutant_selector

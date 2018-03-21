@@ -3,13 +3,17 @@ import pandas as pd
 import rstoolbox.core as core
 import rstoolbox.components as cp
 
+
 def pymol_mutant_selector( df ):
     """
-    Given a :py:class:`.DesignFrame` with columns mutant_positions_<seqID> and a
+    Given a :class:`.DesignFrame` with columns mutant_positions_<seqID> and a
     description column with the name of the decoy, it generates a list of commands
     to select the residues considered as mutants in pymol.
-    :param df: :py:class:`.DesignFrame`
-    :return: list of strings, one command of selection for provided decoy
+
+    :param df:
+    :type df: :class:`.DesignFrame`
+
+    :return: :func:`list` of :class:`strp` - one command of selection for provided decoy
     """
 
     def make_selector( name, row, chains ):

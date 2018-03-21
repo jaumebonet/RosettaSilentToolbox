@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rosetta.py
 # @Last modified by:   bonet
-# @Last modified time: 17-Mar-2018
+# @Last modified time: 21-Mar-2018
 
 
 import os
@@ -70,6 +70,8 @@ def _gather_file_list( filename, multi=False ):
     :return: list of str names of files
     """
     files = []
+    if isinstance(filename, list):
+        multi=True
     if not multi:
         if not os.path.isfile( filename ):
             raise IOError("{0}: file not found.".format(filename))
@@ -81,6 +83,11 @@ def _gather_file_list( filename, multi=False ):
             files = glob.glob( filename )
         else:
             files = filename
+    if len(files) == 0:
+        raise IOError("Input pattern did not find any file.")
+    for _ in files:
+        if not os.path.isfile( _ ):
+            raise IOError("{0}: file not found.".format(_))
     return files
 
 
@@ -117,27 +124,35 @@ def _add_sequences( manager, data, chains ):
 
 def open_rosetta_file( filename, multi=False, check_symmetry=True ):
     """
-    Reads through a Rosetta score or silent file yielding only the lines
-    that can be parsed by the rstoolbox.
+    *Internal function*; reads through a Rosetta silent file and yields only
+    the lines that the library knows how to parse.
 
-    For each "parsable" line, 4 different values are provided:
+    For each *"parsable"* line, it yields 4 values:
 
-    #. line content: :py:class:`str` with the actual data of the file.
-    #. is header: a :py:class:`bool` identifying the provided line as header or not.
-    #. file counter: a :py:class:`int` indicating which file is being read (for multi file input)
-    #. is symmetry: a :py:class:`bool` indicating if the silent file contains symmetry info.
+    ===== ============= ====================================
+    order     type       content
+    ===== ============= ====================================
+        1 :class:`str`  data of the line
+        2 :class:`bool` is line header?
+        3 :class:`int`  name of the readed file
+        4 :class:`bool` does the file contain symmetry info?
+    ===== ============= ====================================
 
-    :param filename: file name or file pattern to search.
-    :type filename: :py:class:`str`
+    :param filename: file name, file pattern to search or list of files.
+    :type filename: Union[:class:`str`, :func:`list`]
     :param multi: Tell if a file name (single file) or pattern (multifile) is provided.
-    :type multi: :py:class:`bool`
+    :type multi: :class:`bool`
     :param check_symmetry: Check if the silent file contains symmetry info.
-    :type check_symmetry: :py:class:`bool`
+    :type check_symmetry: :class:`bool`
 
-    :yields: Union[:py:class:`str`, :py:class:`bool`, :py:class:`int`, :py:class:`bool`]
+    :yields: Union[:class:`str`, :class:`bool`, :class:`int`, :class:`bool`]
 
     :raises:
         :IOError: if ``filename`` cannot be found.
+        :IOError: if ``filename`` pattern (``multi=True``) generates no files.
+
+    .. seealso:
+        :func:`parse_rosetta_file`
     """
     symm = False
     files = _gather_file_list( filename, multi )
@@ -155,26 +170,17 @@ def open_rosetta_file( filename, multi=False, check_symmetry=True ):
 
 def parse_rosetta_file( filename, description=None, multi=False ):
     """
-    Reads a Rosetta score or silent file and returns the appropiate object
-    containing the requested data: the :py:class:`.DesignFrame`.
+    Read a Rosetta score or silent file and returns the design population
+    in a :class:`.DesignFrame`.
 
-    The user can specify the columns of interest, change names on columns to
-    facilitate merging with other data sets and request extra information such
-    as sequence of the designs or residue labels.
+    By default, it will pick the data contained in **all the score columns**
+    with the exception of positional scores (such as *per-residue ddg*). The
+    user can specify scores to be ignored.
 
-    :param filename: file name or file pattern to search.
-    :type filename: :py:class:`str`
-    :param description: Parsing rules. It can be a dictionary describing
-        the rules or the name of a file containing such dictionary.
-    :type description: Union[:py:class:`str`, :py:class:`float`]
-    :param multi: When :py:data:`True`, indicates that data is readed from
-        multiple files.
-    :type multi: :py:class:`bool`
-
-    :return: :py:class:`.DesignFrame`.
-
-    :raises:
-        :IOError: if ``filename`` cannot be found.
+    When working with *silent files*, extra information can be picked, such as
+    *sequence* and *secondary structure* data, *residue labels* or positional
+    scores. The fine control of these options is explained in detail in
+    :ref:`tutorial: reading Rosetta <readrosetta>`.
 
     Some basic usage cases::
 
@@ -192,6 +198,31 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         # (4) Get only total_score and RMSD, and rename total_score to score.
         description = {'scores': ['RMSD'], 'scores_rename': {'total_score': 'score'}}
         df = rstoolbox.io.parse_rosetta_file("silentfile", description)
+
+    For example:
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz")
+           ...: df.head(2)
+
+    :param filename: file name, file pattern to search or list of files.
+    :type filename: Union[:class:`str`, :func:`list`]
+    :param description: Parsing rules. It can be a dictionary describing
+        the rules or the name of a file containing such dictionary. The
+        dictionary definition is explained in :ref:`tutorial: reading Rosetta <readrosetta>`.
+    :type description: Union[:class:`str`, :class:`dict`]
+    :param multi: When :data:`True`, indicates that data is readed from multiple files.
+    :type multi: :class:`bool`
+
+    :return: :class:`.DesignFrame`.
+
+    :raises:
+        :IOError: if ``filename`` cannot be found.
+        :IOError: if ``filename`` pattern (``multi=True``) generates no files.
     """
 
     manager = rc.Description( **_file_vs_json( description ) )
@@ -283,19 +314,28 @@ def parse_rosetta_file( filename, description=None, multi=False ):
 
 def parse_rosetta_contacts( filename ):
     """
-    Read a residue contact file as generated by **ContactMap Mover**.
-    Returns three objects: (1) A boolean (0/1) filled :py:class:`~pandas.DataFrame` in which column
-    and index ids correspond to the Rosetta numbering of each residue (this means that there
-    is no direct indication of multi chain data). (2) A list with the residue types (3-letter code)
-    for the residues in the row axis. (3) A list with the residue types (3-letter code) for the
-    residues in the column axis. In a regular run for the **ContactMap**, without selectors,
-    these two list will be identical.
+    Read a residue contact file as generated by **ContactMapMover**.
+
+    Returns three objects:
+
+    ===== ============================ =================================================
+    order                         type                                           content
+    ===== ============================ =================================================
+        1 :class:`~pandas.DataFrame`   matrix with boolean :data:`True` in
+                                       contacts; *Rosetta numbering* (no ``seqID``)
+        2 :func:`list` of :class:`str` list of 3-letter code amino acids for row axis
+        3 :func:`list` of :class:`str` list of 3-letter code amino acids for column axis
+    ===== ============================ =================================================
+
+    In a regular run for the **ContactMapMover** without selectors,
+    list 2 and 3 will be identical.
 
     :param filename: File containing the Rosetta fragments.
-    :type filename: :py:class:`str`
+    :type filename: :class:`str`
 
-    :return: :py:class:`~pandas.DataFrame`, :py:class:`list`[:py:class:`str`],
-        :py:class:`list`[:py:class:`str`]
+    :return: Union[:class:`~pandas.DataFrame`,
+        :func:`list` of :class:`str`,
+        :func:`list` of :class:`str`]
 
     :raises:
         :IOError: if ``filename`` cannot be found.
@@ -521,10 +561,9 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
         :AttributeError: if silent files from where to extract structures are not found.
         :IOError: if the attached silent files do not exist.
         :IOError: when trying to overwrite the ``tagsfilename`` if *system.overwrite* is
-        :py:data:`False`.
+            :py:data:`False`.
         :IOError: if the rosetta executable is not found. Depends on *rosetta.path* and
-        *rosetta.compilation*.
-
+            *rosetta.compilation*.
     """
     # Check that the selection has at least one decoy
     if df.shape[0] == 0:
