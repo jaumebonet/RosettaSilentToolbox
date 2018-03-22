@@ -357,13 +357,17 @@ def parse_rosetta_contacts( filename ):
 
 def parse_rosetta_fragments( filename ):
     """
-    Read a Rosetta fragment-file and return the appropiate :py:class:`.FragmentFrame`.
-    It supports both old and new fragment formats. Does not support varying size fragment sets.
+    Read a Rosetta fragment-file and return the appropiate :class:`.FragmentFrame`.
+
+    It supports both old and new fragment formats.
+    Does not support varying size fragment sets. When working with both *small* and
+    *large* fragments sets, one would need to call the function twice and save the
+    data of each in a different variable.
 
     :param filename: File containing the Rosetta fragments.
     :type filename: :py:class:`str`
 
-    :return: :py:class:`.FragmentFrame`.
+    :return: :class:`.FragmentFrame`.
 
     :raises:
         :IOError: if ``filename`` cannot be found.
