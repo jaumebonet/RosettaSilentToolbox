@@ -72,6 +72,7 @@ plotting library, but some special plotting alternatives are offered through ``r
 .. autosummary::
    :toctree: generated/
 
+   ~plot.multiple_distributions
    ~plot.sequence_frequency_plot
    ~plot.positional_sequence_similarity_plot
 

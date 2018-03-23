@@ -1,4 +1,4 @@
-from distutils.version import LooseVersion, StrictVersion
+from distutils.version import LooseVersion
 import os
 import copy
 import math
@@ -10,7 +10,6 @@ import matplotlib as mpl
 import matplotlib.patheffects
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, PathPatch
-from matplotlib import transforms
 from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
@@ -21,7 +20,7 @@ from .color_schemes import color_scheme
 
 def barcode_plot( df, column_name, ax, color="blue" ):
     result = binary_overlap( df, column_name )
-    pd.Series(result).plot("bar", ax=ax, ylim=(0,1), grid=False, color=color, width=1 )
+    pd.Series(result).plot("bar", ax=ax, ylim=(0, 1), grid=False, color=color, width=1 )
     ax.yaxis.set_ticks([])
     ax.xaxis.set_ticks(np.arange(0, len(result)+1, 10))
     ax.xaxis.set_ticklabels(np.arange(0, len(result)+1, 10) + 1, rotation=45)
@@ -29,42 +28,75 @@ def barcode_plot( df, column_name, ax, color="blue" ):
 
 
 def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
-                             refseq=True, key_residues=None, border_color="green", **kwargs ):
+                             refseq=True, key_residues=None, border_color="green",
+                             border_width=2, labelsize=None, xrotation=0, yrotation=0,
+                             **kwargs ):
     """
     Makes a heatmap subplot into the provided axis showing the sequence distribution
     of each residue type for each position.
+
     A part from the function arguments, any argument that can be provided to the
-    seaborn.heatmap function can also be provided here.
+    :func:`seaborn.heatmap` function can also be provided here.
 
-    As a tip:
-    (1) Do you want to set the orientation of the color bar horizontal?
-    Add the parameter: cbar_kws={"orientation": "horizontal"}
-    (2) Do you want to put the color bar in a different axis?
-    Add the parameter: cbar_ax=[second_axis]
-    (3) You don't want a color bar?
-    Add the parameter: cbar=False
-    (4) Need to make the ticks smaller?
-    Add parameter: labelsize="small"
-    (5) Need to rotate the x-axis labels?
-    Add paramenter: xrotation=90 (to say some degree)
-    (6) Need to rotate the y-axis labels?
-    Add paramenter: yrotation=90 (to say some degree)
+    By default, the heatmap generated will have the residue types as y-axis and the
+    sequence positions as x-axis.
 
-    :param df: Data content.
-    :type df: Union[:py:class:`.DesignFrame`, :py:class:`.SequenceFrame`]
+    Some tips:
+
+    #. **Do you want to set the orientation of the color bar vertical?** \
+        Add the parameter: ``cbar_kws={"orientation": "vertical"}``
+    #. **Do you want to put the color bar in a different axis?** \
+        This is quite recommendable, as the color bar in the same axis does not \
+        tend to look that good. Add the parameter: ``cbar_ax=[second_axis]``
+    #. **You don't want a color bar?** \
+        Add the parameter: ``cbar=False``
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.plot import sequence_frequency_plot
+           ...: import matplotlib.pyplot as plt
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {"sequence": "B"})
+           ...: fig = plt.figure(figsize=(25, 10))
+           ...: ax = plt.subplot2grid((1, 1), (0, 0))
+           ...: sequence_frequency_plot(df, "B", ax, refseq=False, cbar=False, xrotation=90)
+
+        @savefig sequence_frequency_plot_docs.png width=5in
+        In [2]: plt.show()
+
+    :param df: Data container.
+    :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
     :param seqID: Identifier of the query sequence.
-    :type seqID: :py:class:`str`
-    :param axis ax: matplotlib axis to which we will plot.
-    :param bool aminosY: When True amino acid type is in the Y axis, when False they
-        are in the X axis.
-    :param int clean_unused: Remove amino acids from the plot when they never get over a given
-        frequency. Default is -1, so all are plotted. Residues present in the reference sequence
-        are not taken into account.
-    :param bool refseq: if True (default), mark the original residues according to
+    :type seqID: :class:`str`
+    :param ax: Where to plot the heatmap.
+    :type ax: :class:`~matplotlib.axes.Axes`
+    :param aminosY: Set to :data:`False` to get invert the orientation of the heatmap.
+    :type aminosY: :class:`bool`
+    :param clean_unused: Remove amino acids from the plot when they never get represented
+        over the given frequency. Residues present in the reference sequence are not taken
+        into account.
+    :type clean_unused: :class:`float`
+    :param refseq: if :data:`True` (default), mark the original residues according to
         the reference sequence.
-    :param list key_residues: List to limit the plotted positions to those of interest.
-    :param str border_color: Color to use to mark the original residue types.
-    :raises: ValueError if input is not a DataFrame derived object.
+    :type refseq: :class:`bool`
+    :param key_residues: Residues of interest to be plotted.
+    :type key_residue: Union[:class:`int`, :func:`list` of :class:`int`, :class:`.Selection`]
+    :param border_color: Color to use to mark the original residue types.
+    :type border_color: Union[:class:`int`, :class:`str`]
+    :param border_width: Line width used to mark the original residue types.
+    :type border_width: :class:`int`
+    :param labelsize: Change the size of the text in the axis.
+    :type labelsize: :class:`int`
+    :param xrotation: Rotation to apply in the x-axis text (degrees).
+    :type xrotation: :class:`float`
+    :param yrotation: Rotation to apply in the y-axis text (degrees).
+    :type yrotation: :class:`float`
+
+    :raises:
+        :ValueError: if input is not a DataFrame derived object.
+        :KeyError: if reference sequence is requested but the data container
+            does not have one.
     """
 
     order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
@@ -106,23 +138,10 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
 
     # heatmap parameters and others
     kwargs.setdefault("cmap", "Blues")  # define the color-range of the plot
-    kwargs.setdefault("linewidths", 1)  # linewidths are fixed to 1, overwrite user selection
-    kwargs.setdefault("square", True)   # square is True, overwrite user selection
+    kwargs.setdefault("linewidths", 1)  # linewidths are fixed to 1
+    kwargs.setdefault("square", True)   # square is True if user don't say otherwise
     # by default the color bar is horizontal
     kwargs.setdefault("cbar_kws", {"orientation": "horizontal"})
-
-    labelsize = None
-    xrotation  = 0
-    yrotation  = 0
-    if "labelsize" in kwargs:       # Labelsize, in case we need to change it
-        labelsize = kwargs["labelsize"]
-        del(kwargs["labelsize"])
-    if "xrotation" in kwargs:
-        xrotation = kwargs["xrotation"]
-        del(kwargs["xrotation"])
-    if "yrotation" in kwargs:
-        yrotation = kwargs["yrotation"]
-        del(kwargs["yrotation"])
 
     # plot
     if not aminosY:
@@ -157,13 +176,15 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
 
     # marking reference sequence
     if ref_seq is not "" and refseq:
+        if isinstance(border_color, int):
+            border_color = sns.color_palette()[border_color]
         for i in range(len(ref_seq)):
             if aminosY:
                 aa_position = (i, order.index(ref_seq[i]))
             else:
                 aa_position = (order.index(ref_seq[i]), i)
-            ax.add_patch(Rectangle(aa_position, 1, 1, fill=False,
-                                   edgecolor=border_color, lw=2, zorder=100))
+            ax.add_patch(Rectangle(aa_position, 1, 1, fill=False, clip_on=False,
+                                   edgecolor=border_color, lw=border_width, zorder=100))
 
 
 def positional_sequence_similarity_plot( df, ax, identity_color="green", similarity_color="orange" ):
