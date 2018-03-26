@@ -75,6 +75,8 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.multiple_distributions
    ~plot.sequence_frequency_plot
    ~plot.positional_sequence_similarity_plot
+   ~plot.plot_fragments
+   ~plot.plot_fragment_profiles
 
 Utils: Plot
 -----------

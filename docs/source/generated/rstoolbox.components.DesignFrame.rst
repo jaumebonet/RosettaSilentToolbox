@@ -17,7 +17,6 @@ rstoolbox.components.DesignFrame
       ~DesignFrame.add_reference_structure
       ~DesignFrame.add_source_file
       ~DesignFrame.add_source_files
-      ~DesignFrame.add_suffix
       ~DesignFrame.delete_reference
       ~DesignFrame.generate_mutant_variants
       ~DesignFrame.generate_wt_reversions

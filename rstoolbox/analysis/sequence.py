@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 18-Mar-2018
+# @Last modified time: 23-Mar-2018
 
 import copy
 import collections
@@ -295,7 +295,6 @@ def _extract_key_residue_sequence( seq, key_residues=None ):
     return tmp_seq
 
 
-
 def _calculate_linear_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
     score = 0
     qseq = _extract_key_residue_sequence( qseq, key_residues )
@@ -335,13 +334,15 @@ def binary_similarity( df, ref_seq, matrix="IDENTITY", seq_column="sequence", pr
     wdf.insert( wdf.shape[1], prefix + "_binary", pd.Series( sims, index=wdf.index ) )
     return wdf
 
+
 def binary_overlap( df, column_name="identity_binary" ):
     a = df[column_name].values
     x = len(a[0])
     result = [0] * x
     for seq in a:
         for _, b in enumerate(seq):
-            if bool(int(b)): result[_] = 1
+            if bool(int(b)):
+                result[_] = 1
     return result
 
 # def sequence_frequency_matrix( series, seq_column="sequence" ):

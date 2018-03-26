@@ -36,6 +36,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.githubpages',
               'sphinx.ext.intersphinx',
               'sphinx.ext.autosummary',
+              'sphinx.ext.mathjax',
               'IPython.sphinxext.ipython_directive',
               'IPython.sphinxext.ipython_console_highlighting']
 

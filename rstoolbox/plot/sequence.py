@@ -22,8 +22,8 @@ def barcode_plot( df, column_name, ax, color="blue" ):
     result = binary_overlap( df, column_name )
     pd.Series(result).plot("bar", ax=ax, ylim=(0, 1), grid=False, color=color, width=1 )
     ax.yaxis.set_ticks([])
-    ax.xaxis.set_ticks(np.arange(0, len(result)+1, 10))
-    ax.xaxis.set_ticklabels(np.arange(0, len(result)+1, 10) + 1, rotation=45)
+    ax.xaxis.set_ticks(np.arange(0, len(result) + 1, 10))
+    ax.xaxis.set_ticklabels(np.arange(0, len(result) + 1, 10) + 1, rotation=45)
     ax.set_xlabel("sequence")
 
 

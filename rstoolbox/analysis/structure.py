@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: structure.py
 # @Last modified by:   bonet
-# @Last modified time: 14-Mar-2018
+# @Last modified time: 23-Mar-2018
 
 
 import collections
@@ -42,14 +42,15 @@ def positional_structural_count( df, seqID=None ):
         for i in df["position"].drop_duplicates().values:
             qseq = "".join(df[df["position"] == i]["sse"].values).upper()
             sse = collections.Counter(qseq)
-            data["H"].append(float(sse["H"])/float(len(qseq)))
-            data["E"].append(float(sse["E"])/float(len(qseq)))
-            data["L"].append(float(sse["L"])/float(len(qseq)))
+            data["H"].append(float(sse["H"]) / float(len(qseq)))
+            data["E"].append(float(sse["E"]) / float(len(qseq)))
+            data["L"].append(float(sse["L"]) / float(len(qseq)))
 
     else:
         raise AttributeError("Input data has to be a DesignFrame with a reference sequence or a FragmentFrame.")
 
     return pd.DataFrame(data)
+
 
 def positional_structural_identity( df, seqID=None, ref_sse=None ):
     """
@@ -90,16 +91,9 @@ def positional_structural_identity( df, seqID=None, ref_sse=None ):
             sse = collections.Counter(qseq)
             data["sse"].append(ref_sse[i - 1])
             data["max_sse"].append(sse.most_common(1)[0][0])
-            data["identity_perc"].append(float(sse[ref_sse[i - 1]])/float(len(qseq)))
+            data["identity_perc"].append(float(sse[ref_sse[i - 1]]) / float(len(qseq)))
 
     else:
         raise AttributeError("Input data has to be a DesignFrame with a reference sequence or a FragmentFrame.")
 
     return pd.DataFrame(data)
-
-
-
-
-
-
-

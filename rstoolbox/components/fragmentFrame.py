@@ -3,11 +3,13 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragmentFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Mar-2018
+# @Last modified time: 26-Mar-2018
 
 # Standard Libraries
 import os
+import math
 import sys
+import collections
 
 # External Libraries
 import pandas as pd
@@ -93,7 +95,8 @@ class FragmentFrame( pd.DataFrame ):
             PDB over which to calculate it. Default is None.
         :raise: IOError if filename does not exist.
         :raise: IOError if pdbfile is provided and does not exist.
-        :raise: IOError if the rosetta executable is not found. Depends on rosetta.path and rosetta.compilation
+        :raise: IOError if the rosetta executable is not found.
+            Depends on rosetta.path and rosetta.compilation
         :raise: AttributeError if filename is None and there is no attached
             source file to the object.
         """
@@ -102,20 +105,28 @@ class FragmentFrame( pd.DataFrame ):
 
         # Make the quality fragmet eval if needed.
         if filename is None:
-            filename = self._source_file + ".qual"
-            if not os.path.isfile(filename):
+            sofi = self._source_file
+            if sofi.endswith(".gz"):
+                sofi = ".".join(sofi.split(".")[:-1])
+            filename = sofi + ".qual"
+            if not os.path.isfile(filename) and not os.path.isfile(filename + ".gz"):
                 # Check rosetta executable
-                exe = os.path.join( core.get_option("rosetta", "path"), "r_frag_quality.{0}".format(core.get_option("rosetta", "compilation")))
+                exe = os.path.join(core.get_option("rosetta", "path"),
+                                   "r_frag_quality.{0}".format(core.get_option("rosetta",
+                                                                               "compilation")))
                 if not os.path.isfile(exe):
                     raise IOError("The expected Rosetta executable {0} is not found".format(exe))
                 if not os.path.isfile(pdbfile):
                     raise IOError("{0} not found".format(pdbfile))
-                command = "{0} -in:file:native {1} -f {2} -out:qual {3}".format( exe, pdbfile, self._source_file, filename )
+                command = "{0} -in:file:native {1} -f {2} -out:qual {3}".format(
+                          exe, pdbfile, self._source_file, filename )
                 error = os.system( command )
                 if not bool(error):
                     sys.stdout.write("Execution has finished\n")
                 else:
                     sys.stdout.write("Execution has failed\n")
+            elif os.path.isfile(filename + ".gz"):
+                filename = filename + ".gz"
 
         # Load the data
         df = pd.read_csv(filename, header=None, sep="\s+",
@@ -123,6 +134,57 @@ class FragmentFrame( pd.DataFrame ):
                          usecols=["size", "frame", "neighbor", "rmsd"])
 
         return self.merge(df, how='left', on=["size", "frame", "neighbor"])
+
+    def make_sequence_matrix( self, frequency=False, round=False ):
+        """
+        Generate a PSSM-like matrix from the fragments.
+
+        :param frequency: Return the matrix with frequency values? Default will
+            return the values as :math:`logodd(f(ni)/f(bi))`.
+        :type frequency: :class:`bool`
+        :param round: Round-floor the values.
+        :type round: :class:`bool`
+
+        :return: :class:`~pandas.DataFrame`
+        """
+        alphabet  = "ARNDCQEGHILKMFPSTWYV"
+        baseline = dict.fromkeys(alphabet, 1.0)
+        total = sum(baseline.values())
+        for k in baseline:
+            baseline[k] = float(baseline[k]) / total
+
+        matrix = {}
+        for i in range(1, max(self["position"].values) + 1):
+            qseq = collections.Counter(self[self["position"] == i]["aa"].values)
+            qttl = sum(qseq.values(), 0.0)
+            for k in qseq:
+                qseq[k] /= qttl
+            for aa in baseline:
+                q = qseq[aa]
+                if not frequency:
+                    if q > 0:
+                        logodds = math.log(q / baseline[aa], 2)
+                    else:
+                        logodds = -9
+                    matrix.setdefault(aa, []).append(logodds)
+                else:
+                    matrix.setdefault(aa, []).append(q)
+        df = pd.DataFrame(matrix)
+        if round:
+                df = df.applymap(np.floor).astype(np.int64).reindex(columns=list(alphabet))
+        return df
+
+    def quick_consensus_sequence( self ):
+        """
+        Generate a consensus sequence as the most common representative for each position.
+
+        :return: :class:`str` - consensus sequence
+        """
+        consensus = []
+        for i in range(1, max(self["position"].values) + 1):
+            qseq = collections.Counter(self[self["position"] == i]["aa"].values).most_common(1)[0]
+            consensus.append(qseq[0])
+        return "".join(consensus)
 
     def angle_coverage( self, df, threshold=5 ):
         """

@@ -3,11 +3,9 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequenceFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 15-Mar-2018
+# @Last modified time: 23-Mar-2018
 
 # Standard Libraries
-import os
-import re
 
 # External Libraries
 import pandas as pd

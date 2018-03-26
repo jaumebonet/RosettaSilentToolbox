@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rosetta.py
 # @Last modified by:   bonet
-# @Last modified time: 21-Mar-2018
+# @Last modified time: 26-Mar-2018
 
 
 import os
@@ -71,7 +71,7 @@ def _gather_file_list( filename, multi=False ):
     """
     files = []
     if isinstance(filename, list):
-        multi=True
+        multi = True
     if not multi:
         if not os.path.isfile( filename ):
             raise IOError("{0}: file not found.".format(filename))
@@ -365,12 +365,16 @@ def parse_rosetta_fragments( filename ):
     data of each in a different variable.
 
     :param filename: File containing the Rosetta fragments.
-    :type filename: :py:class:`str`
+    :type filename: :class:`str`
 
     :return: :class:`.FragmentFrame`.
 
     :raises:
         :IOError: if ``filename`` cannot be found.
+
+    .. seealso::
+        :func:`.plot_fragments`
+        :func:`.plot_fragment_profiles`
     """
     fformat = 1  # formats are identified as 1 and 0
     data = OrderedDict({"pdb": [], "frame": [], "neighbors": [], "neighbor": [], "position": [],
@@ -441,7 +445,7 @@ def parse_rosetta_fragments( filename ):
 
 def write_rosetta_fragments( df, frag_size, n_frags=200 ):
     """
-    Writes a Rosetta fragment-file (new format) from an appropiate :py:class:`.FragmentFrame`.
+    Writes a Rosetta fragment-file (new format) from an appropiate :class:`.FragmentFrame`.
     Supports varying size fragment sets.
 
     :param df: Selected set of fragments that have to be written.
@@ -466,19 +470,79 @@ def write_rosetta_fragments( df, frag_size, n_frags=200 ):
                 f.write("\n")
 
 
+def write_fragment_sequence_profiles( df, filename=None, consensus=None ):
+    """
+    Write a sequence profile from :class:`.FragmentFrame` to load into
+    Rosetta's **SeqprofConsensus**.
+
+    Format mimicks as much as possible **BLAST PSSM**.
+
+    :param df: Fragments from which to create the matrix or the matrix itself.
+    :type df: Union[:class:`.FragmentFrame`, :class:`~pandas.DataFrame`]
+    :param filename: Output file name.
+    :type filename: :class:`str`
+    :param consensus: Consensus sequence to show.
+    :type consensus: :class:`str`
+
+    :return: :class:`str` - the expected file content if ``filename`` is :data:`None`.
+
+    :raises:
+        :IOError: if ``filename`` exists and :ref:`system.overwrite <options>` is
+            :data:`False`.
+        :AssertionError: if ``consensus`` lenth differs from the expected by the
+            given fragments.
+    """
+    def format_row(row, aa, row0):
+        val1 = "".join(row.apply("{0:>3d}".format))
+        val0 = "".join(row0.apply("{0:>4d}".format))
+        data = "{0:>5d} {1}  ".format(row.name + 1, aa)
+        return data + val1 + " " + val0 + \
+            "{0:>6.2f}{0:>8.2f}".format(0)
+
+    if isinstance(df, rc.FragmentFrame):
+        matrix = df.make_sequence_matrix(round=True)
+    else:
+        matrix = df.copy()
+    if consensus is None:
+        consensus = df.quick_consensus_sequence()
+    assert len(consensus) == matrix.shape[0]
+    matrix2 = matrix.copy()
+    matrix2[:] = 0
+    data = list(matrix.apply(lambda row: format_row(row, consensus[row.name],
+                                                    matrix2.iloc[row.name]),
+                             axis=1))
+    head = "{0:>11}".format(" ") + \
+           "  ".join(list(matrix.columns)) + "   " + "   ".join(list(matrix.columns))
+    data.insert(0, head)
+    prefix = "Last position-specific scoring matrix computed, weighted observed percentages " + \
+             "rounded down, information per position, and relative weight of gapless real " + \
+             "matches to pseudocounts"
+    data.insert(0, prefix)
+    data.insert(0, "")
+    data = "\n".join(data)
+
+    if filename is not None:
+        if os.path.isfile(filename) and not core.get_option("system", "overwrite"):
+            raise IOError("File {} already exists".format(filename))
+        with open(filename, "w") as fd:
+            fd.write(data)
+    else:
+        return data
+
+
 def get_sequence_and_structure( pdbfile ):
     """
-    Provided a PDB file, it will run a small RosettaScript to capture the sequence and
-    structure that PDB.
+    Provided a PDB file, it will run a small RosettaScript to capture its sequence and
+    structure.
 
     It will generate an output file called: ``[pdbfile].dssp.minisilent``. If this file
     already exists, it will be directly read. You can choose to compress it;
     ``[pdbfile].dssp.minisilent.gz`` will also work.
 
     :param pdbfile: Name of the input structure.
-    :type pdbfile: :py:class:`str`
+    :type pdbfile: :class:`str`
 
-    :return: :py:class:`.DesignFrame`.
+    :return: :class:`.DesignFrame`.
 
     :raises:
         :IOError: if ``pdbfile`` cannot be found.

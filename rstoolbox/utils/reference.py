@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: reference.py
 # @Last modified by:   bonet
-# @Last modified time: 17-Mar-2018
+# @Last modified time: 23-Mar-2018
 
 import copy
 import warnings
@@ -87,7 +87,7 @@ def add_reference_sequence( self, seqID, sequence ):
 
     :raises:
         :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+            or :py:class:`~pandas.Series`
         :KeyError: If the data container does not contain sequence data for the given seqID.
         :IndexError: If a reference structure exists and sequence length do not match
     """
@@ -153,7 +153,7 @@ def add_reference_structure( self, seqID, structure ):
 
     :raises:
         :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+            or :py:class:`~pandas.Series`
         :KeyError: If the data container does not contain structure data for the given seqID.
         :IndexError: If a reference sequence exists and structure length do not match
     """
@@ -217,12 +217,12 @@ def add_reference_shift( self, seqID, shift, shift_labels=False ):
 
     :raises:
         :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+            or :py:class:`~pandas.Series`
         :KeyError: If there is no reference structure or sequence for seqID.
         :KeyError: If shift is a list and the data container does not contain structure
-        or sequence data for the given seqID.
+            or sequence data for the given seqID.
         :IndexError: If shift is a list and the length is different than the reference
-        sequence/structure
+            sequence/structure
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
