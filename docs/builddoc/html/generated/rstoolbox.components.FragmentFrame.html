@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>rstoolbox.components.FragmentFrame &#8212; rstoolbox 0.0.6a documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/functions.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="rstoolbox.components.FragmentFrame.add_quality_measure" href="FragmentFrame/rstoolbox.components.FragmentFrame.add_quality_measure.html" />
+    <link rel="prev" title="rstoolbox.components.SequenceFrame.transfer_reference" href="SequenceFrame/rstoolbox.components.SequenceFrame.transfer_reference.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          rstoolbox</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.6</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../scripts.html">Scripts</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rosettascripts.html">RosettaScripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">rstoolbox.components.FragmentFrame</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="rstoolbox-components-fragmentframe">
+<h1>rstoolbox.components.FragmentFrame<a class="headerlink" href="#rstoolbox-components-fragmentframe" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="rstoolbox.components.FragmentFrame">
+<em class="property">class </em><code class="descclassname">rstoolbox.components.</code><code class="descname">FragmentFrame</code><span class="sig-paren">(</span><em>*args</em>, <em>**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.FragmentFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> extends <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>
+adding some functionalities in order to facilitate comparissons.
+Filled through the functions provided through this library, each
+row represents a position of a fragment, while columns describe the
+properties.</p>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.add_quality_measure.html#rstoolbox.components.FragmentFrame.add_quality_measure" title="rstoolbox.components.FragmentFrame.add_quality_measure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_quality_measure</span></code></a>(filename[,&nbsp;pdbfile])</td>
+<td>Add to the data the RMSD quality measure provided by the r_fraq_qual app from Rosetta.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.add_source_file.html#rstoolbox.components.FragmentFrame.add_source_file" title="rstoolbox.components.FragmentFrame.add_source_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_source_file</span></code></a>(file)</td>
+<td>Adds a source file to the <a class="reference internal" href="#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.has_source_file.html#rstoolbox.components.FragmentFrame.has_source_file" title="rstoolbox.components.FragmentFrame.has_source_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_source_file</span></code></a>()</td>
+<td>Checks if there is a source file added.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.is_comparable.html#rstoolbox.components.FragmentFrame.is_comparable" title="rstoolbox.components.FragmentFrame.is_comparable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_comparable</span></code></a>(df)</td>
+<td>Evaluate if the current <a class="reference internal" href="#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> is comparable to the provided one.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.make_sequence_matrix.html#rstoolbox.components.FragmentFrame.make_sequence_matrix" title="rstoolbox.components.FragmentFrame.make_sequence_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_sequence_matrix</span></code></a>([frequency,&nbsp;round])</td>
+<td>Generate a PSSM-like matrix from the fragments.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.quick_consensus_sequence.html#rstoolbox.components.FragmentFrame.quick_consensus_sequence" title="rstoolbox.components.FragmentFrame.quick_consensus_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quick_consensus_sequence</span></code></a>()</td>
+<td>Generate a consensus sequence as the most common representative for each position.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.select_quantile.html#rstoolbox.components.FragmentFrame.select_quantile" title="rstoolbox.components.FragmentFrame.select_quantile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_quantile</span></code></a>([quantile])</td>
+<td>Returns only the fragments under the rmsd threshold of the specified quantile.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, Jaume Bonet.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
