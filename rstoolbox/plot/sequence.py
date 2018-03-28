@@ -1,5 +1,7 @@
-from distutils.version import LooseVersion, StrictVersion
+from distutils.version import LooseVersion
 import os
+import copy
+import math
 
 import pandas as pd
 import numpy as np
@@ -8,86 +10,98 @@ import matplotlib as mpl
 import matplotlib.patheffects
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, PathPatch
-from matplotlib import transforms
 from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
-from rstoolbox.analysis import sequence_frequency_matrix, binary_overlap
-from rstoolbox.components import DesignFrame, SequenceFrame
+from rstoolbox.analysis import binary_overlap
+from rstoolbox.components import DesignFrame, SequenceFrame, Selection, get_selection
 from .color_schemes import color_scheme
 
-class Scale(matplotlib.patheffects.RendererBase):
-    def __init__(self, sx, sy=None):
-        self._sx = sx
-        self._sy = sy
-
-    def draw_path(self, renderer, gc, tpath, affine, rgbFace):
-        affine = affine.identity().scale(self._sx, self._sy)+affine
-        renderer.draw_path(gc, tpath, affine, rgbFace)
-
-def _letterAt(letter, x, y, yscale=1, ax=None, globscale=1.35, LETTERS=None, COLOR_SCHEME=None):
-    text = LETTERS[letter]
-
-    t = mpl.transforms.Affine2D().scale(1*globscale, yscale*globscale) + \
-        mpl.transforms.Affine2D().translate(x,y) + ax.transData
-    p = PathPatch(text, lw=0, fc=COLOR_SCHEME[letter],  transform=t)
-    if ax != None:
-        ax.add_artist(p)
-    return p
-
-def _dataframe2logo( data ):
-    aa = list(data)
-    odata = []
-    for index, pos in data.iterrows():
-        pdata = []
-        for k in aa:
-            if pos[k] > 0.0000000:
-                pdata.append( ( k, float(pos[k]) ) )
-        odata.append(sorted(pdata, key=lambda x: x[1]))
-    return odata
 
 def barcode_plot( df, column_name, ax, color="blue" ):
     result = binary_overlap( df, column_name )
-    pd.Series(result).plot("bar", ax=ax, ylim=(0,1), grid=False, color=color, width=1 )
+    pd.Series(result).plot("bar", ax=ax, ylim=(0, 1), grid=False, color=color, width=1 )
     ax.yaxis.set_ticks([])
-    ax.xaxis.set_ticks(np.arange(0, len(result)+1, 10))
-    ax.xaxis.set_ticklabels(np.arange(0, len(result)+1, 10) + 1, rotation=45)
+    ax.xaxis.set_ticks(np.arange(0, len(result) + 1, 10))
+    ax.xaxis.set_ticklabels(np.arange(0, len(result) + 1, 10) + 1, rotation=45)
     ax.set_xlabel("sequence")
 
-def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refseq=True, key_residues=None, border_color="green", **kwargs ):
-    """
-    Makes a heatmap subplot into the provided axis showing the sequence distribution of each residue type
-    for each position. A part from the function arguments, any argument that can be provided to the
-    seaborn.heatmap function can also be provided here.
-    As a tip:
-    (1) Do you want to set the orientation of the color bar horizontal?
-    Add the parameter: cbar_kws={"orientation": "horizontal"}
-    (2) Do you want to put the color bar in a different axis?
-    Add the parameter: cbar_ax=[second_axis]
-    (3) You don't want a color bar?
-    Add the parameter: cbar=False
-    (4) Need to make the ticks smaller?
-    Add parameter: labelsize="small"
-    (5) Need to rotate the x-axis labels?
-    Add paramenter: xrotation=90 (to say some degree)
-    (6) Need to rotate the y-axis labels?
-    Add paramenter: yrotation=90 (to say some degree)
 
-    :param DataFrame df: Ideally, a :py:class:`.DesignFrame` or :py:class:`.SequenceFrame`. Data content.
-        requires the existence of a "sequence_{seqID}" column with the sequence to plot.
-    :param str seqID: Identifier of the query sequence.
-    :param axis ax: matplotlib axis to which we will plot.
-    :param bool aminosY: When True amino acid type is in the Y axis, when False they are in the X axis.
-    :param int clean_unused: Remove amino acids from the plot when they never get over a given frequency.
-        Default is -1, so all are plotted. Residues present in the reference sequence are not taken into account.
-    :param bool refseq: if True (default), mark the original residues according to the reference sequence.
-    :param list key_residues: List to limit the plotted positions to those of interest.
-    :param str border_color: Color to use to mark the original residue types.
-    :raises: ValueError if input is not a DataFrame derived object.
+def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
+                             refseq=True, key_residues=None, border_color="green",
+                             border_width=2, labelsize=None, xrotation=0, yrotation=0,
+                             **kwargs ):
+    """
+    Makes a heatmap subplot into the provided axis showing the sequence distribution
+    of each residue type for each position.
+
+    A part from the function arguments, any argument that can be provided to the
+    :func:`seaborn.heatmap` function can also be provided here.
+
+    By default, the heatmap generated will have the residue types as y-axis and the
+    sequence positions as x-axis.
+
+    Some tips:
+
+    #. **Do you want to set the orientation of the color bar vertical?** \
+        Add the parameter: ``cbar_kws={"orientation": "vertical"}``
+    #. **Do you want to put the color bar in a different axis?** \
+        This is quite recommendable, as the color bar in the same axis does not \
+        tend to look that good. Add the parameter: ``cbar_ax=[second_axis]``
+    #. **You don't want a color bar?** \
+        Add the parameter: ``cbar=False``
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.plot import sequence_frequency_plot
+           ...: import matplotlib.pyplot as plt
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {"sequence": "B"})
+           ...: fig = plt.figure(figsize=(25, 10))
+           ...: ax = plt.subplot2grid((1, 1), (0, 0))
+           ...: sequence_frequency_plot(df, "B", ax, refseq=False, cbar=False, xrotation=90)
+
+        @savefig sequence_frequency_plot_docs.png width=5in
+        In [2]: plt.show()
+
+    :param df: Data container.
+    :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
+    :param seqID: Identifier of the query sequence.
+    :type seqID: :class:`str`
+    :param ax: Where to plot the heatmap.
+    :type ax: :class:`~matplotlib.axes.Axes`
+    :param aminosY: Set to :data:`False` to get invert the orientation of the heatmap.
+    :type aminosY: :class:`bool`
+    :param clean_unused: Remove amino acids from the plot when they never get represented
+        over the given frequency. Residues present in the reference sequence are not taken
+        into account.
+    :type clean_unused: :class:`float`
+    :param refseq: if :data:`True` (default), mark the original residues according to
+        the reference sequence.
+    :type refseq: :class:`bool`
+    :param key_residues: Residues of interest to be plotted.
+    :type key_residue: Union[:class:`int`, :func:`list` of :class:`int`, :class:`.Selection`]
+    :param border_color: Color to use to mark the original residue types.
+    :type border_color: Union[:class:`int`, :class:`str`]
+    :param border_width: Line width used to mark the original residue types.
+    :type border_width: :class:`int`
+    :param labelsize: Change the size of the text in the axis.
+    :type labelsize: :class:`int`
+    :param xrotation: Rotation to apply in the x-axis text (degrees).
+    :type xrotation: :class:`float`
+    :param yrotation: Rotation to apply in the y-axis text (degrees).
+    :type yrotation: :class:`float`
+
+    :raises:
+        :ValueError: if input is not a DataFrame derived object.
+        :KeyError: if reference sequence is requested but the data container
+            does not have one.
     """
 
-    order = ["A","V","I","L","M","F","Y","W","S","T","N","Q","R","H","K","D","E","C","G","P"]
-    data = df.copy()
+    order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
+             "Q", "R", "H", "K", "D", "E", "C", "G", "P"]
+    data = copy.deepcopy(df)
 
     fp = FontProperties()
     fp.set_family("monospace")
@@ -97,9 +111,12 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
         raise ValueError("Input data must be in a DataFrame, DesignFrame or SequenceFrame")
     else:
         if not isinstance(data, (DesignFrame, SequenceFrame)):
-            data = DesignFrame( data )
+            if len(set(data.columns.values).intersction(set(order))) == len(order):
+                data = SequenceFrame(data)
+            else:
+                data = DesignFrame(data)
     if isinstance(data, DesignFrame):
-        data = data.sequence_frequencies( seqID )
+        data = data.sequence_frequencies(seqID)
     if isinstance(data, SequenceFrame):
         order = sorted(data.columns.values.tolist(), key=lambda x: order.index(x))
         if not data.is_transposed():
@@ -108,39 +125,23 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
             data = data.reindex(order)
 
     # Refseq and key_residues management.
-    ref_seq = data.key_reference_sequence(key_residues, False)
-    if key_residues is not None:
-        data = data[key_residues]
-    if refseq:
-        data.reference_sequence(ref_seq)
-    else:
-        data.reference_sequence("")
+    ref_seq = data.get_reference_sequence(seqID, key_residues) if refseq else ""
+
+    # data and key_residues management.
+    data = data.get_key_residues(key_residues)
+
     if clean_unused >= 0:
         data.delete_empty(clean_unused)
         data = data.clean()
         order = sorted(data.index.values.tolist(), key=lambda x: order.index(x))
         data = data.reindex(order)
 
-
     # heatmap parameters and others
-    if not "cmap" in kwargs:        # define the color-range of the plot
-        kwargs["cmap"] = "Blues"
-    kwargs["linewidths"] = 1        # linewidths are fixed to 1, overwrite user selection
-    kwargs["square"] = True         # square is True, overwrite user selection
-    if not "cbar_kws" in kwargs:    # by default the color bar is horizontal
-        kwargs["cbar_kws"] = {"orientation": "horizontal"}
-    labelsize = None
-    xrotation  = 0
-    yrotation  = 0
-    if "labelsize" in kwargs:       # Labelsize, in case we need to change it
-        labelsize = kwargs["labelsize"]
-        del(kwargs["labelsize"])
-    if "xrotation" in kwargs:
-        xrotation = kwargs["xrotation"]
-        del(kwargs["xrotation"])
-    if "yrotation" in kwargs:
-        yrotation = kwargs["yrotation"]
-        del(kwargs["yrotation"])
+    kwargs.setdefault("cmap", "Blues")  # define the color-range of the plot
+    kwargs.setdefault("linewidths", 1)  # linewidths are fixed to 1
+    kwargs.setdefault("square", True)   # square is True if user don't say otherwise
+    # by default the color bar is horizontal
+    kwargs.setdefault("cbar_kws", {"orientation": "horizontal"})
 
     # plot
     if not aminosY:
@@ -175,72 +176,211 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1, refse
 
     # marking reference sequence
     if ref_seq is not "" and refseq:
+        if isinstance(border_color, int):
+            border_color = sns.color_palette()[border_color]
         for i in range(len(ref_seq)):
             if aminosY:
-                ax.add_patch(Rectangle((i, order.index(ref_seq[i])), 1, 1, fill=False, edgecolor=border_color, lw=2))
+                aa_position = (i, order.index(ref_seq[i]))
             else:
-                ax.add_patch(Rectangle((order.index(ref_seq[i]), i), 1, 1, fill=False, edgecolor=border_color, lw=2))
+                aa_position = (order.index(ref_seq[i]), i)
+            ax.add_patch(Rectangle(aa_position, 1, 1, fill=False, clip_on=False,
+                                   edgecolor=border_color, lw=border_width, zorder=100))
 
-def logo_plot( df, column_name, ref_seq=None, outfile=None, key_residues=None, colors="WEBLOGO" ):
+
+def positional_sequence_similarity_plot( df, ax, identity_color="green", similarity_color="orange" ):
+    """
+    Generates a plot covering the amount of identities and positives matches from a population of designs
+    to a reference sequence according to a substitution matrix.
+    Input data can/should be generated with :py:func:`.positional_sequence_similarity`.
+
+    :param df: Input data, where rows are positions and columns are `identity_perc` and `positive_perc`
+    :type df: :py:class:`~pandas.DataFrame`
+    :param ax: matplotlib axis to which we will plot.
+    :type ax: :py:class:`~matplotlib.axes.Axes`
+
+    """
+
+    # Color management
+    if isinstance(identity_color, int):
+        identity_color = sns.color_palette()[identity_color]
+    if isinstance(similarity_color, int):
+        similarity_color = sns.color_palette()[similarity_color]
+
+    y = df["positive_perc"].values
+    ax.plot(range(len(y)), y, color="orange", linestyle="solid", linewidth=2)
+    ax.fill_between(range(len(y)), 0, y, color=similarity_color, alpha=1)
+
+    y = df["identity_perc"].values
+    ax.plot(range(len(y)), y, color="green", linestyle="solid", linewidth=2)
+    ax.fill_between(range(len(y)), 0, y, color=identity_color, alpha=1)
+
+    ax.set_ylim(0, 1)
+    ax.set_xlim(0, len(y) - 1)
+
+
+def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
+               font_size=35, colors="WEBLOGO" ):
+    """
+    Generates classic **LOGO** plots.
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.plot import logo_plot
+           ...: import matplotlib.pyplot as plt
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {"sequence": "B"})
+           ...: df.add_reference_sequence("B", df.get_sequence("B")[0])
+           ...: fig, axes = logo_plot(df, "B", refseq=True, line_break=50)
+           ...: plt.tight_layout()
+
+        @savefig sequence_logo_plot_docs.png width=5in
+        In [2]: plt.show()
+
+    :param df: Data container.
+    :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
+    :param seqID: Identifier of the query sequence.
+    :type seqID: :class:`str`
+    :param refseq: if :data:`True` (default), mark the original residues according to
+        the reference sequence.
+    :type refseq: :class:`bool`
+    :param key_residues: Residues of interest to be plotted.
+    :type key_residue: Union[:class:`int`, :func:`list` of :class:`int`, :class:`.Selection`]
+    :param line_break: Force a line-change in the plot after n residues are plotted.
+    :type line_break: :class:`int`
+    :param font_size: Expected size of the axis font.
+    :type font_size: :class:`float`
+    :param colors: Colors to assign; it can be the name of a available color set or
+        a dictionary with a color for each type.
+    :type colors: Union[:class:`str`, :class:`dict`]
+
+    :return: :class:`~matplotlib.figure.Figure` and
+        :func:`list` of :class:`~matplotlib.axes.Axes`
+    """
+
+    class Scale( matplotlib.patheffects.RendererBase ):
+        def __init__( self, sx, sy=None ):
+            self._sx = sx
+            self._sy = sy
+
+        def draw_path( self, renderer, gc, tpath, affine, rgbFace ):
+            affine = affine.identity().scale(self._sx, self._sy) + affine
+            renderer.draw_path(gc, tpath, affine, rgbFace)
+
+    def _letterAt( letter, x, y, yscale=1, ax=None, globscale=1.35,
+                   LETTERS=None, COLOR_SCHEME=None ):
+        text = LETTERS[letter]
+        t = mpl.transforms.Affine2D().scale(1 * globscale, yscale * globscale) + \
+            mpl.transforms.Affine2D().translate(x, y) + ax.transData
+        p = PathPatch(text, lw=0, fc=COLOR_SCHEME[letter],  transform=t)
+        if ax is not None:
+            ax.add_artist(p)
+        return p
+
+    def _dataframe2logo( data ):
+        aa = list(data)
+        odata = []
+        for index, pos in data.iterrows():
+            pdata = []
+            for k in aa:
+                if pos[k] > 0.0000000:
+                    pdata.append( ( k, float(pos[k]) ) )
+            odata.append(sorted(pdata, key=lambda x: x[1]))
+        return odata
+
+    def _chunks(l, n):
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
+             "Q", "R", "H", "K", "D", "E", "C", "G", "P"]
+    data = copy.deepcopy(df)
+
     mpl.rcParams['svg.fonttype'] = 'none'
     # Graphical Properties of resizable letters
     path = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
         '../components/square.ttf'
     )
-
     fp = FontProperties(fname=path, weight="bold")
     globscale = 1.22
     letters_shift = -0.5
-
     LETTERS = {}
     for aa in color_scheme(colors):
         LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
 
-    data = sequence_frequency_matrix( df, column_name )
-    if key_residues is not None:
-        data = data.loc[key_residues]
-        if ref_seq is not None:
-            tmp_seq = ""
-            for k in key_residues:
-                tmp_seq += ref_seq[k-1]
-            ref_seq = tmp_seq
-    if ref_seq is not None:
-        assert len(ref_seq) == len(data)
+    # Data type management.
+    if not isinstance(data, pd.DataFrame):
+        raise ValueError("Input data must be in a DataFrame, DesignFrame or SequenceFrame")
+    else:
+        if not isinstance(data, (DesignFrame, SequenceFrame)):
+            if len(set(data.columns.values).intersection(set(order))) == len(order):
+                data = SequenceFrame(data)
+            else:
+                data = DesignFrame(data)
+    if isinstance(data, DesignFrame):
+        data = data.sequence_frequencies(seqID)
 
-    fig, ax = plt.subplots(figsize=(len(data) * 2, 2.3 * 2))
+    # key_residues management.
+    length = len(data.get_reference_sequence(seqID)) if refseq else None
+    key_residues = get_selection(key_residues, seqID, list(data.index.values), length)
+
+    # Plot
+    if line_break is None:
+        figsize = (len(data) * 2, 2.3 * 2)
+        grid = (1, 1)
+        fig  = plt.figure(figsize=figsize)
+        axs  = [plt.subplot2grid(grid, (0, 0)), ]
+        krs  = [key_residues, ]
+    else:
+        rows = int(math.ceil(float(len(data)) / line_break))
+        figsize = (float(len(data) * 2 ) / rows, 2.3 * 2 * rows)
+        grid = (rows, 1)
+        fig  = plt.figure(figsize=figsize)
+        axs  = [plt.subplot2grid(grid, (_, 0)) for _ in range(rows)]
+        krs  = list(_chunks(key_residues, line_break))
 
     font = FontProperties()
-    font.set_size(80)
+    font.set_size(font_size)
     font.set_weight('bold')
 
-    ax.set_xticks(range(1, len(data) + 2))
-    ax.set_yticks( range(0, 2) )
-    ax.set_xticklabels( data.index.values )
-    ax.set_yticklabels( np.arange( 0, 2 , 1 ) )
-    if ref_seq is not None:
-        ax2 = ax.twiny()
-        ax2.set_xticks(ax.get_xticks())
-        ax2.set_xticklabels(list(ref_seq))
-    sns.despine(ax=ax, trim=True)
-    ax.grid(False)
-    if ref_seq is not None:
-        sns.despine(ax=ax2, top=False, right=True, left=True, trim=True)
-        ax2.grid(False)
-    ax.lines = []
-    wdata = _dataframe2logo( data )
-    x = 1
-    maxi = 0
-    for scores in wdata:
-        y = 0
-        for base, score in scores:
-            _letterAt(base, x,y, score, ax, globscale, LETTERS, color_scheme(colors))
-            y += score
-        x += 1
-        maxi = max(maxi, y)
-    if outfile is not None:
-        fig.savefig( outfile )
-    return fig, ax
+    for _, ax in enumerate(axs):
+        # Refseq and key_residues management.
+        ref_seq = data.get_reference_sequence(seqID, krs[_]) if refseq else ""
+        # data and key_residues management.
+        _data = data.get_key_residues(krs[_])
 
-def per_residue_value( df ):
-    pass
+        ticks = len(_data)
+        if line_break is not None and len(_data) < line_break:
+            ticks = line_break
+        ax.set_xticks(np.arange(0.5, ticks + 1))
+        ax.set_yticks( range(0, 2) )
+        ax.set_xticklabels( _data.index.values )
+        ax.set_yticklabels( np.arange( 0, 2, 1 ) )
+        if ref_seq is not None:
+            ax2 = ax.twiny()
+            ax2.set_xticks(ax.get_xticks())
+            ax2.set_xticklabels(list(ref_seq))
+        sns.despine(ax=ax, trim=True)
+        ax.grid(False)
+        if ref_seq is not None:
+            sns.despine(ax=ax2, top=False, right=True, left=True, trim=True)
+            ax2.grid(False)
+        ax.lines = []
+        wdata = _dataframe2logo( _data )
+        x = 0.5
+        maxi = 0
+        for scores in wdata:
+            y = 0
+            for base, score in scores:
+                _letterAt(base, x, y, score, ax, globscale, LETTERS, color_scheme(colors))
+                y += score
+            x += 1
+            maxi = max(maxi, y)
+        for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+            label.set_fontproperties(font)
+        if ref_seq is not None:
+            for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
+                label.set_fontproperties(font)
+
+    return fig, axs

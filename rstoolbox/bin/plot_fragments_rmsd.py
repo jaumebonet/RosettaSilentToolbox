@@ -3,38 +3,48 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: plot_fragments_rmsd.py
 # @Last modified by:   bonet
-# @Last modified time: 01-Feb-2018
+# @Last modified time: 25-Mar-2018
 
-
+# Standard Libraries
 import argparse
-import gzip
 import os
 
+# External Libraries
 import seaborn as sns
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 
+# This Library
 from rstoolbox.io import parse_rosetta_fragments
 from rstoolbox.plot import plot_fragments
-from rstoolbox.utils import add_right_title, add_top_title
 
+# Configuration properties
 sns.set(font_scale=2)
 mpl.rcParams['svg.fonttype'] = 'none'
 sns.set_style("whitegrid")
 
-def get_options(*args, **kwds):
+
+def get_options( *args, **kwds ):
 
     parser = argparse.ArgumentParser(description="Generate a plot for fragment RMSD evaluation.")
 
-    parser.add_argument( '-in:frag:small', dest='fsmall', action='store',      help='Name of the small fragments file.',         default=None )
-    parser.add_argument( '-in:qual:small', dest='qsmall', action='store',      help='Name of the small fragments quality file.', default=None )
-    parser.add_argument( '-in:frag:large', dest='flarge', action='store',      help='Name of the large fragments file.',         default=None )
-    parser.add_argument( '-in:qual:large', dest='qlarge', action='store',      help='Name of the large fragments quality file.', default=None )
-    parser.add_argument( '-in:pdb',        dest='pdb',    action='store',      help='PDB file (in case we need it).',            default=None )
-    parser.add_argument( '-out:silent',    dest='silent', action='store_true', help='If True, do not plot on screen',            default=False  )
-    parser.add_argument( '-out:format',    dest='format', action='store',      help='Make plot vertical (v) or horizontal (h).', default="h"  )
-    parser.add_argument( '-out:file',      dest='ofile',  action='store',      help='Output image file (.png/.svg).',            default=None )
+    parser.add_argument('-in:frag:small', dest='fsmall', action='store',
+                        help='Name of the small fragments file.', default=None)
+    parser.add_argument('-in:qual:small', dest='qsmall', action='store',
+                        help='Name of the small fragments quality file.', default=None)
+    parser.add_argument('-in:frag:large', dest='flarge', action='store',
+                        help='Name of the large fragments file.', default=None)
+    parser.add_argument('-in:qual:large', dest='qlarge', action='store',
+                        help='Name of the large fragments quality file.', default=None)
+    parser.add_argument('-in:pdb', dest='pdb', action='store',
+                        help='PDB file (in case we need it).', default=None)
+    parser.add_argument('-out:silent', dest='silent', action='store_true',
+                        help='If True, do not plot on screen', default=False)
+    parser.add_argument('-out:format', dest='format', action='store',
+                        help='Make plot vertical (v) or horizontal (h).', default="h")
+    parser.add_argument('-out:file', dest='ofile',  action='store',
+                        help='Output image file (.png/.svg).', default=None)
 
     options = parser.parse_args()
 
@@ -59,6 +69,7 @@ def get_options(*args, **kwds):
 
     return options
 
+
 def main( options ):
     # Read Fragment Files
     small_f = parse_rosetta_fragments(options.fsmall)
@@ -72,8 +83,8 @@ def main( options ):
     fig  = plt.figure(figsize=(40, 10) if options.format == "h" else (20, 20))
     grid = (1, 2) if options.format == "h" else (2, 1)
 
-    ax00 = plt.subplot2grid(grid, (0, 0))
-    ax01 = plt.subplot2grid(grid, (0, 1) if options.format == "h" else (1, 0))
+    ax00 = plt.subplot2grid(grid, (0, 0), fig=fig)
+    ax01 = plt.subplot2grid(grid, (0, 1) if options.format == "h" else (1, 0), fig=fig)
 
     ax00.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     ax01.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
@@ -93,6 +104,7 @@ def main( options ):
     # Show on screen
     if not options.silent:
         plt.show()
+
 
 if __name__ == '__main__':
     main( get_options() )

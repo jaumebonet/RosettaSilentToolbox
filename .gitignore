@@ -91,6 +91,9 @@ ENV/
 .spyderproject
 .spyproject
 
+# PyTest
+.pytest_cache
+
 # Rope project settings
 .ropeproject
 

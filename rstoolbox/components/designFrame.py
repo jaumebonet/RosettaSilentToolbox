@@ -3,24 +3,61 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Feb-2018
+# @Last modified time: 19-Mar-2018
 
 # Standard Libraries
 import itertools
-import os
-import re
-import string
 
 # External Libraries
 import pandas as pd
+from pandas.core.index import Index
+from pandas.core.dtypes.common import is_scalar
 import numpy as np
 
 # This Library
-from .sequenceFrame import SequenceFrame
-from rstoolbox.utils import add_column
+from .rsbase import RSBaseDesign
+from .apply import frame_apply
+import rstoolbox.analysis as ra
 
 
-class DesignFrame( pd.DataFrame ):
+class DesignSeries( pd.Series, RSBaseDesign ):
+    """
+    The :py:class:`.DesignSeries` extends the :py:class:`~pandas.Series`
+    adding some functionalities in order to improve its usability in
+    the analysis of a single design decoys.
+
+    It is generated as the *reduced dimensionality version* of the
+    :py:class:`.DesignFrame`.
+    """
+
+    _metadata = ['_reference']
+    _subtyp = 'design_series'
+
+    def __init__( self, *args, **kwargs ):
+        reference = kwargs.pop('reference', {})
+        super(DesignSeries, self).__init__(*args, **kwargs)
+        self._reference = reference
+
+    @property
+    def _constructor( self ):
+        return DesignSeries
+
+    @property
+    def _constructor_expanddim( self ):
+        return DesignFrame
+
+    def __finalize__(self, other, method=None, **kwargs):
+        if method == "inherit":
+            # Avoid columns from DesignFrame to become DesignSeries
+            if not isinstance(self.name, int):
+                return pd.Series(self)
+
+        for name in self._metadata:
+            setattr(self, name, getattr(other, name, {}))
+        return self
+
+
+class DesignFrame( pd.DataFrame, RSBaseDesign ):
     """
     The :py:class:`.DesignFrame` extends the :py:class:`~pandas.DataFrame`
     adding some functionalities in order to improve its usability in
@@ -55,91 +92,15 @@ class DesignFrame( pd.DataFrame ):
     (as long as it is loaded with :py:func:`.parse_rosetta_file`). This information can \
     be used to extract the structures from the silent files.
     """
-    _metadata = ['_reference_sequence', '_source_files']
+    _metadata = ['_reference', '_source_files']
+    _subtyp = 'design_frame'
 
-    def __init__(self, *args, **kw):
-        super(DesignFrame, self).__init__(*args, **kw)
-        self._reference_sequence = self._metadata_defaults("_reference_sequence")
-        self._source_files = self._metadata_defaults("_source_files")
-
-    def reference_sequence( self, seqID, sequence=None, shift=1 ):
-        """
-        Setter/Getter for a reference sequence attached to a particular
-        sequence ID. It also allows to provide the shift of the sequence
-        count with respect to a linear numbering (Rosetta numbering).
-
-        :param str seqID: Identifier of the reference sequence
-        :param str sequence: Reference sequence. By default is
-            :py:data:`None`, which turns the function into a getter.
-        :param int shift: In case the sequence does not start in 1, how much
-            do we need to shift? Basically provide the number of the first
-            residue of the chain. Default is 1.
-        :return: str
-        :raise KeyError: If seqID does not exist.
-        """
-        if sequence is not None:
-            self._reference_sequence.setdefault(seqID, {"seq": sequence, "sft": shift})
-        else:
-            if seqID not in self._reference_sequence:
-                raise KeyError("There is no reference sequence with ID: {}\n".format(seqID))
-        return self._reference_sequence[seqID]["seq"]
-
-    def reference_shift( self, seqID, shift=None ):
-        """
-        Setter/Getter for a reference shift attached to a particular
-        sequence ID. If there is no reference sequence attached, it returns
-        1, as "no reference shift".
-
-        :param str seqID: Identifier of the reference sequence
-        :param int shift: In case the sequence does not start in 1, how much
-            do we need to shift? Basically provide the number of the first
-            residue of the chain. By default is :py:data:`None`, which turns
-            the function into a getter.
-        :return: int
-        """
-        if seqID in self._reference_sequence:
-            if shift is not None:
-                self._reference_sequence[seqID]["sft"] = shift
-            return self._reference_sequence[seqID]["sft"]
-        else:
-            return 1
-
-    def key_reference_sequence( self, seqID, key_residues, check=True ):
-        """
-        Select the provided list of key_residues from the reference sequence
-        according to the reference_shift.
-
-        :param seqID: Identifier of the reference sequence
-        :type seqID: :py:class:`str`
-        :param key_residues: List of residues to retrieve (takes shift into account).
-        :param key_residues: :py:class:`list`[:py:class:`int`]
-        :param check: If True (default), will rise error if there is no reference sequence.
-        :type check: :py:class:`bool`
-
-        :return: :py:class:`str`
-
-        :raises:
-            :ValueError: if there is no reference sequence and check is True.
-        """
-        if not seqID in self._reference_sequence:
-            if check:
-                raise ValueError("Reference sequence for {} unknown.".format(seqID))
-            else:
-                return ""
-        if key_residues is None:
-            return self._reference_sequence[seqID]["seq"]
-        kr = np.array(key_residues) - self._reference_sequence[seqID]["sft"]
-        return "".join([x for i, x in enumerate(self._reference_sequence[seqID]["seq"]) if i in kr])
-
-    def has_reference_sequence( self, seqID ):
-        """
-        Checks if there is a reference sequence for the provided
-        sequence ID.
-
-        :param str seqID: Identifier of the reference sequence
-        :return: bool
-        """
-        return seqID in self._reference_sequence
+    def __init__(self, *args, **kwargs):
+        reference = kwargs.pop('reference', {})
+        source    = kwargs.pop('source', set())
+        super(DesignFrame, self).__init__(*args, **kwargs)
+        self._reference = reference
+        self._source_files = source
 
     def add_source_file( self, file ):
         """
@@ -200,121 +161,45 @@ class DesignFrame( pd.DataFrame ):
         def match_residues( value, seqID, confidence ):
             t = 0
             for s in selection:
-                t += 1 if value[s[0]-1] == s[1] else 0
-            return t/float(len(selection)) >= float(confidence)
+                t += 1 if value[s[0] - 1] == s[1] else 0
+            return t / float(len(selection)) >= float(confidence)
 
         return self.loc[ self.apply(
-                    lambda row: match_residues(row["sequence_{0}".format(seqID)], selection, confidence ),
-                    axis=1
-                )]
-
-    def identify_mutants( self, seqID, shift=None ):
-        """
-        Checks the sequence in column sequence_<seqID> againts the reference_sequence.
-        Adds to the :py:class:`.designFrame` two new columns: mutants_<seqID>, which lists
-        the mutations of the particular decoy vs. the reference_sequence, mutant_positions_<seqID>
-        just with those same positions and mutant_count_<seqID> with the count of the number of
-        mutations. Reference and design sequence must be of the same length.
-
-        :param str seqID: Identifier of the sequence of interest.
-        :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
-            shift from the reference sequence
-        :return: Changes :py:class:`.designFrame` and returns it
-        """
-        def mutations( reference, sequence, shift=1 ):
-            data = []
-            assert len(reference) == len(sequence)
-            for i in range(len(reference)):
-                if reference[i].upper() != sequence[i].upper():
-                    data.append(reference[i].upper() + str(i + shift) + sequence[i].upper())
-            return ",".join(data)
-        def count_muts( mutations ):
-            if mutations == "": return 0
-            return len(mutations.split(","))
-
-        this_shift = shift if shift is not None else self.reference_shift(seqID)
-        self["mutants_{0}".format(seqID)] = self.apply(
-            lambda row: mutations(self.reference_sequence(seqID), row["sequence_{0}".format(seqID)], this_shift),
-            axis=1 )
-        self["mutant_positions_{0}".format(seqID)] = self["mutants_{0}".format(seqID)].str.replace(r"[a-zA-Z]","")
-        self["mutant_count_{0}".format(seqID)]     = self.apply(lambda row: count_muts(row["mutants_{0}".format(seqID)]), axis=1)
-
-        return self
+            lambda row: match_residues(row["sequence_{0}".format(seqID)], selection, confidence ),
+            axis=1
+        )]
 
     def sequence_distance( self, seqID ):
         """
-        Generate a matrix counting the distance between each pair of sequences in the :py:class:`.designFrame`.
-        This is a time-consuming operation; better to execute it over a specific set of selected decoys that over
-        all your designs.
+        Generate a matrix counting the distance between each pair of sequences in the
+        :py:class:`.designFrame`. This is a time-consuming operation; better to execute it over a
+        specific set of selected decoys that over all your designs.
 
-        :param str seqID: Identifier of the sequence of interest.
+        :param seqID: Identifier of the sequence of interest.
         :type seqID: :py:class:`str`
 
-        return: :py:class:`~pandas.DataFrame`. Header and row names are the identifiers of the designs.
+        return: :py:class:`~pandas.DataFrame`.
 
         :raises:
             :KeyError: if ``seqID`` cannot be found.
             :KeyError: if ``description`` column cannot be found.
         """
-        def count_differences( sequence, df ):
-            return df.apply(lambda x : sum(1 for i, j in zip(x["sequence_{}".format(seqID)], sequence) if i != j), axis=1)
+        # https://stackoverflow.com/questions/49235538/pandas-series-compare-values-all-vs-all
+        a = np.array(list(map(list, self.get_sequence(seqID).values)))
+        ids = self.get_id().values
 
-        if "sequence_{}".format(seqID) not in self.columns:
-            raise KeyError("Sequence {} not found.".format(seqID))
-        if "description" not in self.columns:
-            raise KeyError("Column holding the design's identifiers must be called description.")
-        df = self.apply(lambda x: count_differences( x["sequence_{}".format(seqID)], self), axis=1)
-        return df.rename(self["description"], axis="columns").rename(self["description"], axis="rows")
+        n = len(a)
+        d = {(i, j): np.sum(a[i] != a[j]) for i in range(n) for j in range(n) if j > i}
 
+        res = np.zeros((n, n))
+        keys = list(zip(*d.keys()))
 
-    def generate_mutant_variants( self, seqID, mutations ):
-        """
-        Expands the selected sequences by ensuring that all the provided mutant combinations.
-        Thus, something such as::
+        res[keys[0], keys[1]] = list(d.values())
+        res += res.T
 
-            df.generate_mutant_variants("A", [(20, "AIV"), (31, "EDQR")])
+        return pd.DataFrame(res, columns=ids, index=ids, dtype=int)
 
-        Will generate all the variant sequences of "A" that combine the expected mutations in
-        position 20 and 31 (according to the reference shift). That would be a total of 3*4
-        combinations plus the original sequence.
-
-        Alters the names of the designs in **description**.
-
-        :param seqID: Identifier of the sequence sets of interest.
-        :type seqID: :py:class:`str`
-        :param mutations: List of mutations to generate in a format (position, variants)
-        :type mutations: :py:class:`list`[(:py:class:`int`, :py:class:`str`),..]
-
-        :return: :py:class:`.DesignFrame`
-        """
-        def multiplex( row, seqID, muts, refshift):
-            seqNM = "sequence_{}".format(seqID)
-            seq   = list(row[seqNM])
-            for p in muts:
-                seq[p[0]-1] = p[1]
-            data = {seqNM: ["".join(x) for x in itertools.product(*seq)]}
-            data[seqNM].insert(0, row[seqNM])
-            data["description"] = [row["description"] + "_{0:04d}".format(x) for x in range(len(data[seqNM]))]
-            for col in row.index:
-                if col not in [seqNM, "description"]:
-                    data[col] = [row[col]] * len(data["description"])
-            df = DesignFrame(data)
-            df.reference_sequence(seqID, row[seqNM], refshift)
-            df = df.identify_mutants(seqID)
-            del(df._reference_sequence[seqID])
-            return df
-
-        designs = []
-        refshift = self.reference_shift(seqID)
-        for i, row in self.iterrows():
-            designs.append(multiplex(row, seqID, mutations, refshift))
-        df = pd.concat(designs)
-        if self.has_reference_sequence(seqID):
-            df.reference_sequence(seqID, self.reference_sequence(seqID), self.reference_shift(seqID))
-        df.drop_duplicates(["sequence_{}".format(seqID)], inplace=True)
-        return df.reset_index(drop=True)
-
-    def sequence_frequencies( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=-1 ):
+    def sequence_frequencies( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=-1 ):
         """
         Generates a :py:class:`.SequenceFrame` for the frequencies of
         the sequences in the __DesignFrame__ with seqID identifier.
@@ -326,8 +211,6 @@ class DesignFrame( pd.DataFrame ):
 
         :param str seqID: Identifier of the sequence sets of interest.
         :param str seqType: Type of sequence: protein, dna, rna.
-        :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
-            shift from the reference sequence
         :param bool cleanExtra: Remove from the SequenceFrame the non-regular
             amino/nucleic acids if they are empty for all positions.
         :param int cleanUnused: Remove from the SequenceFrame the regular
@@ -335,33 +218,9 @@ class DesignFrame( pd.DataFrame ):
             so nothing is deleted.
         :return: :py:class:`.SequenceFrame`
         """
-        sserie = self["sequence_{0}".format(seqID)].values
-        table, extra = self._get_sequence_table( seqType )
-        for x in range(len(sserie[0])):
-            for k in table:
-                table[k].append(float(0))
-            for y in range(len(sserie)):
-                aa = sserie[y][x].upper()
-                if aa in string.whitespace or aa in string.punctuation:
-                    aa = "*"
-                table[aa][-1] += float(1)
-        for k in table:
-            for x in range(len(table[k])):
-                if table[k][x] != 0:
-                    table[k][x] /= float(len(sserie))
+        return ra.sequential_frequencies(self, seqID, "sequence", seqType, cleanExtra, cleanUnused)
 
-        df = SequenceFrame(table)
-        df.measure("frequency")
-        df.extras( extra )
-        if self.has_reference_sequence(seqID):
-            df.reference_sequence(self.reference_sequence(seqID), self.reference_shift(seqID))
-        df.delete_extra( cleanExtra )
-        df.delete_empty( cleanUnused )
-        df.clean()
-        df.index = df.index + (shift if shift is not None else self.reference_shift(seqID))
-        return df
-
-    def sequence_bits( self, seqID, seqType="protein", shift=None, cleanExtra=True, cleanUnused=False ):
+    def sequence_bits( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
         """
         Generates a :py:class:`.SequenceFrame` for the bits of
         the sequences in the __DesignFrame__ with seqID identifier.
@@ -384,59 +243,70 @@ class DesignFrame( pd.DataFrame ):
         amino/nucleic acids if they are empty for all positions.
         :param bool cleanUnused: Remove from the SequenceFrame the regular
         amino/nucleic acids if they are empty for all positions
+
         :return: :py:class:`.SequenceFrame`
         """
-        df = self.sequence_frequencies(seqID, seqType, shift, cleanExtra, cleanUnused)
+        df = self.sequence_frequencies(seqID, seqType, cleanExtra, cleanUnused)
         return df.to_bits()
 
-    def _get_sequence_table( self, seqType ):
+    def structure_frequencies( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=-1 ):
         """
-        Generates the table to fill sequence data in order to create
-        a :py:class:`.SequenceFrame`
+        Generates a :py:class:`.SequenceFrame` for the frequencies of
+        the secondary structure in the __DesignFrame__ with seqID identifier.
+        If there is a reference_structure for this seqID, it will also
+        be attached to the __SequenceFrame__.
+        All letters in the secondary structure will be capitalized. All symbols that
+        do not belong to string.ascii_uppercase will be transformed to "*"
+        as this is the symbol recognized by the substitution matrices.
 
-        :param str seqType: Type of sequence: protein, dna, rna.
-        :return: dict
-        :raise ValueError: If seqType is not known
+        :param str seqID: Identifier of the secondary structure sets of interest.
+        :param str seqType: Type of sequence: protein.
+        :param bool cleanExtra: Remove from the SequenceFrame the non-regular
+            amino/nucleic acids if they are empty for all positions.
+        :param int cleanUnused: Remove from the SequenceFrame the regular
+            amino/nucleic acids if they frequency is equal or under the value . Default is -1,
+            so nothing is deleted.
+        :return: :py:class:`.SequenceFrame`
         """
-        table = {}
-        extra = []
-        if seqType.lower() == "protein":
-            # X = UNKNOWN  # * = GAP
-            # B = N or D   # Z = E or Q
-            table = {
-                'C' : [], 'D' : [], 'S' : [], 'Q' : [], 'K' : [],
-                'I' : [], 'P' : [], 'T' : [], 'F' : [], 'N' : [],
-                'G' : [], 'H' : [], 'L' : [], 'R' : [], 'W' : [],
-                'A' : [], 'V' : [], 'E' : [], 'Y' : [], 'M' : [],
-                'X' : [], '*' : [], 'B' : [], 'Z' : []
-            }
-            extra = ['X', '*', 'B', 'Z']
-        elif seqType.lower() in ["dna", "rna"]:
-            # B = C or G or T  # D = A or G or T
-            # H = A or C or T  # K = G or T
-            # M = A or C       # N = A or C or G or T
-            # R = A or G       # S = C or G
-            # V = A or C or G  # W = A or T
-            # Y = C or T
-            table = {
-                'C' : [], 'A' : [], 'T' : [], 'G' : [], 'X' : [], '*' : [],
-                'B' : [], 'D' : [], 'H' : [], 'K' : [], 'M' : [], 'N' : [],
-                'R' : [], 'S' : [], 'V' : [], 'W' : [], 'Y' : []
-            }
-            if seqType.lower() == "rna":
-                table.setdefault( 'U' , [])
-                table.pop('T', None)
-            extra = ['X', '*', 'B', 'D', 'H', 'K', 'M', 'N', 'R', 'S', 'V', 'W', 'Y']
-        else:
-            raise ValueError("sequence type {0} unknown".format(seqType))
-        return table, extra
+        seqType = seqType + "_sse"
+        return ra.sequential_frequencies(self, seqID, "structure", seqType, cleanExtra, cleanUnused)
+
+    def structure_bits( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
+        """
+        Generates a :py:class:`.SequenceFrame` for the bits of
+        the secondary structure in the __DesignFrame__ with seqID identifier.
+        If there is a reference_structure for this seqID, it will also
+        be attached to the __SequenceFrame__.
+        Bit calculation is performed as explained in http://www.genome.org/cgi/doi/10.1101/gr.849004
+        such as:
+
+        Rseq = Smax - Sobs = log2 N - (-sum(n=1,N):pn * log2 pn)
+
+        Where:
+            - N is the total number of options (4: DNA/RNA; 20: PROTEIN).
+            - pn is the observed frequency of the symbol n.
+
+        :param str seqID: Identifier of the sequence sets of interest.
+        :param str seqType: Type of sequence: protein, dna, rna.
+        :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
+            shift from the reference sequence
+        :param bool cleanExtra: Remove from the SequenceFrame the non-regular
+        amino/nucleic acids if they are empty for all positions.
+        :param bool cleanUnused: Remove from the SequenceFrame the regular
+        amino/nucleic acids if they are empty for all positions
+
+        :return: :py:class:`.SequenceFrame`
+        """
+        df = self.structure_frequencies(seqID, seqType, cleanExtra, cleanUnused)
+        return df.to_bits()
 
     def _metadata_defaults(self, name):
         if name == "_source_files":
             return set()
-        if name == "_reference_sequence":
+        if name == "_reference":
             return {}
         return None
+
     #
     # Implement pandas methods
     #
@@ -445,32 +315,117 @@ class DesignFrame( pd.DataFrame ):
     def _constructor(self):
         return DesignFrame
 
+    @property
+    def _constructor_sliced(self):
+        def f(*args, **kwargs):
+            return DesignSeries(*args, **kwargs).__finalize__(self, method='inherit')
+        return f
+
+    def _box_col_values(self, values, items):
+        """ provide boxed values for a column """
+        return self._constructor_sliced(values, index=self.index,
+                                        name=items, fastpath=True)
+
+    def _ixs(self, i, axis=0):
+        """
+        i : int, slice, or sequence of integers
+        axis : int
+        """
+
+        # irow
+        if axis == 0:
+            """
+            Notes
+            -----
+            If slice passed, the resulting data will be a view
+            """
+
+            if isinstance(i, slice):
+                return self[i]
+            else:
+                label = self.index[i]
+                if isinstance(label, Index):
+                    # a location index by definition
+                    result = self.take(i, axis=axis)
+                    copy = True
+                else:
+                    new_values = self._data.fast_xs(i)
+                    if is_scalar(new_values):
+                        return new_values
+
+                    # if we are a copy, mark as such
+                    copy = (isinstance(new_values, np.ndarray) and
+                            new_values.base is None)
+                    result = self._constructor_sliced(new_values,
+                                                      index=self.columns,
+                                                      name=self.index[i],
+                                                      dtype=new_values.dtype)
+                result._set_is_copy(self, copy=copy)
+                return result
+
+        # icol
+        else:
+            """
+            Notes
+            -----
+            If slice passed, the resulting data will be a view
+            """
+
+            label = self.columns[i]
+            if isinstance(i, slice):
+                # need to return view
+                lab_slice = slice(label[0], label[-1])
+                return self.loc[:, lab_slice]
+            else:
+                if isinstance(label, Index):
+                    return self._take(i, axis=1, convert=True)
+
+                index_len = len(self.index)
+
+                # if the values returned are not the same length
+                # as the index (iow a not found value), iget returns
+                # a 0-len ndarray. This is effectively catching
+                # a numpy error (as numpy should really raise)
+                values = self._data.iget(i)
+
+                if index_len and not len(values):
+                    values = np.array([np.nan] * index_len, dtype=object)
+                result = self._constructor_sliced(
+                    values, index=self.index, name=label, fastpath=True)
+
+                # this is a cached value, mark it so
+                result._set_as_cached(label, self)
+
+                return result
+
     def __finalize__(self, other, method=None, **kwargs):
         """propagate metadata from other to self """
-        strict  = kwargs["strict"] if "strict" in kwargs else True
+        # strict  = kwargs["strict"] if "strict" in kwargs else True
         # concat operation:
         #   (1) accumulate _source_files from all the concatenated DesignFrames (if there is any)
-        #   (2) check reference_sequence and reference_shift, merge and keep only if they are the same.
+        #   (2) check reference_sequence and reference_shift, merge and keep only
+        #       if they are the same.
         if method == 'concat':
             source_files = set()
             refseqs = []
             reference_sequence = {}
             for i, o in enumerate(other.objs):
                 source_files.update(getattr(o, "_source_files", set()))
-                refseqs.append(getattr(o, "_reference_sequence", {}))
+                refseqs.append(getattr(o, "_reference", {}))
             # _source_files
             setattr(self, "_source_files", source_files)
-            # _reference_sequence
+            # _reference
             ids = list(set(itertools.chain.from_iterable([x.keys() for x in refseqs])))
             for r in refseqs:
                 for i in ids:
                     if i in r:
-                        if not i in reference_sequence:
+                        if i not in reference_sequence:
                             reference_sequence.setdefault(i, r[i])
                         else:
                             if r[i] != reference_sequence[i]:
-                                raise ValueError("Concatenating designFrames with different ref sequence for the same seqID.")
-            setattr(self, "_reference_sequence", reference_sequence)
+                                raise ValueError("Concatenating designFrames with "
+                                                 "different ref sequence for the same seqID.")
+            setattr(self, "_reference", reference_sequence)
         # merge operation:
         # Keep metadata of the left object.
         elif method == 'merge':
@@ -480,3 +435,17 @@ class DesignFrame( pd.DataFrame ):
             for name in self._metadata:
                 setattr(self, name, getattr(other, name, self._metadata_defaults(name)))
         return self
+
+    # this is a fix until the issue is solved in pandas
+    def apply(self, func, axis=0, broadcast=None, raw=False, reduce=None,
+              result_type=None, args=(), **kwds):
+            op = frame_apply(self,
+                             func=func,
+                             axis=axis,
+                             broadcast=broadcast,
+                             raw=raw,
+                             reduce=reduce,
+                             result_type=result_type,
+                             args=args,
+                             kwds=kwds)
+            return op.get_result()
