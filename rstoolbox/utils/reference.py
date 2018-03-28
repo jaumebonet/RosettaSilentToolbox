@@ -75,6 +75,7 @@ def add_reference_sequence( self, seqID, sequence ):
     :raises:
         :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
             or :py:class:`~pandas.Series`
+        :ValueError: If ``sequence`` is not a :class:`str`
         :KeyError: If the data container does not contain sequence data for the given seqID.
         :IndexError: If a reference structure exists and sequence length do not match
     """
@@ -82,6 +83,8 @@ def add_reference_sequence( self, seqID, sequence ):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
     if self._subtyp != "sequence_frame" and seqID not in self.get_available_sequences():
         raise KeyError("Data container does not have data for sequence {}".format(seqID))
+    if not isinstance(sequence, basestring):
+        raise ValueError("Reference sequence must be a string.")
 
     if seqID in self._reference:
         str = len(self._reference[seqID]["str"])
@@ -141,14 +144,16 @@ def add_reference_structure( self, seqID, structure ):
     :raises:
         :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
             or :py:class:`~pandas.Series`
+        :ValueError: If ``sequence`` is not a :class:`str`
         :KeyError: If the data container does not contain structure data for the given seqID.
         :IndexError: If a reference sequence exists and structure length do not match
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
-
     if self._subtyp != "sequence_frame" and seqID not in self.get_available_structures():
         raise KeyError("Data container does not have data for structure {}".format(seqID))
+    if not isinstance(structure, basestring):
+        raise ValueError("Reference structure must be a string.")
 
     if seqID in self._reference:
         seq = len(self._reference[seqID]["seq"])
