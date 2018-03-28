@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: reference.py
 # @Last modified by:   bonet
-# @Last modified time: 23-Mar-2018
+# @Last modified time: 28-Mar-2018
 
 import copy
 import warnings
@@ -28,27 +28,14 @@ def _get_reference( obj, ctype, seqID ):
 
 
 def _get_key_reference( obj, ctype, seqID, key_residues ):
-    from rstoolbox.components import Selection, SelectionContainer
+    from rstoolbox.components import get_selection
 
     seq = _get_reference(obj, ctype, seqID)
     sft = _get_reference(obj, "sft", seqID)
     if key_residues is None:
         return seq
 
-    if isinstance(key_residues, int):
-        key_residues = [int, ]
-    if isinstance(key_residues, list):
-        key_residues = Selection(key_residues)
-    if isinstance(key_residues, SelectionContainer):
-        key_residues = key_residues[seqID]
-    if isinstance(key_residues, Selection):
-        if key_residues.is_shifted():
-            kr = key_residues.unshift(seqID, sft)
-        else:
-            kr = key_residues.unshift(None, 1)
-        kr = np.array(kr.to_list(len(seq)))
-    else:
-        raise NotImplementedError
+    kr = get_selection(key_residues, seqID, sft, len(seq))
 
     return "".join(np.array(list(seq))[kr - 1])
 
@@ -190,7 +177,7 @@ def get_reference_structure( self, seqID, key_residues=None ):
     if key_residues is None:
         return _get_reference( self, "structure", seqID )
     else:
-        return _get_key_reference(self, "sequence", seqID, key_residues)
+        return _get_key_reference(self, "structure", seqID, key_residues)
 
 
 def add_reference_shift( self, seqID, shift, shift_labels=False ):

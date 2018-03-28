@@ -1,5 +1,31 @@
+# @Author: Jaume Bonet <bonet>
+# @Date:   19-Feb-2018
+# @Email:  jaume.bonet@gmail.com
+# @Filename: tools.py
+# @Last modified by:   bonet
+# @Last modified time: 27-Mar-2018
+
+
 import copy
+import textwrap
+
 import pandas as pd
+
+
+def format_Ipython():
+    """Ensure ``monospace`` representation of :class:`~pandas.DataFrame`
+    in **Jupyter Notebooks**.
+
+    Just need to call it after importing the library.
+    """
+    from IPython.core.display import HTML
+    CSS = textwrap.dedent("""
+        table.dataframe {
+            font-family: monospace;
+        }
+    """)
+    return HTML('<style>{}</style>'.format(CSS))
+
 
 def add_column( df, name, value ):
     """Adds a new column to the DataFrame with the given value.

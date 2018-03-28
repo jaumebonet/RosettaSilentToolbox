@@ -3,13 +3,14 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: mutants.py
 # @Last modified by:   bonet
-# @Last modified time: 19-Mar-2018
+# @Last modified time: 27-Mar-2018
 
 
 import itertools
 import re
 
 import pandas as pd
+import numpy as np
 
 from .getters import _check_type, _get_available, _check_column
 
@@ -18,11 +19,11 @@ def get_identified_mutants( self ):
     """
     List for which sequence identifiers mutants have been calculated
 
-    :return: :py:class:`list`
+    :return: :class:`list`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+        :TypeError: If the data container is not :class:`~pandas.DataFrame`
+            or :class:`~pandas.Series`
     """
     _check_type(self)
     return _get_available(self, "mutants_")
@@ -39,7 +40,7 @@ def get_mutations( self, seqID ):
 
     :raises:
         :TypeError: If the data container is not `~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+            or :py:class:`~pandas.Series`
         :KeyError: If the column `mutants_[seqID]` is cannot be found.
     """
     _check_type(self)
@@ -57,7 +58,7 @@ def get_mutation_positions( self, seqID ):
 
     :raises:
         :TypeError: If the data container is not `~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+            or :py:class:`~pandas.Series`
         :KeyError: If the column `mutant_positions_[seqID]` is cannot be found.
     """
     _check_type(self)
@@ -69,13 +70,13 @@ def get_mutation_count( self, seqID ):
     Return the number of mutantion positions data for `seqID` available in the container.
 
     :param seqID: Identifier of the sequence of interest.
-    :type seqID: :py:class:`str`
+    :type seqID: :class:`str`
 
-    :return: :py:class:`str` or :py:class:`~pandas.Series`
+    :return: :class:`str` or :class:`~pandas.Series`
 
     :raises:
         :TypeError: If the data container is not `~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+            or :class:`~pandas.Series`
         :KeyError: If the column `mutant_count_[seqID]` is cannot be found.
     """
     _check_type(self)
@@ -139,7 +140,7 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
     :param mutations: List of mutations to generate in a format (position, variants)
     :type mutations: :py:class:`list`[(:py:class:`int`, :py:class:`str`),..]
     :param keep_scores: Attach to each variant the scores comming from the source sequence.
-    This is not really recommended, as it can get confusing.
+        This is not really recommended, as it can get confusing.
     :type keep_scores: :py:class:`bool`
 
     :return: :py:class:`.DesignFrame`
@@ -194,18 +195,105 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
     return df.reset_index(drop=True)
 
 
+def generate_mutants_from_matrix( self, seqID, matrix, count,
+                                  key_residues=None, limit_refseq=False ):
+    """
+    From a provided positional frequency matrix, generates ``count`` random variants.
+
+    It takes into account the individual frequency assigned to each residue type and
+    position.
+
+    For each :class:`.SeriesFrame`, it will generate a :class:`.DesignFrame` in which the
+    original sequence becomes the ``reference_sequence``, inheriting the ``reference_shift``.
+
+    .. warning::
+        This is a **computationaly expensive** function. Take this in consideration when trying
+        to run it.
+
+    Each :class:`.DesignFrame` will have the following structure:
+
+    ======================  ============================================
+    Column                                                Data Content
+    ======================  ============================================
+    **description**         Identifier fo the mutant
+    **sequence_<seqID>**    Sequence content
+    **pssm_score_<seqID>**  Score obtained by applying ``matrix``
+    ======================  ============================================
+
+    :param seqID: Identifier of the sequence sets of interest.
+    :type seqID: :class:`str`
+    :param matrix: Positional frequency matrix (*column:* residue type).
+    :type matrix: :class:`~pandas.DataFrame`
+    :param count: Expected number of **unique** generated combinations. If the number is
+        bigger than the possible options, it will default to the total amount of options.
+    :type count: :class:`int`
+    :param key_residues: Residues over which to apply the matrix.
+    :type key_residues: Union[:class:`.Selection`, :func:`list`, :class:`int`, :class:`str`]
+    :param limit_refseq: When :data:`True`, pick only residue types with probabilities
+        equal or higher to the source sequence.
+    :type limit_refseq: :class:`bool`
+
+    :return: :func:`list` of :class:`.DesignFrame` - New set of design sequences.
+
+    .. seealso::
+        :meth:`.DesignFrame.score_by_pssm`
+        :meth:`.SeriesFrame.score_by_pssm`
+    """
+    # TODO: evaluate count < possible combinations
+    # BODY: (matrix > 0).sum(axis=1).prod()
+    # TODO: make sure of shift for both matrix and sequence
+    # BODY: so that it works in pair with the rest of the library
+    from rstoolbox.components import get_selection
+    from rstoolbox.components import DesignSeries, DesignFrame
+
+    data = []
+    if isinstance(self, pd.DataFrame):
+        for index, row in self.iterrows():
+            data.extend(row.generate_mutants_from_matrix(seqID, matrix, count,
+                                                         key_residues, limit_refseq))
+        return data
+
+    if key_residues is not None:
+        key_residues = get_selection(key_residues, seqID, 1, matrix.shape[0])
+    else:
+        key_residues = range(1, matrix.shape[0] + 1)
+
+    seqnm = "sequence_{}".format(seqID)
+    data.append(DesignFrame([], columns=["description", seqnm]))
+    name  = self.get_id()
+
+    while data[-1].shape[0] < count:
+        seqaa = list(self.get_sequence(seqID))
+        thisname = name + "_v{0:04d}".format(data[-1].shape[0] + 1)
+        for aap in key_residues:
+            matI = matrix.loc[aap].copy()
+            if limit_refseq:
+                matI[matI < matI[seqaa[aap - 1]]] = 0
+                matI = matI / matI.sum()
+            seqaa[aap - 1] = np.random.choice(matI.index.values, 1, p=list(matI))[0]
+        if "".join(seqaa) == self.get_sequence(seqID):
+            continue
+        data[-1] = data[-1].append(DesignSeries([thisname, "".join(seqaa)],
+                                                ["description", seqnm]),
+                                   ignore_index=True)
+        data[-1].drop_duplicates([seqnm])
+    data[-1].add_reference(seqID, self.get_sequence(seqID), shift=self.get_reference_shift(seqID))
+    data[-1] = data[-1].score_by_pssm(seqID, matrix)
+    return data
+
+
 def generate_wt_reversions( self, seqID=None ):
     """
     Expand the selected sequences by generating all the combinatorial options to revert to
     the reference (WT) sequence.
 
-    Alters the names of the designs in **description**.
+    Alters the names of the designs in **description** column.
 
     :param seqID: Identifier of the sequence sets of interest. If none is provided, WT reversion
-    is applied to all available sequences.
-    :type seqID: :py:class:`str`
+        is applied to all available sequences.
+    :type seqID: :class:`str`
 
-    :return: :py:class:`.DesignFrame`
+    :return: :class:`.DesignFrame`
     """
     def format_mutations( mutations ):
         mutations = mutations.split(",")
@@ -244,3 +332,50 @@ def generate_wt_reversions( self, seqID=None ):
     seqs = [_check_column(adf, "sequence", seq) for seq in avail_seqs]
     adf.drop_duplicates(seqs, inplace=True)
     return adf.reset_index(drop=True)
+
+
+def score_by_pssm( self, seqID, pssm ):
+    """
+    Score sequences according to a provided PSSM matrix.
+
+    Generates new column by applying the PSSM score to each position
+    of the requested sequences:
+
+    ======================  =====================================
+    New Column                                       Data Content
+    ======================  =====================================
+    **pssm_score_<seqID>**  Score obtained by applying ``pssm``
+    ======================  =====================================
+
+    :param seqID: Identifier of the sequence sets of interest.
+    :type seqID: :class:`str`
+    :param pssm: PSSM matrix data.
+    :type pssm: :class:`~pandas.DataFrame`
+
+    :return: Union[:class:`.DesignSerie`, :class:`.DesignFrame`]
+        - Itself with the new column.
+
+    :raises:
+        :NotImplementedError: if ``self`` is not :class:`~pandas.Series`
+            or :class:`~pandas.DataFrame`.
+        :AssertionError: if the length of the ``pssm`` does not match that
+            of the sequence.
+    """
+    def evaluate_sequence(seq, pssm):
+        score = 0
+        assert len(seq) == pssm.shape[0]
+        for i, aa in enumerate(seq):
+            if aa in list(pssm.columns):
+                score += pssm.iloc[i][aa]
+        return score
+
+    outcol = "pssm_score_{}".format(seqID)
+    if isinstance(self, pd.Series):
+        self[outcol] = evaluate_sequence(self.get_sequence(seqID), pssm)
+    elif isinstance(self, pd.DataFrame):
+        self[outcol] = self.apply(lambda row: evaluate_sequence(row.get_sequence(seqID), pssm),
+                                  axis=1)
+    else:
+        raise NotImplementedError
+
+    return self

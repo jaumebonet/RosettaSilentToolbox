@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: getters.py
 # @Last modified by:   bonet
-# @Last modified time: 14-Mar-2018
+# @Last modified time: 27-Mar-2018
 
 
 import pandas as pd
@@ -31,29 +31,17 @@ def _get_available( obj, ctype ):
 
 
 def _get_key_sequence( obj, ctype, seqID, key_residues ):
-    from rstoolbox.components import Selection, SelectionContainer
+    from rstoolbox.components import get_selection
     from .reference import _get_reference
 
     seq = obj[_check_column(obj, ctype, seqID)]
     sft = _get_reference(obj, "sft", seqID)
 
-    if isinstance(key_residues, int):
-        key_residues = [int, ]
-    if isinstance(key_residues, list):
-        key_residues = Selection(key_residues)
-    if isinstance(key_residues, SelectionContainer):
-        key_residues = key_residues[seqID]
-    if isinstance(key_residues, Selection):
-        if key_residues.is_shifted():
-            kr = key_residues.unshift(seqID, sft)
-        else:
-            kr = key_residues.unshift(None, 1)
-        if isinstance(obj, pd.Series):
-            kr = np.array(kr.to_list(len(seq)))
-        else:
-            kr = np.array(kr.to_list(len(seq.iloc[0])))
+    if isinstance(obj, pd.Series):
+        length = len(seq)
     else:
-        raise NotImplementedError
+        length = len(seq.iloc[0])
+    kr = get_selection(key_residues, seqID, sft, length)
 
     if isinstance(obj, pd.Series):
         return "".join(np.array(list(seq))[kr - 1])

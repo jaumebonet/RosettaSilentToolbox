@@ -14,7 +14,7 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
 from rstoolbox.analysis import binary_overlap
-from rstoolbox.components import DesignFrame, SequenceFrame, Selection
+from rstoolbox.components import DesignFrame, SequenceFrame, Selection, get_selection
 from .color_schemes import color_scheme
 
 
@@ -220,6 +220,28 @@ def positional_sequence_similarity_plot( df, ax, identity_color="green", similar
 
 def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
                font_size=35, colors="WEBLOGO" ):
+    """
+    Generates classic **LOGO** plots.
+
+    :param df: Data container.
+    :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
+    :param seqID: Identifier of the query sequence.
+    :type seqID: :class:`str`
+    :param refseq: if :data:`True` (default), mark the original residues according to
+        the reference sequence.
+    :type refseq: :class:`bool`
+    :param key_residues: Residues of interest to be plotted.
+    :type key_residue: Union[:class:`int`, :func:`list` of :class:`int`, :class:`.Selection`]
+    :param line_break: Force a line-change in the plot after n residues are plotted.
+    :type line_break: :class:`int`
+    :param font_size: Expected size of the axis font.
+    :type font_size: :class:`float`
+    :param colors: Colors to assign; it can be the name of a available color set or
+        a dictionary with a color for each type.
+    :type colors: Union[:class:`str`, :class:`dict`]
+
+    :return: :class:`~matplotlib.figure.Figure`, :class:`~matplotlib.axes.Axes`]
+    """
 
     class Scale( matplotlib.patheffects.RendererBase ):
         def __init__( self, sx, sy=None ):
@@ -285,12 +307,15 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         data = data.sequence_frequencies(seqID)
 
     # key_residues management.
-    if key_residues is None:
-        key_residues = list(data.index.values)
-    elif isinstance(key_residues, Selection):
-        key_residues = Selection.to_list(len(data.index.values))
-    elif isinstance(key_residues, int):
-        key_residues = [key_residues, ]
+    shift = data.get_reference_shift(seqID)
+    length = len(data.get_reference_sequence(seqID)) if refseq else None
+    key_residues = get_selection(key_residues, seqID, shift, length)
+    # if key_residues is None:
+    #     key_residues = list(data.index.values)
+    # elif isinstance(key_residues, Selection):
+    #     key_residues = Selection.to_list(len(data.index.values))
+    # elif isinstance(key_residues, int):
+    #     key_residues = [key_residues, ]
 
     # Plot
     if line_break is None:
@@ -351,7 +376,3 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
                 label.set_fontproperties(font)
 
     return fig, axs
-
-
-def per_residue_value( df ):
-    pass

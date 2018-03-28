@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 21-Mar-2018
+# @Last modified time: 27-Mar-2018
 
 
 import os
@@ -96,7 +96,7 @@ def read_fasta( filename, expand=False, multi=False ):
     return df
 
 
-def write_fasta( df, seqID, separator=None, filename=None ):
+def write_fasta( df, seqID, separator=None, filename=None, split=False ):
     """
     Writes fasta files of the selected decoys.
 
@@ -136,8 +136,11 @@ def write_fasta( df, seqID, separator=None, filename=None ):
     :type separator: :class:`str`
     :param filename: Output file name.
     :type filename: :class:`str`
+    :param split: Split each fasta in a different file. ``filename`` first part of the filename
+        is used as `prefix`, with a following enumeration.
+    :type split: :class:`bool`
 
-    :return: :py:class:`str` - **FASTA** formated string if no output file is provided.
+    :return: :class:`str` - **FASTA** formated string if no output file is provided.
 
     :raises:
         :IOError: If ``filename`` exists and global option :ref:`system.overwrite <options>`
@@ -167,11 +170,20 @@ def write_fasta( df, seqID, separator=None, filename=None ):
     data = []
     for chain in seqID:
         eachfa = df.apply(lambda row: nomenclator(row, chain, separator), axis=1)
-        data.append("\n".join([_ for _ in list(eachfa) if len(_) > 0]))
+        data.extend(eachfa.values)
 
     if filename is not None:
-        fd = open(filename, "w") if not filename.endswith(".gz") else gzip.open(filename, "wb")
-        fd.write("\n".join(data))
-        fd.close()
+        if not split:
+            fd = open(filename, "w") if not filename.endswith(".gz") else gzip.open(filename, "wb")
+            fd.write("\n".join(data))
+            fd.close()
+        else:
+            suffix = "_f{0:04d}"
+            cplxname = os.path.splitext(filename)
+            for i, sequence in enumerate(data):
+                fname = cplxname[0] + suffix.format(i + 1) + cplxname[1]
+                fd = open(fname, "w") if not fname.endswith(".gz") else gzip.open(fname, "wb")
+                fd.write(sequence + "\n")
+                fd.close()
     else:
         return "\n".join(data)

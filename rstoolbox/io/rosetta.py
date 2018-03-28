@@ -20,6 +20,7 @@ import pandas as pd
 
 import rstoolbox.core as core
 import rstoolbox.components as rc
+from rstoolbox.utils import baseline
 
 _headers = ["SCORE", "REMARK", "RES_NUM", "FOLD_TREE", "RT",
             "ANNOTATED_SEQUENCE", "NONCANONICAL_CONNECTION",
@@ -532,8 +533,11 @@ def write_fragment_sequence_profiles( df, filename=None, consensus=None ):
 
 def get_sequence_and_structure( pdbfile ):
     """
-    Provided a PDB file, it will run a small RosettaScript to capture its sequence and
+    Provided a PDB file, it will run a small **RosettaScript** to capture its sequence and
     structure.
+
+    .. note::
+        **Requires a Rosetta local installation** if file is not present.
 
     It will generate an output file called: ``[pdbfile].dssp.minisilent``. If this file
     already exists, it will be directly read. You can choose to compress it;
@@ -548,6 +552,9 @@ def get_sequence_and_structure( pdbfile ):
         :IOError: if ``pdbfile`` cannot be found.
         :IOError: if Rosetta executable cannot be found.
         :ValueError: if Rosetta execution fails
+
+    .. seealso::
+        :func:`.baseline`
     """
     if not os.path.isfile( pdbfile ):
         raise IOError("Structure {} cannot be found".format(pdbfile))
@@ -557,10 +564,8 @@ def get_sequence_and_structure( pdbfile ):
     elif os.path.isfile(minisilent + ".gz"):
         return parse_rosetta_file(minisilent + ".gz", {"sequence": "*", "structure": "*"})
 
-    script = "<ROSETTASCRIPTS><MOVERS><WriteSSEMover dssp=\"1\" name=\"w\" /></MOVERS>" \
-             "<PROTOCOLS><Add mover=\"w\" /></PROTOCOLS></ROSETTASCRIPTS>"
     with open("dssp.xml", "w") as fd:
-        fd.write(script)
+        fd.write(baseline())
 
     # Check rosetta executable & run
     path = core.get_option("rosetta", "path")

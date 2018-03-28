@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 20-Mar-2018
+# @Last modified time: 27-Mar-2018
 
 
 import copy
@@ -12,6 +12,46 @@ import re
 
 from pandas import Series
 import numpy as np
+
+
+def get_selection( key_residues, seqID, shift=1, length=None ):
+    """*Internal function*; global management and casting of :class:`.Selection`.
+
+    Call this function in any function with the ``key_residues`` parameter. It will
+    manage the type of input and return the appropiate list of selected residues.
+
+    :param key_residues: Residues of interest.
+    :type key_residues: Union[:class:`int`, :func:`list` of :class:`int`,
+                              :class:`str`, :class:`.Selection`]
+    :param seqID: Identifier of the working sequence.
+    :type seqID: :class:`str`
+    :param shift: Starting residue number or per-residue number assignment.
+    :type shift: Union[:class:`int`, :func:`list` of :class:`int`]
+    :param length: Length of the sequence over which it will be applied. Needed in
+        case of inverted :class:`.Selection`.
+    :type length: :class:`int`
+
+    :return: :class:`~numpy.ndarray`
+
+    :raises:
+        :NotImplementedError: If ``key_residues`` is of a non-expected type.
+    """
+
+    if isinstance(key_residues, int):
+        key_residues = [int, ]
+    if isinstance(key_residues, list) or isinstance(key_residues, basestring):
+        key_residues = Selection(key_residues)
+    if isinstance(key_residues, SelectionContainer):
+        key_residues = key_residues[seqID]
+    if isinstance(key_residues, Selection):
+        if key_residues.is_shifted():
+            kr = key_residues.unshift(seqID, shift)
+        else:
+            kr = key_residues.unshift(None, 1)
+        kr = np.array(kr.to_list(length))
+    else:
+        raise NotImplementedError
+    return kr
 
 
 class Selection( object ):
@@ -155,7 +195,7 @@ class Selection( object ):
             if self._isarr is None or self._ialen != length:
                 self._isarr = [x for x in range(1, length + 1) if x not in self._asarr]
                 self._ialen = length
-            return self._isarr
+            return sorted(self._isarr)
 
     def to_string( self ):
         """

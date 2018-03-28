@@ -40,11 +40,11 @@ Helper functions to read/write data generated with `Rosetta <https://www.rosetta
 .. autosummary::
    :toctree: generated/
 
-   ~io.open_rosetta_file
    ~io.parse_rosetta_file
    ~io.parse_rosetta_contacts
    ~io.parse_rosetta_fragments
    ~io.write_rosetta_fragments
+   ~io.write_fragment_sequence_profiles
    ~io.get_sequence_and_structure
    ~io.make_structures
 
@@ -86,6 +86,7 @@ Special functions to help personalise your plot easily can be loaded through ``r
 .. autosummary::
    :toctree: generated/
 
+   ~utils.format_Ipython
    ~utils.add_right_title
    ~utils.add_top_title
    ~utils.add_white_to_cmap
@@ -101,3 +102,24 @@ Special functions to help transform your data can be loaded through ``rstoolbox.
 
    ~utils.add_column
    ~utils.split_values
+
+Utils: RosettaScript
+--------------------
+
+Get the **RosettaScripts** that are called by different functions of the library with ``rstoolbox.utils``.
+
+.. autosummary::
+   :toctree: generated/
+
+   ~utils.baseline
+
+Internals: Functions for Developers
+-----------------------------------
+
+This functions are only of interest if you plan on writing new functionalities in ``rstoolbox``.
+
+.. autosummary::
+   :toctree: generated/
+
+   io.open_rosetta_file
+   components.get_selection

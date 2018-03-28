@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragmentFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 26-Mar-2018
+# @Last modified time: 27-Mar-2018
 
 # Standard Libraries
 import os
@@ -135,6 +135,31 @@ class FragmentFrame( pd.DataFrame ):
 
         return self.merge(df, how='left', on=["size", "frame", "neighbor"])
 
+    def select_quantile( self, quantile=0.25 ):
+        """
+        Returns only the fragments under the rmsd threshold of the specified
+        quantile.
+
+        :param quantile: Quantile maximum limit.
+        :type quantile: :class:`float`
+
+        :return: :class:`.FragmentFrame` - The filtered data.
+
+        :raises:
+            :KeyError: if the `rmsd` column cannot be found.
+
+        .. seealso::
+            :meth:`~.FragmentFrame.add_quality_measure`
+        """
+        def _select_quantile(group, quantile):
+            qtl = group["rmsd"].quantile(.25)
+            return group[group["rmsd"] <= qtl]
+
+        df = self.groupby("frame").apply(lambda g: _select_quantile(g, quantile))
+        df.index = df.index.get_level_values(1)
+        df._source_file = self._source_file
+        return df
+
     def make_sequence_matrix( self, frequency=False, round=False ):
         """
         Generate a PSSM-like matrix from the fragments.
@@ -171,7 +196,10 @@ class FragmentFrame( pd.DataFrame ):
                     matrix.setdefault(aa, []).append(q)
         df = pd.DataFrame(matrix)
         if round:
-                df = df.applymap(np.floor).astype(np.int64).reindex(columns=list(alphabet))
+            df = df.applymap(np.around).astype(np.int64).reindex(columns=list(alphabet))
+        else:
+            df = df.reindex(columns=list(alphabet))
+        df.index = range(1, df.shape[0] + 1)
         return df
 
     def quick_consensus_sequence( self ):

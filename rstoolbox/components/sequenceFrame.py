@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequenceFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 23-Mar-2018
+# @Last modified time: 27-Mar-2018
 
 # Standard Libraries
 
@@ -13,7 +13,7 @@ import numpy as np
 
 # This Library
 from .rsbase import RSBaseFrequency
-from .selection import Selection, SelectionContainer
+from .selection import Selection, SelectionContainer, get_selection
 
 
 class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
@@ -124,20 +124,7 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
         seqID = self.get_available_references()[0]
         sft = self.get_reference_shift(seqID)
 
-        if isinstance(key_residues, int):
-            key_residues = [int, ]
-        if isinstance(key_residues, list):
-            key_residues = Selection(key_residues)
-        if isinstance(key_residues, SelectionContainer):
-            key_residues = key_residues[seqID]
-        if isinstance(key_residues, Selection):
-            if not key_residues.is_shifted():
-                kr = key_residues.shift(seqID, sft)
-            else:
-                kr = key_residues
-            kr = kr.to_list(self.shape[0])
-        else:
-            raise NotImplementedError
+        kr = get_selection(key_residues, seqID, sft, self.shape[0])
         return self.loc[kr]
 
     def max_hight( self ):

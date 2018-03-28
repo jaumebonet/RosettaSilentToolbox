@@ -19,6 +19,7 @@ rstoolbox.components.DesignFrame
       ~DesignFrame.add_source_files
       ~DesignFrame.delete_reference
       ~DesignFrame.generate_mutant_variants
+      ~DesignFrame.generate_mutants_from_matrix
       ~DesignFrame.generate_wt_reversions
       ~DesignFrame.get_available_labels
       ~DesignFrame.get_available_references
@@ -45,6 +46,7 @@ rstoolbox.components.DesignFrame
       ~DesignFrame.has_source_files
       ~DesignFrame.identify_mutants
       ~DesignFrame.replace_source_files
+      ~DesignFrame.score_by_pssm
       ~DesignFrame.sequence_bits
       ~DesignFrame.sequence_distance
       ~DesignFrame.sequence_frequencies
