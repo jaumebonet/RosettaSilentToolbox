@@ -1,4 +1,4 @@
 pyyaml >= 3.12
-pandas >= 19.1
+pandas >= 22.0
 seaborn >= 0.8
 libconfig >= 0.4
