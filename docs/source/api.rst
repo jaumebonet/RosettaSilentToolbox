@@ -18,7 +18,10 @@ These are the list of dedicated objects provided to manage design data. They can
 
    ~components.Selection
    ~components.SelectionContainer
+   ~components.DesignSeries
    ~components.DesignFrame
+   ~components.SequenceFrame
+   ~components.FragmentFrame
 
 
 IO: Sequence
@@ -74,6 +77,7 @@ plotting library, but some special plotting alternatives are offered through ``r
 
    ~plot.multiple_distributions
    ~plot.sequence_frequency_plot
+   ~plot.logo_plot
    ~plot.positional_sequence_similarity_plot
    ~plot.plot_fragments
    ~plot.plot_fragment_profiles

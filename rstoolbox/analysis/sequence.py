@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 23-Mar-2018
+# @Last modified time: 28-Mar-2018
 
 import copy
 import collections
@@ -224,24 +224,24 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM
     :param df: Input data.
     :type df: Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`]
     :param seqID: Identifier of the sequence sets of interest.
-    Required when input is :py:class:`.DesignFrame`
+        Required when input is :py:class:`.DesignFrame`
     :type seqID: :py:class:`str`
     :param ref_seq: Reference sequence. Required when input is :py:class:`.FragmentFrame`.
-    Will overwrite the reference sequence of :py:class:`.DesignFrame` if provided.
+        Will overwrite the reference sequence of :py:class:`.DesignFrame` if provided.
     :type ref_seq: :py:class:`str`
     :param matrix: Identifier of the matrix used to evaluate similarity. Default is BLOSUM62.
     :type matrix: :py:class:`str`
 
     :return: :py:class:`~pandas.DataFrame` where rows are positions and
-    columns are `identity_perc` and `positive_perc`.
+        columns are `identity_perc` and `positive_perc`.
 
     :raises:
         :AttributeError: if the data passed is not in
-        Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`].
+            Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`].
         :AttributeError: if input is :py:class:`.DesignFrame` and ``seqID`` is not provided.
         :KeyError: if input is :py:class:`.DesignFrame` and ``seqID`` cannot be found.
         :AttributeError: if input is :py:class:`.DesignFrame` and there is no reference
-        for ``seqID``.
+            for ``seqID``.
         :AttributeError if input is :py:class:`.FragmentFrame` and ``ref_seq`` is not provided.
     """
     from rstoolbox.components import DesignFrame, FragmentFrame
@@ -344,27 +344,3 @@ def binary_overlap( df, column_name="identity_binary" ):
             if bool(int(b)):
                 result[_] = 1
     return result
-
-# def sequence_frequency_matrix( series, seq_column="sequence" ):
-#     sserie = series[seq_column].values
-#     table = {
-#         'C' : [], 'D' : [], 'S' : [], 'Q' : [], 'K' : [],
-#         'I' : [], 'P' : [], 'T' : [], 'F' : [], 'N' : [],
-#         'G' : [], 'H' : [], 'L' : [], 'R' : [], 'W' : [],
-#         'A' : [], 'V' : [], 'E' : [], 'Y' : [], 'M' : []
-#     }
-#
-#     for x in range(len(sserie[0])):
-#         for k in table:
-#             table[k].append(float(0))
-#         for y in range(len(sserie)):
-#             aa = sserie[y][x]
-#             table[aa][-1] += float(1)
-#     for k in table:
-#         for x in range(len(table[k])):
-#             if table[k][x] != 0:
-#                 table[k][x] /= float(len(sserie))
-#
-#     df = pd.DataFrame( table )
-#     df.index = df.index + 1
-#     return df

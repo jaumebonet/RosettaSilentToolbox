@@ -4,7 +4,7 @@
 
 """
 
-__version__ = "0.0.5a"
+__version__ = "0.0.6"
 
 from . import core
 from . import utils

@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 27-Mar-2018
+# @Last modified time: 28-Mar-2018
 
 
 import copy
@@ -37,9 +37,14 @@ def get_selection( key_residues, seqID, shift=1, length=None ):
         :NotImplementedError: If ``key_residues`` is of a non-expected type.
     """
 
+    if key_residues is None:
+        if isinstance(shift, list):
+            key_residues = shift
+        elif length is not None:
+            key_residues = range(1, length + 1)
     if isinstance(key_residues, int):
         key_residues = [int, ]
-    if isinstance(key_residues, list) or isinstance(key_residues, basestring):
+    if isinstance(key_residues, (list, np.ndarray, basestring)):
         key_residues = Selection(key_residues)
     if isinstance(key_residues, SelectionContainer):
         key_residues = key_residues[seqID]

@@ -223,6 +223,20 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     """
     Generates classic **LOGO** plots.
 
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.plot import logo_plot
+           ...: import matplotlib.pyplot as plt
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {"sequence": "B"})
+           ...: df.add_reference_sequence("B", df.get_sequence("B")[0])
+           ...: fig, axes = logo_plot(df, "B", refseq=True, line_break=50)
+           ...: plt.tight_layout()
+
+        @savefig sequence_logo_plot_docs.png width=5in
+        In [2]: plt.show()
+
     :param df: Data container.
     :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
     :param seqID: Identifier of the query sequence.
@@ -240,7 +254,8 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         a dictionary with a color for each type.
     :type colors: Union[:class:`str`, :class:`dict`]
 
-    :return: :class:`~matplotlib.figure.Figure`, :class:`~matplotlib.axes.Axes`]
+    :return: :class:`~matplotlib.figure.Figure` and
+        :func:`list` of :class:`~matplotlib.axes.Axes`
     """
 
     class Scale( matplotlib.patheffects.RendererBase ):
@@ -299,7 +314,7 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         raise ValueError("Input data must be in a DataFrame, DesignFrame or SequenceFrame")
     else:
         if not isinstance(data, (DesignFrame, SequenceFrame)):
-            if len(set(data.columns.values).intersction(set(order))) == len(order):
+            if len(set(data.columns.values).intersection(set(order))) == len(order):
                 data = SequenceFrame(data)
             else:
                 data = DesignFrame(data)
@@ -307,15 +322,8 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         data = data.sequence_frequencies(seqID)
 
     # key_residues management.
-    shift = data.get_reference_shift(seqID)
     length = len(data.get_reference_sequence(seqID)) if refseq else None
-    key_residues = get_selection(key_residues, seqID, shift, length)
-    # if key_residues is None:
-    #     key_residues = list(data.index.values)
-    # elif isinstance(key_residues, Selection):
-    #     key_residues = Selection.to_list(len(data.index.values))
-    # elif isinstance(key_residues, int):
-    #     key_residues = [key_residues, ]
+    key_residues = get_selection(key_residues, seqID, list(data.index.values), length)
 
     # Plot
     if line_break is None:
