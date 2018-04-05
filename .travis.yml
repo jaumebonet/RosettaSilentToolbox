@@ -15,7 +15,7 @@ matrix:
       os: linux
       after_success:
         - pwd
-        - coveralls --data_file libconfig/tests/.coverage
+        - coveralls --data_file rstoolbox/tests/.coverage
         - bash <(curl -s https://codecov.io/bash) -Z -c -f /tmp/cov-single.xml
 
 install:
