@@ -1,0 +1,2 @@
+include versioneer.py
+include rstoolbox/_version.py

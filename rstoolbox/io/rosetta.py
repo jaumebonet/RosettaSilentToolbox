@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rosetta.py
 # @Last modified by:   bonet
-# @Last modified time: 26-Mar-2018
+# @Last modified time: 05-Apr-2018
 
 
 import os
@@ -16,6 +16,7 @@ import string
 import subprocess
 from collections import OrderedDict
 
+import six
 import pandas as pd
 
 import rstoolbox.core as core
@@ -78,7 +79,7 @@ def _gather_file_list( filename, multi=False ):
             raise IOError("{0}: file not found.".format(filename))
         files.append( filename )
     else:
-        if isinstance(filename, basestring):
+        if isinstance(filename, six.string_types):
             if not filename.endswith("*"):
                 filename = filename + "*"
             files = glob.glob( filename )
@@ -164,6 +165,7 @@ def open_rosetta_file( filename, multi=False, check_symmetry=True ):
             symm = int(process.communicate()[0].strip().split()[0]) > 0
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
+            line = line.decode('utf8')
             if line.strip().split()[0].strip(":") in _headers:
                 yield line, line.strip().split()[-1] == "description", file_count, symm
         fd.close()
@@ -275,7 +277,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             continue
 
         if line.startswith("SYMMETRY_INFO"):  # When working with symmetry, RES_NUM is not there...
-            chain = "".join(string.uppercase[:int(line.split()[2])])
+            chain = "".join(string.ascii_uppercase[:int(line.split()[2])])
             for c in chain:
                 chains["id"].extend([c, ] * int(line.split()[4]))
 

@@ -3,11 +3,12 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: reference.py
 # @Last modified by:   bonet
-# @Last modified time: 28-Mar-2018
+# @Last modified time: 05-Apr-2018
 
 import copy
 import warnings
 
+import six
 import pandas as pd
 import numpy as np
 
@@ -83,7 +84,7 @@ def add_reference_sequence( self, seqID, sequence ):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
     if self._subtyp != "sequence_frame" and seqID not in self.get_available_sequences():
         raise KeyError("Data container does not have data for sequence {}".format(seqID))
-    if not isinstance(sequence, basestring):
+    if not isinstance(sequence, six.string_types):
         raise ValueError("Reference sequence must be a string.")
 
     if seqID in self._reference:
@@ -152,7 +153,7 @@ def add_reference_structure( self, seqID, structure ):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
     if self._subtyp != "sequence_frame" and seqID not in self.get_available_structures():
         raise KeyError("Data container does not have data for structure {}".format(seqID))
-    if not isinstance(structure, basestring):
+    if not isinstance(structure, six.string_types):
         raise ValueError("Reference structure must be a string.")
 
     if seqID in self._reference:

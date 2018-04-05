@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 28-Mar-2018
+# @Last modified time: 05-Apr-2018
 
 import copy
 import collections
@@ -11,7 +11,7 @@ import collections
 import pandas as pd
 import numpy as np
 
-from SimilarityMatrix import SimilarityMatrix as SM
+from .SimilarityMatrix import SimilarityMatrix as SM
 
 
 def _get_sequential_table( seqType ):

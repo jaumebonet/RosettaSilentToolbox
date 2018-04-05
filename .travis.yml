@@ -1,0 +1,38 @@
+language: python
+
+sudo: false
+
+matrix:
+  include:
+    - python: 2.7
+      env: TOXENV=py27
+      os: linux
+    - python: 3.5
+      env: TOXENV=py35
+      os: linux
+    - python: 3.6
+      env: TOXENV=py36
+      os: linux
+      after_success:
+        - pwd
+        - coveralls --data_file libconfig/tests/.coverage
+        - bash <(curl -s https://codecov.io/bash) -Z -c -f /tmp/cov-single.xml
+
+install:
+  - pip install tox
+  - if [[ $TOXENV == py36 ]]; then pip install pyyaml; fi
+  - if [[ $TOXENV == py36 ]]; then pip install coveralls; fi
+  - if [[ $TOXENV == py36 ]]; then pip install python-coveralls; fi
+
+script:
+  - tox
+
+deploy:
+  provider: pypi
+  user: jaume.bonet
+  password:
+    secure: hlUJmB4R5XnNYVtpORm5iZuvgy95MBKCyhRGoSQX/I5wOsDkoiXImOgZy5qpcPENKePSyOsdEXqj78/G9ChPuPuTF+vSszO2kjLoESks4UvGmL38MhrssH9/IiEB61/F3b0MSadpIQYXoR990DwlFmqC6lBcG8tBw9AHxfYBnYQeov6MyuBlnq9+QneVLXIU5/p1b8cocO9U5Ge2C63hVaXR2C6pNRPCY0w7K8xLRNbFLzm5a9/Xa9EdNfBHH5PW4JpLl629mQeMsKV0XWFK5mnJRqfS9C+ZeUGBGt6Q1pdGzcpd7FCgeO1fIbh0G9viEhmQ0BxuFiUnVyFIRb7EUVSzaJ7Ok1jUhvn0K2f5TfCTjoXynkfkcnTw+9IaP3Ri3VerWye88AVQk4ogIZJuFbc2C/GaVUFyXAhpPeT7ho0vn5q7r6NvCf9FxJtMy3aUudI3rjzopqjTGQYXylLyoWJx5R9/+r6NZNg7VlWNgsrI4RXg4XQ39qC9W9PGk+IEucx3pqCGBT0WqX+nqlsvoFXDdQo43VJ4EJSBeCKQjSHxVJ1w94/Sg45z8qA4Vtwg6Oh3nz2ogjyaKNWNf3lcZRuXwGTrU/GV3HOcR4IhOLyxB/nMDsdB58KNShJBO3HkoL0UQjFtLs20JnfbRjQm3FZMByClsyCcEjq8Wgs1x1c=
+  on:
+    tags: true
+    branch: master
+    condition: $TRAVIS_PYTHON_VERSION == '3.6'

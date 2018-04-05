@@ -3,18 +3,20 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequenceFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 27-Mar-2018
+# @Last modified time: 05-Apr-2018
 
 # Standard Libraries
 
 # External Libraries
+import six
 import pandas as pd
 import numpy as np
 
 # This Library
 from .rsbase import RSBaseFrequency
-from .selection import Selection, SelectionContainer, get_selection
+from .selection import get_selection
 
+__all__ = ["SequenceFrame"]
 
 class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
     """
@@ -87,7 +89,7 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
         :return: True if the object is transposed.
         """
         h = list(self)[0]
-        if isinstance(h, basestring):
+        if isinstance(h, six.string_types):
             return False
         else:
             return True

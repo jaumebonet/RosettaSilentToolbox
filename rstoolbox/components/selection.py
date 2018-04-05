@@ -3,15 +3,18 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 28-Mar-2018
+# @Last modified time: 05-Apr-2018
 
 
 import copy
 from itertools import groupby, count
 import re
 
+import six
 from pandas import Series
 import numpy as np
+
+__all__ = ["Selection", "SelectionContainer", "get_selection"]
 
 
 def get_selection( key_residues, seqID, shift=1, length=None ):
@@ -44,7 +47,7 @@ def get_selection( key_residues, seqID, shift=1, length=None ):
             key_residues = range(1, length + 1)
     if isinstance(key_residues, int):
         key_residues = [int, ]
-    if isinstance(key_residues, (list, np.ndarray, basestring)):
+    if isinstance(key_residues, (list, np.ndarray, six.string_types)):
         key_residues = Selection(key_residues)
     if isinstance(key_residues, SelectionContainer):
         key_residues = key_residues[seqID]
@@ -151,7 +154,7 @@ class Selection( object ):
                 selection = selection.values[0]
             else:
                 selection = list(selection.values)
-        if isinstance(selection, basestring):
+        if isinstance(selection, six.string_types):
             if len(selection) > 0:
                 self._asarr = self._string_to_list(selection)
         elif isinstance(selection, (list, np.ndarray)):
@@ -550,7 +553,7 @@ class Selection( object ):
                 raise KeyError("Cannot compare Selections with different seqID")
             ilen = len(set(self._asarr).intersection(other._asarr))
             return (ilen == len(self)) and (self._revrs == other._revrs)
-        if isinstance(other, (Series, basestring, list)):
+        if isinstance(other, (Series, six.string_types, list)):
             return self == Selection(other)
         raise NotImplementedError
 
@@ -589,7 +592,7 @@ class Selection( object ):
             return s
         if isinstance(other, int):
             return self + Selection([other, ])
-        if isinstance(other, (Series, basestring, list)):
+        if isinstance(other, (Series, six.string_types, list)):
             return self + Selection(other)
         raise NotImplementedError
 
@@ -606,7 +609,7 @@ class Selection( object ):
             return s
         if isinstance(other, int):
             return self + Selection([other, ])
-        if isinstance(other, (Series, basestring, list)):
+        if isinstance(other, (Series, six.string_types, list)):
             return self + Selection(other)
         raise NotImplementedError
 
@@ -624,7 +627,7 @@ class Selection( object ):
 
         if isinstance(other, int):
             return self - Selection([other, ])
-        if isinstance(other, (Series, basestring, list)):
+        if isinstance(other, (Series, six.string_types, list)):
             return self - Selection(other)
         raise NotImplementedError
 
@@ -728,11 +731,21 @@ class SelectionContainer( object ):
     def __iter__( self ):
         return self._content.__iter__()
 
+    def __len__( self ):
+        return len(self._content)
+
     def __cmp__( self, other ):
         if isinstance(other, SelectionContainer):
             return cmp(self._content, other._content)
         else:
             raise NotImplementedError
+
+    def __eq__( self, other ):
+        if isinstance(other, SelectionContainer):
+            return self._content == other._content
+        else:
+            raise NotImplementedError
+
 
     def __str__( self ):
         return ",".join(["{0}:{1}".format(x, self[x]._compressed_str()) for x in sorted(self)])

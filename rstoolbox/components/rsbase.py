@@ -3,12 +3,16 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rsbase.py
 # @Last modified by:   bonet
-# @Last modified time: 27-Mar-2018
+# @Last modified time: 05-Apr-2018
 
 
 import sys
 
+import six
+
 import rstoolbox.utils as ru
+
+__all__ = ["RSBaseDesign", "RSBaseFrequency"]
 
 
 class RSBaseDesign( object ):
@@ -19,7 +23,7 @@ class RSBaseFrequency( object ):
     pass
 
 
-if (sys.version_info > (3, 0)):
+if six.PY3:
     RSBaseDesign.get_id                              = ru.get_id
     RSBaseDesign.get_sequence                        = ru.get_sequence
     RSBaseDesign.get_available_sequences             = ru.get_available_sequences

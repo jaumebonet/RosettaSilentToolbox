@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 19-Mar-2018
+# @Last modified time: 28-Mar-2018
 
 # Standard Libraries
 import itertools
@@ -18,6 +18,9 @@ import numpy as np
 from .rsbase import RSBaseDesign
 from .apply import frame_apply
 import rstoolbox.analysis as ra
+
+
+__all__ = ["DesignSeries", "DesignFrame"]
 
 
 class DesignSeries( pd.Series, RSBaseDesign ):

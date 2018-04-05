@@ -1,2 +1,2 @@
 
-from core_init import *
+from .core_init import *

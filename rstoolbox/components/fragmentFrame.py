@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragmentFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 27-Mar-2018
+# @Last modified time: 28-Mar-2018
 
 # Standard Libraries
 import os
@@ -17,6 +17,8 @@ import numpy as np
 
 # This Library
 import rstoolbox.core as core
+
+__all__ = ["FragmentFrame"]
 
 
 class FragmentFrame( pd.DataFrame ):

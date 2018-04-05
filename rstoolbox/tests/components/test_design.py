@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Mar-2018
+# @Last modified time: 05-Apr-2018
 
 
 import os
@@ -139,7 +139,7 @@ class TestDesign( object ):
             df.get_reference_sequence("A")
 
         # Let's work with an array-type shift
-        ashift = range(1, len(refseq) + 1)
+        ashift = list(range(1, len(refseq) + 1))
         ashift[30:] = list(np.array(ashift[30:]) + 5)
         with pytest.raises(ValueError):
             ashift.index(32)

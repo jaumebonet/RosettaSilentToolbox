@@ -4,10 +4,12 @@
 
 """
 
-__version__ = "0.0.6"
-
 from . import core
 from . import utils
 from . import io
 from . import plot
 from . import analysis
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions

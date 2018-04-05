@@ -3,15 +3,24 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: silent_files.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Mar-2018
+# @Last modified time: 05-Apr-2018
 
-
-import pytest
 
 import os
 
+import six
+import pytest
+
 import rstoolbox.io as ri
 import rstoolbox.components as rc
+
+
+if six.PY3:
+    def cmp(a, b):
+        if a == b:
+            return 0
+        else:
+            return 1
 
 
 class TestReadSilentFiles( object ):

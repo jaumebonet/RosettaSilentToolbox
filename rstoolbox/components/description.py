@@ -3,12 +3,15 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: description.py
 # @Last modified by:   bonet
-# @Last modified time: 01-Mar-2018
+# @Last modified time: 05-Apr-2018
 
 
 import re
 
+import six
 import numpy as np
+
+__all__ = ["Description"]
 
 
 class Description( object ):
@@ -48,7 +51,7 @@ class Description( object ):
                     raise AttributeError("Unknown per-residue score: {}".format(k))
 
         # Fix user input in case strings instead of lists were provided
-        if isinstance(self.scores, basestring) and self.scores not in ["*", "-"]:
+        if isinstance(self.scores, six.string_types) and self.scores not in ["*", "-"]:
             self.scores = self.scores.split(",")
 
         # Negate all scores

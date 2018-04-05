@@ -3,14 +3,14 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: plot.py
 # @Last modified by:   bonet
-# @Last modified time: 16-Mar-2018
+# @Last modified time: 05-Apr-2018
 
 
 import numpy as np
 import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.cm import get_cmap
-
+import six
 
 def add_right_title(ax, title, **kwargs ):
     """
@@ -86,7 +86,7 @@ def add_white_to_cmap( color=None, cmap=None, n_colors=10 ):
             color = sns.color_palette()[int]
         newmap = sns.light_palette(color, n_colors=n_colors - 1)
     elif cmap is not None:
-        if isinstance(cmap, basestring):
+        if isinstance(cmap, six.string_types):
             cmap = get_cmap(cmap)
         newmap = cmap(np.arange(n_colors - 1))
     newmap.insert(0, np.array([1, 1, 1, 1.]))
@@ -111,7 +111,7 @@ def color_variant(color, brightness_offset=1):
 
     if isinstance(color, list) and len(color) == 3:
         color = "#{0:02x}{1:02x}{2:02x}".format(clamp(color[0]), clamp(color[1]), clamp(color[2]))
-    if isinstance(color, basestring) and len(color) == 7:
+    if isinstance(color, six.string_types) and len(color) == 7:
         rgb_hex = [color[x:x + 2] for x in [1, 3, 5]]
         new_rgb_int = [int(hex_value, 16) + brightness_offset for hex_value in rgb_hex]
         # make sure new values are between 0 and 255
