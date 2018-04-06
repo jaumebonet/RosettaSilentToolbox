@@ -98,7 +98,8 @@ intersphinx_mapping = {'python': ('http://docs.python.org/2', None),
                        'numpy': ('http://docs.scipy.org/doc/numpy/', None),
                        'pandas': ('http://pandas.pydata.org/pandas-docs/stable/', None),
                        'matplotlib': ('http://matplotlib.sourceforge.net/', None),
-                       'seaborn': ('https://seaborn.pydata.org/', None)}
+                       'seaborn': ('https://seaborn.pydata.org/', None),
+                       'networkx': ('https://networkx.github.io', None)}
 
 
 # -- Options for HTML output ----------------------------------------------

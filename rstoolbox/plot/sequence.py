@@ -6,6 +6,7 @@ import math
 import pandas as pd
 import numpy as np
 import seaborn as sns
+import networkx as nx
 import matplotlib as mpl
 import matplotlib.patheffects
 import matplotlib.pyplot as plt
@@ -14,7 +15,7 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
 from rstoolbox.analysis import binary_overlap
-from rstoolbox.components import DesignFrame, SequenceFrame, Selection, get_selection
+from rstoolbox.components import DesignFrame, SequenceFrame, get_selection
 from .color_schemes import color_scheme
 
 
@@ -25,6 +26,33 @@ def barcode_plot( df, column_name, ax, color="blue" ):
     ax.xaxis.set_ticks(np.arange(0, len(result) + 1, 10))
     ax.xaxis.set_ticklabels(np.arange(0, len(result) + 1, 10) + 1, rotation=45)
     ax.set_xlabel("sequence")
+
+
+def plot_sequence_frequency_graph( G, ax ):
+    """
+    Given a sequence frequency graph as obtained through
+    :meth:`.FragmentFrame.make_frequency_network` or
+    :meth:`.FragmentFrame.make_per_position_frequency_network`,
+    generate a plot representing the possible transitions between
+    nodes.
+
+    :param G: Sequence frequency graph
+    :type G: :class:`~networkx.DiGraph`
+    :param ax:
+    :type ax: :class:`~matplotlib.axes.Axes`
+
+    """
+    alphabet = "ARNDCQEGHILKMFPSTWYV"
+    all_pos = {}
+    for node, data in G.nodes(data=True):
+        if data['type'] in alphabet:
+            all_pos.setdefault(node, (data['order'], alphabet.index(data['type'])))
+        else:
+            all_pos.setdefault(node, (data['order'], len(alphabet) / 2))
+    nx.draw_networkx(G, ax=ax, pos=all_pos, with_labels=False, arrows=False)
+    ax.set_yticks(range(0, len(alphabet)))
+    ax.set_yticklabels(list(alphabet))
+    ax.set_xlim(G.node["0X"]['order'] - 1, G.node["-1X"]['order'] + 1)
 
 
 def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,

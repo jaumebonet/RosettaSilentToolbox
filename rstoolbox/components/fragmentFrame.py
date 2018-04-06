@@ -3,17 +3,19 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragmentFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 28-Mar-2018
+# @Last modified time: 06-Apr-2018
 
 # Standard Libraries
 import os
 import math
 import sys
 import collections
+import itertools
 
 # External Libraries
 import pandas as pd
 import numpy as np
+import networkx as nx
 
 # This Library
 import rstoolbox.core as core
@@ -174,7 +176,7 @@ class FragmentFrame( pd.DataFrame ):
 
         :return: :class:`~pandas.DataFrame`
         """
-        alphabet  = "ARNDCQEGHILKMFPSTWYV"
+        alphabet = "ARNDCQEGHILKMFPSTWYV"
         baseline = dict.fromkeys(alphabet, 1.0)
         total = sum(baseline.values())
         for k in baseline:
@@ -204,6 +206,96 @@ class FragmentFrame( pd.DataFrame ):
         df.index = range(1, df.shape[0] + 1)
         return df
 
+    def make_per_position_frequency_network( self ):
+        """
+        Generate a :class:`~networkx.DiGraph` in which each node is a residue type and each
+        edge the frequency expected for that residue type in that position according to the
+        frequency matrix. As a matter of fact, the edge is the *inverted frequency*, as the
+        idea is to use the graph to calculate the shortest paths (i.e. the more probable
+        sequences).
+
+        :return: :class:`~networkx.DiGraph` - with as many nodes as the 20 possible amino acids
+            by the length of the sequence.
+        """
+        matrix = self.make_sequence_matrix(frequency=True)
+
+        g = nx.DiGraph()
+
+        for i, row in matrix.iterrows():
+            if i == matrix.iloc[0].name:
+                nterm = ["0X", ]
+            invrow = (1 - row[row > 0])
+            cterm = [str(i) + _ for _ in list(invrow.index)]
+            for n, c in itertools.product(nterm, cterm):
+                g.add_edge(n, c, weight=invrow[c[-1]])
+            nterm = cterm
+        for n in nterm:
+            g.add_edge(n, "-1X", weight=0)
+        return g
+
+    def make_frequency_network( self, use_rmsd=False ):
+        """
+        Generate a :class:`~networkx.DiGraph` n which each node is a residue type and each
+        edge the frequency expected for the transition between residue-type in position i and
+        residue-type in position i+1.
+
+        :param use_rmsd: When :data:`True`, correct the pair counts by the RMSD. Basically,
+            the smaller the RMSD, the more the count weights.
+        :type use_rmsd: :class:`bool`
+
+        :return: :class:`~networkx.DiGraph` - with as many nodes as the 20 possible amino acids
+            by the length of the sequence.
+        """
+        G = nx.DiGraph()
+        min_nodes = []
+        max_nodes = []
+
+        def window(seq, n=2):
+            it = iter(seq)
+            result = tuple(itertools.islice(it, n))
+            if len(result) == n:
+                yield result
+            for elem in it:
+                result = result[1:] + (elem,)
+                yield result
+
+        data = {}
+        for tp, df in self.groupby(["frame", "neighbor"]):
+            transitions = list(window(list(df["position"].unique())))
+            rmsd = self[self["frame"] == tp[0]]["rmsd"].max() - df["rmsd"].values[0]
+            rmsd = int(rmsd * 100)
+            for tr in transitions:
+                n = df[df["position"] == tr[0]]["aa"].values[0]
+                c = df[df["position"] == tr[1]]["aa"].values[0]
+                if use_rmsd:
+                    data.setdefault(tr[0], []).extend([(n, c), ] * rmsd)
+                else:
+                    data.setdefault(tr[0], []).append((n, c))
+
+        for k in data:
+            options = len(data[k])
+            data[k] = collections.Counter(data[k])
+            options = data[k].most_common(1)[0][1]
+            for p in data[k]:
+                n = str(k) + p[0]
+                G.add_node(n, order=k, type=p[0])
+                c = str(k + 1) + p[1]
+                G.add_node(c, order=k + 1, type=p[1])
+                G.add_edge(n, c, weight=(options - data[k][p]) / options)
+                if k == min(data):
+                    min_nodes.append(n)
+                if k == max(data):
+                    max_nodes.append(c)
+
+        for node in min_nodes:
+            G.add_node("0X", order=0, type="X")
+            G.add_edge("0X", node, weight=0)
+        for node in max_nodes:
+            G.add_node("-1X", order=max(data) + 2, type="X")
+            G.add_edge(node, "-1X", weight=0)
+
+        return G
+
     def quick_consensus_sequence( self ):
         """
         Generate a consensus sequence as the most common representative for each position.
@@ -230,7 +322,7 @@ class FragmentFrame( pd.DataFrame ):
         :raises: ValueError if the other DataFrame is not a :py:class:`.FragmentFrame`
         """
         # We assume none of the two are crunched
-        if not "_anglesAll" in self:
+        if "_anglesAll" not in self:
             assert self.is_comparable(df), "The two sets cannot be compared."
             assert isinstance(df, FragmentFrame), "Compare must be done between FragmentFrames."
             return self._crunch("angles").angle_coverage(df._crunch("angles"), threshold)
@@ -263,7 +355,8 @@ class FragmentFrame( pd.DataFrame ):
         :return: The crunched :py:class:`.FragmentFrame`.
         """
         df = self.copy()
-        if what in self._crunched: return self._crunched[what]
+        if what in self._crunched:
+            return self._crunched[what]
         if what.lower() == "angles":
             df["_anglesAll"] = df.apply(lambda row: list(row[["phi", "psi", "omega"]]), axis=1)
             df = df.drop(["phi", "psi", "omega"], axis=1)
