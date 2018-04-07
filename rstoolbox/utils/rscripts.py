@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rscripts.py
 # @Last modified by:   bonet
-# @Last modified time: 26-Mar-2018
+# @Last modified time: 06-Apr-2018
 
 
 import textwrap
@@ -26,7 +26,7 @@ def baseline():
     return textwrap.dedent("""\
     <ROSETTASCRIPTS>
         <MOVERS>
-            <WriteSSEMover dssp="1" name="w" />
+            <WriteSSEMover dssp="1" name="w" write_phipsi="true" />
         </MOVERS>
         <PROTOCOLS>
             <Add mover="w" />

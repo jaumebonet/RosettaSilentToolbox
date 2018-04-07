@@ -38,7 +38,7 @@ def plot_sequence_frequency_graph( G, ax ):
 
     :param G: Sequence frequency graph
     :type G: :class:`~networkx.DiGraph`
-    :param ax:
+    :param ax: Where to plot the network.
     :type ax: :class:`~matplotlib.axes.Axes`
 
     """
