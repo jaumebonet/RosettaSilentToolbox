@@ -54,3 +54,27 @@ class TestFragments( object ):
         plot_fragment_profiles(fig, df3, df9, consensus_seq, consensus_sse)
         plt.tight_layout()
         return fig
+
+    def test_frequency_matrices_and_networks( self ):
+        df3 = parse_rosetta_fragments(self.frag3)
+        df9 = parse_rosetta_fragments(self.frag9)
+        # auto-load
+        df3 = df3.add_quality_measure(None)
+        # load target quality file
+        df9 = df9.add_quality_measure(self.frag9q)
+
+        matrix = df9.select_quantile(0.1).make_sequence_matrix(frequency=True)
+        G = df9.select_quantile(0.1).make_per_position_frequency_network()
+
+        assert matrix.shape == (58, 20)
+
+        value = 1 - G.get_edge_data("0X", "1A")['weight']
+        assert matrix["A"].values[0] == pytest.approx(value)
+
+        n = 6
+        target = str(n + 1) + "R"
+        for aa in list("ARNDCQEGHILKMFPSTWYV"):
+            origin = str(n) + aa
+            if origin in G:
+                value = 1 - G.get_edge_data(origin, target)['weight']
+                assert matrix["R"].values[n] == pytest.approx(value)
