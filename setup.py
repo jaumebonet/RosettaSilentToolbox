@@ -51,7 +51,7 @@ setup(
 
     install_requires=['pandas', 'pyyaml', 'seaborn', 'libconfig', 'six', 'networkx'],
 
-    packages=find_packages(['rstoolbox'], exclude=['docs', 'demo']),
+    packages=find_packages(exclude=['docs', 'demo']),
     include_package_data=True,
     package_data={
         'rstoolbox': ['analysis/matrices/*']
