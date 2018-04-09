@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 27-Mar-2018
+# @Last modified time: 07-Apr-2018
 
 
 import os
@@ -186,4 +186,4 @@ def write_fasta( df, seqID, separator=None, filename=None, split=False ):
                 fd.write(sequence + "\n")
                 fd.close()
     else:
-        return "\n".join(data)
+        return "\n".join(data).strip() + "\n"

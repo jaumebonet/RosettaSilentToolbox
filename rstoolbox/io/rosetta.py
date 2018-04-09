@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rosetta.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 09-Apr-2018
 
 
 import os
@@ -392,6 +392,7 @@ def parse_rosetta_fragments( filename ):
     was_space = False
     fd = gzip.open( filename ) if filename.endswith(".gz") else open( filename )
     for line in fd:
+        line = line.decode('utf8')
         line = line.strip()
         if line == "":
             fpos = int(fframe)

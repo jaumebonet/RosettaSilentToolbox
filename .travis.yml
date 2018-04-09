@@ -2,6 +2,12 @@ language: python
 
 sudo: false
 
+# safelist
+branches:
+  only:
+  - master
+  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
+
 matrix:
   include:
     - python: 2.7
@@ -17,12 +23,14 @@ matrix:
         - pwd
         - coveralls --data_file rstoolbox/tests/.coverage
         - bash <(curl -s https://codecov.io/bash) -Z -c -f /tmp/cov-single.xml
+        - python-codacy-coverage -r /tmp/cov-single.xml
 
 install:
   - pip install tox
   - if [[ $TOXENV == py36 ]]; then pip install pyyaml; fi
   - if [[ $TOXENV == py36 ]]; then pip install coveralls; fi
   - if [[ $TOXENV == py36 ]]; then pip install python-coveralls; fi
+  - if [[ $TOXENV == py36 ]]; then pip install codacy-coverage; fi
 
 script:
   - tox

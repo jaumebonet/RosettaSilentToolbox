@@ -3,14 +3,16 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: silent_files.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 07-Apr-2018
 
-
+# Standard Libraries
 import os
 
+# External Libraries
 import six
 import pytest
 
+# This Library
 import rstoolbox.io as ri
 import rstoolbox.components as rc
 
