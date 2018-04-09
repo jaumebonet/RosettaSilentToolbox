@@ -5,6 +5,7 @@ tox>=3.0
 coverage
 coveralls
 python-coveralls
+codacy-coverage
 
 sphinx
 sphinx_bootstrap_theme<=0.6
