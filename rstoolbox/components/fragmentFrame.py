@@ -74,7 +74,8 @@ class FragmentFrame( pd.DataFrame ):
         Evaluate if the current :py:class:`.FragmentFrame` is comparable to
         the provided one. This is checked on terms of (a) covered sequence
         length -range- and (2) fragment size.
-        :return: True if the two :py:class:`.FragmentFrame` are comparable.
+
+        :return: True if the two :class:`.FragmentFrame` are comparable.
         """
         if max(self["position"]) != max(df["position"]):
             return False

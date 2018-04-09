@@ -31,8 +31,6 @@ class TestFragments( object ):
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_fragment_profiles.png')
-    # @image_comparison(baseline_images=['plot_fragment_profiles'],
-    #                   extensions=['png'])
     def test_quality_plot( self ):
         df3 = parse_rosetta_fragments(self.frag3)
         df9 = parse_rosetta_fragments(self.frag9)
@@ -40,6 +38,8 @@ class TestFragments( object ):
         df3 = df3.add_quality_measure(None)
         # load target quality file
         df9 = df9.add_quality_measure(self.frag9q)
+
+        assert df3.is_comparable(df9) is False
 
         assert 'rmsd' in df3
         assert 'rmsd' in df9
@@ -63,10 +63,15 @@ class TestFragments( object ):
         # load target quality file
         df9 = df9.add_quality_measure(self.frag9q)
 
+        matrix = df3.select_quantile(0.1).make_sequence_matrix()
+        assert matrix.min().min() == -9
+
         matrix = df9.select_quantile(0.1).make_sequence_matrix(frequency=True)
         G = df9.select_quantile(0.1).make_per_position_frequency_network()
+        Gf = df9.select_quantile(0.1).make_frequency_network()
 
         assert matrix.shape == (58, 20)
+        assert G.number_of_edges() > Gf.number_of_edges()
 
         value = 1 - G.get_edge_data("0X", "1A")['weight']
         assert matrix["A"].values[0] == pytest.approx(value)
