@@ -5,8 +5,8 @@ sudo: false
 # safelist
 branches:
   only:
-  - master
-  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
+    - master
+    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 
 matrix:
   include:
@@ -22,8 +22,8 @@ matrix:
       after_success:
         - pwd
         - coveralls --data_file rstoolbox/tests/.coverage
-        - bash <(curl -s https://codecov.io/bash) -Z -c -f /tmp/cov-single.xml
         - python-codacy-coverage -r /tmp/cov-single.xml
+        - bash <(curl -s https://codecov.io/bash) -Z -c -f /tmp/cov-single.xml
 
 install:
   - pip install tox
