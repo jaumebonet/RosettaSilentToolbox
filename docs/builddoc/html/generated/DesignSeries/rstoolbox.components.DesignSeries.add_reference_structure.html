@@ -134,9 +134,11 @@
 <tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">If the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>
 or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">If the data container does not contain structure data for the given seqID.</td>
+<tr class="field-even field"><th class="field-name">ValueError:</th><td class="field-body">If <code class="docutils literal notranslate"><span class="pre">sequence</span></code> is not a <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">IndexError:</th><td class="field-body">If a reference sequence exists and structure length do not match</td>
+<tr class="field-odd field"><th class="field-name">KeyError:</th><td class="field-body">If the data container does not contain structure data for the given seqID.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">IndexError:</th><td class="field-body">If a reference sequence exists and structure length do not match</td>
 </tr>
 </tbody>
 </table>
@@ -165,7 +167,7 @@ or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stab
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>

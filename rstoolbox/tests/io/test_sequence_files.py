@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_read_sequence_files.py
 # @Last modified by:   bonet
-# @Last modified time: 07-Apr-2018
+# @Last modified time: 09-Apr-2018
 
 
 # Standard Libraries

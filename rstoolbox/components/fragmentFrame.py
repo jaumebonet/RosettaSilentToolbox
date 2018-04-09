@@ -3,13 +3,13 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragmentFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 06-Apr-2018
+# @Last modified time: 09-Apr-2018
 
 # Standard Libraries
 import os
 import math
 import sys
-import collections
+from collections import Counter
 import itertools
 
 # External Libraries
@@ -184,7 +184,7 @@ class FragmentFrame( pd.DataFrame ):
 
         matrix = {}
         for i in range(1, max(self["position"].values) + 1):
-            qseq = collections.Counter(self[self["position"] == i]["aa"].values)
+            qseq = Counter(self[self["position"] == i]["aa"].values)
             qttl = sum(qseq.values(), 0.0)
             for k in qseq:
                 qseq[k] /= qttl
@@ -274,7 +274,7 @@ class FragmentFrame( pd.DataFrame ):
 
         for k in data:
             options = len(data[k])
-            data[k] = collections.Counter(data[k])
+            data[k] = Counter(data[k])
             options = data[k].most_common(1)[0][1]
             for p in data[k]:
                 n = str(k) + p[0]
@@ -304,7 +304,22 @@ class FragmentFrame( pd.DataFrame ):
         """
         consensus = []
         for i in range(1, max(self["position"].values) + 1):
-            qseq = collections.Counter(self[self["position"] == i]["aa"].values).most_common(1)[0]
+            values = self[self["position"] == i]["aa"].values
+            qseq = sorted(Counter(values).most_common(), key=lambda x: (-x[1], x[0]))[0]
+            consensus.append(qseq[0])
+        return "".join(consensus)
+
+    def quick_consensus_secondary_structure( self ):
+        """
+        Generate a consensus secondary structure as the most common representative for each
+        position.
+
+        :return: :class:`str` - consensus secondary structure
+        """
+        consensus = []
+        for i in range(1, max(self["position"].values) + 1):
+            values = self[self["position"] == i]["sse"].values
+            qseq = sorted(Counter(values).most_common(), key=lambda x: (-x[1], x[0]))[0]
             consensus.append(qseq[0])
         return "".join(consensus)
 

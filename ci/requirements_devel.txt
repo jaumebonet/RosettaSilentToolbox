@@ -1,0 +1,10 @@
+pytest>=3.5
+pytest-cov>=2.5
+pytest-mpl>=0.9
+tox>=3.0
+coverage
+coveralls
+python-coveralls
+
+sphinx
+sphinx_bootstrap_theme<=0.6

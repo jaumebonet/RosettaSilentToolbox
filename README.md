@@ -1,2 +1,4 @@
 # RosettaSilentToolbox
+[![Build Status](https://travis-ci.org/jaumebonet/RosettaSilentToolbox.svg?branch=master)](https://travis-ci.org/jaumebonet/RosettaSilentToolbox) [![Code Health](https://landscape.io/github/jaumebonet/RosettaSilentToolbox/master/landscape.svg?style=flat)](https://landscape.io/github/jaumebonet/RosettaSilentToolbox/master) [![Coverage Status](https://coveralls.io/repos/github/jaumebonet/RosettaSilentToolbox/badge.svg?branch=master)](https://coveralls.io/github/jaumebonet/RosettaSilentToolbox?branch=master) [![codecov](https://codecov.io/gh/jaumebonet/RosettaSilentToolbox/branch/master/graph/badge.svg)](https://codecov.io/gh/jaumebonet/RosettaSilentToolbox) [![Python Versions](https://img.shields.io/pypi/pyversions/rstoolbox.svg)](https://pypi.org/project/rstoolbox/)
+
 Python Toolbox For Rosetta Silent Files Processing
