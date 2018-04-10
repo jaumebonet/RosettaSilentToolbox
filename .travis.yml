@@ -1,46 +1,39 @@
 language: python
-
 sudo: false
-
-# safelist
 branches:
   only:
-    - master
-    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
-
+  - master
+  - "/^v\\d+\\.\\d+(\\.\\d+)?(-\\S*)?$/"
 matrix:
   include:
-    - python: 2.7
-      env: TOXENV=py27
-      os: linux
-    - python: 3.5
-      env: TOXENV=py35
-      os: linux
-    - python: 3.6
-      env: TOXENV=py36
-      os: linux
-      after_success:
-        - pwd
-        - coveralls --data_file rstoolbox/tests/.coverage
-        - python-codacy-coverage -r /tmp/cov-single.xml
-        - bash <(curl -s https://codecov.io/bash) -Z -c -f /tmp/cov-single.xml
-
+  - python: 2.7
+    env: TOXENV=py27
+    os: linux
+  - python: 3.5
+    env: TOXENV=py35
+    os: linux
+  - python: 3.6
+    env: TOXENV=py36
+    os: linux
+    after_success:
+    - pwd
+    - coveralls --data_file rstoolbox/tests/.coverage
+    - python-codacy-coverage -r /tmp/cov-single.xml
+    - bash <(curl -s https://codecov.io/bash) -Z -c -f /tmp/cov-single.xml
 install:
-  - pip install tox
-  - if [[ $TOXENV == py36 ]]; then pip install pyyaml; fi
-  - if [[ $TOXENV == py36 ]]; then pip install coveralls; fi
-  - if [[ $TOXENV == py36 ]]; then pip install python-coveralls; fi
-  - if [[ $TOXENV == py36 ]]; then pip install codacy-coverage; fi
-
+- pip install tox
+- if [[ $TOXENV == py36 ]]; then pip install pyyaml; fi
+- if [[ $TOXENV == py36 ]]; then pip install coveralls; fi
+- if [[ $TOXENV == py36 ]]; then pip install python-coveralls; fi
+- if [[ $TOXENV == py36 ]]; then pip install codacy-coverage; fi
 script:
-  - tox
-
+- tox
 deploy:
   provider: pypi
   user: jaume.bonet
   password:
-    secure: hlUJmB4R5XnNYVtpORm5iZuvgy95MBKCyhRGoSQX/I5wOsDkoiXImOgZy5qpcPENKePSyOsdEXqj78/G9ChPuPuTF+vSszO2kjLoESks4UvGmL38MhrssH9/IiEB61/F3b0MSadpIQYXoR990DwlFmqC6lBcG8tBw9AHxfYBnYQeov6MyuBlnq9+QneVLXIU5/p1b8cocO9U5Ge2C63hVaXR2C6pNRPCY0w7K8xLRNbFLzm5a9/Xa9EdNfBHH5PW4JpLl629mQeMsKV0XWFK5mnJRqfS9C+ZeUGBGt6Q1pdGzcpd7FCgeO1fIbh0G9viEhmQ0BxuFiUnVyFIRb7EUVSzaJ7Ok1jUhvn0K2f5TfCTjoXynkfkcnTw+9IaP3Ri3VerWye88AVQk4ogIZJuFbc2C/GaVUFyXAhpPeT7ho0vn5q7r6NvCf9FxJtMy3aUudI3rjzopqjTGQYXylLyoWJx5R9/+r6NZNg7VlWNgsrI4RXg4XQ39qC9W9PGk+IEucx3pqCGBT0WqX+nqlsvoFXDdQo43VJ4EJSBeCKQjSHxVJ1w94/Sg45z8qA4Vtwg6Oh3nz2ogjyaKNWNf3lcZRuXwGTrU/GV3HOcR4IhOLyxB/nMDsdB58KNShJBO3HkoL0UQjFtLs20JnfbRjQm3FZMByClsyCcEjq8Wgs1x1c=
+    secure: Mc0ZDv9HKLAqFneaDU6xknIXnXY+aojY8VOyEEPu93fHABSxjvlkgcoggJHL8y5bag34caWoIGixFI4/slfuf+PUJNLIgm6AqgXpxKsU+gtXwQnEFwKLw65fLz0bCP5GPfPPeH811ZknD5AAw/e8tBYTI81EGh5TM/Y8OBtma4VgU8OrWbNX5gqxxHik/BAZZZh2bDRWq7syMBt5uUvw7rvx7ArDANWjXYcPwPoqVf5D+LY9P6lUBXDPes2lA7D2mk0ids2KojZLT4hI6U2+FwykRbdO7cMxrMYgVgs/oqpsr7tYkZeY16+56mJbt41V7/ofUNndJuaTPcjgLoaN2Ffi4DN7OvMC/CIOR2zyM/fU6SRBaHkT4KQuTMwUq2sw2BTUDMXSsYbn+fh8gc7Pq0EZ1OfDr8fdJRZL6LuwChjrinIh9gjSrZI21Wf1hSx/qwopG8WIl/CP8DXPzC/L2UKKlSBW5Squ5eHOzYRlWedeBxoky9nNCw8ryvzMiWGh36ZgCWT4QK0jWsYI28FIBf2sTyYqqTVimvpWwSVapgO2ZgKaH+tcn+ru2RKARHJBm1W7QVsOIsLop9GRsYwx7o1DsiLFM30r7AzbHpFWcTBzqQ33mdBi/7/bvhz/ExTOqbdEo7FFp1jzFW02DltHy8zBZp6s57bryDETTJT20bc=
   on:
     tags: true
     branch: master
-    condition: $TRAVIS_PYTHON_VERSION == '3.6'
+    condition: "$TRAVIS_PYTHON_VERSION == '3.6'"
