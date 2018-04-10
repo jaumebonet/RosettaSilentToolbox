@@ -1,6 +1,6 @@
 ---
 exclude_paths:
-  - "*/tests/*"
+  - "rstoolbox/tests/**"
   - "*/_version.py"
   - "versioneer.py"
   - "docs/**"
