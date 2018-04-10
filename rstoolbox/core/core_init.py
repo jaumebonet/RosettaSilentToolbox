@@ -60,19 +60,43 @@ any of these options will be tagged with:
 .. note::
     Depends on ``option_class.option_id``.
 
-Currently available options are:
+Currently available options
+---------------------------
 
 {options_table}
 
 There are two ways of altering the values of these global options:
 
-#. **In code**, one can alter them by calling :func:`~libconfig.set_option` or \
-    by providing a configuration file with :func:`~libconfig.set_options_from_YAML` \
-    or :func:`~libconfig.set_options_from_JSON`.
+In Code
+-------
 
-#. **Globally**, after the first execution of the library a configuration file \
-    ``~/.rstoolbox.cfg`` should have been created. This file can be edited to fill \
-     the particular needs of the user.
+This approach can be taken during the development of a script. Has the advantages that:
+
+#. Allows to change the values of the global variables at different points of the script.
+#. Global option changes are visible for anyone checking the script.
+#. Transferred script will behave in the same manner.
+
+On code changes can be called through :func:`~libconfig.set_option` to target individual
+options or by loading an option file with :func:`~libconfig.set_options_from_YAML`
+or :func:`~libconfig.set_options_from_JSON`. In these to cases, being ``yaml`` or ``json`` format,
+the structure is of a dictionary of dictionaries, being ``option_class`` the first level of keys
+and ``option_id`` the second.
+
+Full description of all the functions that allow access to the global variables can be find
+in the  `libconfig API <http://jaumebonet.cat/libconfig/api.html>`_
+
+Globally
+--------
+
+After the first execution of ``rstoolbox``, a configuration file ``~/.rstoolbox.cfg`` is generated
+in the user's home folder.
+
+Everytime the library is loaded after that, it checks on that file to see the user's particular
+configuration. Thus, by changing the default parameters in that file, the user can set up
+global configurations.
+
+Logically, this might change some behaviour between different users, but excludes the need of set up
+some options (like executable paths) every time.
 """.format(
     options_table=document_options()
 )
