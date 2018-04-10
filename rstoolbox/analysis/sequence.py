@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 09-Apr-2018
 
 import copy
 import collections
@@ -67,10 +67,10 @@ def _sequence_similarity( qseq, rseq, matrix ):
     assert len(qseq) == len(rseq)
     raw, idn, pos, neg = 0, 0, 0, 0
     ali = []
-    for i in range(len(qseq)):
-        sc = matrix.get_value(qseq[i], rseq[i])
+    for i, qseqi in enumerate(qseq):
+        sc = matrix.get_value(qseqi, rseq[i])
         raw += sc
-        if qseq[i] == rseq[i]:
+        if qseqi == rseq[i]:
             idn += 1
             pos += 1
             ali.append(rseq[i])

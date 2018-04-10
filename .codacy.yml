@@ -1,6 +1,6 @@
 ---
 exclude_paths:
-  - "libconfig/tests/*"
+  - "*/tests/*"
   - "*/_version.py"
   - "versioneer.py"
   - "docs/**"
