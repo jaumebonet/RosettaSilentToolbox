@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: reference.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 10-Apr-2018
 
 import copy
 import warnings
@@ -88,8 +88,8 @@ def add_reference_sequence( self, seqID, sequence ):
         raise ValueError("Reference sequence must be a string.")
 
     if seqID in self._reference:
-        str = len(self._reference[seqID]["str"])
-        if str > 0 and len(sequence) != str:
+        seq = len(self._reference[seqID]["str"])
+        if seq > 0 and len(sequence) != seq:
             raise IndexError("Structure length do not match sequence length")
         self._reference[seqID]["seq"] = sequence
     else:

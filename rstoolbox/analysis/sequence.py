@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 09-Apr-2018
+# @Last modified time: 10-Apr-2018
 
 import copy
 import collections
@@ -17,12 +17,16 @@ from .SimilarityMatrix import SimilarityMatrix as SM
 def _get_sequential_table( seqType ):
     """
     Generates the table to fill sequence data in order to create
-    a :py:class:`.SequenceFrame`
+    a :class:`.SequenceFrame`
 
-    :param seqType: Type of sequence: protein, protein_sse, dna, rna.
-    :type seqType: :py:class:`str`
-    :return: dict
-    :raise ValueError: If seqType is not known
+    :param seqType: Type of sequence: ``protein``, ``protein_sse``,
+        ``dna``, ``rna``.
+    :type seqType: :class:`str`
+
+    :return: :class:`dict`
+
+    :raise:
+        :ValueError: If ``seqType`` is not known.
     """
     table = {}
     extra = []
@@ -64,7 +68,8 @@ def _get_sequential_table( seqType ):
 
 
 def _sequence_similarity( qseq, rseq, matrix ):
-    assert len(qseq) == len(rseq)
+    if len(qseq) == len(rseq):
+        raise ValueError("Comparable sequences have to be the same size.")
     raw, idn, pos, neg = 0, 0, 0, 0
     ali = []
     for i, qseqi in enumerate(qseq):
@@ -85,10 +90,10 @@ def _sequence_similarity( qseq, rseq, matrix ):
 
 def _positional_similarity( qseq, rseq, matrix ):
     raw, idn, pos, neg = 0, 0, 0, 0
-    for i in range(len(qseq)):
-        sc = matrix.get_value(qseq[i], rseq)
+    for i, qseqi in enumerate(qseq):
+        sc = matrix.get_value(qseqi, rseq)
         raw += sc
-        if qseq[i] == rseq:
+        if qseqi == rseq:
             idn += 1
         if sc > 0:
             pos += 1
@@ -295,14 +300,14 @@ def _extract_key_residue_sequence( seq, key_residues=None ):
     return tmp_seq
 
 
-def _calculate_linear_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
-    score = 0
-    qseq = _extract_key_residue_sequence( qseq, key_residues )
-    rseq = _extract_key_residue_sequence( rseq, key_residues )
-    assert len(qseq) == len(rseq)
-    for i in range(len(qseq)):
-        score += matrix.get_value(qseq[i], rseq[i])
-    return score
+# def _calculate_linear_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
+#     score = 0
+#     qseq = _extract_key_residue_sequence( qseq, key_residues )
+#     rseq = _extract_key_residue_sequence( rseq, key_residues )
+#     assert len(qseq) == len(rseq)
+#     for i in range(len(qseq)):
+#         score += matrix.get_value(qseq[i], rseq[i])
+#     return score
 
 
 def _calculate_binary_sequence_similarity( qseq, rseq, matrix, key_residues=None ):

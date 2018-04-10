@@ -1,0 +1,9 @@
+v0.0.6 (April 2018)
+-------------------
+
+#. First version of the **documentation**.
+#. Generate frequency and pssm matrix from :class:`.FragmentFrame`.
+#. Generate sequence transition networks for the frequency matrices.
+#. Fixed LOGO plot and added multi-line option.
+#. Labels are read as :class:`.Selection`.
+#. Write FASTA can generate multiple individual files.

@@ -44,7 +44,31 @@ try:
     for name in ["register_option", "reset_options"]:
         del globals()[name]
 
-except Exception:
+except KeyError:
     # This avoids recalling this every time, as register_option will raise an error when
     # trying to re-register. Basically, this is the equivalent to Cpp's #IFDEF
     pass
+
+__doc__ = """
+Global options are available to configure some of the library behaviour. Functions that depend on
+any of these options will be tagged with:
+
+.. note::
+    Depends on ``option_class.option_id``.
+
+Currently available options are:
+
+{options_table}
+
+There are two ways of altering the values of these global options:
+
+#. **In code**, one can alter them by calling :func:`~libconfig.set_option` or \
+    by providing a configuration file with :func:`~libconfig.set_options_from_YAML` \
+    or :func:`~libconfig.set_options_from_JSON`.
+
+#. **Globally**, after the first execution of the library a configuration file \
+    ``~/.rstoolbox.cfg`` should have been created. This file can be edited to fill \
+     the particular needs of the user.
+""".format(
+    options_table=document_options()
+)

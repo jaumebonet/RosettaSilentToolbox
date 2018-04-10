@@ -46,12 +46,18 @@ setup(
         'Topic :: Scientific/Engineering :: Visualization',
     ],
 
+    project_urls={
+        'Documentation': 'http://jaumebonet.cat/RosettaSilentToolbox',
+        'Source': 'https://github.com/jaumebonet/RosettaSilentToolbox/',
+        'Tracker': 'https://github.com/jaumebonet/RosettaSilentToolbox/issues',
+    },
+
     platforms='UNIX',
     keywords='development',
 
     install_requires=['pandas', 'pyyaml', 'seaborn', 'libconfig', 'six', 'networkx'],
 
-    packages=find_packages(exclude=['docs', 'demo']),
+    packages=find_packages(exclude=['docs', 'demo', 'sphinx-docs']),
     include_package_data=True,
     package_data={
         'rstoolbox': ['analysis/matrices/*']
