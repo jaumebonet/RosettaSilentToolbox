@@ -310,6 +310,8 @@ def generate_wt_reversions( self, seqID=None ):
 
     :return: :class:`.DesignFrame`
     """
+    # @TODO: pick residues to revert
+    # @BODY: limit the positions that will be considered for reversion
     def format_mutations( mutations ):
         mutations = mutations.split(",")
         muts = []
