@@ -86,16 +86,25 @@ def get_mutation_count( self, seqID ):
 
 def identify_mutants( self, seqID ):
     """
-    Checks the sequence in column sequence_<seqID> againts the reference_sequence.
-    Adds to the container two new columns: mutants_<seqID>, which lists
-    the mutations of the particular decoy vs. the reference_sequence, mutant_positions_<seqID>
-    just with those same positions and mutant_count_<seqID> with the count of the number of
-    mutations. Reference and design sequence must be of the same length.
+    Checks the sequence in column ``sequence_<seqID>`` againts the ``reference_sequence``.
+
+    Adds to the container two new columns:
+
+    ============================  ===========================================================
+    Column                                                Data Content
+    ============================  ===========================================================
+    **mutants_<seqID>**           Lists the **mutations** of the particular decoy
+    **mutant_positions_<seqID>**  Lists the **positions** of mutations in the particular decoy
+    **mutant_count_<seqID>**      **Count** of the number of mutations
+    ============================  ===========================================================
+
+    Reference and design sequence must be of the same length.
 
     :param seqID: Identifier of the sequence of interest.
-    :type seqID: py:class:`str`
+    :type seqID: :class:`str`
 
-    :return: Changes the container and returns it
+    :return: Union[:class:`.DesignSeries`, :class:`.DesignFrame`] -
+        a copy of the data container with the new columns.
 
     :raise:
         :ValueError: If length of ``reference sequence`` and decoy are not the same.
@@ -116,15 +125,16 @@ def identify_mutants( self, seqID ):
     mutants = "mutants_{0}".format(seqID)
     mposits = "mutant_positions_{0}".format(seqID)
     mcounts = "mutant_count_{0}".format(seqID)
+    df = self.copy()
     if isinstance(self, pd.DataFrame):
-        self[[mutants, mposits, mcounts]] = self.apply(
+        df[[mutants, mposits, mcounts]] = df.apply(
             lambda row: mutations(refseq, row.get_sequence(seqID), shift),
             axis=1, result_type="expand" )
-    elif isinstance(self, pd.Series):
-        a, b, c = mutations(refseq, self.get_sequence(seqID), shift)
-        self[mutants], self[mposits], self[mcounts] = a, b, c
+    elif isinstance(df, pd.Series):
+        a, b, c = mutations(refseq, df.get_sequence(seqID), shift)
+        df[mutants], df[mposits], df[mcounts] = a, b, c
 
-    return self
+    return df
 
 
 def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):

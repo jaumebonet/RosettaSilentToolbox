@@ -81,7 +81,9 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">rstoolbox.components.DesignFrame</a></li>
+<li><a class="reference internal" href="#">rstoolbox.components.DesignFrame</a><ul>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -165,38 +167,104 @@ of the library depend on them.</p>
 <tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.delete_reference.html#rstoolbox.components.DesignFrame.delete_reference" title="rstoolbox.components.DesignFrame.delete_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_reference</span></code></a>(seqID[,&nbsp;shift_labels])</td>
 <td>Remove all reference data regarding a particular seqID.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.generate_mutant_variants.html#rstoolbox.components.DesignFrame.generate_mutant_variants" title="rstoolbox.components.DesignFrame.generate_mutant_variants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_mutant_variants</span></code></a>(seqID,&nbsp;mutations[,&nbsp;…])</td>
-<td>Expands the selected sequences by ensuring that all the provided mutant combinations.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.generate_mutants_from_matrix.html#rstoolbox.components.DesignFrame.generate_mutants_from_matrix" title="rstoolbox.components.DesignFrame.generate_mutants_from_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_mutants_from_matrix</span></code></a>(seqID,&nbsp;matrix,&nbsp;…)</td>
-<td>From a provided positional frequency matrix, generates <code class="docutils literal notranslate"><span class="pre">count</span></code> random variants.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.generate_wt_reversions.html#rstoolbox.components.DesignFrame.generate_wt_reversions" title="rstoolbox.components.DesignFrame.generate_wt_reversions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_wt_reversions</span></code></a>([seqID])</td>
-<td>Expand the selected sequences by generating all the combinatorial options to revert to the reference (WT) sequence.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_available_labels.html#rstoolbox.components.DesignFrame.get_available_labels" title="rstoolbox.components.DesignFrame.get_available_labels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_labels</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_available_labels.html#rstoolbox.components.DesignFrame.get_available_labels" title="rstoolbox.components.DesignFrame.get_available_labels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_labels</span></code></a>()</td>
 <td>List which slabels are available in the data container.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_available_references.html#rstoolbox.components.DesignFrame.get_available_references" title="rstoolbox.components.DesignFrame.get_available_references"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_references</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_available_references.html#rstoolbox.components.DesignFrame.get_available_references" title="rstoolbox.components.DesignFrame.get_available_references"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_references</span></code></a>()</td>
 <td>Identify for which seqIDs there is some reference data.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_available_sequences.html#rstoolbox.components.DesignFrame.get_available_sequences" title="rstoolbox.components.DesignFrame.get_available_sequences"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_sequences</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_available_sequences.html#rstoolbox.components.DesignFrame.get_available_sequences" title="rstoolbox.components.DesignFrame.get_available_sequences"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_sequences</span></code></a>()</td>
 <td>List which sequence identifiers are available in the data container</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_available_structure_predictions.html#rstoolbox.components.DesignFrame.get_available_structure_predictions" title="rstoolbox.components.DesignFrame.get_available_structure_predictions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_structure_predictions</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_available_structure_predictions.html#rstoolbox.components.DesignFrame.get_available_structure_predictions" title="rstoolbox.components.DesignFrame.get_available_structure_predictions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_structure_predictions</span></code></a>()</td>
 <td>List which structure prediction identifiers are available in the data container</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_available_structures.html#rstoolbox.components.DesignFrame.get_available_structures" title="rstoolbox.components.DesignFrame.get_available_structures"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_structures</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_available_structures.html#rstoolbox.components.DesignFrame.get_available_structures" title="rstoolbox.components.DesignFrame.get_available_structures"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_structures</span></code></a>()</td>
 <td>List which structure identifiers are available in the data container</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_id.html#rstoolbox.components.DesignFrame.get_id" title="rstoolbox.components.DesignFrame.get_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_id</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_id.html#rstoolbox.components.DesignFrame.get_id" title="rstoolbox.components.DesignFrame.get_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_id</span></code></a>()</td>
 <td>Return identifier data for the design(s).</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_identified_mutants.html#rstoolbox.components.DesignFrame.get_identified_mutants" title="rstoolbox.components.DesignFrame.get_identified_mutants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_identified_mutants</span></code></a>()</td>
-<td>List for which sequence identifiers mutants have been calculated</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_label.html#rstoolbox.components.DesignFrame.get_label" title="rstoolbox.components.DesignFrame.get_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_label</span></code></a>(label[,&nbsp;seqID])</td>
 <td>Return the content(s) of the labels of interest.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_reference_sequence.html#rstoolbox.components.DesignFrame.get_reference_sequence" title="rstoolbox.components.DesignFrame.get_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_sequence</span></code></a>(seqID[,&nbsp;key_residues])</td>
+<td>Get a reference sequence attached to a particular sequence ID.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_reference_shift.html#rstoolbox.components.DesignFrame.get_reference_shift" title="rstoolbox.components.DesignFrame.get_reference_shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_shift</span></code></a>(seqID)</td>
+<td>Get a reference shift attached to a particular sequence ID.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_reference_structure.html#rstoolbox.components.DesignFrame.get_reference_structure" title="rstoolbox.components.DesignFrame.get_reference_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_structure</span></code></a>(seqID[,&nbsp;key_residues])</td>
+<td>Get a reference structure attached to a particular sequence ID.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_sequence.html#rstoolbox.components.DesignFrame.get_sequence" title="rstoolbox.components.DesignFrame.get_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequence</span></code></a>(seqID[,&nbsp;key_residues])</td>
+<td>Return the sequence data for <cite>seqID</cite> available in the container.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_sequence_with.html#rstoolbox.components.DesignFrame.get_sequence_with" title="rstoolbox.components.DesignFrame.get_sequence_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequence_with</span></code></a>(seqID,&nbsp;selection[,&nbsp;confidence])</td>
+<td>Selects those decoys with a particular set of residue matches.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_sequential_data.html#rstoolbox.components.DesignFrame.get_sequential_data" title="rstoolbox.components.DesignFrame.get_sequential_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequential_data</span></code></a>(query,&nbsp;seqID)</td>
+<td>Provides data on the requested query.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_source_files.html#rstoolbox.components.DesignFrame.get_source_files" title="rstoolbox.components.DesignFrame.get_source_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_source_files</span></code></a>()</td>
+<td>Returns the set of source files linked to this <a class="reference internal" href="#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_structure.html#rstoolbox.components.DesignFrame.get_structure" title="rstoolbox.components.DesignFrame.get_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_structure</span></code></a>(seqID[,&nbsp;key_residues])</td>
+<td>Return the structure(s) data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_structure_prediction.html#rstoolbox.components.DesignFrame.get_structure_prediction" title="rstoolbox.components.DesignFrame.get_structure_prediction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_structure_prediction</span></code></a>(seqID[,&nbsp;key_residues])</td>
+<td>Return the structure prediction(s) data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.has_reference_sequence.html#rstoolbox.components.DesignFrame.has_reference_sequence" title="rstoolbox.components.DesignFrame.has_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_reference_sequence</span></code></a>(seqID)</td>
+<td>Checks if there is a reference sequence for the provided sequence ID.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.has_reference_structure.html#rstoolbox.components.DesignFrame.has_reference_structure" title="rstoolbox.components.DesignFrame.has_reference_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_reference_structure</span></code></a>(seqID)</td>
+<td>Checks if there is a reference structure for the provided sequence ID.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.has_source_files.html#rstoolbox.components.DesignFrame.has_source_files" title="rstoolbox.components.DesignFrame.has_source_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_source_files</span></code></a>()</td>
+<td>Checks if there are source files added.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.replace_source_files.html#rstoolbox.components.DesignFrame.replace_source_files" title="rstoolbox.components.DesignFrame.replace_source_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_source_files</span></code></a>(files)</td>
+<td>Replaces source files of the <a class="reference internal" href="#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.sequence_bits.html#rstoolbox.components.DesignFrame.sequence_bits" title="rstoolbox.components.DesignFrame.sequence_bits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence_bits</span></code></a>(seqID[,&nbsp;seqType,&nbsp;cleanExtra,&nbsp;…])</td>
+<td>Generates a <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for the bits of the sequences in the __DesignFrame__ with seqID identifier.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.sequence_distance.html#rstoolbox.components.DesignFrame.sequence_distance" title="rstoolbox.components.DesignFrame.sequence_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence_distance</span></code></a>(seqID)</td>
+<td>Generate a matrix counting the distance between each pair of sequences in the <code class="xref py py-class docutils literal notranslate"><span class="pre">designFrame</span></code>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.sequence_frequencies.html#rstoolbox.components.DesignFrame.sequence_frequencies" title="rstoolbox.components.DesignFrame.sequence_frequencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence_frequencies</span></code></a>(seqID[,&nbsp;seqType,&nbsp;…])</td>
+<td>Generates a <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for the frequencies of the sequences in the __DesignFrame__ with seqID identifier.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.structure_bits.html#rstoolbox.components.DesignFrame.structure_bits" title="rstoolbox.components.DesignFrame.structure_bits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">structure_bits</span></code></a>(seqID[,&nbsp;seqType,&nbsp;cleanExtra,&nbsp;…])</td>
+<td>Generates a <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for the bits of the secondary structure in the __DesignFrame__ with seqID identifier.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.structure_frequencies.html#rstoolbox.components.DesignFrame.structure_frequencies" title="rstoolbox.components.DesignFrame.structure_frequencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">structure_frequencies</span></code></a>(seqID[,&nbsp;seqType,&nbsp;…])</td>
+<td>Generates a <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for the frequencies of the secondary structure in the __DesignFrame__ with seqID identifier.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.transfer_reference.html#rstoolbox.components.DesignFrame.transfer_reference" title="rstoolbox.components.DesignFrame.transfer_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transfer_reference</span></code></a>(df)</td>
+<td>Transfer reference from one data container to another.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Mutation Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.generate_mutant_variants.html#rstoolbox.components.DesignFrame.generate_mutant_variants" title="rstoolbox.components.DesignFrame.generate_mutant_variants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_mutant_variants</span></code></a>(seqID,&nbsp;mutations[,&nbsp;…])</td>
+<td>Expands the selected sequences by ensuring that all the provided mutant combinations.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.generate_mutants_from_matrix.html#rstoolbox.components.DesignFrame.generate_mutants_from_matrix" title="rstoolbox.components.DesignFrame.generate_mutants_from_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_mutants_from_matrix</span></code></a>(seqID,&nbsp;matrix,&nbsp;…)</td>
+<td>From a provided positional frequency matrix, generates <code class="docutils literal notranslate"><span class="pre">count</span></code> random variants.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.generate_wt_reversions.html#rstoolbox.components.DesignFrame.generate_wt_reversions" title="rstoolbox.components.DesignFrame.generate_wt_reversions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_wt_reversions</span></code></a>([seqID])</td>
+<td>Expand the selected sequences by generating all the combinatorial options to revert to the reference (WT) sequence.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_identified_mutants.html#rstoolbox.components.DesignFrame.get_identified_mutants" title="rstoolbox.components.DesignFrame.get_identified_mutants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_identified_mutants</span></code></a>()</td>
+<td>List for which sequence identifiers mutants have been calculated</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_mutation_count.html#rstoolbox.components.DesignFrame.get_mutation_count" title="rstoolbox.components.DesignFrame.get_mutation_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mutation_count</span></code></a>(seqID)</td>
 <td>Return the number of mutantion positions data for <cite>seqID</cite> available in the container.</td>
@@ -207,68 +275,14 @@ of the library depend on them.</p>
 <tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_mutations.html#rstoolbox.components.DesignFrame.get_mutations" title="rstoolbox.components.DesignFrame.get_mutations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mutations</span></code></a>(seqID)</td>
 <td>Return the mutantions data for <cite>seqID</cite> available in the container.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_reference_sequence.html#rstoolbox.components.DesignFrame.get_reference_sequence" title="rstoolbox.components.DesignFrame.get_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_sequence</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Get a reference sequence attached to a particular sequence ID.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_reference_shift.html#rstoolbox.components.DesignFrame.get_reference_shift" title="rstoolbox.components.DesignFrame.get_reference_shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_shift</span></code></a>(seqID)</td>
-<td>Get a reference shift attached to a particular sequence ID.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_reference_structure.html#rstoolbox.components.DesignFrame.get_reference_structure" title="rstoolbox.components.DesignFrame.get_reference_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_structure</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Get a reference structure attached to a particular sequence ID.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_sequence.html#rstoolbox.components.DesignFrame.get_sequence" title="rstoolbox.components.DesignFrame.get_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequence</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Return the sequence data for <cite>seqID</cite> available in the container.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_sequence_with.html#rstoolbox.components.DesignFrame.get_sequence_with" title="rstoolbox.components.DesignFrame.get_sequence_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequence_with</span></code></a>(seqID,&nbsp;selection[,&nbsp;confidence])</td>
-<td>Selects those decoys with a particular set of residue matches.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_sequential_data.html#rstoolbox.components.DesignFrame.get_sequential_data" title="rstoolbox.components.DesignFrame.get_sequential_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequential_data</span></code></a>(query,&nbsp;seqID)</td>
-<td>Provides data on the requested query.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_source_files.html#rstoolbox.components.DesignFrame.get_source_files" title="rstoolbox.components.DesignFrame.get_source_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_source_files</span></code></a>()</td>
-<td>Returns the set of source files linked to this <a class="reference internal" href="#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_structure.html#rstoolbox.components.DesignFrame.get_structure" title="rstoolbox.components.DesignFrame.get_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_structure</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Return the structure(s) data.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.get_structure_prediction.html#rstoolbox.components.DesignFrame.get_structure_prediction" title="rstoolbox.components.DesignFrame.get_structure_prediction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_structure_prediction</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Return the structure prediction(s) data.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.has_reference_sequence.html#rstoolbox.components.DesignFrame.has_reference_sequence" title="rstoolbox.components.DesignFrame.has_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_reference_sequence</span></code></a>(seqID)</td>
-<td>Checks if there is a reference sequence for the provided sequence ID.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.has_reference_structure.html#rstoolbox.components.DesignFrame.has_reference_structure" title="rstoolbox.components.DesignFrame.has_reference_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_reference_structure</span></code></a>(seqID)</td>
-<td>Checks if there is a reference structure for the provided sequence ID.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.has_source_files.html#rstoolbox.components.DesignFrame.has_source_files" title="rstoolbox.components.DesignFrame.has_source_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_source_files</span></code></a>()</td>
-<td>Checks if there are source files added.</td>
-</tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.identify_mutants.html#rstoolbox.components.DesignFrame.identify_mutants" title="rstoolbox.components.DesignFrame.identify_mutants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identify_mutants</span></code></a>(seqID)</td>
-<td>Checks the sequence in column sequence_&lt;seqID&gt; againts the reference_sequence.</td>
+<td>Checks the sequence in column <code class="docutils literal notranslate"><span class="pre">sequence_&lt;seqID&gt;</span></code> againts the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.replace_source_files.html#rstoolbox.components.DesignFrame.replace_source_files" title="rstoolbox.components.DesignFrame.replace_source_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace_source_files</span></code></a>(files)</td>
-<td>Replaces source files of the <a class="reference internal" href="#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</td>
+<tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignFrame.make_resfile.html#rstoolbox.components.DesignFrame.make_resfile" title="rstoolbox.components.DesignFrame.make_resfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_resfile</span></code></a>(seqID,&nbsp;header,&nbsp;filename)</td>
+<td>Generate a Rosetta <a class="reference external" href="https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles">resfile</a> to match the design’s sequence from the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.score_by_pssm.html#rstoolbox.components.DesignFrame.score_by_pssm" title="rstoolbox.components.DesignFrame.score_by_pssm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_by_pssm</span></code></a>(seqID,&nbsp;pssm)</td>
 <td>Score sequences according to a provided PSSM matrix.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.sequence_bits.html#rstoolbox.components.DesignFrame.sequence_bits" title="rstoolbox.components.DesignFrame.sequence_bits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence_bits</span></code></a>(seqID[,&nbsp;seqType,&nbsp;cleanExtra,&nbsp;…])</td>
-<td>Generates a <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for the bits of the sequences in the __DesignFrame__ with seqID identifier.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.sequence_distance.html#rstoolbox.components.DesignFrame.sequence_distance" title="rstoolbox.components.DesignFrame.sequence_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence_distance</span></code></a>(seqID)</td>
-<td>Generate a matrix counting the distance between each pair of sequences in the <code class="xref py py-class docutils literal notranslate"><span class="pre">designFrame</span></code>.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.sequence_frequencies.html#rstoolbox.components.DesignFrame.sequence_frequencies" title="rstoolbox.components.DesignFrame.sequence_frequencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequence_frequencies</span></code></a>(seqID[,&nbsp;seqType,&nbsp;…])</td>
-<td>Generates a <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for the frequencies of the sequences in the __DesignFrame__ with seqID identifier.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.structure_bits.html#rstoolbox.components.DesignFrame.structure_bits" title="rstoolbox.components.DesignFrame.structure_bits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">structure_bits</span></code></a>(seqID[,&nbsp;seqType,&nbsp;cleanExtra,&nbsp;…])</td>
-<td>Generates a <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for the bits of the secondary structure in the __DesignFrame__ with seqID identifier.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.structure_frequencies.html#rstoolbox.components.DesignFrame.structure_frequencies" title="rstoolbox.components.DesignFrame.structure_frequencies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">structure_frequencies</span></code></a>(seqID[,&nbsp;seqType,&nbsp;…])</td>
-<td>Generates a <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for the frequencies of the secondary structure in the __DesignFrame__ with seqID identifier.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignFrame/rstoolbox.components.DesignFrame.transfer_reference.html#rstoolbox.components.DesignFrame.transfer_reference" title="rstoolbox.components.DesignFrame.transfer_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transfer_reference</span></code></a>(df)</td>
-<td>Transfer reference from one data container to another.</td>
 </tr>
 </tbody>
 </table>
