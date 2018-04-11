@@ -96,14 +96,18 @@ def identify_mutants( self, seqID ):
     :type seqID: py:class:`str`
 
     :return: Changes the container and returns it
+
+    :raise:
+        :ValueError: If length of ``reference sequence`` and decoy are not the same.
     """
     def mutations( reference, sequence, shift=1 ):
         data = []
         datn = []
-        assert len(reference) == len(sequence)
-        for i in range(len(reference)):
-            if reference[i].upper() != sequence[i].upper():
-                data.append(reference[i].upper() + str(i + shift) + sequence[i].upper())
+        if len(reference) != len(sequence):
+            raise ValueError("Sequence lengths do not match")
+        for i, refi in enumerate(reference):
+            if refi.upper() != sequence[i].upper():
+                data.append(refi.upper() + str(i + shift) + sequence[i].upper())
                 datn.append(str(i + shift))
         return ",".join(data), ",".join(datn), len(data)
 
@@ -174,7 +178,7 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
 
     if isinstance(self, pd.DataFrame):
         designs = []
-        for i, row in self.iterrows():
+        for _, row in self.iterrows():
             designs.append(multiplex(row, seqID, mutations))
         df = pd.concat(designs)
     elif isinstance(self, pd.Series):
@@ -249,7 +253,7 @@ def generate_mutants_from_matrix( self, seqID, matrix, count,
 
     data = []
     if isinstance(self, pd.DataFrame):
-        for index, row in self.iterrows():
+        for _, row in self.iterrows():
             data.extend(row.generate_mutants_from_matrix(seqID, matrix, count,
                                                          key_residues, limit_refseq))
         return data
@@ -359,12 +363,13 @@ def score_by_pssm( self, seqID, pssm ):
     :raises:
         :NotImplementedError: if ``self`` is not :class:`~pandas.Series`
             or :class:`~pandas.DataFrame`.
-        :AssertionError: if the length of the ``pssm`` does not match that
+        :ValueError: if the length of the ``pssm`` does not match that
             of the sequence.
     """
     def evaluate_sequence(seq, pssm):
         score = 0
-        assert len(seq) == pssm.shape[0]
+        if len(seq) != pssm.shape[0]:
+            raise ValueError("Lenght of sequence and matrix do not match")
         for i, aa in enumerate(seq):
             if aa in list(pssm.columns):
                 score += pssm.iloc[i][aa]
