@@ -3,9 +3,10 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: mutants.py
 # @Last modified by:   bonet
-# @Last modified time: 27-Mar-2018
+# @Last modified time: 11-Apr-2018
 
 
+import os
 import itertools
 import re
 
@@ -378,4 +379,77 @@ def score_by_pssm( self, seqID, pssm ):
     else:
         raise NotImplementedError
 
+    return self
+
+
+def make_resfile( self, seqID, header, filename ):
+    """
+    Generate a Rosetta `resfile
+    <https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles>`_
+    to match the design's sequence from the ``reference_sequence``.
+
+    The function picks the mutant positions between the design sequence
+    and the ``reference_sequence`` and generates a resfile that will
+    transform one into the other.
+
+    If more than one design is provided, the resfile name (``filename``) is going
+    to be modified with a counter. A new column will be added to the data container
+    in order to keep track of the filename assignation:
+
+    ========================  =========================
+    New Column                             Data Content
+    ========================  =========================
+    **resfile_<seqID>**             Name of the resfile
+    ========================  =========================
+
+
+    :param seqID: Identifier of the sequence sets of interest.
+    :type seqID: :class:`str`
+    :param header: Header content for the resfile; defines default behaviour.
+    :type header: :class:`str`
+    :param filename: Identifier of the resfile. Will be altered with a numerical
+        suffix if the data container holds more thant one sequence.
+    :type filename: :class:`str`
+
+    :return: Union[:class:`.DesignSerie`, :class:`.DesignFrame`]
+        - Itself with the new column.
+
+    :raise:
+        :KeyError: If data container does not have ``reference_sequence``
+            for ``seqID``.
+        :NotImplementedError: If ``self`` is not :class:`~pandas.Series`
+            or :class:`~pandas.DataFrame`.
+
+    .. note::
+        Depends on :ref:`system.overwrite <options>` and
+        :ref:`system.output <options>`.
+    """
+    if not self.has_reference_sequence(seqID):
+        raise KeyError("A reference sequence for {} is needed.".format(seqID))
+
+    def resfile( row, seqID, header, filename, suffix):
+        if not isinstance(row, pd.Series):
+            raise NotImplementedError
+        if suffix is not None:
+            filename = list(os.path.splitext(filename))
+            filename[0] += "_{:>04d}".format(suffix)
+            filename = "".join(filename)
+
+        data = [header, "START\n"]
+        df = row.copy()
+        if seqID not in df.get_identified_mutants():
+            df = df.identify_mutants(seqID)
+        if len(df.get_mutations(seqID)) > 0:
+            for mutation in df.get_mutations(seqID).split(","):
+                data.append(str(" ".join([mutation[1:-1], seqID, "PIKAA", mutation[-1]])))
+        return filename
+
+    outcol = "resfile_{}".format(seqID)
+    if isinstance(self, pd.Series):
+        self[outcol] = resfile(self, seqID, header, filename, None)
+    elif isinstance(self, pd.DataFrame):
+        self[outcol] = self.apply(lambda row: resfile(row, seqID, header, filename, row.name),
+                                  axis=1)
+    else:
+        raise NotImplementedError
     return self

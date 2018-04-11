@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 11-Apr-2018
 
 
 import copy
@@ -745,7 +745,6 @@ class SelectionContainer( object ):
             return self._content == other._content
         else:
             raise NotImplementedError
-
 
     def __str__( self ):
         return ",".join(["{0}:{1}".format(x, self[x]._compressed_str()) for x in sorted(self)])

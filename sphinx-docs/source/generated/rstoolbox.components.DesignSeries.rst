@@ -41,6 +41,7 @@ rstoolbox.components.DesignSeries
       ~DesignSeries.has_reference_sequence
       ~DesignSeries.has_reference_structure
       ~DesignSeries.identify_mutants
+      ~DesignFrame.make_resfile
       ~DesignSeries.score_by_pssm
       ~DesignSeries.transfer_reference
 

@@ -45,6 +45,7 @@ rstoolbox.components.DesignFrame
       ~DesignFrame.has_reference_structure
       ~DesignFrame.has_source_files
       ~DesignFrame.identify_mutants
+      ~DesignFrame.make_resfile
       ~DesignFrame.replace_source_files
       ~DesignFrame.score_by_pssm
       ~DesignFrame.sequence_bits
