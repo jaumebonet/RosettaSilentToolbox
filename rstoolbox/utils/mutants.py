@@ -430,6 +430,8 @@ def make_resfile( self, seqID, header, filename ):
     def resfile( row, seqID, header, filename, suffix):
         if not isinstance(row, pd.Series):
             raise NotImplementedError
+        # @TODO: File control management
+        # @BODY: Suffix control, existence and location should be checked.
         if suffix is not None:
             filename = list(os.path.splitext(filename))
             filename[0] += "_{:>04d}".format(suffix)
@@ -442,6 +444,9 @@ def make_resfile( self, seqID, header, filename ):
         if len(df.get_mutations(seqID)) > 0:
             for mutation in df.get_mutations(seqID).split(","):
                 data.append(str(" ".join([mutation[1:-1], seqID, "PIKAA", mutation[-1]])))
+
+        with open(filename, 'w') as fd:
+            fd.write("\n".join(data))
         return filename
 
     outcol = "resfile_{}".format(seqID)
