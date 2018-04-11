@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 11-Apr-2018
 
 
 import os
@@ -28,6 +28,10 @@ class TestDesign( object ):
         self.dirpath = os.path.join(os.path.dirname(__file__), '..', 'data')
         self.silent1 = os.path.join(self.dirpath, 'input_2seq.minisilent.gz')
         self.silent2 = os.path.join(self.dirpath, 'input_sse.minsilent.gz')
+
+    @pytest.fixture(autouse=True)
+    def setup( self, tmpdir ):
+        self.tmpdir = tmpdir.strpath
 
     def test_getters( self ):
         """
@@ -158,3 +162,77 @@ class TestDesign( object ):
         assert df.get_reference_shift("A") == 1
         with pytest.raises(KeyError):
             df.get_reference_sequence("A")
+
+    def test_mutants(self):
+        # Static data
+        refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
+                 "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"
+        columns = ["mutants_B", "mutant_count_B", "mutant_positions_B"]
+        mut_number = [97, 91, 88, 90, 92, 92]
+        mut_type = [
+            "G1T,S2R,I3P,S4E,D5E,I6A,K8E,D9R,E11W,V12R,R13L,M14A,D15E,K16I,V18M,E19R,A20K,F21G,"
+            "K22W,N23E,K24E,L25H,D26E,K27R,F28E,K29W,A30E,A31W,V32W,R33K,K34R,V35A,F36S,P37K,"
+            "T38G,E39R,R41E,I42R,R45L,I48R,W49M,Q52A,E53A,R56A,D59E,E60I,Y64E,R65W,D66Q,A67M,N68R"
+            ",D69L,K70E,A71M,A72E,A73K,L74E,G75R,D77N,K78P,E79N,I80A,N81G,W82E,F83E,D84K,I85M,S86K,"
+            "Q87E,S88Q,L89K,W90K,D91E,V92A,Q93W,L95I,T96A,D97Y,A98Y,A99W,I100G,K101L,K102M,I103A,"
+            "E104A,A105Y,A106W,L107I,A108K,D109Q,M110H,E111R,A112E,W113K,L114E,T115R,Q116K",
+            "G1P,S2K,I3P,S4E,D5E,I6A,R7M,K8R,D9E,E11Y,V12K,R13L,M14I,D15K,A17Y,V18M,E19L,A20K,F21A,"
+            "K22Q,N23K,K24E,L25A,D26Q,K27E,F28E,K29W,A30E,A31R,V32M,K34R,V35T,F36D,P37G,E39K,R41E,"
+            "I42K,R45F,I48K,W49M,E53A,R56A,D59E,E60I,R65Y,D66W,N68F,D69L,A71L,A72Q,A73E,L74F,G75K,"
+            "D77Y,K78P,E79S,I80V,N81R,F83E,D84E,I85Q,S86E,Q87E,S88A,L89R,W90K,D91R,V92L,Q93K,K94I,"
+            "L95M,T96M,D97K,A98I,A99G,I100A,K101E,K102W,I103A,E104R,A105E,A106I,L107A,A108R,D109E,"
+            "E111K,A112E,W113R,L114I,T115K,Q116R",
+            "G1T,S2K,I3P,S4E,D5E,I6M,R7A,K8R,D9E,E11Y,V12K,D15L,V18L,E19K,A20Q,F21G,K22E,N23E,K24E,"
+            "L25M,D26K,K27R,F28M,K29Y,A30E,A31Q,V32M,R33K,V35G,F36V,P37D,T38S,E39K,R41E,I42R,R45E,"
+            "I48K,W49M,Q52I,E53A,R56A,D59E,E60L,Y64W,R65M,D66K,N68L,D69R,K70H,A71M,A72K,A73E,G75R,"
+            "D77L,K78G,E79T,I80S,N81G,W82P,F83K,D84E,I85E,S86E,Q87K,S88H,L89W,W90R,D91W,V92I,Q93F,"
+            "K94E,T96H,D97R,A98W,I100G,K101E,K102E,E104Q,A105R,L107A,A108E,D109I,M110Q,A112R,W113K,"
+            "L114A,T115R,Q116W",
+            "G1T,S2K,I3P,S4E,D5E,I6W,R7A,K8R,D9W,E11Y,V12K,R13E,M14H,D15L,A17M,V18A,A20K,F21H,K22R,"
+            "N23K,K24E,L25M,D26E,K27I,F28E,K29W,A30E,A31E,V32L,R33K,K34R,V35R,F36D,P37G,T38K,R41E,"
+            "I42K,R45W,I48R,W49M,Q52M,E53A,R56A,D59E,E60L,A63H,Y64H,R65M,D66Y,N68E,D69M,K70R,A72K,"
+            "A73E,L74E,G75K,D77K,K78P,I80A,N81K,W82T,F83E,D84E,I85A,S86R,Q87R,S88A,L89R,W90R,D91E,"
+            "V92I,Q93M,L95Y,T96H,D97H,A98E,I100G,K101R,K102L,A105E,L107M,A108R,D109R,M110L,E111M,"
+            "A112E,W113R,L114H,T115K,Q116K",
+            "G1K,S2K,I3W,S4E,D5E,I6M,R7M,K8R,D9E,V12R,R13Q,M14G,D15K,K16E,A17Y,V18A,E19Q,A20K,F21A,"
+            "K22W,N23K,K24E,L25A,D26L,K27L,F28E,K29W,A30K,A31W,V32M,V35R,F36P,P37V,R41M,I42K,R45A,"
+            "I48W,W49M,Q52A,E53A,R56A,D59E,E60H,A63I,R65W,D66Q,A67Q,N68K,D69L,K70E,A71H,A72E,A73K,"
+            "G75R,D77I,K78P,E79N,I80V,N81P,W82E,F83E,D84E,I85L,S86E,Q87K,S88G,L89K,W90E,D91E,V92L,"
+            "Q93K,K94R,L95I,T96E,D97E,A98E,I100A,K101R,K102M,I103A,A105K,A106Y,L107M,A108Q,D109E,"
+            "M110L,E111R,A112K,W113K,L114M,T115E,Q116S",
+            "G1P,S2R,I3P,S4E,D5E,I6M,R7A,K8R,D9F,E11K,V12E,R13E,D15H,A17H,V18E,A20K,F21A,K22Y,N23R"
+            ",K24E,L25F,D26L,K27L,F28E,K29Y,A30E,A31L,V32A,R33I,K34R,V35K,F36N,R41P,I42K,R45Q,I48W"
+            ",W49A,Q52A,E53A,R56A,D59E,E60I,A63Q,Y64W,R65M,D66Y,A67H,N68L,D69L,K70E,A71I,A72R,A73K"
+            ",L74E,G75N,K76G,D77S,K78S,E79H,I80T,N81R,W82Y,F83E,D84E,I85R,S86E,Q87K,S88Y,L89R,W90K"
+            ",D91L,V92A,Q93K,K94R,T96H,D97E,A98E,I100A,K102E,E104W,A105K,A106F,L107M,A108H,D109E,"
+            "M110A,E111M,A112R,W113R,L114F,T115E,Q116S"
+        ]
+        mut_pos = [",".join([_[1:-1] for _ in m.split(",")]) for m in mut_type]
+        sc_des  = {"labels": ["MOTIF", "CONTACT"], "sequence": "B"}
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        df.add_reference_sequence("B", refseq)
+
+        df = df.identify_mutants("B")
+        for col in columns:
+            assert col in df
+
+        sr = df.iloc[0]
+        assert df.get_reference_sequence("B") == sr.get_reference_sequence("B")
+        assert df.get_identified_mutants() == ["B", ]
+
+        for i, row in df.iterrows():
+            # Check number of mutations
+            assert row.get_mutation_count("B") == mut_number[i]
+            # Check type of mutations
+            assert row.get_mutations("B") == mut_type[i]
+            # Check position of mutations
+            assert row.get_mutation_positions("B") == mut_pos[i]
+
+        # write to resfiles
+        df.make_resfile("B", "NATAA", os.path.join(self.tmpdir, "mutanttest.resfile"))
+        for i, row in df.iterrows():
+            newfile = os.path.join(self.tmpdir, "mutanttest" + "_{:>04d}".format(i) + ".resfile")
+            assert row["resfile_B"] == newfile
+            assert os.path.isfile(newfile)

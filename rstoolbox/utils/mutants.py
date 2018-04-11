@@ -3,9 +3,10 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: mutants.py
 # @Last modified by:   bonet
-# @Last modified time: 27-Mar-2018
+# @Last modified time: 11-Apr-2018
 
 
+import os
 import itertools
 import re
 
@@ -85,24 +86,37 @@ def get_mutation_count( self, seqID ):
 
 def identify_mutants( self, seqID ):
     """
-    Checks the sequence in column sequence_<seqID> againts the reference_sequence.
-    Adds to the container two new columns: mutants_<seqID>, which lists
-    the mutations of the particular decoy vs. the reference_sequence, mutant_positions_<seqID>
-    just with those same positions and mutant_count_<seqID> with the count of the number of
-    mutations. Reference and design sequence must be of the same length.
+    Checks the sequence in column ``sequence_<seqID>`` againts the ``reference_sequence``.
+
+    Adds to the container two new columns:
+
+    ============================  ===========================================================
+    Column                                                Data Content
+    ============================  ===========================================================
+    **mutants_<seqID>**           Lists the **mutations** of the particular decoy
+    **mutant_positions_<seqID>**  Lists the **positions** of mutations in the particular decoy
+    **mutant_count_<seqID>**      **Count** of the number of mutations
+    ============================  ===========================================================
+
+    Reference and design sequence must be of the same length.
 
     :param seqID: Identifier of the sequence of interest.
-    :type seqID: py:class:`str`
+    :type seqID: :class:`str`
 
-    :return: Changes the container and returns it
+    :return: Union[:class:`.DesignSeries`, :class:`.DesignFrame`] -
+        a copy of the data container with the new columns.
+
+    :raise:
+        :ValueError: If length of ``reference sequence`` and decoy are not the same.
     """
     def mutations( reference, sequence, shift=1 ):
         data = []
         datn = []
-        assert len(reference) == len(sequence)
-        for i in range(len(reference)):
-            if reference[i].upper() != sequence[i].upper():
-                data.append(reference[i].upper() + str(i + shift) + sequence[i].upper())
+        if len(reference) != len(sequence):
+            raise ValueError("Sequence lengths do not match")
+        for i, refi in enumerate(reference):
+            if refi.upper() != sequence[i].upper():
+                data.append(refi.upper() + str(i + shift) + sequence[i].upper())
                 datn.append(str(i + shift))
         return ",".join(data), ",".join(datn), len(data)
 
@@ -111,15 +125,16 @@ def identify_mutants( self, seqID ):
     mutants = "mutants_{0}".format(seqID)
     mposits = "mutant_positions_{0}".format(seqID)
     mcounts = "mutant_count_{0}".format(seqID)
+    df = self.copy()
     if isinstance(self, pd.DataFrame):
-        self[[mutants, mposits, mcounts]] = self.apply(
+        df[[mutants, mposits, mcounts]] = df.apply(
             lambda row: mutations(refseq, row.get_sequence(seqID), shift),
             axis=1, result_type="expand" )
-    elif isinstance(self, pd.Series):
-        a, b, c = mutations(refseq, self.get_sequence(seqID), shift)
-        self[mutants], self[mposits], self[mcounts] = a, b, c
+    elif isinstance(df, pd.Series):
+        a, b, c = mutations(refseq, df.get_sequence(seqID), shift)
+        df[mutants], df[mposits], df[mcounts] = a, b, c
 
-    return self
+    return df
 
 
 def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
@@ -173,7 +188,7 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
 
     if isinstance(self, pd.DataFrame):
         designs = []
-        for i, row in self.iterrows():
+        for _, row in self.iterrows():
             designs.append(multiplex(row, seqID, mutations))
         df = pd.concat(designs)
     elif isinstance(self, pd.Series):
@@ -248,7 +263,7 @@ def generate_mutants_from_matrix( self, seqID, matrix, count,
 
     data = []
     if isinstance(self, pd.DataFrame):
-        for index, row in self.iterrows():
+        for _, row in self.iterrows():
             data.extend(row.generate_mutants_from_matrix(seqID, matrix, count,
                                                          key_residues, limit_refseq))
         return data
@@ -295,6 +310,8 @@ def generate_wt_reversions( self, seqID=None ):
 
     :return: :class:`.DesignFrame`
     """
+    # @TODO: pick residues to revert
+    # @BODY: limit the positions that will be considered for reversion
     def format_mutations( mutations ):
         mutations = mutations.split(",")
         muts = []
@@ -358,12 +375,13 @@ def score_by_pssm( self, seqID, pssm ):
     :raises:
         :NotImplementedError: if ``self`` is not :class:`~pandas.Series`
             or :class:`~pandas.DataFrame`.
-        :AssertionError: if the length of the ``pssm`` does not match that
+        :ValueError: if the length of the ``pssm`` does not match that
             of the sequence.
     """
     def evaluate_sequence(seq, pssm):
         score = 0
-        assert len(seq) == pssm.shape[0]
+        if len(seq) != pssm.shape[0]:
+            raise ValueError("Lenght of sequence and matrix do not match")
         for i, aa in enumerate(seq):
             if aa in list(pssm.columns):
                 score += pssm.iloc[i][aa]
@@ -378,4 +396,82 @@ def score_by_pssm( self, seqID, pssm ):
     else:
         raise NotImplementedError
 
+    return self
+
+
+def make_resfile( self, seqID, header, filename ):
+    """
+    Generate a Rosetta `resfile
+    <https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles>`_
+    to match the design's sequence from the ``reference_sequence``.
+
+    The function picks the mutant positions between the design sequence
+    and the ``reference_sequence`` and generates a resfile that will
+    transform one into the other.
+
+    If more than one design is provided, the resfile name (``filename``) is going
+    to be modified with a counter. A new column will be added to the data container
+    in order to keep track of the filename assignation:
+
+    ========================  =========================
+    New Column                             Data Content
+    ========================  =========================
+    **resfile_<seqID>**             Name of the resfile
+    ========================  =========================
+
+
+    :param seqID: Identifier of the sequence sets of interest.
+    :type seqID: :class:`str`
+    :param header: Header content for the resfile; defines default behaviour.
+    :type header: :class:`str`
+    :param filename: Identifier of the resfile. Will be altered with a numerical
+        suffix if the data container holds more thant one sequence.
+    :type filename: :class:`str`
+
+    :return: Union[:class:`.DesignSerie`, :class:`.DesignFrame`]
+        - Itself with the new column.
+
+    :raise:
+        :KeyError: If data container does not have ``reference_sequence``
+            for ``seqID``.
+        :NotImplementedError: If ``self`` is not :class:`~pandas.Series`
+            or :class:`~pandas.DataFrame`.
+
+    .. note::
+        Depends on :ref:`system.overwrite <options>` and
+        :ref:`system.output <options>`.
+    """
+    if not self.has_reference_sequence(seqID):
+        raise KeyError("A reference sequence for {} is needed.".format(seqID))
+
+    def resfile( row, seqID, header, filename, suffix):
+        if not isinstance(row, pd.Series):
+            raise NotImplementedError
+        # @TODO: File control management
+        # @BODY: Suffix control, existence and location should be checked.
+        if suffix is not None:
+            filename = list(os.path.splitext(filename))
+            filename[0] += "_{:>04d}".format(suffix)
+            filename = "".join(filename)
+
+        data = [header, "START\n"]
+        df = row.copy()
+        if seqID not in df.get_identified_mutants():
+            df = df.identify_mutants(seqID)
+        if len(df.get_mutations(seqID)) > 0:
+            for mutation in df.get_mutations(seqID).split(","):
+                data.append(str(" ".join([mutation[1:-1], seqID, "PIKAA", mutation[-1]])))
+
+        with open(filename, 'w') as fd:
+            fd.write("\n".join(data))
+        return filename
+
+    outcol = "resfile_{}".format(seqID)
+    if isinstance(self, pd.Series):
+        self[outcol] = resfile(self, seqID, header, filename, None)
+    elif isinstance(self, pd.DataFrame):
+        self[outcol] = self.apply(lambda row: resfile(row, seqID, header, filename, row.name),
+                                  axis=1)
+    else:
+        raise NotImplementedError
     return self

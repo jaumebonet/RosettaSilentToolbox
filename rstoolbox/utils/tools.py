@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: tools.py
 # @Last modified by:   bonet
-# @Last modified time: 27-Mar-2018
+# @Last modified time: 11-Apr-2018
 
 
 import copy
@@ -30,12 +30,17 @@ def format_Ipython():
 def add_column( df, name, value ):
     """Adds a new column to the DataFrame with the given value.
 
-    :param str name: Name of the new column
+    :param df: Data container.
+    :type df: :class:`~pandas.DataFrame`
+    :param name: Name of the new column
+    :type name: :class:`str`
     :param value: Value that will be given to all rows of the new column (any type)
-    :return: The new DataFrame with the added column
-    :rtype: DataFrame
+
+    :return: :class:`~pandas.DataFrame` - The data container with the new column
     """
-    return df.assign(_placeholder=pd.Series([value]*df.shape[0])).rename(columns={"_placeholder": name})
+    data = pd.Series([value] * df.shape[0])
+    return df.assign(_placeholder=data).rename(columns={"_placeholder": name})
+
 
 def split_values( df, keys ):
     dataframes = []

@@ -33,7 +33,7 @@ try:
     # Let's assume one wants to give the option to generate a user's configuration file.
     # First time the library is called, it can create this config file with the current defaults.
     # The user can change those for further runs. Ideally, the file would be something such as:
-    config_file = os.path.join(os.getenv("HOME"), ".rstoolbox.cfg")
+    config_file = os.path.join(os.getenv("HOME", os.path.expanduser("~")), ".rstoolbox.cfg")
 
     # Either make or read from the file.
     if not os.path.isfile(config_file):

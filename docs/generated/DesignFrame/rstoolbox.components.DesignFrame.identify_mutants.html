@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="rstoolbox.components.DesignFrame.replace_source_files" href="rstoolbox.components.DesignFrame.replace_source_files.html" />
-    <link rel="prev" title="rstoolbox.components.DesignFrame.has_source_files" href="rstoolbox.components.DesignFrame.has_source_files.html" />
+    <link rel="next" title="rstoolbox.components.DesignFrame.make_resfile" href="rstoolbox.components.DesignFrame.make_resfile.html" />
+    <link rel="prev" title="rstoolbox.components.DesignFrame.get_mutations" href="rstoolbox.components.DesignFrame.get_mutations.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -116,18 +116,51 @@
 <dl class="method">
 <dt id="rstoolbox.components.DesignFrame.identify_mutants">
 <code class="descclassname">DesignFrame.</code><code class="descname">identify_mutants</code><span class="sig-paren">(</span><em>seqID</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.identify_mutants" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the sequence in column sequence_&lt;seqID&gt; againts the reference_sequence.
-Adds to the container two new columns: mutants_&lt;seqID&gt;, which lists
-the mutations of the particular decoy vs. the reference_sequence, mutant_positions_&lt;seqID&gt;
-just with those same positions and mutant_count_&lt;seqID&gt; with the count of the number of
-mutations. Reference and design sequence must be of the same length.</p>
+<dd><p>Checks the sequence in column <code class="docutils literal notranslate"><span class="pre">sequence_&lt;seqID&gt;</span></code> againts the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</p>
+<p>Adds to the container two new columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Data Content</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>mutants_&lt;seqID&gt;</strong></td>
+<td>Lists the <strong>mutations</strong> of the particular decoy</td>
+</tr>
+<tr class="row-odd"><td><strong>mutant_positions_&lt;seqID&gt;</strong></td>
+<td>Lists the <strong>positions</strong> of mutations in the particular decoy</td>
+</tr>
+<tr class="row-even"><td><strong>mutant_count_&lt;seqID&gt;</strong></td>
+<td><strong>Count</strong> of the number of mutations</td>
+</tr>
+</tbody>
+</table>
+<p>Reference and design sequence must be of the same length.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>seqID</strong> (py:class:<cite>str</cite>) – Identifier of the sequence of interest.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the sequence of interest.</p>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Changes the container and returns it</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Union[<a class="reference internal" href="../rstoolbox.components.DesignSeries.html#rstoolbox.components.DesignSeries" title="rstoolbox.components.DesignSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignSeries</span></code></a>, <a class="reference internal" href="../rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>] -
+a copy of the data container with the new columns.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ValueError:</th><td class="field-body">If length of <code class="docutils literal notranslate"><span class="pre">reference</span> <span class="pre">sequence</span></code> and decoy are not the same.</td>
+</tr>
+</tbody>
+</table>
+</td>
 </tr>
 </tbody>
 </table>

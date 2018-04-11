@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 11-Apr-2018
 
 
 import copy
@@ -580,56 +580,13 @@ class Selection( object ):
         return self.__add__(other)
 
     def __and__( self, other ):
-        if isinstance(other, Selection):
-            if self._seqID != other._seqID:
-                raise KeyError("Cannot add Selections with different seqID")
-            if self._revrs == other._revrs:
-                s = Selection(list(set(self.to_list()).intersection(other.to_list())))
-            else:
-                s = Selection(list(set(self.to_list()).difference(other.to_list())))
-            s._seqID = self._seqID
-            s._revrs = self._revrs
-            return s
-        if isinstance(other, int):
-            return self + Selection([other, ])
-        if isinstance(other, (Series, six.string_types, list)):
-            return self + Selection(other)
-        raise NotImplementedError
+        return _operate(self, other, "intersection", "difference", "__add__")
 
     def __add__( self, other ):
-        if isinstance(other, Selection):
-            if self._seqID != other._seqID:
-                raise KeyError("Cannot add Selections with different seqID")
-            if self._revrs == other._revrs:
-                s = Selection(list(set(self.to_list()).union(other.to_list())))
-            else:
-                s = Selection(list(set(self.to_list()).difference(other.to_list())))
-            s._seqID = self._seqID
-            s._revrs = self._revrs
-            return s
-        if isinstance(other, int):
-            return self + Selection([other, ])
-        if isinstance(other, (Series, six.string_types, list)):
-            return self + Selection(other)
-        raise NotImplementedError
+        return _operate(self, other, "union", "difference", "__add__")
 
     def __sub__( self, other ):
-        if isinstance(other, Selection):
-            if self._seqID != other._seqID:
-                raise KeyError("Cannot add Selections with different seqID")
-            if self._revrs == other._revrs:
-                s = Selection(list(set(self.to_list()).difference(other.to_list())))
-            else:
-                s = Selection(list(set(self.to_list()).union(other.to_list())))
-            s._seqID = self._seqID
-            s._revrs = self._revrs
-            return s
-
-        if isinstance(other, int):
-            return self - Selection([other, ])
-        if isinstance(other, (Series, six.string_types, list)):
-            return self - Selection(other)
-        raise NotImplementedError
+        return _operate(self, other, "difference", "union", "__sub__")
 
 
 class SelectionContainer( object ):
@@ -746,9 +703,33 @@ class SelectionContainer( object ):
         else:
             raise NotImplementedError
 
-
     def __str__( self ):
         return ",".join(["{0}:{1}".format(x, self[x]._compressed_str()) for x in sorted(self)])
 
     def __repr__( self ):
         return str(self)
+
+
+def _operate( self, other, func1, func2, final ):
+    if isinstance(other, Selection):
+        if self._seqID != other._seqID:
+            raise KeyError("Cannot operate Selections with different seqID")
+        if self._revrs == other._revrs:
+            s = Selection(list(getattr(set(self.to_list()), func1)(other.to_list())))
+        else:
+            s = Selection(list(getattr(set(self.to_list()), func2)(other.to_list())))
+        s._seqID = self._seqID
+        s._revrs = self._revrs
+        return s
+
+    if isinstance(other, int):
+        if final == "__sub__":
+            return self - Selection([other, ])
+        if final == "__add__":
+            return self + Selection([other, ])
+    if isinstance(other, (Series, six.string_types, list)):
+        if final == "__sub__":
+            return self - Selection(other)
+        if final == "__add__":
+            return self + Selection(other)
+    raise NotImplementedError

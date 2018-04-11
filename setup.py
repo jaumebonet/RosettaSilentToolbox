@@ -62,5 +62,5 @@ setup(
     package_data={
         'rstoolbox': ['analysis/matrices/*']
     },
-    zip_safe=False,
+    cmdclass=versioneer.get_cmdclass(),
 )
