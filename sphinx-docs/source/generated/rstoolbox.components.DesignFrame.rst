@@ -57,3 +57,4 @@ rstoolbox.components.DesignFrame
       ~DesignFrame.identify_mutants
       ~DesignFrame.make_resfile
       ~DesignFrame.score_by_pssm
+      ~DesignFrame.view_mutants_alignment

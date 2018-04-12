@@ -34,6 +34,8 @@ Helper functions to read/write direct sequence information. They can be called t
 
    ~io.read_fasta
    ~io.write_fasta
+   ~io.write_clustalw
+   ~io.write_mutant_alignments
 
 IO: Rosetta
 -----------

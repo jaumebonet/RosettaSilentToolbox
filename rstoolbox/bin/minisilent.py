@@ -3,8 +3,10 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: minisilent.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Feb-2018
+# @Last modified time: 12-Apr-2018
 
+# pylint: disable-msg=W0614,W0401,W0611,W0622
+# flake8: noqa
 
 import argparse
 import gzip
@@ -12,7 +14,8 @@ import os
 
 from rstoolbox.io import open_rosetta_file
 
-def get_options(*args, **kwds):
+
+def get_options( *args, **kwds ):
 
     parser = argparse.ArgumentParser(description="Transform fully-fledged silent file(s) into portable minisilent")
 
@@ -33,11 +36,13 @@ def get_options(*args, **kwds):
         raise IOError("File {0} exists and will not be overwritten.".format( options.ofile ) )
     return options
 
+
 def main( options ):
     fd = gzip.open( options.ofile, "wb" ) if options.ofile.endswith(".gz") else open( options.ofile, "w" )
     infile = options.ifile if options.ifile is not None else options.ifiles
     for line, is_header, count, symm in open_rosetta_file( infile, options.ifile is None, check_symmetry=False ):
         fd.write( line )
+
 
 if __name__ == '__main__':
     main( get_options() )

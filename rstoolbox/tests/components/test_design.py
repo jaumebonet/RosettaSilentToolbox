@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 11-Apr-2018
+# @Last modified time: 12-Apr-2018
 
 
 import os
@@ -236,3 +236,7 @@ class TestDesign( object ):
             newfile = os.path.join(self.tmpdir, "mutanttest" + "_{:>04d}".format(i) + ".resfile")
             assert row["resfile_B"] == newfile
             assert os.path.isfile(newfile)
+
+        # write alignment
+        ri.write_mutant_alignments(df, "B", os.path.join(self.tmpdir, "mutanttest.clw"))
+        assert os.path.isfile(os.path.join(self.tmpdir, "mutanttest.clw"))

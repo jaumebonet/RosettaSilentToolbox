@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequenceFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 12-Apr-2018
 
 # Standard Libraries
 
@@ -44,9 +44,12 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
     def extras( self, extras=None ):
         """
         Setter/Getter for the extra amino/nucleic acid names.
+
         Defines those names that are not regular/natural monomers.
+
         :param list measure: List of 1 letter names to be considered. By default is
             :py:data:`None`, which turns the function into a getter.
+
         :return: list
         """
         if extras is not None:
@@ -56,10 +59,13 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
     def delete_extra( self, pick=None ):
         """
         Setter/Getter for the delete extra configuration.
+
         Set the behaviour to decide whether or not non-regular positions
         have to be deleted if empty.
+
         :param bool pick: Whether or not to activate this option. By default is
             :py:data:`None`, which turns the function into a getter.
+
         :return: bool
         """
         if pick is not None:
@@ -69,12 +75,15 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
     def delete_empty( self, pick=None ):
         """
         Setter/Getter for the delete empty configuration.
+
         Set the behaviour to decide whether or not regular positions
         have to be deleted if empty. This does not apply to amino acid types
         present in the reference_sequence.
+
         :param int pick: Remove from the SequenceFrame the regular
             amino/nucleic acids if they frequency is equal or under the value . Default is -1,
             so nothing is deleted.
+
         :return: bool
         """
         if pick is not None:
@@ -86,6 +95,7 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
         :py:class:`.SequenceFrame`, when created, has each column specify a residue type
         and each row specify a sequence position. When it is the other way around, we assume
         it is transposed.
+
         :return: True if the object is transposed.
         """
         h = list(self)[0]
@@ -97,8 +107,10 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
     def measure( self, measure=None ):
         """
         Setter/Getter for the mesurement specification.
+
         Specifies which type of mesurement the object represents.
         It can be 'frequency' or 'bits'.
+
         :param str measure: Measure name. By default is
             :py:data:`None`, which turns the function into a getter.
         """
@@ -123,8 +135,12 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
         if self.is_transposed():
             return self.transpose().get_key_residues(key_residues).transpose()
 
-        seqID = self.get_available_references()[0]
-        sft = self.get_reference_shift(seqID)
+        try:
+            seqID = self.get_available_references()[0]
+            sft = self.get_reference_shift(seqID)
+        except IndexError:
+            seqID = None
+            sft = 1
 
         kr = get_selection(key_residues, seqID, sft, self.shape[0])
         return self.loc[kr]
