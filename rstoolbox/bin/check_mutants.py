@@ -20,7 +20,6 @@ import rstoolbox
 from rstoolbox.io import parse_rosetta_file, read_fasta
 from rstoolbox.io import write_clustalw, write_mutant_alignments
 from rstoolbox.plot import logo_plot
-from rstoolbox.utils import add_top_title
 
 # Configuration properties
 sns.set(font_scale=2)
@@ -82,8 +81,8 @@ def main( options ):
 
     # Logo Plot
     logof = options.ofile + "_logo" + "." + options.iformat
-    fig, _ = logo_plot(df, options.seqID, refseq=options.ffile is not None,
-                       line_break=50, font_size=int(options.ifont) )
+    _, _ = logo_plot(df, options.seqID, refseq=options.ffile is not None,
+                     line_break=50, font_size=int(options.ifont) )
     plt.savefig(logof)
 
     # Alignment plot
