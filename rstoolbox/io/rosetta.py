@@ -2,8 +2,8 @@
 # @Date:   19-Feb-2018
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rosetta.py
-# @Last modified by:   bonet
-# @Last modified time: 09-Apr-2018
+# @Last modified by:   hartevel
+# @Last modified time: 2018-04-12T15:28:04+02:00
 
 
 import os
@@ -165,7 +165,7 @@ def open_rosetta_file( filename, multi=False, check_symmetry=True ):
             symm = int(process.communicate()[0].strip().split()[0]) > 0
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
-            line = line.decode('utf8')
+            line = line.decode('utf8') if f.endswith(".gz") else line
             if line.strip().split()[0].strip(":") in _headers:
                 yield line, line.strip().split()[-1] == "description", file_count, symm
         fd.close()
@@ -392,7 +392,7 @@ def parse_rosetta_fragments( filename ):
     was_space = False
     fd = gzip.open( filename ) if filename.endswith(".gz") else open( filename )
     for line in fd:
-        line = line.decode('utf8')
+        line = line.decode('utf8') if filename.endswith(".gz") else line
         line = line.strip()
         if line == "":
             fpos = int(fframe)
