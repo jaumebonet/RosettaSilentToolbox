@@ -1,9 +1,11 @@
+#!/usr/bin/env python
+
 # @Author: Jaume Bonet <bonet>
 # @Date:   15-Dec-2017
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rename_decoys.py
 # @Last modified by:   bonet
-# @Last modified time: 17-Jan-2018
+# @Last modified time: 13-Apr-2018
 
 
 import argparse

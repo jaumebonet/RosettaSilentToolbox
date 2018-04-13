@@ -1,9 +1,11 @@
+#!/usr/bin/env python
+
 # @Author: Jaume Bonet <bonet>
 # @Date:   17-Jan-2018
 # @Email:  jaume.bonet@gmail.com
 # @Filename: plot_fragments_rmsd.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 13-Apr-2018
 
 # Standard Libraries
 import argparse

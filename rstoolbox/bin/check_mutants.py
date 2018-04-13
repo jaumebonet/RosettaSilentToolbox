@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # @Author: Jaume Bonet <bonet>
 # @Date:   12-Apr-2018
 # @Email:  jaume.bonet@gmail.com
@@ -101,7 +103,8 @@ def main( options ):
         alimgf = options.ofile + "_ali" + "." + options.iformat
         chunks = len(df.get_sequence(options.seqID).values[0])
         chunks = int(math.ceil(float(chunks) / 50))
-        fig = plt.figure(figsize=(chunks * 10, 10))
+        high_correct = math.ceil(df.shape[0] / 7.0)
+        fig = plt.figure(figsize=(chunks * high_correct * 10, 10))
         grid = (chunks, 1)
         ax = []
         for i in range(chunks):

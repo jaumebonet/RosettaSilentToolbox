@@ -250,3 +250,19 @@ class TestDesign( object ):
         ax = plt.subplot2grid((1, 1), (0, 0), fig=fig)
         rp.plot_alignment(df, "B", ax, matrix="BLOSUM62")
         return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_logo.png')
+    def test_logo_plot(self):
+        refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
+                 "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"
+
+        sc_des  = {"sequence": "B"}
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        df.add_reference_sequence("B", refseq)
+
+        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50 )
+        plt.tight_layout()
+        return fig

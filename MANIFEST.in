@@ -1,3 +1,4 @@
 include versioneer.py
 include rstoolbox/_version.py
 include rstoolbox/analysis/matrices/*
+include rstoolbox/components/square.ttf

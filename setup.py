@@ -1,7 +1,13 @@
+import os
 from setuptools import setup, find_packages
 
 # versioning
 import versioneer
+
+exepath = 'rstoolbox/bin'
+exes = ['check_mutants.py', 'minisilent.py', 'plot_fragments_rmsd.py',
+        'regplot_rosetta.py', 'rename_decoys.py'
+        ]
 
 setup(
     name='rstoolbox',
@@ -60,7 +66,9 @@ setup(
     packages=find_packages(exclude=['docs', 'demo', 'sphinx-docs']),
     include_package_data=True,
     package_data={
-        'rstoolbox': ['analysis/matrices/*']
+        'rstoolbox': ['analysis/matrices/*',
+                      'components/square.ttf']
     },
+    scripts=[os.path.join(exepath, _) for _ in exes],
     cmdclass=versioneer.get_cmdclass(),
 )

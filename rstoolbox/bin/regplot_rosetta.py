@@ -1,9 +1,11 @@
+#!/usr/bin/env python
+
 # @Author: Jaume Bonet <bonet>
 # @Date:   23-Jan-2018
 # @Email:  jaume.bonet@gmail.com
 # @Filename: regplot_rosetta.py
 # @Last modified by:   bonet
-# @Last modified time: 25-Mar-2018
+# @Last modified time: 13-Apr-2018
 
 # Standard Libraries
 import argparse

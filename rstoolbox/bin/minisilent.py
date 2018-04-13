@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # @Author: Jaume Bonet <bonet>
 # @Date:   12-Oct-2017
 # @Email:  jaume.bonet@gmail.com

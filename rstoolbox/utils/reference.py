@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: reference.py
 # @Last modified by:   bonet
-# @Last modified time: 10-Apr-2018
+# @Last modified time: 13-Apr-2018
 
 import copy
 import warnings
@@ -45,7 +45,7 @@ def get_available_references( self ):
     """
     Identify for which seqIDs there is some reference data.
     """
-    return self._reference.keys()
+    return list(self._reference.keys())
 
 
 def has_reference_sequence( self, seqID ):
