@@ -3,23 +3,30 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: minisilent.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Feb-2018
+# @Last modified time: 13-Apr-2018
 
-
+# Standard Libraries
 import argparse
 import gzip
 import os
 
+# This Library
 from rstoolbox.io import open_rosetta_file
 
-def get_options(*args, **kwds):
 
-    parser = argparse.ArgumentParser(description="Transform fully-fledged silent file(s) into portable minisilent")
+def get_options( *args, **kwds ):
 
-    parser.add_argument( '-in:file',   dest='ifile',  action='store',      help='Input silent file',            default=None  )
-    parser.add_argument( '-in:files',  dest='ifiles', action='store',      help='Prefix of input silent files', default=None  )
-    parser.add_argument( '-out:file',  dest='ofile',  action='store',      help='Output minisilent',            default=None  )
-    parser.add_argument( '-overwrite', dest='force',  action='store_true', help='Allow overwrite',              default=False )
+    parser = argparse.ArgumentParser(
+        description="Transform fully-fledged silent file(s) into portable minisilent")
+
+    parser.add_argument('-in:file', dest='ifile', action='store',
+                        help='Input silent file', default=None)
+    parser.add_argument('-in:files', dest='ifiles', action='store',
+                        help='Prefix of input silent files', default=None)
+    parser.add_argument('-out:file', dest='ofile', action='store',
+                        help='Output minisilent', default=None)
+    parser.add_argument('-overwrite', dest='force', action='store_true',
+                        help='Allow overwrite', default=False)
 
     options = parser.parse_args()
 
@@ -33,11 +40,14 @@ def get_options(*args, **kwds):
         raise IOError("File {0} exists and will not be overwritten.".format( options.ofile ) )
     return options
 
+
 def main( options ):
-    fd = gzip.open( options.ofile, "wb" ) if options.ofile.endswith(".gz") else open( options.ofile, "w" )
+    ofile = options.ofile
+    fd = gzip.open( ofile, "wb" ) if ofile.endswith(".gz") else open( ofile, "w" )
     infile = options.ifile if options.ifile is not None else options.ifiles
-    for line, is_header, count, symm in open_rosetta_file( infile, options.ifile is None, check_symmetry=False ):
+    for line, _, _, _ in open_rosetta_file( infile, options.ifile is None, check_symmetry=False ):
         fd.write( line )
+
 
 if __name__ == '__main__':
     main( get_options() )

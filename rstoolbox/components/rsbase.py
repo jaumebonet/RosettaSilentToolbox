@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rsbase.py
 # @Last modified by:   bonet
-# @Last modified time: 10-Apr-2018
+# @Last modified time: 11-Apr-2018
 
 
 import sys
@@ -58,6 +58,7 @@ if six.PY3:
     RSBaseDesign.generate_wt_reversions              = ru.generate_wt_reversions
     RSBaseDesign.score_by_pssm                       = ru.score_by_pssm
     RSBaseDesign.make_resfile                        = ru.make_resfile
+    RSBaseDesign.view_mutants_alignment              = ru.view_mutants_alignment
 
     RSBaseFrequency.get_available_references         = ru.get_available_references
     RSBaseFrequency.has_reference_sequence           = ru.has_reference_sequence
@@ -140,6 +141,8 @@ else:
         ru.score_by_pssm, None, RSBaseDesign)
     RSBaseDesign.make_resfile = MethodType(
         ru.make_resfile, None, RSBaseDesign)
+    RSBaseDesign.view_mutants_alignment = MethodType(
+        ru.view_mutants_alignment, None, RSBaseDesign)
 
     RSBaseFrequency.get_available_references = MethodType(
         ru.get_available_references, None, RSBaseFrequency)

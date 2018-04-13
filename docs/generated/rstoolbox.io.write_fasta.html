@@ -20,7 +20,7 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="rstoolbox.io.parse_rosetta_file" href="rstoolbox.io.parse_rosetta_file.html" />
+    <link rel="next" title="rstoolbox.io.write_clustalw" href="rstoolbox.io.write_clustalw.html" />
     <link rel="prev" title="rstoolbox.io.read_fasta" href="rstoolbox.io.read_fasta.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -186,7 +186,7 @@ is used as <cite>prefix</cite>, with a following enumeration.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> - <strong>FASTA</strong> formated string if no output file is provided.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> - <strong>FASTA</strong> formated string.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
@@ -204,6 +204,11 @@ is not <a class="reference external" href="https://docs.python.org/2/library/con
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Depends on <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.overwrite</span></a> and
+<a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.output</span></a>.</p>
+</div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#rstoolbox.io.write_fasta" title="rstoolbox.io.write_fasta"><code class="xref py py-func docutils literal notranslate"><span class="pre">write_fasta()</span></code></a></p>

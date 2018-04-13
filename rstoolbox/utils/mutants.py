@@ -475,3 +475,36 @@ def make_resfile( self, seqID, header, filename ):
     else:
         raise NotImplementedError
     return self
+
+
+def view_mutants_alignment( self, seqID ):
+    """
+    Generates a pretty representation alignment of the mutations in **Jupyter Notebooks**.
+
+    :param seqID: Identifier of the sequence sets of interest.
+    :type seqID: :class:`str`
+
+    :raise:
+        :KeyError: If data container does not have ``reference_sequence``
+            for ``seqID``.
+    """
+    if not self.has_reference_sequence(seqID):
+        raise KeyError("A reference sequence for {} is needed.".format(seqID))
+
+    seq = list(self.get_reference_sequence(seqID))
+    pos = self.get_reference_shift(seqID)
+    if isinstance(pos, int):
+        pos = list(range(pos, len(seq) + pos))
+    cols = [str(x) + "\n" + y for x, y in zip(pos, seq)]
+    if seqID not in self.get_identified_mutants():
+        df = self.identify_mutants(seqID)
+    else:
+        df = self.copy()
+
+    # df = df[[_check_column(df, "sequence", seqID),
+    #          _check_column(df, "mutant_positions", seqID)]]
+    df = df[_check_column(df, "sequence", seqID)].apply(lambda x: pd.Series(list(x)))
+    df.columns = cols
+    df.index = self["description"].values
+
+    return df.style.set_caption('sequence alignment')

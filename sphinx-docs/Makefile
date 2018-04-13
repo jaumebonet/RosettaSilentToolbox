@@ -19,4 +19,4 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 	rm -rf ../docs ||:
-	cp -r $(BUILDDIR)/html ../docs
+	cp -r $(BUILDDIR)/html ../docs ||:

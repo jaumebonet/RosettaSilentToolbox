@@ -34,6 +34,8 @@ Helper functions to read/write direct sequence information. They can be called t
 
    ~io.read_fasta
    ~io.write_fasta
+   ~io.write_clustalw
+   ~io.write_mutant_alignments
 
 IO: Rosetta
 -----------
@@ -81,6 +83,7 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.positional_sequence_similarity_plot
    ~plot.plot_fragments
    ~plot.plot_fragment_profiles
+   ~plot.plot_alignment
 
 Utils: Plot
 -----------

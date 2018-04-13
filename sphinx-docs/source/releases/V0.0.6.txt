@@ -7,3 +7,6 @@ v0.0.6 (April 2018)
 #. Fixed LOGO plot and added multi-line option.
 #. Labels are read as :class:`.Selection`.
 #. Write FASTA can generate multiple individual files.
+#. CLUSTALW format outputs
+#. Plot alignments with mutants highlight.
+#. New check_mutants script

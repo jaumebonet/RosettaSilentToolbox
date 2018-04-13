@@ -3,14 +3,19 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: plot.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 12-Apr-2018
 
 
 import numpy as np
 import seaborn as sns
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib import colors
 from matplotlib.cm import get_cmap
 import six
+
+
+__all__ = ["add_right_title", "add_top_title", "add_white_to_cmap",
+           "color_variant", "discrete_cmap_from_colors"]
+
 
 def add_right_title(ax, title, **kwargs ):
     """
@@ -66,13 +71,13 @@ def add_white_to_cmap( color=None, cmap=None, n_colors=10 ):
     Generate a new colormap with white as first instance.
 
     :param color: Color identifier.
-    :type color: Union[:py:class:`str`, :py:class:`int`]
+    :type color: Union[:class:`str`, :class:`int`]
     :param cmap: Cmap identifier. Incompatible with color.
-    :type cmap: Union[:py:class:`str`, :py:class:`~matplotlib.colors.Colormap`]
+    :type cmap: Union[:class:`str`, :class:`~matplotlib.colors.Colormap`]
     :param n_colors: Number discret colors to generate from.
-    :type n_colors: :py:class:`int`
+    :type n_colors: :class:`int`
 
-    :return: :py:class:`~matplotlib.colors.Colormap`
+    :return: :class:`~matplotlib.colors.Colormap`
 
     :raises:
         :AttributeError: If both `color` and `cmap` are specified or if
@@ -90,7 +95,7 @@ def add_white_to_cmap( color=None, cmap=None, n_colors=10 ):
             cmap = get_cmap(cmap)
         newmap = cmap(np.arange(n_colors - 1))
     newmap.insert(0, np.array([1, 1, 1, 1.]))
-    return LinearSegmentedColormap.from_list("FromWhite", newmap)
+    return colors.LinearSegmentedColormap.from_list("FromWhite", newmap)
 
 
 def color_variant(color, brightness_offset=1):
@@ -103,7 +108,7 @@ def color_variant(color, brightness_offset=1):
     :param brightness_offset: Level of offset from the initial color.
     :type brightness_offset: :py:class:`int`
 
-    :return: (:py:class:`str`) Color in hex format.
+    :return: :class:`str` - Color in hex format.
     """
     # https://chase-seibert.github.io/blog/2011/07/29/python-calculate-lighterdarker-rgb-colors.html
     def clamp(x):
@@ -119,3 +124,15 @@ def color_variant(color, brightness_offset=1):
         # hex() produces "0x88", we want just "88"
         return "#" + "".join([hex(i)[2:] for i in new_rgb_int])
     raise NotImplementedError("Input provided must be RGB or hex color format")
+
+
+def discrete_cmap_from_colors( color_list ):
+    """
+    Make a discrete :class:`~matplotlib.colors.Colormap` out of a list of colors.
+
+    :param color_list: Colors from which to do the map.
+    :type color_list: :func:`list` of rgb colors.
+
+    :return: :class:`~matplotlib.colors.Colormap`
+    """
+    return colors.ListedColormap(color_list)

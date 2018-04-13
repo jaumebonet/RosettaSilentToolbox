@@ -116,19 +116,19 @@
 <dl class="method">
 <dt id="rstoolbox.components.SequenceFrame.delete_empty">
 <code class="descclassname">SequenceFrame.</code><code class="descname">delete_empty</code><span class="sig-paren">(</span><em>pick=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.SequenceFrame.delete_empty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setter/Getter for the delete empty configuration.
-Set the behaviour to decide whether or not regular positions
+<dd><p>Setter/Getter for the delete empty configuration.</p>
+<p>Set the behaviour to decide whether or not regular positions
 have to be deleted if empty. This does not apply to amino acid types
-present in the reference_sequence.
-:param int pick: Remove from the SequenceFrame the regular</p>
-<blockquote>
-<div>amino/nucleic acids if they frequency is equal or under the value . Default is -1,
-so nothing is deleted.</div></blockquote>
+present in the reference_sequence.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pick</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Remove from the SequenceFrame the regular
+amino/nucleic acids if they frequency is equal or under the value . Default is -1,
+so nothing is deleted.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
 </tr>
 </tbody>
 </table>
