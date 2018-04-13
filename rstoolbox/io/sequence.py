@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Apr-2018
+# @Last modified time: 13-Apr-2018
 
 
 import os
@@ -84,6 +84,7 @@ def read_fasta( filename, expand=False, multi=False ):
     for file_count, f in enumerate( files ):
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
+            line = line.decode('utf8') if f.endswith(".gz") else line
             line = line.strip()
             if line.startswith(">"):
                 line = line.strip(">")
@@ -302,7 +303,6 @@ def write_mutant_alignments( df, seqID, filename=None ):
 
     df = df.identify_mutants(seqID)
     df[_check_column(df, "sequence", seqID)] = df.apply(lambda row: mask_row(row, seqID), axis=1)
-
 
     return write_clustalw(df, seqID, filename)
 

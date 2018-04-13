@@ -3,12 +3,13 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: check_mutants.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Apr-2018
+# @Last modified time: 13-Apr-2018
 
 # flake8: noqa
 
 # Standard Libraries
 import argparse
+import math
 
 # External Libraries
 import seaborn as sns
@@ -19,7 +20,7 @@ import matplotlib.pyplot as plt
 import rstoolbox
 from rstoolbox.io import parse_rosetta_file, read_fasta
 from rstoolbox.io import write_clustalw, write_mutant_alignments
-from rstoolbox.plot import logo_plot
+from rstoolbox.plot import logo_plot, plot_alignment
 
 # Configuration properties
 sns.set(font_scale=2)
@@ -37,7 +38,9 @@ def get_options( *args, **kwds ):
                         help='Input silent file', default=None)
     parser.add_argument('-in:files', dest='ifiles', action='store',
                         help='Prefix of input silent files', default=None)
-    parser.add_argument('-in:fasta', dest='ffile', action='store',
+    parser.add_argument('-in:fasta', dest='ifasta', action='store',
+                        help='Input designs in fasta format', default=None)
+    parser.add_argument('-in:wtfasta', dest='ffile', action='store',
                         help='Rerefence sequence (single FASTA)', default=None)
     parser.add_argument('-in:seqID', dest='seqID', action='store',
                         help='Sequence chain identifier (def: A)', default='A')
@@ -52,9 +55,13 @@ def get_options( *args, **kwds ):
 
     options = parser.parse_args()
 
-    if options.ifile is None and options.ifiles is None:
-        raise AttributeError("A filename or a prefix for multiple filename have to be provided.")
+    if options.ifile is None and options.ifiles is None and options.ifasta is None:
+        raise AttributeError("A silent or fasta file needs to be provided")
     if options.ifile is not None and options.ifiles is not None:
+        raise AttributeError("Provide only ONE file or a prefix for multiple files, not both.")
+    if options.ifile is not None and options.ifasta is not None:
+        raise AttributeError("Provide only ONE file or a prefix for multiple files, not both.")
+    if options.ifiles is not None and options.ifasta is not None:
         raise AttributeError("Provide only ONE file or a prefix for multiple files, not both.")
     if options.ofile is None:
         options.ofile = "seqcompare"
@@ -62,9 +69,12 @@ def get_options( *args, **kwds ):
     return options
 
 def main( options ):
-    infile = options.ifile if options.ifile is not None else options.ifiles
-    defs = {"sequence": options.seqID}
-    df = parse_rosetta_file(infile, defs, multi=options.ifiles is not None)
+    if options.ifasta is None:
+        infile = options.ifile if options.ifile is not None else options.ifiles
+        defs = {"sequence": options.seqID}
+        df = parse_rosetta_file(infile, defs, multi=options.ifiles is not None)
+    else:
+        df = read_fasta(options.ifasta)
 
     if options.ffile is not None:
         refseq = read_fasta(options.ffile).get_sequence("A").values[0]
@@ -81,13 +91,23 @@ def main( options ):
 
     # Logo Plot
     logof = options.ofile + "_logo" + "." + options.iformat
-    _, _ = logo_plot(df, options.seqID, refseq=options.ffile is not None,
-                     line_break=50, font_size=int(options.ifont) )
+    logo_plot(df, options.seqID, refseq=options.ffile is not None,
+              line_break=50, font_size=int(options.ifont) )
+    plt.tight_layout()
     plt.savefig(logof)
 
     # Alignment plot
-    # ...
-
+    if options.ffile is not None:
+        alimgf = options.ofile + "_ali" + "." + options.iformat
+        chunks = len(df.get_sequence(options.seqID).values[0])
+        chunks = int(math.ceil(float(chunks) / 50))
+        fig = plt.figure(figsize=(chunks * 10, 10))
+        grid = (chunks, 1)
+        ax = []
+        for i in range(chunks):
+            ax.append(plt.subplot2grid(grid, (i, 0), fig=fig))
+        plot_alignment( df, options.seqID, ax, line_break=50, matrix=None )
+        plt.savefig(alimgf)
 
 if __name__ == '__main__':
     main( get_options() )

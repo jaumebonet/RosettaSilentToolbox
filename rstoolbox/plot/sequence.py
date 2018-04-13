@@ -15,8 +15,14 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
 from rstoolbox.analysis import binary_overlap
+from rstoolbox.analysis.SimilarityMatrix import SimilarityMatrix
 from rstoolbox.components import DesignFrame, SequenceFrame, get_selection
+from rstoolbox.utils.getters import _check_column
+from rstoolbox.utils import discrete_cmap_from_colors, add_column
 from .color_schemes import color_scheme
+
+__all__ = ["plot_sequence_frequency_graph", "plot_alignment", "logo_plot",
+           "positional_sequence_similarity_plot", "sequence_frequency_plot"]
 
 
 def barcode_plot( df, column_name, ax, color="blue" ):
@@ -122,7 +128,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     :type yrotation: :class:`float`
 
     :raises:
-        :ValueError: if input is not a DataFrame derived object.
+        :ValueError: if input is not a :class:`~pandas.DataFrame` derived object.
         :KeyError: if reference sequence is requested but the data container
             does not have one.
     """
@@ -213,6 +219,110 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
                 aa_position = (order.index(ref_seq[i]), i)
             ax.add_patch(Rectangle(aa_position, 1, 1, fill=False, clip_on=False,
                                    edgecolor=border_color, lw=border_width, zorder=100))
+
+
+def plot_alignment( df, seqID, ax, line_break=None, matrix=None ):
+    """
+    Make an image representing the alignment of sequences with higlights to mutant positions.
+
+    :param df: Data container.
+    :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
+    :param seqID: Identifier of the query sequence.
+    :type seqID: :class:`str`
+    :param ax: Where to plot the heatmap. If a list of axis is provided, it assumes that one wants
+        to split the alignment in that many pieces.
+    :type ax: Union[:class:`~matplotlib.axes.Axes`, :func:`list` of
+        :class:`~matplotlib.axes.Axes`]
+    :param matrix: Identifier of the matrix used to evaluate similarity. Default is :data:`None`:
+        highlight differences.
+    :type matrix: :class:`str`
+
+    :raises:
+        :ValueError: if input is not a :class:`~pandas.DataFrame` derived object.
+        :KeyError: if reference sequence is requested but the data container
+            does not have one.
+        :KeyError: if there is no reference sequence for the requested id.
+    """
+    def score(col, matrix):
+        if matrix is None:
+            return pd.Series([0 if _ == col.name else 1 for _ in col.values])
+        else:
+            data = []
+            for _ in col.values:
+                if _ == col.name:
+                    data.append(0)
+                else:
+                    data.append(1 if int(matrix.get_value(col.name, _)) >= 0 else -1)
+            return pd.Series(data)
+
+    def chunks(l, n):
+        """Yield successive n-sized chunks from l."""
+        # https://stackoverflow.com/a/312464/2806632
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    def split(a, n):
+        k, m = divmod(len(a), n)
+        return (a[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in xrange(n))
+
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError("Input data must be in a DataFrame or DesignFrame")
+    if not df.has_reference_sequence(seqID):
+        raise KeyError("Reference sequence is needed")
+
+    seq = list(df.get_reference_sequence(seqID))
+    pos = df.get_reference_shift(seqID)
+    ids = list(df.get_id().values)
+    if isinstance(pos, int):
+        pos = list(range(pos, len(seq) + pos))
+
+    cname = _check_column(df, "sequence", seqID)
+    df = df[cname].apply(lambda x: pd.Series(list(x)))
+    df.columns = seq
+    if matrix is not None:
+        matrix = SimilarityMatrix.get_matrix(matrix)
+    ref = pd.DataFrame([seq])
+    ref.columns = seq
+    df = pd.concat([ref, df], ignore_index=True)
+    ids.insert(0, "reference")
+    df2 = df.apply(lambda col: score(col, matrix), axis=0)
+    df2.index = ids
+
+    if matrix is None:
+        cmap = discrete_cmap_from_colors([(255.0 / 255, 255.0 / 255, 255.0 / 255),
+                                          (255.0 / 255, 255.0 / 255, 0.0 / 255)])
+    else:
+        cmap = discrete_cmap_from_colors([(255.0 / 255, 0.0 / 255, 0.0 / 255),
+                                          (255.0 / 255, 255.0 / 255, 255.0 / 255),
+                                          (0.0 / 255, 153.0 / 255, 0.0 / 255)])
+
+    if not isinstance(ax, list):
+        sns.heatmap(df2, ax=ax, annot=df, cbar=False, square=True, fmt='', cmap=cmap)
+    else:
+        if line_break is None:
+            chnk = list(split(range(df2.shape[1]), len(ax)))
+        else:
+            chnk = list(chunks(range(df2.shape[1]), line_break))
+            if len(chnk) > len(ax):
+                raise ArithmeticError("Not enough axis for the number of requested pieces")
+        max_len = 0
+        for i, axis in enumerate(ax):
+            counts = df2.iloc[:, chnk[i][0]:chnk[i][-1]]
+            names  = df.iloc[:, chnk[i][0]:chnk[i][-1]]
+            if i == 0:
+                max_len = counts.shape[1]
+            if i == len(ax) - 1:
+                this_len = counts.shape[1]
+                for _ in range(max_len - this_len):
+                    counts = add_column(counts, "", 0)
+                    names = add_column(names, "", "")
+            sns.heatmap(counts, ax=axis, cbar=False, fmt='', annot=names, square=True, cmap=cmap)
+            # @TODO: Add numerical count on ticks
+            # @BODY: pick the numbers from the reference_shift and add them as ticks every 10 or so
+            if i == len(ax) - 1:
+                axis.set_xticks([_ + 0.5 for _ in list(range(this_len))])
+            axis.set_xticklabels([])
+            axis.set_xticks([])
 
 
 def positional_sequence_similarity_plot( df, ax, identity_color="green", similarity_color="orange" ):
