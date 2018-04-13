@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: SimilarityMatrix.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Feb-2018
+# @Last modified time: 13-Apr-2018
 
 
 from collections import deque
@@ -37,15 +37,15 @@ class SimilarityMatrix(object):
         fd = open(matrix_file)
         for line in fd:
             if line.startswith(' '):
-                l = line.strip().split()
-                for aa in l:
+                ldata = line.strip().split()
+                for aa in ldata:
                     data.setdefault(aa, {})
                     aalist.append(aa)
             else:
-                l  = deque(line.strip().split())
-                aa = l.popleft()
+                ldata  = deque(line.strip().split())
+                aa = ldata.popleft()
                 for i in range(len(aalist)):
-                    data[aalist[i]][aa] = int(l[i])
+                    data[aalist[i]][aa] = int(ldata[i])
 
         fd.close()
         return SimilarityMatrix( data )

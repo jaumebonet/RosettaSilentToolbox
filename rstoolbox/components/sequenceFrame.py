@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequenceFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Apr-2018
+# @Last modified time: 13-Apr-2018
 
 # Standard Libraries
 
@@ -17,6 +17,7 @@ from .rsbase import RSBaseFrequency
 from .selection import get_selection
 
 __all__ = ["SequenceFrame"]
+
 
 class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
     """

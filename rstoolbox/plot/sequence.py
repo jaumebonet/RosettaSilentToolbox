@@ -325,13 +325,16 @@ def plot_alignment( df, seqID, ax, line_break=None, matrix=None ):
             axis.set_xticks([])
 
 
-def positional_sequence_similarity_plot( df, ax, identity_color="green", similarity_color="orange" ):
+def positional_sequence_similarity_plot( df, ax, identity_color="green",
+                                         similarity_color="orange" ):
     """
-    Generates a plot covering the amount of identities and positives matches from a population of designs
-    to a reference sequence according to a substitution matrix.
+    Generates a plot covering the amount of identities and positives matches from a population
+    of designs to a reference sequence according to a substitution matrix.
+
     Input data can/should be generated with :py:func:`.positional_sequence_similarity`.
 
-    :param df: Input data, where rows are positions and columns are `identity_perc` and `positive_perc`
+    :param df: Input data, where rows are positions and columns are
+        `identity_perc` and `positive_perc`
     :type df: :py:class:`~pandas.DataFrame`
     :param ax: matplotlib axis to which we will plot.
     :type ax: :py:class:`~matplotlib.axes.Axes`

@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Apr-2018
+# @Last modified time: 13-Apr-2018
 
 
 import os
@@ -11,10 +11,12 @@ import copy
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 import pytest
 
 import rstoolbox.io as ri
 import rstoolbox.components as rc
+import rstoolbox.plot as rp
 
 
 class TestDesign( object ):
@@ -163,6 +165,8 @@ class TestDesign( object ):
         with pytest.raises(KeyError):
             df.get_reference_sequence("A")
 
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_mutants_alignment.png')
     def test_mutants(self):
         # Static data
         refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
@@ -240,3 +244,9 @@ class TestDesign( object ):
         # write alignment
         ri.write_mutant_alignments(df, "B", os.path.join(self.tmpdir, "mutanttest.clw"))
         assert os.path.isfile(os.path.join(self.tmpdir, "mutanttest.clw"))
+
+        # plot mutant
+        fig = fig = plt.figure(figsize=(30, 10))
+        ax = plt.subplot2grid((1, 1), (0, 0), fig=fig)
+        rp.plot_alignment(df, "B", ax, matrix="BLOSUM62")
+        return fig

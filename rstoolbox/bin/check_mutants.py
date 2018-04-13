@@ -5,7 +5,6 @@
 # @Last modified by:   bonet
 # @Last modified time: 13-Apr-2018
 
-# flake8: noqa
 
 # Standard Libraries
 import argparse
@@ -68,6 +67,7 @@ def get_options( *args, **kwds ):
 
     return options
 
+
 def main( options ):
     if options.ifasta is None:
         infile = options.ifile if options.ifile is not None else options.ifiles
@@ -108,6 +108,7 @@ def main( options ):
             ax.append(plt.subplot2grid(grid, (i, 0), fig=fig))
         plot_alignment( df, options.seqID, ax, line_break=50, matrix=None )
         plt.savefig(alimgf)
+
 
 if __name__ == '__main__':
     main( get_options() )
