@@ -340,3 +340,22 @@ class TestDesign( object ):
         assert "".join(list(dfsm.sse.values)) == sse_ref
         assert "".join(list(dfsm.max_sse.values)) == diff1
         assert dfsm.identity_perc.mean() == pytest.approx(0.8121, rel=1e-3)
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_sse_profile.png')
+    def test_sse_profile_plot(self):
+        sse_ref = "LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL"
+        sc_des  = {"scores": ["score"], "structure": "C"}
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent3, sc_des)
+        df.add_reference_structure("C", sse_ref)
+
+        df1 = ra.positional_structural_count(df, 'C')
+        df2 = ra.positional_structural_identity(df, 'C')
+
+        fig = plt.figure(figsize=(35, 10))
+        ax00 = plt.subplot2grid((1, 1), (0, 0))
+        rp.positional_structural_similarity_plot(pd.concat([df1, df2], axis=1), ax00)
+        plt.tight_layout()
+        return fig

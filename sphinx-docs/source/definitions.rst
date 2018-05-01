@@ -1,6 +1,6 @@
 .. _definitions:
 
-.. |df_param| replace:: Data Container
+.. |df_param| replace:: Data container
 
 .. |seqID_param| replace:: Identifier of the sequence of interest
 
@@ -19,6 +19,10 @@
 
 .. |keyres_param| replace:: Residues of interest
 .. |keyres_types| replace:: Union[:class:`int`, :func:`list` of :class:`int`, :class:`str`, :class:`.Selection`]
+
+.. |axis_param| replace:: ``matplotlib`` axis to which we will plot
+
+.. |color_types| replace:: Union[:class:`int`, :class:`str`]
 
 .. |designframe_cast_error| replace:: if the data passed is not a :class:`.DesignFrame` or cannot be casted to one
 
