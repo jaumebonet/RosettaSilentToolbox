@@ -1,3 +1,5 @@
+.. _definitions:
+
 .. |df_param| replace:: Data Container
 
 .. |seqID_param| replace:: Identifier of the sequence of interest

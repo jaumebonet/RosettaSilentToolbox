@@ -1,3 +1,3 @@
 from .sequence import *
-from .stats import cumulative
+from .stats import *
 from .structure import *

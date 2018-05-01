@@ -159,7 +159,6 @@ def sequential_frequencies( df, seqID, query="sequence", seqType="protein",
            ...:                         {'scores': ['score'], 'sequence': 'AB'})
            ...: df = sequential_frequencies(df, 'B')
            ...: df.head()
-
     """
     from rstoolbox.components import SequenceFrame
 
