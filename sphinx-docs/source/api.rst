@@ -64,6 +64,8 @@ Helper functions for sequence analysis. They can be called through ``rstoolbox.a
    ~analysis.sequential_frequencies
    ~analysis.sequence_similarity
    ~analysis.positional_sequence_similarity
+   ~analysis.binary_similarity
+   ~analysis.binary_overlap
    ~analysis.cumulative
    ~analysis.positional_structural_count
    ~analysis.positional_structural_identity

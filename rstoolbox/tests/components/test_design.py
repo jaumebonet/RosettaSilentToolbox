@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
+# @Last modified time: 01-May-2018
 
 
 import os
@@ -17,6 +17,7 @@ import pytest
 import rstoolbox.io as ri
 import rstoolbox.components as rc
 import rstoolbox.plot as rp
+import rstoolbox.analysis as ra
 
 
 class TestDesign( object ):
@@ -266,3 +267,50 @@ class TestDesign( object ):
         fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50 )
         plt.tight_layout()
         return fig
+
+    def test_sequence_similarities(self):
+        refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
+                 "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"
+        diff1  = "....+.R+.A....+.A+.....+.++.....++.....E..DM.PE..IA..LR.IG+." \
+                 "FNA......+.....K+.......+.+...+..K+...........+........+"
+        diff2  = "000000100100000010000000000000000000000100110110011001101100" \
+                 "11100000000000010000000000000000010000000000000000000000"
+        diff3  = "000000100110110110100000000000001100111100110110011101101100" \
+                 "11110010011001010010010000000000011000101011010001100000"
+
+        sc_des  = {"scores": ["score"], "sequence": "B"}
+
+        new_cols = ["blosum62_B_raw", "blosum62_B_perc", "blosum62_B_identity",
+                    "blosum62_B_positive", "blosum62_B_negative", "blosum62_B_ali"]
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        df.add_reference_sequence("B", refseq)
+
+        # global sequence similarity
+        dfss = ra.sequence_similarity( df, "B" )
+        assert len(dfss.columns) == len(df.columns) + 6
+        assert len(set(dfss.columns).difference(set(df.columns))) == len(new_cols)
+        assert df.shape[0] == dfss.shape[0]
+        assert dfss.blosum62_B_raw.mean() == 41.0
+        assert dfss.blosum62_B_perc.mean() == pytest.approx(0.0692, rel=1e-3)
+        assert dfss.blosum62_B_identity.mean() == pytest.approx(24.333, rel=1e-3)
+        assert dfss.blosum62_B_positive.mean() == pytest.approx(46.166, rel=1e-3)
+        assert dfss.blosum62_B_negative.mean() == pytest.approx(69.833, rel=1e-3)
+        assert dfss.blosum62_B_ali.values[0] == diff1
+
+        # local sequence similarity
+        dfps = ra.positional_sequence_similarity(df, "B")
+        assert dfps.shape == (len(refseq), 2)
+        assert list(dfps.index.values) == list(range(1, len(refseq) + 1))
+        assert dfps.identity_perc.mean() < dfps.positive_perc.mean()
+        assert dfps.identity_perc.mean() == pytest.approx(0.2097, rel=1e-3)
+        assert dfps.positive_perc.mean() == pytest.approx(0.3979, rel=1e-3)
+
+        # binary similarity
+        df01 = ra.binary_similarity(df, "B")
+        assert len(df01.columns) == len(df.columns) + 1
+        assert df01.identity_B_binary.values[0] == diff2
+
+        # binary overlap
+        assert "".join([str(_) for _ in ra.binary_overlap(df01, "B")]) == diff3

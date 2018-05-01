@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragments.py
 # @Last modified by:   bonet
-# @Last modified time: 23-Mar-2018
+# @Last modified time: 01-May-2018
 
 
 import pandas as pd
@@ -116,10 +116,10 @@ def plot_fragment_profiles( fig, small_frags, large_frags, ref_seq, ref_sse, mat
                    ra.positional_structural_identity(large_frags, ref_sse=ref_sse)], axis=1),
         ax11)
     positional_sequence_similarity_plot(ra.positional_sequence_similarity(small_frags, "A",
-                                                                          ref_seq, matrix ),
+                                                                          ref_seq, matrix=matrix ),
                                         ax00 )
     positional_sequence_similarity_plot(ra.positional_sequence_similarity(large_frags, "A",
-                                                                          ref_seq, matrix ),
+                                                                          ref_seq, matrix=matrix ),
                                         ax01 )
 
     # fix axis
