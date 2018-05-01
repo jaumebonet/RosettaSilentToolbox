@@ -1,42 +1,79 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   20-Feb-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: structure.py
-# @Last modified by:   bonet
-# @Last modified time: 23-Mar-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+.. func:: positional_structural_count
+.. func:: positional_structural_identity
+"""
+
+# Standard Libraries
 import collections
 
+# External Libraries
 import pandas as pd
 
+# This Library
 
-def positional_structural_count( df, seqID=None ):
-    """
-    Count the number of `H`, `E` in the structural provided data
+__all__ = ['positional_structural_count', 'positional_structural_identity']
 
-    :param df: Input data.
+
+def positional_structural_count( df, seqID=None, key_residues=None ):
+    """Percentage of secondary structure types for each sequence position of all
+    decoys.
+
+    The secondary structure dictionary is a minimized one: ``H``, ``E`` and ``L``.
+
+    :param df: |df_param|.
     :type df: Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`]
-    :param seqID: Identifier of the sequence sets of interest. Required when input is :py:class:`.DesignFrame`
-    :type seqID: :py:class:`str`
+    :param str seqID: |seqID_param|. Required when input is :class:`.DesignFrame`.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
 
-    :return: :py:class:`~pandas.DataFrame` where rows are positions and columns are `H`, `E` and `L`.
+    :return: :class:`~pandas.DataFrame` - where rows are sequence positions and
+        columns are the secondary structure identifiers ``H``, ``E``, ``L``.
 
     :raises:
-        :AttributeError: if the data passed is not in Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`].
-        :AttributeError: if input is :py:class:`.DesignFrame` and ``seqID`` is not provided.
-        :KeyError: if input is :py:class:`.DesignFrame` and ``seqID`` cannot be found.
+        :AttributeError: if the data passed is not in Union[:class:`.DesignFrame`,
+            :class:`.FragmentFrame`]. It will *not* try to cast a provided
+            :class:`~pandas.DataFrame`, as it would not be possible to know into which of
+            the two possible inputs it needs to be casted.
+        :AttributeError: if input is :class:`.DesignFrame` and ``seqID`` is not provided.
+        :KeyError: |sseID_error| when input is :class:`.DesignFrame`.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import positional_structural_count
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'scores': ['score'], 'structure': 'C'})
+           ...: df = positional_structural_count(df.iloc[1:], 'C')
+           ...: df.head()
     """
     from rstoolbox.components import DesignFrame, FragmentFrame
+    from rstoolbox.components import get_selection
     data = {"H": [], "E": [], "L": []}
 
-    # @todo: Code positional_structural_count for DesignFrame
-    # @body: Should behave the same way it does for the FragmentFrame
     if isinstance(df, DesignFrame):
         if seqID is None:
             raise AttributeError("seqID needs to be provided")
         if not "structure_{}".format(seqID) in df:
             raise KeyError("Structure {} not found in decoys.".format(seqID))
+        seqdata = df.get_structure(seqID)
+        seqdata = seqdata.apply(lambda x: pd.Series(list(x)))
+        for _, i in enumerate(seqdata.columns.values):
+            qseq = "".join(seqdata[i].tolist())
+            sse = collections.Counter(qseq)
+            data["H"].append(float(sse["H"]) / float(len(qseq)))
+            data["E"].append(float(sse["E"]) / float(len(qseq)))
+            data["L"].append(float(sse["L"]) / float(len(qseq)))
 
     elif isinstance(df, FragmentFrame):
         for i in df["position"].drop_duplicates().values:
@@ -47,45 +84,84 @@ def positional_structural_count( df, seqID=None ):
             data["L"].append(float(sse["L"]) / float(len(qseq)))
 
     else:
-        raise AttributeError("Input data has to be a DesignFrame with a reference sequence or a FragmentFrame.")
+        raise AttributeError("Input data has to be a DesignFrame or a FragmentFrame.")
 
-    return pd.DataFrame(data)
+    dfo = pd.DataFrame(data)
+    # Get shift only from DesignFrame; FragmentFrame does not have one
+    shft = df.get_reference_shift(seqID) if isinstance(df, DesignFrame) else 1
+    # Shift the index so that index == PDB count
+    if isinstance(shft, int):
+        dfo.index = dfo.index + shft
+    else:
+        dfo.index = shft
+    return dfo.loc[list(get_selection(key_residues, None, list(dfo.index)))]
 
 
-def positional_structural_identity( df, seqID=None, ref_sse=None ):
-    """
-    Evaluate per position how many times the provided data matches the expected secondary structure.
+def positional_structural_identity( df, seqID=None, ref_sse=None, key_residues=None ):
+    """Per position evaluation of how many times the provided data matches the expected
+    ``reference_structure``.
 
-    :param df: Input data.
-    :type df: Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`]
-    :param seqID: Identifier of the sequence sets of interest. Required when input is :py:class:`.DesignFrame`
-    :type seqID: :py:class:`str`
-    :param ref_sse: Reference sequence. Required.
-    :type ref_sse: :py:class:`str`
+    :param df: |df_param|.
+    :type df: Union[:class:`.DesignFrame`, :class:`.FragmentFrame`]
+    :param str seqID: |seqID_param|. Required when input is :class:`.DesignFrame`
+    :param str ref_sse: Reference sequence. Required when input is :class:`.FragmentFrame`.
+        Will overwrite the reference sequence of :class:`.DesignFrame` if provided.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
 
-    :return: :py:class:`~pandas.DataFrame` where rows are positions and columns are `sse`, `max_sse` and `identity_perc`.
+    :return: :class:`~pandas.DataFrame` - where rows are sequence positions and
+        columns are ``sse`` (expected secondary structure),
+        ``max_sse`` (most represented secondary structure) and
+        ``identity_perc`` (percentage of matched secondary structure).
 
     :raises:
-        :AttributeError: if the data passed is not in Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`].
-        :AttributeError: if input is :py:class:`.DesignFrame` and ``seqID`` is not provided.
-        :KeyError: if input is :py:class:`.DesignFrame` and ``seqID`` cannot be found.
-        :AttributeError if ``ref_sse`` is not provided.
+        :AttributeError: if the data passed is not in Union[:class:`.DesignFrame`,
+            :class:`.FragmentFrame`]. It will *not* try to cast a provided
+            :class:`~pandas.DataFrame`, as it would not be possible to know into which of
+            the two possible inputs it needs to be casted.
+        :AttributeError: if input is :class:`.DesignFrame` and ``seqID`` is not provided.
+        :KeyError: |sseID_error| when input is :class:`.DesignFrame`.
+        :AttributeError: if input is :class:`.FragmentFrame` and ``ref_sse`` is not provided.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import positional_structural_identity
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'scores': ['score'], 'structure': 'C'})
+           ...: df.add_reference_structure('C', df.get_structure('C').values[0])
+           ...: df = positional_structural_identity(df.iloc[1:], 'C')
+           ...: df.head()
     """
     from rstoolbox.components import DesignFrame, FragmentFrame
+    from rstoolbox.components import get_selection
     data = {"sse": [], "max_sse": [], "identity_perc": []}
-
-    # @todo: Code positional_structural_identity for DesignFrame
-    # @body: Should behave the same way it does for the FragmentFrame
-    if ref_sse is None:
-        raise AttributeError("ref_sse needs to be provided")
 
     if isinstance(df, DesignFrame):
         if seqID is None:
             raise AttributeError("seqID needs to be provided")
+        if not df.has_reference_structure(seqID):
+            raise AttributeError("There is no reference structure for seqID {}".format(seqID))
         if not "structure_{}".format(seqID) in df:
             raise KeyError("Structure {} not found in decoys.".format(seqID))
+        ref_sse = ref_sse if ref_sse is not None else df.get_reference_structure(seqID)
+        seqdata = df.get_structure(seqID)
+        seqdata = seqdata.apply(lambda x: pd.Series(list(x)))
+        for _, i in enumerate(seqdata.columns.values):
+            qseq = "".join(seqdata[i].tolist())
+            sse = collections.Counter(qseq)
+            data["sse"].append(ref_sse[i])
+            data["max_sse"].append(sse.most_common(1)[0][0])
+            data["identity_perc"].append(float(sse[ref_sse[i - 1]]) / float(len(qseq)))
 
     elif isinstance(df, FragmentFrame):
+        if ref_sse is None:
+            raise AttributeError("ref_sse needs to be provided")
+
         for i in df["position"].drop_duplicates().values:
             qseq = "".join(df[df["position"] == i]["sse"].values).upper()
             sse = collections.Counter(qseq)
@@ -94,6 +170,15 @@ def positional_structural_identity( df, seqID=None, ref_sse=None ):
             data["identity_perc"].append(float(sse[ref_sse[i - 1]]) / float(len(qseq)))
 
     else:
-        raise AttributeError("Input data has to be a DesignFrame with a reference sequence or a FragmentFrame.")
+        raise AttributeError("Input data has to be a DesignFrame with a reference sequence "
+                             "or a FragmentFrame.")
 
-    return pd.DataFrame(data)
+    dfo = pd.DataFrame(data)
+    # Get shift only from DesignFrame; FragmentFrame does not have one
+    shft = df.get_reference_shift(seqID) if isinstance(df, DesignFrame) else 1
+    # Shift the index so that index == PDB count
+    if isinstance(shft, int):
+        dfo.index = dfo.index + shft
+    else:
+        dfo.index = shft
+    return dfo.loc[list(get_selection(key_residues, None, list(dfo.index)))]

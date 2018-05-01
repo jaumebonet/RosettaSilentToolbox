@@ -31,6 +31,7 @@ class TestDesign( object ):
         self.dirpath = os.path.join(os.path.dirname(__file__), '..', 'data')
         self.silent1 = os.path.join(self.dirpath, 'input_2seq.minisilent.gz')
         self.silent2 = os.path.join(self.dirpath, 'input_sse.minsilent.gz')
+        self.silent3 = os.path.join(self.dirpath, 'input_ssebig.minisilent.gz')
 
     @pytest.fixture(autouse=True)
     def setup( self, tmpdir ):
@@ -314,3 +315,28 @@ class TestDesign( object ):
 
         # binary overlap
         assert "".join([str(_) for _ in ra.binary_overlap(df01, "B")]) == diff3
+
+    def test_structure_similarities(self):
+        sse_ref = "LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL"
+        diff1   = "LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL"
+        sc_des  = {"scores": ["score"], "structure": "C"}
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent3, sc_des)
+        df.add_reference_structure("C", sse_ref)
+
+        # secondary structure distribution
+        dfsse = ra.positional_structural_count(df, 'C')
+        assert set(dfsse.columns.values) == set(['H', 'E', 'L'])
+        assert dfsse.shape[0] == len(sse_ref)
+        assert dfsse.H.mean() == pytest.approx(0.2033, rel=1e-3)
+        assert dfsse.E.mean() == pytest.approx(0.4038, rel=1e-3)
+        assert dfsse.L.mean() == pytest.approx(0.3927, rel=1e-3)
+
+        # secondary structure match
+        dfsm = ra.positional_structural_identity(df, 'C')
+        assert set(dfsm.columns.values) == set(['identity_perc', 'sse', 'max_sse'])
+        assert dfsm.shape[0] == len(sse_ref)
+        assert "".join(list(dfsm.sse.values)) == sse_ref
+        assert "".join(list(dfsm.max_sse.values)) == diff1
+        assert dfsm.identity_perc.mean() == pytest.approx(0.8121, rel=1e-3)

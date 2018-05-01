@@ -7,6 +7,10 @@
     Bruno Correia <bruno.correia@epfl.ch>
 
 .. func:: sequential_frequencies
+.. func:: sequence_similarity
+.. func:: positional_sequence_similarity
+.. func:: binary_similarity
+.. func:: binary_overlap
 """
 # Standard Libraries
 import copy
@@ -321,7 +325,7 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None,
     :raises:
         :AttributeError: if the data passed is not in Union[:class:`.DesignFrame`,
             :class:`.FragmentFrame`]. It will *not* try to cast a provided
-            :class:`~pandas.DataFrame`, as itt would not be possible to know into which of
+            :class:`~pandas.DataFrame`, as it would not be possible to know into which of
             the two possible inputs it needs to be casted.
         :AttributeError: if input is :class:`.DesignFrame` and ``seqID`` is not provided.
         :KeyError: |seqID_error| when input is :class:`.DesignFrame`.

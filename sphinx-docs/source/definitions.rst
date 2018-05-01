@@ -21,5 +21,6 @@
 .. |designframe_cast_error| replace:: if the data passed is not a :class:`.DesignFrame` or cannot be casted to one
 
 .. |seqID_error| replace:: if there is no sequence information for chain ``seqID`` of the decoys
+.. |sseID_error| replace:: if there is no structure information for chain ``seqID`` of the decoys
 
 .. |reference_error| replace:: if there is no ``reference_sequence`` for chain ``seqID`` of the decoys
