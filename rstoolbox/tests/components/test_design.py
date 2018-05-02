@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
+# @Last modified time: 02-May-2018
 
 
 import os
@@ -17,6 +17,7 @@ import pytest
 import rstoolbox.io as ri
 import rstoolbox.components as rc
 import rstoolbox.plot as rp
+import rstoolbox.analysis as ra
 
 
 class TestDesign( object ):
@@ -30,6 +31,7 @@ class TestDesign( object ):
         self.dirpath = os.path.join(os.path.dirname(__file__), '..', 'data')
         self.silent1 = os.path.join(self.dirpath, 'input_2seq.minisilent.gz')
         self.silent2 = os.path.join(self.dirpath, 'input_sse.minsilent.gz')
+        self.silent3 = os.path.join(self.dirpath, 'input_ssebig.minisilent.gz')
 
     @pytest.fixture(autouse=True)
     def setup( self, tmpdir ):
@@ -234,6 +236,24 @@ class TestDesign( object ):
             # Check position of mutations
             assert row.get_mutation_positions("B") == mut_pos[i]
 
+        # Make new variants
+        dfm2 = df.iloc[0].generate_mutant_variants('B', [(1, "TGAP"), (14, "MAPT")])
+        assert dfm2.shape[0] == 16
+        assert 0 in dfm2.get_mutation_count('B')
+
+        # Revert to WT
+        dfwt = df.iloc[0:2].generate_wt_reversions('B', [1, 14])
+        assert dfwt.shape[0] == 8
+
+        dfwt = rc.DesignFrame({"description": ["reference"], "sequence_B": [refseq]})
+        dfwt.add_reference_sequence('B', refseq)
+        dfwt = dfwt.generate_mutant_variants('B', [(1, "TGP"), (6, "ERG"), (14, "MAT")])
+        assert dfwt.shape[0] == 28
+        dfwt = dfwt.generate_wt_reversions('B').identify_mutants('B')
+        assert dfwt.shape[0] == 36
+        assert 0 in dfwt.get_mutation_count('B').values
+        assert refseq in dfwt.get_sequence('B').values
+
         # write to resfiles
         df.make_resfile("B", "NATAA", os.path.join(self.tmpdir, "mutanttest.resfile"))
         for i, row in df.iterrows():
@@ -264,5 +284,96 @@ class TestDesign( object ):
         df.add_reference_sequence("B", refseq)
 
         fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50 )
+        plt.tight_layout()
+        return fig
+
+    def test_sequence_similarities(self):
+        refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
+                 "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"
+        diff1  = "....+.R+.A....+.A+.....+.++.....++.....E..DM.PE..IA..LR.IG+." \
+                 "FNA......+.....K+.......+.+...+..K+...........+........+"
+        diff2  = "000000100100000010000000000000000000000100110110011001101100" \
+                 "11100000000000010000000000000000010000000000000000000000"
+        diff3  = "000000100110110110100000000000001100111100110110011101101100" \
+                 "11110010011001010010010000000000011000101011010001100000"
+
+        sc_des  = {"scores": ["score"], "sequence": "B"}
+
+        new_cols = ["blosum62_B_raw", "blosum62_B_perc", "blosum62_B_identity",
+                    "blosum62_B_positive", "blosum62_B_negative", "blosum62_B_ali"]
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        df.add_reference_sequence("B", refseq)
+
+        # global sequence similarity
+        dfss = ra.sequence_similarity( df, "B" )
+        assert len(dfss.columns) == len(df.columns) + 6
+        assert len(set(dfss.columns).difference(set(df.columns))) == len(new_cols)
+        assert df.shape[0] == dfss.shape[0]
+        assert dfss.blosum62_B_raw.mean() == 41.0
+        assert dfss.blosum62_B_perc.mean() == pytest.approx(0.0692, rel=1e-3)
+        assert dfss.blosum62_B_identity.mean() == pytest.approx(24.333, rel=1e-3)
+        assert dfss.blosum62_B_positive.mean() == pytest.approx(46.166, rel=1e-3)
+        assert dfss.blosum62_B_negative.mean() == pytest.approx(69.833, rel=1e-3)
+        assert dfss.blosum62_B_ali.values[0] == diff1
+
+        # local sequence similarity
+        dfps = ra.positional_sequence_similarity(df, "B")
+        assert dfps.shape == (len(refseq), 2)
+        assert list(dfps.index.values) == list(range(1, len(refseq) + 1))
+        assert dfps.identity_perc.mean() < dfps.positive_perc.mean()
+        assert dfps.identity_perc.mean() == pytest.approx(0.2097, rel=1e-3)
+        assert dfps.positive_perc.mean() == pytest.approx(0.3979, rel=1e-3)
+
+        # binary similarity
+        df01 = ra.binary_similarity(df, "B")
+        assert len(df01.columns) == len(df.columns) + 1
+        assert df01.identity_B_binary.values[0] == diff2
+
+        # binary overlap
+        assert "".join([str(_) for _ in ra.binary_overlap(df01, "B")]) == diff3
+
+    def test_structure_similarities(self):
+        sse_ref = "LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL"
+        diff1   = "LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL"
+        sc_des  = {"scores": ["score"], "structure": "C"}
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent3, sc_des)
+        df.add_reference_structure("C", sse_ref)
+
+        # secondary structure distribution
+        dfsse = ra.positional_structural_count(df, 'C')
+        assert set(dfsse.columns.values) == set(['H', 'E', 'L'])
+        assert dfsse.shape[0] == len(sse_ref)
+        assert dfsse.H.mean() == pytest.approx(0.2033, rel=1e-3)
+        assert dfsse.E.mean() == pytest.approx(0.4038, rel=1e-3)
+        assert dfsse.L.mean() == pytest.approx(0.3927, rel=1e-3)
+
+        # secondary structure match
+        dfsm = ra.positional_structural_identity(df, 'C')
+        assert set(dfsm.columns.values) == set(['identity_perc', 'sse', 'max_sse'])
+        assert dfsm.shape[0] == len(sse_ref)
+        assert "".join(list(dfsm.sse.values)) == sse_ref
+        assert "".join(list(dfsm.max_sse.values)) == diff1
+        assert dfsm.identity_perc.mean() == pytest.approx(0.8121, rel=1e-3)
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_sse_profile.png')
+    def test_sse_profile_plot(self):
+        sse_ref = "LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL"
+        sc_des  = {"scores": ["score"], "structure": "C"}
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent3, sc_des)
+        df.add_reference_structure("C", sse_ref)
+
+        df1 = ra.positional_structural_count(df, 'C')
+        df2 = ra.positional_structural_identity(df, 'C')
+
+        fig = plt.figure(figsize=(35, 10))
+        ax00 = plt.subplot2grid((1, 1), (0, 0))
+        rp.positional_structural_similarity_plot(pd.concat([df1, df2], axis=1), ax00)
         plt.tight_layout()
         return fig

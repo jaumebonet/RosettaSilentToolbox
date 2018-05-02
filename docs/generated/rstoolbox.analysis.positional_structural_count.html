@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rstoolbox.analysis.positional_structural_count &#8212; rstoolbox 0 documentation</title>
+    <title>rstoolbox.analysis.positional_structural_count &#8212; rstoolbox 0.0.6 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="rstoolbox.analysis.positional_structural_identity" href="rstoolbox.analysis.positional_structural_identity.html" />
-    <link rel="prev" title="rstoolbox.analysis.cumulative" href="rstoolbox.analysis.cumulative.html" />
+    <link rel="prev" title="rstoolbox.analysis.binary_overlap" href="rstoolbox.analysis.binary_overlap.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           rstoolbox</a>
-        <span class="navbar-text navbar-version pull-left"><b>0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.6</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -115,30 +115,37 @@
 <h1>rstoolbox.analysis.positional_structural_count<a class="headerlink" href="#rstoolbox-analysis-positional-structural-count" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.analysis.positional_structural_count">
-<code class="descclassname">rstoolbox.analysis.</code><code class="descname">positional_structural_count</code><span class="sig-paren">(</span><em>df</em>, <em>seqID=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.analysis.positional_structural_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Count the number of <cite>H</cite>, <cite>E</cite> in the structural provided data</p>
+<code class="descclassname">rstoolbox.analysis.</code><code class="descname">positional_structural_count</code><span class="sig-paren">(</span><em>df</em>, <em>seqID=None</em>, <em>key_residues=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.analysis.positional_structural_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Percentage of secondary structure types for each sequence position of all
+decoys.</p>
+<p>The secondary structure dictionary is a minimized one: <code class="docutils literal notranslate"><span class="pre">H</span></code>, <code class="docutils literal notranslate"><span class="pre">E</span></code> and <code class="docutils literal notranslate"><span class="pre">L</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>]) – Input data.</li>
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the sequence sets of interest. Required when input is <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a></li>
+<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>]) – Data container.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest. Required when input is <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</li>
+<li><strong>key_residues</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="rstoolbox.components.Selection.html#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a>]) – Residues of interest.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> where rows are positions and columns are <cite>H</cite>, <cite>E</cite> and <cite>L</cite>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> - where rows are sequence positions and
+columns are the secondary structure identifiers <code class="docutils literal notranslate"><span class="pre">H</span></code>, <code class="docutils literal notranslate"><span class="pre">E</span></code>, <code class="docutils literal notranslate"><span class="pre">L</span></code>.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">if the data passed is not in Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>].</td>
+<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">if the data passed is not in Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>,
+<a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>]. It will <em>not</em> try to cast a provided
+<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>, as it would not be possible to know into which of
+the two possible inputs it needs to be casted.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">AttributeError:</th><td class="field-body">if input is <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> and <code class="docutils literal notranslate"><span class="pre">seqID</span></code> is not provided.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">KeyError:</th><td class="field-body">if input is <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> and <code class="docutils literal notranslate"><span class="pre">seqID</span></code> cannot be found.</td>
+<tr class="field-odd field"><th class="field-name">KeyError:</th><td class="field-body">if there is no structure information for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys when input is <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -146,9 +153,28 @@
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.analysis</span> <span class="kn">import</span> <span class="n">positional_structural_count</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_ssebig.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="s1">&#39;structure&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">positional_structural_count</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[7]: </span><span class="go"></span>
+<span class="go">          E    H         L</span>
+<span class="go">1  0.000000  0.0  1.000000</span>
+<span class="go">2  0.787611  0.0  0.212389</span>
+<span class="go">3  0.985841  0.0  0.014159</span>
+<span class="go">4  1.000000  0.0  0.000000</span>
+<span class="go">5  1.000000  0.0  0.000000</span>
+</pre></div>
+</div>
 </dd></dl>
 
-</div>
+<span class="target" id="definitions"></span></div>
 
 
     </div>

@@ -64,9 +64,11 @@ Helper functions for sequence analysis. They can be called through ``rstoolbox.a
    ~analysis.sequential_frequencies
    ~analysis.sequence_similarity
    ~analysis.positional_sequence_similarity
-   ~analysis.cumulative
+   ~analysis.binary_similarity
+   ~analysis.binary_overlap
    ~analysis.positional_structural_count
    ~analysis.positional_structural_identity
+   ~analysis.cumulative
 
 Plot
 ----
@@ -81,6 +83,7 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.sequence_frequency_plot
    ~plot.logo_plot
    ~plot.positional_sequence_similarity_plot
+   ~plot.positional_structural_similarity_plot
    ~plot.plot_fragments
    ~plot.plot_fragment_profiles
    ~plot.plot_alignment

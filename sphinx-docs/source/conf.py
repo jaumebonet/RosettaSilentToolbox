@@ -16,7 +16,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-
+import os
 import sphinx_bootstrap_theme
 import matplotlib as mpl
 mpl.use("Agg")
@@ -103,6 +103,8 @@ intersphinx_mapping = {'python': ('http://docs.python.org/2', None),
                        'networkx': ('https://networkx.github.io', None),
                        'libconfig': ('http://jaumebonet.cat/libconfig/', None)}
 
+
+rst_epilog = "".join(open(os.path.join(os.path.dirname(__file__), 'definitions.rst')).readlines())
 
 # -- Options for HTML output ----------------------------------------------
 

@@ -1,92 +1,119 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   09-Mar-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: mutants.py
-# @Last modified by:   bonet
-# @Last modified time: 11-Apr-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+.. func:: get_identified_mutants
+.. func:: get_mutations
+.. func:: get_mutation_positions
+.. func:: get_mutation_count
+.. func:: identify_mutants
+"""
+# Standard Libraries
 import os
 import itertools
 import re
 
+# External Libraries
 import pandas as pd
 import numpy as np
 
+# This Library
 from .getters import _check_type, _get_available, _check_column
+import rstoolbox.core as core
 
 
 def get_identified_mutants( self ):
-    """
-    List for which sequence identifiers mutants have been calculated
+    """List for which sequence identifiers mutants have been calculated.
 
-    :return: :class:`list`
+    This will generate a list with all the available identifiers in no particular
+    order.
+
+    :return: :func:`list` of :class:`str`
 
     :raises:
         :TypeError: If the data container is not :class:`~pandas.DataFrame`
             or :class:`~pandas.Series`
+
+    .. seealso::
+        :meth:`.DesignFrame.identify_mutants`
+        :meth:`.DesignSeries.identify_mutants`
     """
     _check_type(self)
     return _get_available(self, "mutants_")
 
 
 def get_mutations( self, seqID ):
-    """
-    Return the mutantions data for `seqID` available in the container.
+    """Return the mutantions data for ``seqID`` available in the container.
 
-    :param seqID: Identifier of the sequence of interest.
-    :type seqID: :py:class:`str`
+    For each available decoy, this will be a coma-separated string of mutant
+    positions with the code ``<original><position><mutation>``.
 
-    :return: :py:class:`str` or :py:class:`~pandas.Series`
+    :param str seqID: |seqID_param|.
+
+    :return: :class:`str` or :class:`~pandas.Series` - depending on the input
 
     :raises:
-        :TypeError: If the data container is not `~pandas.DataFrame`
-            or :py:class:`~pandas.Series`
-        :KeyError: If the column `mutants_[seqID]` is cannot be found.
+        :TypeError: |indf_error|.
+        :KeyError: |mutID_error|.
+
+    .. seealso::
+        :meth:`.DesignFrame.identify_mutants`
+        :meth:`.DesignSeries.identify_mutants`
     """
     _check_type(self)
     return self[_check_column(self, "mutants", seqID)]
 
 
 def get_mutation_positions( self, seqID ):
-    """
-    Return the mutantion positions data for `seqID` available in the container.
+    """Return the mutantion positions data for `seqID` available in the container.
 
-    :param seqID: Identifier of the sequence of interest.
-    :type seqID: :py:class:`str`
+    For each available decoy, this will be a coma-separated string with the sequence
+    position of the mutated residues.
 
-    :return: :py:class:`str` or :py:class:`~pandas.Series`
+    :param str seqID: |seqID_param|.
+
+    :return: :class:`str` or :class:`~pandas.Series` - depending on the input
 
     :raises:
-        :TypeError: If the data container is not `~pandas.DataFrame`
-            or :py:class:`~pandas.Series`
-        :KeyError: If the column `mutant_positions_[seqID]` is cannot be found.
+        :TypeError: |indf_error|.
+        :KeyError: |mutID_error|.
+
+    .. seealso::
+        :meth:`.DesignFrame.identify_mutants`
+        :meth:`.DesignSeries.identify_mutants`
     """
     _check_type(self)
     return self[_check_column(self, "mutant_positions", seqID)]
 
 
 def get_mutation_count( self, seqID ):
-    """
-    Return the number of mutantion positions data for `seqID` available in the container.
+    """ Return the number of mutantion positions data for `seqID` available in the container.
 
-    :param seqID: Identifier of the sequence of interest.
-    :type seqID: :class:`str`
+    Basically this contains the total number of mutations in a particular decoy with respect
+    to its ``reference_sequence``.
 
-    :return: :class:`str` or :class:`~pandas.Series`
+    :param str seqID: |seqID_param|.
+
+    :return: :class:`int` or :class:`~pandas.Series` - depending on the input
 
     :raises:
-        :TypeError: If the data container is not `~pandas.DataFrame`
-            or :class:`~pandas.Series`
-        :KeyError: If the column `mutant_count_[seqID]` is cannot be found.
+        :TypeError: |indf_error|.
+        :KeyError: |mutID_error|.
+
+    .. seealso::
+        :meth:`.DesignFrame.identify_mutants`
+        :meth:`.DesignSeries.identify_mutants`
     """
     _check_type(self)
     return self[_check_column(self, "mutant_count", seqID)]
 
 
 def identify_mutants( self, seqID ):
-    """
-    Checks the sequence in column ``sequence_<seqID>`` againts the ``reference_sequence``.
+    """Assess mutations of each decoy for sequence ``seqID`` againt the ``reference_sequence``.
 
     Adds to the container two new columns:
 
@@ -98,29 +125,46 @@ def identify_mutants( self, seqID ):
     **mutant_count_<seqID>**      **Count** of the number of mutations
     ============================  ===========================================================
 
-    Reference and design sequence must be of the same length.
+    .. tip::
+        ``reference_sequence`` and design sequence must be of the same length. If that is **not**
+        the case, it could be solved with the use of a non ``string.ascii_uppercase`` character like
+        `"*"`.
 
-    :param seqID: Identifier of the sequence of interest.
-    :type seqID: :class:`str`
+    :param str seqID: |seqID_param|.
 
     :return: Union[:class:`.DesignSeries`, :class:`.DesignFrame`] -
         a copy of the data container with the new columns.
 
     :raise:
-        :ValueError: If length of ``reference sequence`` and decoy are not the same.
+        :ValueError: If length of ``reference_sequence`` and decoy are not the same.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score'], 'sequence': 'B'})
+           ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
+           ...: df.iloc[1:].identify_mutants('B')
     """
-    def mutations( reference, sequence, shift=1 ):
+    from rstoolbox.components import get_selection
+
+    def mutations( reference, row, seqID ):
         data = []
         datn = []
+        sequence = row.get_sequence(seqID)
         if len(reference) != len(sequence):
             raise ValueError("Sequence lengths do not match")
         for i, refi in enumerate(reference):
             if refi.upper() != sequence[i].upper():
-                data.append(refi.upper() + str(i + shift) + sequence[i].upper())
-                datn.append(str(i + shift))
+                shift = get_selection(i + 1, seqID, row.get_reference_shift(seqID))[0]
+                data.append(refi.upper() + str(shift) + sequence[i].upper())
+                datn.append(str(shift))
         return ",".join(data), ",".join(datn), len(data)
 
-    shift   = self.get_reference_shift(seqID)
     refseq  = self.get_reference_sequence(seqID)
     mutants = "mutants_{0}".format(seqID)
     mposits = "mutant_positions_{0}".format(seqID)
@@ -128,45 +172,75 @@ def identify_mutants( self, seqID ):
     df = self.copy()
     if isinstance(self, pd.DataFrame):
         df[[mutants, mposits, mcounts]] = df.apply(
-            lambda row: mutations(refseq, row.get_sequence(seqID), shift),
+            lambda row: mutations(refseq, row, seqID),
             axis=1, result_type="expand" )
     elif isinstance(df, pd.Series):
-        a, b, c = mutations(refseq, df.get_sequence(seqID), shift)
+        a, b, c = mutations(refseq, df, seqID)
         df[mutants], df[mposits], df[mcounts] = a, b, c
 
     return df
 
 
 def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
-    """
-    Expands the selected sequences by ensuring that all the provided mutant combinations.
-    Thus, something such as::
+    """Expands selected decoy sequences generating all the provided mutant combinations.
 
-        df.generate_mutant_variants("A", [(20, "AIV"), (31, "EDQR")])
+    For all the new mutations provided, it will generate all the possible combinations with
+    those mutations and annotate them with respect to the ``reference_sequence``.
 
-    Will generate all the variant sequences of "A" that combine the expected mutations in
-    position 20 and 31 (according to the reference shift). That would be a total of 3*4
-    combinations plus the original sequences.
+    A mutation will be specified as a :class:`tuple` of ``length=2``. The first position will
+    be the sequence position to target (``reference_shift`` aware) and the second will be a
+    string with all the desired residue types. Multiple positions can be provided in a
+    :func:`list`::
 
-    Alters the names of the designs in **description**.
+        mutants = [(20, "AIV"), (31, "EDQR")]
 
-    :param seqID: Identifier of the sequence sets of interest.
-    :type seqID: :py:class:`str`
+    .. tip::
+        The number of positions and mutations for position produce an exponential increment
+        of the generated sequences. Thus, the previous example will generate ``3 * 4`` new
+        sequences. Depending on the input this can explode pretty fast, be aware.
+
+    Alters the names of the designs in **description** by adding a ``_v<number>`` suffix.
+
+    By providing multiple input decoys, sequence can be repeated. Thus, repeated sequences
+    will be filtered; the provided copy will be the first instance of the sequence.
+
+    :param str seqID: |seqID_param|.
     :param mutations: List of mutations to generate in a format (position, variants)
-    :type mutations: :py:class:`list`[(:py:class:`int`, :py:class:`str`),..]
-    :param keep_scores: Attach to each variant the scores comming from the source sequence.
-        This is not really recommended, as it can get confusing.
-    :type keep_scores: :py:class:`bool`
+    :type mutations: :func:`list` of :class:`tuple` (:class:`int`, :class:`str`)
+    :param bool keep_scores: New variants inherit scores from their source sequence.
+        This is **not recommended**, as it can get confusing (Default: :data:`False`).
 
-    :return: :py:class:`.DesignFrame`
+    :return: :class:`.DesignFrame`
+
+    .. seealso::
+        :meth:`.DesignFrame.generate_mutants_from_matrix`
+        :meth:`.DesignFrame.make_resfile`
+        :meth:`.DesignSeries.generate_mutants_from_matrix`
+        :meth:`.DesignSeries.make_resfile`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
+           ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
+           ...: mutants = [(20, "AIV"), (31, "EDQR")]
+           ...: df.iloc[1].generate_mutant_variants('B', mutants)
     """
+    from rstoolbox.components import get_selection
+
     def multiplex( row, seqID, muts ):
         seqNM = _check_column(row, "sequence", seqID)
         idNM = "description"
-        shift = row.get_reference_shift(seqID)
         seq   = list(row[seqNM])
         for p in muts:
-            seq[p[0] - shift] = p[1]
+            # -1 because we are going to access string positions.
+            shift = get_selection(p[0], seqID, row.get_reference_shift(seqID))[0] - 1
+            seq[shift] = p[1]
         data = {seqNM: ["".join(x) for x in itertools.product(*seq)]}
         data[seqNM].insert(0, row[seqNM])
         name = row.get_id()
@@ -212,13 +286,14 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
 
 def generate_mutants_from_matrix( self, seqID, matrix, count,
                                   key_residues=None, limit_refseq=False ):
-    """
-    From a provided positional frequency matrix, generates ``count`` random variants.
+    """From a provided positional frequency matrix, generates ``count`` random variants.
 
     It takes into account the individual frequency assigned to each residue type and
-    position.
+    position. It does **not** generate the highest possible scored sequence according to
+    the matrix, but picks randomly at each position according to the frequencies in for
+    that position.
 
-    For each :class:`.SeriesFrame`, it will generate a :class:`.DesignFrame` in which the
+    For each :class:`.DesignSeries`, it will generate a :class:`.DesignFrame` in which the
     original sequence becomes the ``reference_sequence``, inheriting the ``reference_shift``.
 
     .. warning::
@@ -235,31 +310,58 @@ def generate_mutants_from_matrix( self, seqID, matrix, count,
     **pssm_score_<seqID>**  Score obtained by applying ``matrix``
     ======================  ============================================
 
-    :param seqID: Identifier of the sequence sets of interest.
-    :type seqID: :class:`str`
-    :param matrix: Positional frequency matrix (*column:* residue type).
+    :param str seqID: |seqID_param|
+    :param matrix: Positional frequency matrix. **column:** residue type; **index:**
+        sequence position.
     :type matrix: :class:`~pandas.DataFrame`
-    :param count: Expected number of **unique** generated combinations. If the number is
+    :param int count: Expected number of **unique** generated combinations. If the number is
         bigger than the possible options, it will default to the total amount of options.
-    :type count: :class:`int`
-    :param key_residues: Residues over which to apply the matrix.
-    :type key_residues: Union[:class:`.Selection`, :func:`list`, :class:`int`, :class:`str`]
-    :param limit_refseq: When :data:`True`, pick only residue types with probabilities
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+    :param bool limit_refseq: When :data:`True`, pick only residue types with probabilities
         equal or higher to the source sequence.
-    :type limit_refseq: :class:`bool`
 
     :return: :func:`list` of :class:`.DesignFrame` - New set of design sequences.
 
+    :raises:
+        :ValueError: if matrix rows do not match sequence length.
+
     .. seealso::
+        :meth:`.DesignFrame.generate_mutant_variants`
         :meth:`.DesignFrame.score_by_pssm`
-        :meth:`.SeriesFrame.score_by_pssm`
+        :meth:`.DesignSeries.generate_mutant_variants`
+        :meth:`.DesignSeries.score_by_pssm`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.tests.helper import random_frequency_matrix
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
+           ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
+           ...: matrix = random_frequency_matrix(len(df.get_reference_sequence('B')), 0)
+           ...: key_res = [3,5,8,12,15,19,25,27]
+           ...: mutants = df.iloc[1].generate_mutants_from_matrix('B', matrix, 5, key_res)
+           ...: mutants[0].identify_mutants('B')
+
     """
-    # TODO: evaluate count < possible combinations
-    # BODY: (matrix > 0).sum(axis=1).prod()
-    # TODO: make sure of shift for both matrix and sequence
-    # BODY: so that it works in pair with the rest of the library
     from rstoolbox.components import get_selection
     from rstoolbox.components import DesignSeries, DesignFrame
+
+    def max_options( matrix, seq, key_residues, limit_refseq):
+        if limit_refseq is False:
+            return np.power(20, len(key_residues))
+        else:
+            ori_index = matrix.index
+            matrix = matrix.copy()
+            matrix.index = range(0, matrix.shape[0])
+            options = (matrix.apply(lambda row: np.sum(row >= row[seq[row.name]]), axis=1))
+            options.index = ori_index
+            return np.prod(options[key_residues])
 
     data = []
     if isinstance(self, pd.DataFrame):
@@ -268,16 +370,28 @@ def generate_mutants_from_matrix( self, seqID, matrix, count,
                                                          key_residues, limit_refseq))
         return data
 
+    if matrix.shape[0] != len(self.get_sequence(seqID)):
+        raise ValueError("Matrix rows and sequence length should match.")
+    # Make sure index and sequence shift match
+    matrix = matrix.copy()
+    shift = self.get_reference_shift(seqID)
+    matrix.index = get_selection(None, seqID, shift, length=matrix.shape[0])
+
     if key_residues is not None:
-        key_residues = get_selection(key_residues, seqID, 1, matrix.shape[0])
+        key_residues = get_selection(key_residues, seqID, shift, matrix.shape[0])
     else:
-        key_residues = range(1, matrix.shape[0] + 1)
+        key_residues = list(matrix.index.values)
 
     seqnm = "sequence_{}".format(seqID)
     data.append(DesignFrame([], columns=["description", seqnm]))
     name  = self.get_id()
 
-    while data[-1].shape[0] < count:
+    options = max_options(matrix, self.get_sequence(seqID), key_residues, limit_refseq)
+    # some numbers are just too big for python...
+    if options <= 0:
+        options = count + 1
+
+    while data[-1].shape[0] < min(count, options):
         seqaa = list(self.get_sequence(seqID))
         thisname = name + "_v{0:04d}".format(data[-1].shape[0] + 1)
         for aap in key_residues:
@@ -297,53 +411,72 @@ def generate_mutants_from_matrix( self, seqID, matrix, count,
     return data
 
 
-def generate_wt_reversions( self, seqID=None ):
-    """
+def generate_wt_reversions( self, seqID, key_residues=None ):
+    """Generate all variant that revert decoy sequences to the ``reference_sequence``.
+
     Expand the selected sequences by generating all the combinatorial options to revert to
     the reference (WT) sequence.
 
     Alters the names of the designs in **description** column.
 
-    :param seqID: Identifier of the sequence sets of interest. If none is provided, WT reversion
-        is applied to all available sequences.
-    :type seqID: :class:`str`
+    .. warning::
+        This is a **computationaly expensive** function. Take this in consideration when trying
+        to run it. When trying to revert too many mutations, it can run out of memory.
+
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|
+    :type key_residues: |keyres_types|
 
     :return: :class:`.DesignFrame`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
+           ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
+           ...: key_res = [3,5,8,12,15,19,25,27]
+           ...: df.iloc[1].generate_wt_reversions('B', key_res).identify_mutants('B')
     """
-    # @TODO: pick residues to revert
-    # @BODY: limit the positions that will be considered for reversion
-    def format_mutations( mutations ):
-        mutations = mutations.split(",")
+    from rstoolbox.components import get_selection
+
+    def format_mutations( row, seqID, key_residues ):
+        shift = row.get_reference_shift(seqID)
+        seq = row.get_sequence(seqID)
+        kr = get_selection(key_residues, seqID, shift, len(seq))
+        mutations = row.get_mutations(seqID).split(",")
         muts = []
-        for m in mutations:
-            m = m.strip()
-            muts.append((int(re.search("(\d+)", m).group(1)),
-                        "".join([m[0], m[-1]])))
+        if mutations != ['']:
+            for m in mutations:
+                m = m.strip()
+                pos = int(re.search("(\d+)", m).group(1))
+                if pos in kr:
+                    muts.append((pos, "".join([m[0], m[-1]])))
         return muts
 
-    if seqID is None:
-        seqID = self.get_available_sequences()
-        adf = self.copy()
-        for seq in seqID:
-            adf = adf.generate_wt_reversions(seq)
+    adf = []
+    if "mutants_{}".format(seqID) not in self:
+        idf = self.identify_mutants(seqID)
     else:
-        adf = []
-        if "mutants_{}".format(seqID) not in self:
-            self.identify_mutants(seqID)
+        idf = self.copy()
 
-        if isinstance(self, pd.DataFrame):
-            designs = []
-            for i, row in self.iterrows():
-                mutations = format_mutations(row["mutants_{}".format(seqID)])
-                designs.append(row.generate_mutant_variants(seqID, mutations))
-            df = pd.concat(designs)
-        elif isinstance(self, pd.Series):
-            mutations = format_mutations(self["mutants_{}".format(seqID)])
-            df = self.generate_mutant_variants(seqID, mutations)
-        else:
-            raise NotImplementedError
-        adf.append(df)
-        adf = pd.concat(adf)
+    if isinstance(idf, pd.DataFrame):
+        designs = []
+        for _, row in idf.iterrows():
+            mutations = format_mutations(row, seqID, key_residues)
+            designs.append(row.generate_mutant_variants(seqID, mutations))
+        df = pd.concat(designs)
+    elif isinstance(idf, pd.Series):
+        mutations = format_mutations(idf, seqID, key_residues)
+        df = idf.generate_mutant_variants(seqID, mutations)
+    else:
+        raise NotImplementedError
+    adf.append(df)
+    adf = pd.concat(adf)
 
     avail_seqs = adf.get_available_sequences()
     seqs = [_check_column(adf, "sequence", seq) for seq in avail_seqs]
@@ -351,9 +484,8 @@ def generate_wt_reversions( self, seqID=None ):
     return adf.reset_index(drop=True)
 
 
-def score_by_pssm( self, seqID, pssm ):
-    """
-    Score sequences according to a provided PSSM matrix.
+def score_by_pssm( self, seqID, matrix ):
+    """Score sequences according to a provided PSSM matrix.
 
     Generates new column by applying the PSSM score to each position
     of the requested sequences:
@@ -361,22 +493,37 @@ def score_by_pssm( self, seqID, pssm ):
     ======================  =====================================
     New Column                                       Data Content
     ======================  =====================================
-    **pssm_score_<seqID>**  Score obtained by applying ``pssm``
+    **pssm_score_<seqID>**  Score obtained by applying ``matrix``
     ======================  =====================================
 
-    :param seqID: Identifier of the sequence sets of interest.
-    :type seqID: :class:`str`
-    :param pssm: PSSM matrix data.
-    :type pssm: :class:`~pandas.DataFrame`
+    :param str seqID: |seqID_param|.
+    :param matrix: Positional frequency matrix. **column:** residue type; **index:**
+        sequence position.
+    :type matrix: :class:`~pandas.DataFrame`
 
-    :return: Union[:class:`.DesignSerie`, :class:`.DesignFrame`]
+    :return: Union[:class:`.DesignSeries`, :class:`.DesignFrame`]
         - Itself with the new column.
 
     :raises:
-        :NotImplementedError: if ``self`` is not :class:`~pandas.Series`
-            or :class:`~pandas.DataFrame`.
-        :ValueError: if the length of the ``pssm`` does not match that
-            of the sequence.
+        :NotImplementedError: |indf_error|.
+        :ValueError: if matrix rows do not match sequence length.
+
+    .. seealso::
+        :meth:`.DesignFrame.generate_mutants_from_matrix`
+        :meth:`.DesignSeries.generate_mutants_from_matrix`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.tests.helper import random_frequency_matrix
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
+           ...: matrix = random_frequency_matrix(len(df.get_sequence('B')[0]), 0)
+           ...: df.score_by_pssm('B', matrix)
     """
     def evaluate_sequence(seq, pssm):
         score = 0
@@ -389,9 +536,9 @@ def score_by_pssm( self, seqID, pssm ):
 
     outcol = "pssm_score_{}".format(seqID)
     if isinstance(self, pd.Series):
-        self[outcol] = evaluate_sequence(self.get_sequence(seqID), pssm)
+        self[outcol] = evaluate_sequence(self.get_sequence(seqID), matrix)
     elif isinstance(self, pd.DataFrame):
-        self[outcol] = self.apply(lambda row: evaluate_sequence(row.get_sequence(seqID), pssm),
+        self[outcol] = self.apply(lambda row: evaluate_sequence(row.get_sequence(seqID), matrix),
                                   axis=1)
     else:
         raise NotImplementedError
@@ -403,7 +550,8 @@ def make_resfile( self, seqID, header, filename ):
     """
     Generate a Rosetta `resfile
     <https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles>`_
-    to match the design's sequence from the ``reference_sequence``.
+    to match the design's sequence assuming the ``reference_sequence`` as the starting
+    point.
 
     The function picks the mutant positions between the design sequence
     and the ``reference_sequence`` and generates a resfile that will
@@ -419,23 +567,18 @@ def make_resfile( self, seqID, header, filename ):
     **resfile_<seqID>**             Name of the resfile
     ========================  =========================
 
-
-    :param seqID: Identifier of the sequence sets of interest.
-    :type seqID: :class:`str`
-    :param header: Header content for the resfile; defines default behaviour.
-    :type header: :class:`str`
-    :param filename: Identifier of the resfile. Will be altered with a numerical
+    :param str seqID: |seqID_param|.
+    :param str header: Header content for the resfile; defines default behaviour.
+    :param str filename: Identifier of the resfile. Will be altered with a numerical
         suffix if the data container holds more thant one sequence.
-    :type filename: :class:`str`
 
-    :return: Union[:class:`.DesignSerie`, :class:`.DesignFrame`]
+    :return: Union[:class:`.DesignSeries`, :class:`.DesignFrame`]
         - Itself with the new column.
 
     :raise:
-        :KeyError: If data container does not have ``reference_sequence``
-            for ``seqID``.
-        :NotImplementedError: If ``self`` is not :class:`~pandas.Series`
-            or :class:`~pandas.DataFrame`.
+        :NotImplementedError: |indf_error|.
+        :KeyError: |reference_error|
+        :IOError: |overwrite_error|
 
     .. note::
         Depends on :ref:`system.overwrite <options>` and
@@ -447,12 +590,18 @@ def make_resfile( self, seqID, header, filename ):
     def resfile( row, seqID, header, filename, suffix):
         if not isinstance(row, pd.Series):
             raise NotImplementedError
-        # @TODO: File control management
-        # @BODY: Suffix control, existence and location should be checked.
+
         if suffix is not None:
             filename = list(os.path.splitext(filename))
             filename[0] += "_{:>04d}".format(suffix)
             filename = "".join(filename)
+
+        if core.get_option('system', 'output') != "./":
+            if os.path.basename(filename) == filename:
+                filename = os.path.join(core.get_option('system', 'output'), filename)
+        if not core.get_option('system', 'overwrite'):
+            if os.path.isfile(filename):
+                raise IOError('{} already exists and cannot be overwriten'.format(filename))
 
         data = [header, "START\n"]
         df = row.copy()
@@ -477,34 +626,50 @@ def make_resfile( self, seqID, header, filename ):
     return self
 
 
-def view_mutants_alignment( self, seqID ):
+def view_mutants_alignment( self, seqID, mutants_bg_color="IndianRed", mutants_text_color="white",
+                            identities_bg_color="YellowGreen", identities_text_color="black"):
     """
     Generates a pretty representation alignment of the mutations in **Jupyter Notebooks**.
 
-    :param seqID: Identifier of the sequence sets of interest.
-    :type seqID: :class:`str`
+    :param str seqID: |seqID_param|.
+    :param str mutants_bg_color: Color to apply to the background of mutants.
+    :param str mutants_text_color: Color to apply to the text of mutants.
+    :param str identities_bg_color: Color to apply to the background of identities.
+    :param str identities_text_color: Color to apply to the text of identities.
 
     :raise:
-        :KeyError: If data container does not have ``reference_sequence``
-            for ``seqID``.
+        :KeyError: |reference_error|.
     """
     if not self.has_reference_sequence(seqID):
         raise KeyError("A reference sequence for {} is needed.".format(seqID))
+
+    def highlight_mutants( row, refseq, background="IndianRed", text="white" ):
+        attr = 'background-color: {0}; color: {1}'.format(background, text)
+        is_mut = row != refseq
+        return [attr if v else '' for v in is_mut]
+
+    def highlight_identities( row, refseq, background="YellowGreen", text="black" ):
+        attr = 'background-color: {0}; color: {1}'.format(background, text)
+        is_mut = row == refseq
+        return [attr if v else '' for v in is_mut]
 
     seq = list(self.get_reference_sequence(seqID))
     pos = self.get_reference_shift(seqID)
     if isinstance(pos, int):
         pos = list(range(pos, len(seq) + pos))
-    cols = [str(x) + "\n" + y for x, y in zip(pos, seq)]
+    cols = ["\n".join(list("{:>03d}".format(x))) + "\n" + y for x, y in zip(pos, seq)]
     if seqID not in self.get_identified_mutants():
         df = self.identify_mutants(seqID)
     else:
         df = self.copy()
 
-    # df = df[[_check_column(df, "sequence", seqID),
-    #          _check_column(df, "mutant_positions", seqID)]]
     df = df[_check_column(df, "sequence", seqID)].apply(lambda x: pd.Series(list(x)))
     df.columns = cols
     df.index = self["description"].values
 
-    return df.style.set_caption('sequence alignment')
+    return df.style.set_caption('sequence alignment') \
+             .set_table_attributes('class="dataframe"') \
+             .apply(highlight_mutants, refseq=seq, background=mutants_bg_color,
+                    text=mutants_text_color, axis=1) \
+             .apply(highlight_identities, refseq=seq, background=identities_bg_color,
+                    text=identities_text_color, axis=1)

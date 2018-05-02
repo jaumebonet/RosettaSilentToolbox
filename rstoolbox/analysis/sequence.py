@@ -1,17 +1,32 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   10-Oct-2017
-# @Email:  jaume.bonet@gmail.com
-# @Filename: sequence.py
-# @Last modified by:   bonet
-# @Last modified time: 10-Apr-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+
+.. func:: sequential_frequencies
+.. func:: sequence_similarity
+.. func:: positional_sequence_similarity
+.. func:: binary_similarity
+.. func:: binary_overlap
+"""
+# Standard Libraries
 import copy
 import collections
+import re
 
+# External Libraries
 import pandas as pd
 import numpy as np
 
+# This Library
 from .SimilarityMatrix import SimilarityMatrix as SM
+
+__all__ = ['sequential_frequencies', 'sequence_similarity',
+           'positional_sequence_similarity', 'binary_similarity',
+           'binary_overlap']
 
 
 def _get_sequential_table( seqType ):
@@ -68,7 +83,7 @@ def _get_sequential_table( seqType ):
 
 
 def _sequence_similarity( qseq, rseq, matrix ):
-    if len(qseq) == len(rseq):
+    if len(qseq) != len(rseq):
         raise ValueError("Comparable sequences have to be the same size.")
     raw, idn, pos, neg = 0, 0, 0, 0
     ali = []
@@ -102,25 +117,48 @@ def _positional_similarity( qseq, rseq, matrix ):
     return raw, idn, pos, neg
 
 
-def sequential_frequencies( self, seqID, qType="sequence", seqType="protein",
+def sequential_frequencies( df, seqID, query="sequence", seqType="protein",
                             cleanExtra=True, cleanUnused=-1 ):
-    """
-    Generates a :py:class:`.SequenceFrame` for the frequencies of
-    the sequences in the :py:class:`.DesignFrame` with seqID identifier.
-    If there is a reference_sequence for this seqID, it will also
-    be attached to the :py:class:`.SequenceFrame`.
-    All letters in the sequence will be capitalized. All symbols that
-    do not belong to ``string.ascii_uppercase`` will be transformed to "*"
-    as this is the symbol recognized by the substitution matrices.
+    """Generates a :class:`.SequenceFrame` for the frequencies of the sequences in the
+    :class:`.DesignFrame` with ``seqID`` identifier.
 
-    :param str seqID: Identifier of the sequence sets of interest.
-    :param str seqType: Type of sequence: protein, protein_sse, dna, rna.
-    :param bool cleanExtra: Remove from the SequenceFrame the non-regular
-        amino/nucleic acids if they are empty for all positions.
-    :param int cleanUnused: Remove from the SequenceFrame the regular
-        amino/nucleic acids if they frequency is equal or under the value . Default is -1,
-        so nothing is deleted.
-    :return: :py:class:`.SequenceFrame`
+    If there is a ``reference_sequence`` for this ``seqID``, it will also
+    be attached to the :class:`.SequenceFrame`.
+
+    All letters in the sequence will be capitalized. All symbols that
+    do not belong to ``string.ascii_uppercase`` will be transformed to `"*"`
+    as this is the symbol recognized by the substitution matrices as ``gap``.
+
+    This function is directly accessible through some :class:`.DesignFrame` methods.
+
+    :param df: |df_param|.
+    :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
+    :param str seqID: |seqID_param|.
+    :param str query: |query_param|.
+    :param str seqType: |seqType_param| and ``protein_sse``.
+    :param bool cleanExtra: |cleanExtra_param|.
+    :param float cleanUnused: |cleanUnused_param|.
+
+    :return: :class:`.SequenceFrame`
+
+    .. seealso::
+        :meth:`.DesignFrame.sequence_frequencies`
+        :meth:`.DesignFrame.sequence_bits`
+        :meth:`.DesignFrame.structure_frequencies`
+        :meth:`.DesignFrame.structure_bits`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import sequential_frequencies
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score'], 'sequence': 'AB'})
+           ...: df = sequential_frequencies(df, 'B')
+           ...: df.head()
     """
     from rstoolbox.components import SequenceFrame
 
@@ -135,68 +173,103 @@ def sequential_frequencies( self, seqID, qType="sequence", seqType="protein",
                 t[aa] = 0
         return t
 
-    sserie = self.get_sequential_data(qType, seqID).replace('', np.nan).dropna().str.upper()
+    # Cast if possible, so that we can access the different methods of DesignFrame
+    if df._subtyp != 'design_frame' and isinstance(df, pd.DataFrame):
+        from rstoolbox.components import DesignFrame
+        df = DesignFrame(df)
+
+    # Get all sequences; exclude empty ones (might happen) and uppercase all residues.
+    sserie = df.get_sequential_data(query, seqID).replace('', np.nan).dropna().str.upper()
+    # Get the table to fill
     table, extra = _get_sequential_table( seqType )
+    # Fill the table with the frequencies
     sserie = sserie.apply(lambda x: pd.Series(list(x)))
     sserie = sserie.apply(lambda x: pd.Series(count_instances(x.str.cat(), table))).T
 
-    df = SequenceFrame(sserie)
-    df.measure("frequency")
-    df.extras( extra )
-    if self.has_reference_sequence(seqID):
-        df.add_reference(seqID,
-                         sequence=self.get_reference_sequence(seqID),
-                         shift=self.get_reference_shift(seqID))
-    df.delete_extra( cleanExtra )
-    df.delete_empty( cleanUnused )
-    df.clean()
-    shft = self.get_reference_shift(seqID)
+    # Create the SequenceFrame
+    dfo = SequenceFrame(sserie)
+    dfo.measure("frequency")
+    dfo.extras( extra )
+    # Attach the reference sequence if there is any
+    if df.has_reference_sequence(seqID):
+        dfo.add_reference(seqID, sequence=df.get_reference_sequence(seqID),
+                          shift=df.get_reference_shift(seqID))
+    dfo.delete_extra( cleanExtra )
+    dfo.delete_empty( cleanUnused )
+    dfo.clean()
+    shft = df.get_reference_shift(seqID)
+    # Shift the index so that the index of the SequenceFrame == PDB count
     if isinstance(shft, int):
-        df.index = df.index + shft
+        dfo.index = dfo.index + shft
     else:
-        df.index = shft
-    return df
+        dfo.index = shft
+    return dfo
 
 
 def sequence_similarity( df, seqID, key_residues=None, matrix="BLOSUM62" ):
-    """
-    Evaluate the sequence similarity between each decoy and the reference sequence
-    for a given seqID.
-    Will create several new columns:
+    """Evaluate the sequence similarity between each decoy and the ``reference_sequence``
+    for a given ``seqID``.
+
+    Sequence similarity is understood in the context of substitution matrices. Thus, a part from
+    identities, also similarities can be evaluated.
+
+    It will return the input data container with several new columns:
 
     ===============================  ===================================================
     New Column                       Data Content
     ===============================  ===================================================
-    **<matrix>_<seqID>_score_raw**   Score obtained by applying `<matrix>`
-    **<matrix>_<seqID>_score_perc**  Score obtained by applying `<matrix>` over score \
+    **<matrix>_<seqID>_raw**         Score obtained by applying ``<matrix>``
+    **<matrix>_<seqID>_perc**        Score obtained by applying ``<matrix>`` over score \
                                      of reference_sequence against itself
     **<matrix>_<seqID>_identity**    Total identity matches
-    **<matrix>_<seqID>_positive**    Total positive matches according to `<matrix>`
-    **<matrix>_<seqID>_negative**    Notal negative matches according to `<matrix>`
+    **<matrix>_<seqID>_positive**    Total positive matches according to ``<matrix>``
+    **<matrix>_<seqID>_negative**    Notal negative matches according to ``<matrix>``
     **<matrix>_<seqID>_ali**         Representation of aligned residues
     ===============================  ===================================================
 
+    Matrix name in each new column is setup in lowercase.
+
+    .. tip::
+        If ``key_residues`` are applied, the scoring is only used on those, but nothing in the
+        naming of the columns will indicate a partial evaluation. It is important to keep that in
+        mind moving forward on whatever analysis you are performing.
 
     Running this function multiple times (different key_residue selections, for example)
     adds suffix to the previously mentioned columns following pandas' merge naming
     logic (_x, _y, _z, ...).
 
-    :param df: designs data.
-    :type df: :py:class:`.DesignFrame`
-    :param seqID: Identifier of the sequence sets of interest.
-    :type seqID: :py:class:`str`
-    :param matrix: Identifier of the matrix used to evaluate similarity. Default is BLOSUM62.
-    :type matrix: :py:class:`str`
+    :param df: |df_param|.
+    :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+    :param str matrix: |matrix_param|. Default is ``BLOSUM62``.
 
-    :return: :py:class:`.DesignFrame`.
+    :return: :class:`.DesignFrame`.
 
     :raises:
-        :AttributeError: if the data passed is not a :py:class:`.DesignFrame`.
-        :KeyError: if ``seqID`` cannot be found.
-        :AttributeError: if there is no reference for ``seqID``.
+        :AttributeError: |designframe_cast_error|.
+        :KeyError: |seqID_error|.
+        :AttributeError: |reference_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import sequence_similarity
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score'], 'sequence': 'B'})
+           ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
+           ...: df = sequence_similarity(df.iloc[1:], 'B')
+           ...: df.head()
+
     """
     from rstoolbox.components import DesignFrame
 
+    # We don't need to try to cast, as reference_sequence is needed anyway
     if not isinstance(df, DesignFrame):
         raise AttributeError("Input data has to be a DesignFrame with a reference sequence.")
     if not df.has_reference_sequence(seqID):
@@ -204,9 +277,12 @@ def sequence_similarity( df, seqID, key_residues=None, matrix="BLOSUM62" ):
     if not "sequence_{}".format(seqID) in df:
         raise KeyError("Sequence {} not found in decoys.".format(seqID))
 
+    # Get matrix data
     mat = SM.get_matrix(matrix)
+    # Get total score of the reference (depending on the matrix, identities != 1)
     ref_seq = df.get_reference_sequence(seqID, key_residues)
-    ref_raw, ref_id, ref_pos, ref_neg, ali = _sequence_similarity(ref_seq, ref_seq, mat)
+    ref_raw, _, _, _, _ = _sequence_similarity(ref_seq, ref_seq, mat)
+    # Get only the key residues and apply similarity analysis
     df2 = df._constructor(df.get_sequence(seqID, key_residues))
     df2 = df2.apply(
         lambda x: pd.Series(_sequence_similarity(x.get_sequence(seqID), ref_seq, mat)), axis=1)
@@ -222,35 +298,58 @@ def sequence_similarity( df, seqID, key_residues=None, matrix="BLOSUM62" ):
                       df2.reset_index(drop=True)], axis=1)
 
 
-def positional_sequence_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM62" ):
-    """
-    Generates per-position match data of the provided sequence over the reference sequence.
+def positional_sequence_similarity( df, seqID=None, ref_seq=None,
+                                    key_residues=None, matrix="BLOSUM62" ):
+    """Per position identity and similarity against a ``reference_sequence``.
 
-    :param df: Input data.
-    :type df: Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`]
-    :param seqID: Identifier of the sequence sets of interest.
-        Required when input is :py:class:`.DesignFrame`
-    :type seqID: :py:class:`str`
-    :param ref_seq: Reference sequence. Required when input is :py:class:`.FragmentFrame`.
-        Will overwrite the reference sequence of :py:class:`.DesignFrame` if provided.
-    :type ref_seq: :py:class:`str`
-    :param matrix: Identifier of the matrix used to evaluate similarity. Default is BLOSUM62.
-    :type matrix: :py:class:`str`
+    Provided a data container with a set of sequences, it will evaluate the percentage of
+    identities and similarities that the whole set has against a ``reference_sequence``.
+    It would do so by sequence position instead that by each individual sequence.
 
-    :return: :py:class:`~pandas.DataFrame` where rows are positions and
-        columns are `identity_perc` and `positive_perc`.
+    In a way, this generates an extreme simplification from a :class:`.SequenceFrame`.
+
+    :param df: |df_param|.
+    :type df: Union[:class:`.DesignFrame`, :class:`.FragmentFrame`]
+    :param str seqID: |seqID_param|. Required when input is :class:`.DesignFrame`.
+    :param str ref_seq: Reference sequence. Required when input is :class:`.FragmentFrame`.
+        Will overwrite the reference sequence of :class:`.DesignFrame` if provided.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+    :param str matrix: |matrix_param|. Default is ``BLOSUM62``.
+
+
+    :return: :class:`~pandas.DataFrame` - where rows are sequence positions and
+        columns are ``identity_perc`` and ``positive_perc``.
 
     :raises:
-        :AttributeError: if the data passed is not in
-            Union[:py:class:`.DesignFrame`, :py:class:`.FragmentFrame`].
-        :AttributeError: if input is :py:class:`.DesignFrame` and ``seqID`` is not provided.
-        :KeyError: if input is :py:class:`.DesignFrame` and ``seqID`` cannot be found.
-        :AttributeError: if input is :py:class:`.DesignFrame` and there is no reference
-            for ``seqID``.
-        :AttributeError if input is :py:class:`.FragmentFrame` and ``ref_seq`` is not provided.
+        :AttributeError: if the data passed is not in Union[:class:`.DesignFrame`,
+            :class:`.FragmentFrame`]. It will *not* try to cast a provided
+            :class:`~pandas.DataFrame`, as it would not be possible to know into which of
+            the two possible inputs it needs to be casted.
+        :AttributeError: if input is :class:`.DesignFrame` and ``seqID`` is not provided.
+        :KeyError: |seqID_error| when input is :class:`.DesignFrame`.
+        :AttributeError: |reference_error| when input is :class:`.DesignFrame`.
+        :AttributeError:  if input is :class:`.FragmentFrame` and ``ref_seq`` is not provided.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import positional_sequence_similarity
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score'], 'sequence': 'B'})
+           ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
+           ...: df = positional_sequence_similarity(df.iloc[1:], 'B')
+           ...: df.head()
     """
     from rstoolbox.components import DesignFrame, FragmentFrame
+    from rstoolbox.components import get_selection
+
     data = {"identity_perc": [], "positive_perc": []}
+    # Get matrix data
     mat = SM.get_matrix(matrix)
 
     if isinstance(df, DesignFrame):
@@ -285,63 +384,110 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None, matrix="BLOSUM
                              "reference sequence or a FragmentFrame.")
 
     dfo = pd.DataFrame(data)
-    # TODO: get key_residues
-    dfo.index = dfo.index + 1
-    return dfo
-# old
-
-
-def _extract_key_residue_sequence( seq, key_residues=None ):
-    if key_residues is None:
-        return seq
-    tmp_seq = ""
-    for k in key_residues:
-        tmp_seq += seq[k - 1]
-    return tmp_seq
-
-
-# def _calculate_linear_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
-#     score = 0
-#     qseq = _extract_key_residue_sequence( qseq, key_residues )
-#     rseq = _extract_key_residue_sequence( rseq, key_residues )
-#     assert len(qseq) == len(rseq)
-#     for i in range(len(qseq)):
-#         score += matrix.get_value(qseq[i], rseq[i])
-#     return score
-
-
-def _calculate_binary_sequence_similarity( qseq, rseq, matrix, key_residues=None ):
-    new_seq = ""
-    qseq = _extract_key_residue_sequence( qseq, key_residues )
-    rseq = _extract_key_residue_sequence( rseq, key_residues )
-    assert len(qseq) == len(rseq)
-    for i in range(len(qseq)):
-        if matrix.get_value(qseq[i], rseq[i]) >= 1:
-            new_seq += "1"
-        else:
-            new_seq += "0"
-    return new_seq
-
-
-def binary_similarity( df, ref_seq, matrix="IDENTITY", seq_column="sequence", prefix=None, key_residues=None ):
-    mat       = SM.get_matrix(matrix)
-    all_seqs  = df[[seq_column]]
-    sims      = []
-    if prefix is None:
-        prefix = matrix.lower()
+    # Get shift only from DesignFrame; FragmentFrame does not have one
+    shft = df.get_reference_shift(seqID) if isinstance(df, DesignFrame) else 1
+    # Shift the index so that index == PDB count
+    if isinstance(shft, int):
+        dfo.index = dfo.index + shft
     else:
-        prefix = str(prefix) + matrix.lower()
-    for v in all_seqs.values:
-        sims.append( _calculate_binary_sequence_similarity( v[0], ref_seq, mat, key_residues ) )
-    wdf = df.copy()
-    if prefix + "_binary" in df:
-        wdf = wdf.drop([prefix + "_binary"], axis=1)
-    wdf.insert( wdf.shape[1], prefix + "_binary", pd.Series( sims, index=wdf.index ) )
-    return wdf
+        dfo.index = shft
+    return dfo.loc[list(get_selection(key_residues, seqID, list(dfo.index)))]
 
 
-def binary_overlap( df, column_name="identity_binary" ):
-    a = df[column_name].values
+def binary_similarity( df, seqID, key_residues=None, matrix="IDENTITY"):
+    """Binary profile for each design sequence against the ``reference_sequence``.
+
+    Makes a :class:`DesignFrame` with a new column to map binary identity (0/1) with
+    the ``reference_sequence``. If a different matrix than ``IDENTITY`` is provides,
+    the binary sequence sets to ``1`` all the positive values.
+
+    ===============================  ===================================================
+    New Column                       Data Content
+    ===============================  ===================================================
+    **<matrix>_<seqID>_binary**      Binary representation of the match with the
+                                     ``reference_sequence``.
+    ===============================  ===================================================
+
+    :param df: |df_param|.
+    :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+    :param str matrix: |matrix_param|. Default is ``IDENTITY``.
+
+    :return: :class:`.DesignFrame`.
+
+    :raises:
+        :AttributeError: |designframe_cast_error|.
+        :KeyError: |seqID_error|.
+        :AttributeError: |reference_error|.
+
+    .. seealso::
+        :func:`.sequence_similarity`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import binary_similarity
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score'], 'sequence': 'B'})
+           ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
+           ...: df = binary_similarity(df.iloc[1:], 'B')
+           ...: df.head()
+
+    """
+    dfss = sequence_similarity( df, seqID, key_residues, matrix=matrix )
+    alicolumn = "{0}_{1}_ali".format(matrix.lower(), seqID)
+    bincolumn = "{0}_{1}_binary".format(matrix.lower(), seqID)
+
+    dfss[bincolumn] = dfss.apply(lambda row: re.sub('\D', '1', re.sub('\.', '0', row[alicolumn])),
+                                 axis=1)
+
+    return pd.concat([df.reset_index(drop=True),
+                      dfss[bincolumn].reset_index(drop=True)],
+                     axis=1)
+
+
+def binary_overlap( df, seqID, key_residues=None, matrix="IDENTITY" ):
+    """Overlap the binary similarity representation of all decoys in a
+    :class:`.DesignFrame`.
+
+    :param df: |df_param|.
+    :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+    :param str matrix: |matrix_param|. Default is ``IDENTITY``.
+
+    :return: :func:`list` of :class:`int` - ones and zeros for each
+        position of the length of the sequence
+
+    .. seealso::
+        :func:`.binary_similarity`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import binary_overlap
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score'], 'sequence': 'B'})
+           ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
+           ...: binoverlap = binary_overlap(df.iloc[1:], 'B')
+           ...: "".join([str(_) for _ in binoverlap])
+    """
+    bincolumn = "{0}_{1}_binary".format(matrix.lower(), seqID)
+    if bincolumn not in df.columns.values:
+        df = binary_similarity(df, seqID, key_residues, matrix)
+
+    a = df[bincolumn].values
     x = len(a[0])
     result = [0] * x
     for seq in a:

@@ -3,3 +3,5 @@ v0.0.7 (April 2018)
 
 #. Command line scripts attached to the distribution.
 #. ``check_mutants`` script adapts itself to the number of sequences.
+#. ``DesignFrame`` function for sequence/structure global frequencies are ``key_residue`` aware.
+#. ``DesignFrame`` mutant functions can work with list-type ``key_residue``.
