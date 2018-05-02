@@ -39,6 +39,9 @@ def get_selection( key_residues, seqID, shift=1, length=None ):
     :raises:
         :NotImplementedError: If ``key_residues`` is of a non-expected type.
     """
+    listtypes = (list, np.ndarray, six.string_types)
+    if six.PY3:
+        listtypes = (list, np.ndarray, six.string_types, range)
 
     if key_residues is None:
         if isinstance(shift, list):
@@ -47,7 +50,7 @@ def get_selection( key_residues, seqID, shift=1, length=None ):
             key_residues = range(1, length + 1)
     if isinstance(key_residues, int):
         key_residues = [key_residues, ]
-    if isinstance(key_residues, (list, np.ndarray, six.string_types)):
+    if isinstance(key_residues, listtypes):
         key_residues = Selection(key_residues)
     if isinstance(key_residues, SelectionContainer):
         key_residues = key_residues[seqID]
@@ -149,6 +152,10 @@ class Selection( object ):
         self._isarr = None   # Reverse selection, if needed
         self._ialen = None   # Length used on reversed
 
+        listtypes = (list, np.ndarray)
+        if six.PY3:
+            listtypes = (list, np.ndarray, range)
+
         if isinstance(selection, Series):
             if selection.shape[0] == 1:
                 selection = selection.values[0]
@@ -157,7 +164,7 @@ class Selection( object ):
         if isinstance(selection, six.string_types):
             if len(selection) > 0:
                 self._asarr = self._string_to_list(selection)
-        elif isinstance(selection, (list, np.ndarray)):
+        elif isinstance(selection, listtypes):
             self._asarr = sorted(list(set(selection)))
         elif selection is None:
             pass

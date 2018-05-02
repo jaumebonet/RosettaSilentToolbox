@@ -466,7 +466,7 @@ def generate_wt_reversions( self, seqID, key_residues=None ):
 
     if isinstance(idf, pd.DataFrame):
         designs = []
-        for i, row in idf.iterrows():
+        for _, row in idf.iterrows():
             mutations = format_mutations(row, seqID, key_residues)
             designs.append(row.generate_mutant_variants(seqID, mutations))
         df = pd.concat(designs)
