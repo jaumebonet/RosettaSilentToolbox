@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 01-May-2018
+# @Last modified time: 02-May-2018
 
 
 import os
@@ -235,6 +235,24 @@ class TestDesign( object ):
             assert row.get_mutations("B") == mut_type[i]
             # Check position of mutations
             assert row.get_mutation_positions("B") == mut_pos[i]
+
+        # Make new variants
+        dfm2 = df.iloc[0].generate_mutant_variants('B', [(1, "TGAP"), (14, "MAPT")])
+        assert dfm2.shape[0] == 16
+        assert 0 in dfm2.get_mutation_count('B')
+
+        # Revert to WT
+        dfwt = df.iloc[0:2].generate_wt_reversions('B', [1, 14])
+        assert dfwt.shape[0] == 8
+
+        dfwt = rc.DesignFrame({"description": ["reference"], "sequence_B": [refseq]})
+        dfwt.add_reference_sequence('B', refseq)
+        dfwt = dfwt.generate_mutant_variants('B', [(1, "TGP"), (6, "ERG"), (14, "MAT")])
+        assert dfwt.shape[0] == 28
+        dfwt = dfwt.generate_wt_reversions('B').identify_mutants('B')
+        assert dfwt.shape[0] == 36
+        assert 0 in dfwt.get_mutation_count('B').values
+        assert refseq in dfwt.get_sequence('B').values
 
         # write to resfiles
         df.make_resfile("B", "NATAA", os.path.join(self.tmpdir, "mutanttest.resfile"))

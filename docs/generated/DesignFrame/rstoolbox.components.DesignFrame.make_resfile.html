@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="rstoolbox.components.DesignFrame.score_by_pssm" href="rstoolbox.components.DesignFrame.score_by_pssm.html" />
-    <link rel="prev" title="rstoolbox.components.DesignFrame.identify_mutants" href="rstoolbox.components.DesignFrame.identify_mutants.html" />
+    <link rel="prev" title="rstoolbox.components.DesignFrame.generate_wt_reversions" href="rstoolbox.components.DesignFrame.generate_wt_reversions.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -117,7 +117,8 @@
 <dt id="rstoolbox.components.DesignFrame.make_resfile">
 <code class="descclassname">DesignFrame.</code><code class="descname">make_resfile</code><span class="sig-paren">(</span><em>seqID</em>, <em>header</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.make_resfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a Rosetta <a class="reference external" href="https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles">resfile</a>
-to match the design’s sequence from the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</p>
+to match the design’s sequence assuming the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> as the starting
+point.</p>
 <p>The function picks the mutant positions between the design sequence
 and the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> and generates a resfile that will
 transform one into the other.</p>
@@ -145,9 +146,9 @@ in order to keep track of the filename assignation:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the sequence sets of interest.</li>
-<li><strong>header</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Header content for the resfile; defines default behaviour.</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the resfile. Will be altered with a numerical
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>header</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Header content for the resfile; defines default behaviour.</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the resfile. Will be altered with a numerical
 suffix if the data container holds more thant one sequence.</li>
 </ul>
 </td>
@@ -160,12 +161,12 @@ suffix if the data container holds more thant one sequence.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">KeyError:</th><td class="field-body">If data container does not have <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>
-for <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">NotImplementedError:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">If the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name" colspan="2">NotImplementedError:</th></tr>
-<tr class="field-even field"><td>&#160;</td><td class="field-body">If <code class="docutils literal notranslate"><span class="pre">self</span></code> is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>
-or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</td>
+<tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">if there is no <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">IOError:</th><td class="field-body">if output file exists and <a class="reference internal" href="../../tutorials/options.html#options"><span class="std std-ref">system.overwrite</span></a> is <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a></td>
 </tr>
 </tbody>
 </table>

@@ -144,13 +144,13 @@ the analysis of a single design decoys.</p>
 <td>Remove all reference data regarding a particular seqID.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.generate_mutant_variants.html#rstoolbox.components.DesignSeries.generate_mutant_variants" title="rstoolbox.components.DesignSeries.generate_mutant_variants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_mutant_variants</span></code></a>(seqID,&nbsp;mutations[,&nbsp;…])</td>
-<td>Expands the selected sequences by ensuring that all the provided mutant combinations.</td>
+<td>Expands selected decoy sequences generating all the provided mutant combinations.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.generate_mutants_from_matrix.html#rstoolbox.components.DesignSeries.generate_mutants_from_matrix" title="rstoolbox.components.DesignSeries.generate_mutants_from_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_mutants_from_matrix</span></code></a>(seqID,&nbsp;matrix,&nbsp;…)</td>
 <td>From a provided positional frequency matrix, generates <code class="docutils literal notranslate"><span class="pre">count</span></code> random variants.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.generate_wt_reversions.html#rstoolbox.components.DesignSeries.generate_wt_reversions" title="rstoolbox.components.DesignSeries.generate_wt_reversions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_wt_reversions</span></code></a>([seqID])</td>
-<td>Expand the selected sequences by generating all the combinatorial options to revert to the reference (WT) sequence.</td>
+<tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.generate_wt_reversions.html#rstoolbox.components.DesignSeries.generate_wt_reversions" title="rstoolbox.components.DesignSeries.generate_wt_reversions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_wt_reversions</span></code></a>(seqID[,&nbsp;key_residues])</td>
+<td>Generate all variant that revert decoy sequences to the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_available_labels.html#rstoolbox.components.DesignSeries.get_available_labels" title="rstoolbox.components.DesignSeries.get_available_labels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_labels</span></code></a>()</td>
 <td>List which slabels are available in the data container.</td>
@@ -171,7 +171,7 @@ the analysis of a single design decoys.</p>
 <td>Return identifier data for the design(s).</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_identified_mutants.html#rstoolbox.components.DesignSeries.get_identified_mutants" title="rstoolbox.components.DesignSeries.get_identified_mutants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_identified_mutants</span></code></a>()</td>
-<td>List for which sequence identifiers mutants have been calculated</td>
+<td>List for which sequence identifiers mutants have been calculated.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_label.html#rstoolbox.components.DesignSeries.get_label" title="rstoolbox.components.DesignSeries.get_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_label</span></code></a>(label[,&nbsp;seqID])</td>
 <td>Return the content(s) of the labels of interest.</td>
@@ -183,7 +183,7 @@ the analysis of a single design decoys.</p>
 <td>Return the mutantion positions data for <cite>seqID</cite> available in the container.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_mutations.html#rstoolbox.components.DesignSeries.get_mutations" title="rstoolbox.components.DesignSeries.get_mutations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mutations</span></code></a>(seqID)</td>
-<td>Return the mutantions data for <cite>seqID</cite> available in the container.</td>
+<td>Return the mutantions data for <code class="docutils literal notranslate"><span class="pre">seqID</span></code> available in the container.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_reference_sequence.html#rstoolbox.components.DesignSeries.get_reference_sequence" title="rstoolbox.components.DesignSeries.get_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_sequence</span></code></a>(seqID[,&nbsp;key_residues])</td>
 <td>Get a reference sequence attached to a particular sequence ID.</td>
@@ -213,12 +213,12 @@ the analysis of a single design decoys.</p>
 <td>Checks if there is a reference structure for the provided sequence ID.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.identify_mutants.html#rstoolbox.components.DesignSeries.identify_mutants" title="rstoolbox.components.DesignSeries.identify_mutants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identify_mutants</span></code></a>(seqID)</td>
-<td>Checks the sequence in column <code class="docutils literal notranslate"><span class="pre">sequence_&lt;seqID&gt;</span></code> againts the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</td>
+<td>Assess mutations of each decoy for sequence <code class="docutils literal notranslate"><span class="pre">seqID</span></code> againt the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.make_resfile.html#rstoolbox.components.DesignSeries.make_resfile" title="rstoolbox.components.DesignSeries.make_resfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_resfile</span></code></a>(seqID,&nbsp;header,&nbsp;filename)</td>
-<td>Generate a Rosetta <a class="reference external" href="https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles">resfile</a> to match the design’s sequence from the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</td>
+<td>Generate a Rosetta <a class="reference external" href="https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles">resfile</a> to match the design’s sequence assuming the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> as the starting point.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.score_by_pssm.html#rstoolbox.components.DesignSeries.score_by_pssm" title="rstoolbox.components.DesignSeries.score_by_pssm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_by_pssm</span></code></a>(seqID,&nbsp;pssm)</td>
+<tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.score_by_pssm.html#rstoolbox.components.DesignSeries.score_by_pssm" title="rstoolbox.components.DesignSeries.score_by_pssm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score_by_pssm</span></code></a>(seqID,&nbsp;matrix)</td>
 <td>Score sequences according to a provided PSSM matrix.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.transfer_reference.html#rstoolbox.components.DesignSeries.transfer_reference" title="rstoolbox.components.DesignSeries.transfer_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transfer_reference</span></code></a>(df)</td>

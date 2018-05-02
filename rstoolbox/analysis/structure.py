@@ -94,7 +94,7 @@ def positional_structural_count( df, seqID=None, key_residues=None ):
         dfo.index = dfo.index + shft
     else:
         dfo.index = shft
-    return dfo.loc[list(get_selection(key_residues, None, list(dfo.index)))]
+    return dfo.loc[list(get_selection(key_residues, seqID, list(dfo.index)))]
 
 
 def positional_structural_identity( df, seqID=None, ref_sse=None, key_residues=None ):
@@ -181,4 +181,4 @@ def positional_structural_identity( df, seqID=None, ref_sse=None, key_residues=N
         dfo.index = dfo.index + shft
     else:
         dfo.index = shft
-    return dfo.loc[list(get_selection(key_residues, None, list(dfo.index)))]
+    return dfo.loc[list(get_selection(key_residues, seqID, list(dfo.index)))]

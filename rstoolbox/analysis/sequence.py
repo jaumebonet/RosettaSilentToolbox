@@ -391,7 +391,7 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None,
         dfo.index = dfo.index + shft
     else:
         dfo.index = shft
-    return dfo.loc[list(get_selection(key_residues, None, list(dfo.index)))]
+    return dfo.loc[list(get_selection(key_residues, seqID, list(dfo.index)))]
 
 
 def binary_similarity( df, seqID, key_residues=None, matrix="IDENTITY"):
@@ -423,7 +423,7 @@ def binary_similarity( df, seqID, key_residues=None, matrix="IDENTITY"):
         :AttributeError: |reference_error|.
 
     .. seealso::
-        :func:`sequence_similarity`
+        :func:`.sequence_similarity`
 
     .. rubric:: Example
 
@@ -467,7 +467,7 @@ def binary_overlap( df, seqID, key_residues=None, matrix="IDENTITY" ):
         position of the length of the sequence
 
     .. seealso::
-        :func:`binary_similarity`
+        :func:`.binary_similarity`
 
     .. rubric:: Example
 

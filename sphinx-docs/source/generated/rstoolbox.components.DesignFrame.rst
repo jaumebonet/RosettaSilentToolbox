@@ -47,14 +47,14 @@ rstoolbox.components.DesignFrame
   .. autosummary::
      :toctree: DesignFrame
 
-      ~DesignFrame.generate_mutant_variants
-      ~DesignFrame.generate_mutants_from_matrix
-      ~DesignFrame.generate_wt_reversions
+      ~DesignFrame.identify_mutants
       ~DesignFrame.get_identified_mutants
       ~DesignFrame.get_mutation_count
       ~DesignFrame.get_mutation_positions
       ~DesignFrame.get_mutations
-      ~DesignFrame.identify_mutants
+      ~DesignFrame.generate_mutant_variants
+      ~DesignFrame.generate_mutants_from_matrix
+      ~DesignFrame.generate_wt_reversions
       ~DesignFrame.make_resfile
       ~DesignFrame.score_by_pssm
       ~DesignFrame.view_mutants_alignment

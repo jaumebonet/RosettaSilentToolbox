@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 11-Apr-2018
+# @Last modified time: 02-May-2018
 
 
 import copy
@@ -46,7 +46,7 @@ def get_selection( key_residues, seqID, shift=1, length=None ):
         elif length is not None:
             key_residues = range(1, length + 1)
     if isinstance(key_residues, int):
-        key_residues = [int, ]
+        key_residues = [key_residues, ]
     if isinstance(key_residues, (list, np.ndarray, six.string_types)):
         key_residues = Selection(key_residues)
     if isinstance(key_residues, SelectionContainer):

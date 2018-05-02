@@ -117,24 +117,25 @@
 <dt id="rstoolbox.components.DesignFrame.get_mutation_count">
 <code class="descclassname">DesignFrame.</code><code class="descname">get_mutation_count</code><span class="sig-paren">(</span><em>seqID</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.get_mutation_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of mutantion positions data for <cite>seqID</cite> available in the container.</p>
+<p>Basically this contains the total number of mutations in a particular decoy with respect
+to its <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the sequence of interest.</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> - depending on the input</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">If the data container is not <cite>~pandas.DataFrame</cite>
-or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">If the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">If the column <cite>mutant_count_[seqID]</cite> is cannot be found.</td>
+<tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">if there is no mutation information for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys.</td>
 </tr>
 </tbody>
 </table>
@@ -142,6 +143,11 @@ or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stab
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="rstoolbox.components.DesignFrame.identify_mutants.html#rstoolbox.components.DesignFrame.identify_mutants" title="rstoolbox.components.DesignFrame.identify_mutants"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.identify_mutants()</span></code></a>
+<a class="reference internal" href="../DesignSeries/rstoolbox.components.DesignSeries.identify_mutants.html#rstoolbox.components.DesignSeries.identify_mutants" title="rstoolbox.components.DesignSeries.identify_mutants"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignSeries.identify_mutants()</span></code></a></p>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>

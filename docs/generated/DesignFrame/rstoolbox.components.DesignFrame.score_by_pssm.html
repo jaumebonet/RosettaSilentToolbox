@@ -115,7 +115,7 @@
 <h1>rstoolbox.components.DesignFrame.score_by_pssm<a class="headerlink" href="#rstoolbox-components-designframe-score-by-pssm" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="rstoolbox.components.DesignFrame.score_by_pssm">
-<code class="descclassname">DesignFrame.</code><code class="descname">score_by_pssm</code><span class="sig-paren">(</span><em>seqID</em>, <em>pssm</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.score_by_pssm" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">DesignFrame.</code><code class="descname">score_by_pssm</code><span class="sig-paren">(</span><em>seqID</em>, <em>matrix</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.score_by_pssm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Score sequences according to a provided PSSM matrix.</p>
 <p>Generates new column by applying the PSSM score to each position
 of the requested sequences:</p>
@@ -131,7 +131,7 @@ of the requested sequences:</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><strong>pssm_score_&lt;seqID&gt;</strong></td>
-<td>Score obtained by applying <code class="docutils literal notranslate"><span class="pre">pssm</span></code></td>
+<td>Score obtained by applying <code class="docutils literal notranslate"><span class="pre">matrix</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -140,8 +140,9 @@ of the requested sequences:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the sequence sets of interest.</li>
-<li><strong>pssm</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – PSSM matrix data.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>matrix</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Positional frequency matrix. <strong>column:</strong> residue type; <strong>index:</strong>
+sequence position.</li>
 </ul>
 </td>
 </tr>
@@ -154,11 +155,9 @@ of the requested sequences:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">NotImplementedError:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">if <code class="docutils literal notranslate"><span class="pre">self</span></code> is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>
-or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">If the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">ValueError:</th><td class="field-body">if the length of the <code class="docutils literal notranslate"><span class="pre">pssm</span></code> does not match that
-of the sequence.</td>
+<tr class="field-even field"><th class="field-name">ValueError:</th><td class="field-body">if matrix rows do not match sequence length.</td>
 </tr>
 </tbody>
 </table>
@@ -166,6 +165,31 @@ of the sequence.</td>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="rstoolbox.components.DesignFrame.generate_mutants_from_matrix.html#rstoolbox.components.DesignFrame.generate_mutants_from_matrix" title="rstoolbox.components.DesignFrame.generate_mutants_from_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.generate_mutants_from_matrix()</span></code></a>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">SeriesFrame.generate_mutants_from_matrix()</span></code></p>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.tests.helper</span> <span class="kn">import</span> <span class="n">random_frequency_matrix</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">],</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">matrix</span> <span class="o">=</span> <span class="n">random_frequency_matrix</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">get_sequence</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">score_by_pssm</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">matrix</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[7]: </span><span class="go"></span>
+<span class="go">     score                     description                                                                                                            sequence_B  pssm_score_B</span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  TRPEEARERAWRLAEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  6.080453    </span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  PKPEEAMREAYKLIKKYMLKAQKEAQEEWERMRRTDGTKEEKDMFPEKMIAQALRAIGEIFNAYYWAFLKLQEFKKYPSVRWEEQEEARKRLKIMMKIGAEWAREIAREMKERIKR  6.086099    </span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW  5.296613    </span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  TKPEEWARWAYKEHLKMAEKHRKEMEIEWEELKRRDGKEEEKDMWPERMIAMALRAIGELFNHHMYAEMRAKEEKKKPEAKTEEARRARREIMKYHHEAGRLIEEAMRRLMERHKK  6.766995    </span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  KKWEEMMREAERQGKEYAQKAWKEALLEWKWMRKRPVTEEMKDMAPEWMIAAALRAIGEHFNIYWQQKLEHEKLRKIPNVPEEELEKGKEELKRIEEEAARMAEKYMQELRKKMES  5.507625    </span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  PRPEEMARFAKEEMHKHEEKAYREFLLEYELAIRKNPTEEPKDMQPEWAIAAALRAIGEIFNQWMYHLLEIRKENGSSHTRYEEREKYRKLAKRLHEEAAKEIWKFMHEAMRRFES  4.778006    </span>
+</pre></div>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>
