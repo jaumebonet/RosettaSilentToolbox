@@ -293,7 +293,7 @@ def generate_mutants_from_matrix( self, seqID, matrix, count,
     the matrix, but picks randomly at each position according to the frequencies in for
     that position.
 
-    For each :class:`.SeriesFrame`, it will generate a :class:`.DesignFrame` in which the
+    For each :class:`.DesignSeries`, it will generate a :class:`.DesignFrame` in which the
     original sequence becomes the ``reference_sequence``, inheriting the ``reference_shift``.
 
     .. warning::
@@ -329,8 +329,8 @@ def generate_mutants_from_matrix( self, seqID, matrix, count,
     .. seealso::
         :meth:`.DesignFrame.generate_mutant_variants`
         :meth:`.DesignFrame.score_by_pssm`
-        :meth:`.DesignFrame.generate_mutant_variants`
-        :meth:`.SeriesFrame.score_by_pssm`
+        :meth:`.DesignSeries.generate_mutant_variants`
+        :meth:`.DesignSeries.score_by_pssm`
 
     .. rubric:: Example
 
@@ -501,7 +501,7 @@ def score_by_pssm( self, seqID, matrix ):
         sequence position.
     :type matrix: :class:`~pandas.DataFrame`
 
-    :return: Union[:class:`.DesignSerie`, :class:`.DesignFrame`]
+    :return: Union[:class:`.DesignSeries`, :class:`.DesignFrame`]
         - Itself with the new column.
 
     :raises:
@@ -510,7 +510,7 @@ def score_by_pssm( self, seqID, matrix ):
 
     .. seealso::
         :meth:`.DesignFrame.generate_mutants_from_matrix`
-        :meth:`.SeriesFrame.generate_mutants_from_matrix`
+        :meth:`.DesignSeries.generate_mutants_from_matrix`
 
     .. rubric:: Example
 
@@ -572,7 +572,7 @@ def make_resfile( self, seqID, header, filename ):
     :param str filename: Identifier of the resfile. Will be altered with a numerical
         suffix if the data container holds more thant one sequence.
 
-    :return: Union[:class:`.DesignSerie`, :class:`.DesignFrame`]
+    :return: Union[:class:`.DesignSeries`, :class:`.DesignFrame`]
         - Itself with the new column.
 
     :raise:
