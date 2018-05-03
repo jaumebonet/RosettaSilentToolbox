@@ -239,7 +239,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
 
         if line.startswith("SCORE"):
             per_res = {}
-            chains  = {"id": [], "seq": "", "dssp": "", "psipred": ""}
+            chains  = {"id": [], "seq": "", "dssp": "", "psipred": "", "phi": [], "psi": []}
 
             # General scores
             for cv, value in enumerate( line.strip().split()[1:] ):
@@ -309,6 +309,13 @@ def parse_rosetta_file( filename, description=None, multi=False ):
                 if "lbl_" + labinfo[0].upper() in data:
                     data["lbl_" + labinfo[0].upper()][-1] = labinfo[1]
             continue
+        if line.startswith("REMARK PHI"):
+            chains["phi"] = list(line.split()[2].strip())
+            continue
+        if line.startswith("REMARK PSI"):
+            chains["psi"] = list(line.split()[2].strip())
+            continue
+
 
     df = rc.DesignFrame( data )
     df.add_source_files( _gather_file_list( filename, multi ) )
@@ -596,6 +603,67 @@ def get_sequence_and_structure( pdbfile ):
     else:
         raise ValueError("Execution has failed\n")
 
+def get_sequence_and_phipsi( pdbfile ):
+    """
+    Provided a PDB file, it will run a small **RosettaScript** to capture its sequence and
+    phi-psi angles.
+
+    .. note::
+        **Requires a Rosetta local installation** if file is not present.
+
+    It will generate an output file called: ``[pdbfile].phipsi.minisilent``. If this file
+    already exists, it will be directly read. You can choose to compress it;
+    ``[pdbfile].phipsi.minisilent.gz`` will also work.
+
+    :param pdbfile: Name of the input structure.
+    :type pdbfile: :class:`str`
+
+    :return: :class:`.DesignFrame`.
+
+    :raises:
+        :IOError: if ``pdbfile`` cannot be found.
+        :IOError: if Rosetta executable cannot be found.
+        :ValueError: if Rosetta execution fails
+
+    .. seealso::
+        :func:`.baseline`
+    """
+    if not os.path.isfile( pdbfile ):
+        raise IOError("Structure {} cannot be found".format(pdbfile))
+    minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".phispi.minisilent"
+    if os.path.isfile(minisilent):
+        return parse_rosetta_file(minisilent, {"sequence": "*", "structure": "*"})
+    elif os.path.isfile(minisilent + ".gz"):
+        return parse_rosetta_file(minisilent + ".gz", {"sequence": "*", "structure": "*"})
+
+    with open("phipsi.xml", "w") as fd:
+        fd.write(baseline())
+
+    # Check rosetta executable & run
+    path = core.get_option("rosetta", "path")
+    comp = core.get_option("rosetta", "compilation")
+    exe = os.path.join(path, "rosetta_scripts.{0}".format(comp))
+    if not os.path.isfile(exe):
+        raise IOError("The expected Rosetta executable {0} is not found".format(exe))
+    command = "{0} -parser:protocol {1} -s {2} -out:file:silent {3} -ignore_unrecognized_res"
+    command = command.format( exe, "phipsi.xml", pdbfile, str(os.getpid()) + "_" )
+    sys.stdout.write("Running Rosetta\n")
+    sys.stdout.write(command + "\n")
+    error = os.system( command )
+    os.unlink("phipsi.xml")
+    if not bool(error):
+        if os.path.isfile(str(os.getpid()) + "_"):
+            sys.stdout.write("Execution has finished\n")
+            fd = open( minisilent, "w" )
+            for line, is_header, count, symm in open_rosetta_file( str(os.getpid()) + "_" ):
+                fd.write( line )
+            fd.close()
+            os.unlink(str(os.getpid()) + "_")
+            return get_sequence_and_phipsi( pdbfile )
+        else:
+            raise ValueError("Execution has failed\n")
+    else:
+        raise ValueError("Execution has failed\n")
 
 def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True ):
     """

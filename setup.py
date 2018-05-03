@@ -67,7 +67,8 @@ setup(
     include_package_data=True,
     package_data={
         'rstoolbox': ['analysis/matrices/*',
-                      'components/square.ttf']
+                      'components/square.ttf',
+                      'plot/rama_bgdists/*']
     },
     scripts=[os.path.join(exepath, _) for _ in exes],
     cmdclass=versioneer.get_cmdclass(),
