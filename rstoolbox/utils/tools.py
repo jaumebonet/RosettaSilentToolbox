@@ -18,6 +18,10 @@ def format_Ipython():
 
     Just need to call it after importing the library.
     """
+    pd.set_option("display.max_columns", None)
+    pd.set_option("display.max_rows", None)
+    pd.set_option("display.max_seq_items", 3)
+    pd.set_option("display.max_colwidth", -1)
     from IPython.core.display import HTML
     CSS = textwrap.dedent("""
         table.dataframe {

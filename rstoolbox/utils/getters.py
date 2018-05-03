@@ -29,6 +29,7 @@ import numpy as np
 __all__ = ['get_id', 'get_available_sequences', 'get_sequence',
            'get_available_structures', 'get_structure',
            'get_available_structure_predictions', 'get_structure_prediction',
+           'get_dihedrals', 'get_phi', 'get_psi',
            'get_sequential_data', 'get_available_labels', 'get_label']
 
 
@@ -150,6 +151,106 @@ def get_sequence( self, seqID, key_residues=None ):
     else:
         return _get_key_sequence(self, "sequence", seqID, key_residues)
 
+def get_phi( self, seqID, key_residues=None ):
+    """Return the **phi** angle for ``seqID`` available in the container.
+
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+
+    :return: :class:`~numpy.ndarray` or :class:`~pandas.Series` - depending on the input
+
+    :raises:
+        :TypeError: |indf_error|.
+        :KeyError: |seqID_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_3ssepred.minisilent.gz",
+           ...:                         {'dihedrals': '*'})
+           ...: df.get_phi('A')
+    """
+    _check_type(self)
+    if key_residues is None:
+        return self[_check_column(self, "phi", seqID)]
+    else:
+        return _get_key_sequence(self, "phi", seqID, key_residues)
+
+def get_psi( self, seqID, key_residues=None ):
+    """Return the **psi** angle for ``seqID`` available in the container.
+
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+
+    :return: :class:`~numpy.ndarray` or :class:`~pandas.Series` - depending on the input
+
+    :raises:
+        :TypeError: |indf_error|.
+        :KeyError: |seqID_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_3ssepred.minisilent.gz",
+           ...:                         {'dihedrals': '*'})
+           ...: df.get_psi('A')
+    """
+    _check_type(self)
+    if key_residues is None:
+        return self[_check_column(self, "psi", seqID)]
+    else:
+        return _get_key_sequence(self, "psi", seqID, key_residues)
+
+def get_dihedrals( self, seqID, key_residues=None ):
+    """Return the **dihedrals** data for ``phi-psi`` available in the container.
+
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+
+    :return: :func:`list` of :class:`~numpy.ndarray` or :class:`~pandas.DataFrame`
+        - depending on the input
+
+    :raises:
+        :TypeError: |indf_error|.
+        :KeyError: |seqID_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_3ssepred.minisilent.gz",
+           ...:                         {'dihedrals': '*'})
+           ...: df.get_dihedrals('A')
+    """
+    _check_type(self)
+    if isinstance(self, pd.DataFrame):
+        if key_residues is None:
+            return pd.concat([self[_check_column(self, "phi", seqID)],
+                              self[_check_column(self, "psi", seqID)]], axis=1)
+        else:
+            return pd.concat([_get_key_sequence(self, "phi", seqID, key_residues),
+                              _get_key_sequence(self, "psi", seqID, key_residues)], axis=1)
+    else:
+        if key_residues is None:
+            return [self[_check_column(self, "phi", seqID)],
+                    self[_check_column(self, "psi", seqID)]]
+        else:
+            return [_get_key_sequence(self, "phi", seqID, key_residues),
+                    _get_key_sequence(self, "psi", seqID, key_residues)]
 
 def get_available_structures( self ):
     """

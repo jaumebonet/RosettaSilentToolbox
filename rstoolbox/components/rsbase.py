@@ -34,6 +34,9 @@ if six.PY3:
     RSBaseDesign.get_sequential_data                 = ru.get_sequential_data
     RSBaseDesign.get_label                           = ru.get_label
     RSBaseDesign.get_available_labels                = ru.get_available_labels
+    RSBaseDesign.get_dihedrals                       = ru.get_dihedrals
+    RSBaseDesign.get_phi                             = ru.get_phi
+    RSBaseDesign.get_psi                             = ru.get_psi
 
     RSBaseDesign.get_available_references            = ru.get_available_references
     RSBaseDesign.has_reference_sequence              = ru.has_reference_sequence
@@ -95,6 +98,12 @@ else:
         ru.get_label, None, RSBaseDesign)
     RSBaseDesign.get_available_labels = MethodType(
         ru.get_available_labels, None, RSBaseDesign)
+    RSBaseDesign.get_dihedrals = MethodType(
+        ru.get_dihedrals, None, RSBaseDesign)
+    RSBaseDesign.get_phi = MethodType(
+        ru.get_phi, None, RSBaseDesign)
+    RSBaseDesign.get_psi = MethodType(
+        ru.get_psi, None, RSBaseDesign)
 
     RSBaseDesign.get_available_references = MethodType(
         ru.get_available_references, None, RSBaseDesign)

@@ -18,7 +18,7 @@ class Description( object ):
 
     _PARAMS = [
         "scores", "scores_ignore", "scores_rename", "scores_by_residue",
-        "naming", "sequence", "structure", "psipred", "labels"
+        "naming", "sequence", "structure", "psipred", "dihedrals", "labels"
     ]
 
     def __init__( self, **params ):
@@ -38,6 +38,9 @@ class Description( object ):
         self.sequence          = params.get("sequence",          None)
         self.structure         = params.get("structure",         None)
         self.psipred           = params.get("psipred",           None)
+        #self.phi               = params.get("phi",               None)
+        #self.psi               = params.get("psi",               None)
+        self.dihedrals         = params.get("dihedrals",         None)
         self.labels            = params.get("labels",            None)
 
         # Others
@@ -157,6 +160,19 @@ class Description( object ):
             for ch in sele:
                 guidep = np.where(guide == ch)[0]
                 yield "psipred_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
+
+    def get_expected_dihedrals( self, chains, angle ):
+        if self.dihedrals is not None:
+            sele = set(chains["id"]) if self.dihedrals == "*" else set(self.dihedrals)
+            seq  = chains[angle]
+            if len(sele.difference(chains["id"])) > 0:
+                raise ValueError(
+                    "Requested a chain not present in the file. "
+                    "Available chain are {}".format(",".join(list(set(chains["id"])))))
+            guide  = np.array(list(chains["id"]))
+            for ch in sele:
+                guidep = np.where(guide == ch)[0]
+                yield angle + "_" + ch, np.array(seq[guidep[0]:guidep[-1] + 1])
 
     def to_json( self ):
         data = {}
