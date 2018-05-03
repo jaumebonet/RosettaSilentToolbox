@@ -13,6 +13,8 @@
 .. func:: binary_overlap
 """
 # Standard Libraries
+from rstoolbox.components import DesignSeries
+from rstoolbox.utils import add_top_title
 
 # External Libraries
 import os
@@ -110,23 +112,74 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
     ax.set_xticklabels(range(df.index.values[0],
                              df.index.values[-1], 5))
 
-def plot_ramachandran( df, seqID, fig, title=None, save_figure=None, prefix=""):
-    """Plots ramachandran map in RAMPAGE style.
+def plot_ramachandran( df, seqID, fig):
+    """Generates a ramachandran plot in RAMPAGE style. For more details and sources
+    please refert to:
 
-        :input df:      A dataframe with "amino acids" (single letter codes), "phi", "psi" columns
-        :return:        A ramachandran plot in RAMPAGE style.
-        """
+        https://warwick.ac.uk/fac/sci/moac/people/students/peter_cock/python/ramachandran/
+
+    Background distribution data taken from:
+
+        https://github.com/S-John-S/Ramachandran-Plot.git
+
+    The phi - psi dihedrals should be present in the DesignSerie. If this is not the case,
+    consider computing them using for example the :func:`.get_sequence_and_structure`.
+    Note that this function will only plot the ramachandran for a single decoy. If one
+    would like to compute it for mutiple decoys, please see the example below.
+
+    :param df: |df_param|, where ONE column cotains the phi and a second column
+        the psi angles.
+    :type df: :class:`~pandas.Series`
+    :param ax: |axis_param|.
+    :type ax: :class:`~matplotlib.axes.Axes`
+
+    .. seealso::
+        :func:`.get_sequence_and_structure`
+        :func:`.get_dihedrals`
+        :func:`.get_phi`
+        :func:`.get_psi`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: import rstoolbox as rb
+           ...: import pandas as pd
+           ...: plt.style.use('ggplot')
+           ...: pylab.rcParams["figure.figsize"] = (20, 5)
+           ...: definitions = {
+                               "scores": ["score"],
+                               "sequence" : "A",
+                               "psipred" : "*",
+                               "structure" : "*",
+                               "dihedrals": "*"
+                               }
+           ...: dsf = rb.io.parse_rosetta_file(
+                    "~/RosettaSilentToolbox/rstoolbox/tests/data/input_3ssepred.minisilent.gz",
+                    definitions )
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'scores': ['score'], 'structure': 'C'})
+           ...: figure = plt.figure(figsize=(15,10))
+           ...: rb.plot.plot_ramachandran(dsf.iloc[0], "A", figure)
+           ...: plt.tight_layout()
+           ...: fig.subplots_adjust(top=1.2)
+
+        @savefig plot_ramachandran.png width=5in
+        In [2]: plt.show()
+    """
     # Data type management.
-    from rstoolbox.components import DesignSeries
-    from rstoolbox.utils import add_top_title
     if not isinstance(df, pd.Series):
         raise ValueError("Input data must be in a Series or DesignSeries")
     if not isinstance(df, DesignSeries):
         df = DesignSeries(df)
     if not isinstance(df.get_phi(seqID), np.ndarray):
-        raise ValueError("Ramachandran plot function can only be applied on one decoy at once.")
+        raise ValueError(
+        "Ramachandran plot function can only be applied on one decoy at once."
+        )
     if not isinstance(df.get_psi(seqID), np.ndarray):
-        raise ValueError("Ramachandran plot function can only be applied on one decoy at once.")
+        raise ValueError(
+        "Ramachandran plot function can only be applied on one decoy at once."
+        )
 
     # General variable for the background preferences.
     cwd = os.path.dirname(__file__)
@@ -181,20 +234,17 @@ def plot_ramachandran( df, seqID, fig, title=None, save_figure=None, prefix=""):
     }
     for i,aa in enumerate(seq):
         if aa == "G":
-            #rama_types.append("GLY")
             rama_types["GLY"].append(i)
         elif aa == "P":
-            #rama_types.append("PRO")
             rama_types["PRO"].append(i)
         elif i+1 < len(seq) and seq[i+1] == "P":
-            #rama_types.append("PRE-PRO")
             rama_types["PRE-PRO"].append(i)
         else:
-            #rama_types.append("General")
             rama_types["GENERAL"].append(i)
 
     # Generate the plots
-    #fig = plt.figure(figsize=(15,10))
+    all_phi = df.get_phi(seqID)
+    all_psi = df.get_psi(seqID)
     order = ["GENERAL", "GLY", "PRE-PRO", "PRO"]
     grid = (2, 2)
     ax = [plt.subplot2grid(grid, (0, 0), fig=fig),
@@ -202,9 +252,8 @@ def plot_ramachandran( df, seqID, fig, title=None, save_figure=None, prefix=""):
           plt.subplot2grid(grid, (1, 0), fig=fig),
           plt.subplot2grid(grid, (1, 1), fig=fig)]
     for i, (key, val) in enumerate(sorted(rama_preferences.items(), key=lambda x: x[0].lower())):
-        #plt.title(key)
-        phi = df.get_phi(seqID)[rama_types[order[i]]]
-        psi = df.get_psi(seqID)[rama_types[order[i]]]
+        phi = all_phi[rama_types[order[i]]]
+        psi = all_psi[rama_types[order[i]]]
 
         ax[i].imshow(rama_pref_values[key],
                   cmap=rama_preferences[key]["cmap"],
@@ -215,7 +264,6 @@ def plot_ramachandran( df, seqID, fig, title=None, save_figure=None, prefix=""):
                       psi,
                       color="black")
         add_top_title( ax[i], order[i])
-        #plt.scatter(outliers[key]["x"], outliers[key]["y"], color="red")
         ax[i].set_xlim([-180, 180])
         ax[i].set_ylim([-180, 180])
         ax[i].plot([-180, 180], [0, 0], color="black")
@@ -224,11 +272,5 @@ def plot_ramachandran( df, seqID, fig, title=None, save_figure=None, prefix=""):
         ax[i].set_xlabel(r'$\phi$ [degrees]')
         ax[i].set_ylabel(r'$\psi$ [degrees]')
         ax[i].grid()
-    plt.tight_layout()
-    if title:
-        fig.subplots_adjust(top=0.93)
-        plt.suptitle("{}".format(title))
-
-    if save_figure:
-        plt.savefig("{}_rama.png".format(prefix), format="png", dpi=300, transparent=True, bbox_inches="tight")
-    #plt.show()
+    #plt.tight_layout()
+    #fig.subplots_adjust(top=1.2)
