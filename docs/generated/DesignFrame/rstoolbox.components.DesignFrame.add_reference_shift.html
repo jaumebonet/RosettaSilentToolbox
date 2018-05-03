@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="rstoolbox.components.DesignFrame.add_reference_structure" href="rstoolbox.components.DesignFrame.add_reference_structure.html" />
-    <link rel="prev" title="rstoolbox.components.DesignFrame.add_reference_sequence" href="rstoolbox.components.DesignFrame.add_reference_sequence.html" />
+    <link rel="next" title="rstoolbox.components.DesignFrame.get_reference_shift" href="rstoolbox.components.DesignFrame.get_reference_shift.html" />
+    <link rel="prev" title="rstoolbox.components.DesignFrame.get_reference_structure" href="rstoolbox.components.DesignFrame.get_reference_structure.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -116,23 +116,24 @@
 <dl class="method">
 <dt id="rstoolbox.components.DesignFrame.add_reference_shift">
 <code class="descclassname">DesignFrame.</code><code class="descname">add_reference_shift</code><span class="sig-paren">(</span><em>seqID</em>, <em>shift</em>, <em>shift_labels=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.add_reference_shift" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a reference shift attached to a particular sequence ID.</p>
+<dd><p>Add a <code class="docutils literal notranslate"><span class="pre">reference_shift</span></code> attached to a chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</p>
 <p><strong>What is shift?</strong> In case the sequence does not start in 1,
 shift defines how to count it. It is a way to keep plotting
 an analysis showing residue number compatible with the PDB.
 There are two main ways to set the shift:</p>
 <ol class="arabic simple">
-<li>Provide the number of the first residue of the chain; the     rest will be set up from there.</li>
-<li>If the original PDB has breaks, one will need to provide an     array with the numbers of each position.</li>
+<li>Provide the number of the first residue of the chain; the     rest will be set up from there. This is the simplest option,     when its just a matter of the structure not actually starting     at the begining of the real protein sequence.</li>
+<li>If the original PDB has breaks, one will need to provide an     array with the numbers of each position. This is the only solution     to consistently track those positions.</li>
 </ol>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the reference sequence</li>
-<li><strong>shift</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Starting residue number or per-residue number assignment.</li>
-<li><strong>shift_labels</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – When adding the shift, apply it to any label</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>shift</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – Starting residue number or per-residue number assignment.</li>
+<li><strong>shift_labels</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When adding the shift, should it be automatically
+applied to any label present in the data container? (Default is <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>).</li>
 </ul>
 </td>
 </tr>
@@ -140,8 +141,7 @@ There are two main ways to set the shift:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">If the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>
-or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">if the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">If there is no reference structure or sequence for seqID.</td>
 </tr>
@@ -157,6 +157,17 @@ sequence/structure</td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_ssebig.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;structure&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_structure</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_shift</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+</pre></div>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>

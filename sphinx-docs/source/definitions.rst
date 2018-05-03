@@ -30,8 +30,9 @@
 .. |sseID_error| replace:: if there is no structure information for chain ``seqID`` of the decoys
 .. |mutID_error| replace:: if there is no mutation information for chain ``seqID`` of the decoys
 
-.. |indf_error| replace:: If the data container is not :class:`~pandas.DataFrame` or :class:`~pandas.Series`
+.. |indf_error| replace:: if the data container is not :class:`~pandas.DataFrame` or :class:`~pandas.Series`
 
 .. |reference_error| replace:: if there is no ``reference_sequence`` for chain ``seqID`` of the decoys
+.. |referencestr_error| replace:: if there is no ``reference_structure`` for chain ``seqID`` of the decoys
 
 .. |overwrite_error| replace:: if output file exists and :ref:`system.overwrite <options>` is :data:`False`

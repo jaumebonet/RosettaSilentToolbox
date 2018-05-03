@@ -134,13 +134,13 @@ slicing another, one should expect the index to start in 1.</p>
 <td>Single access to <a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.add_reference_sequence.html#rstoolbox.components.SequenceFrame.add_reference_sequence" title="rstoolbox.components.SequenceFrame.add_reference_sequence"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_reference_sequence()</span></code></a>, <a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.add_reference_structure.html#rstoolbox.components.SequenceFrame.add_reference_structure" title="rstoolbox.components.SequenceFrame.add_reference_structure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_reference_structure()</span></code></a> and <a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.add_reference_shift.html#rstoolbox.components.SequenceFrame.add_reference_shift" title="rstoolbox.components.SequenceFrame.add_reference_shift"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_reference_shift()</span></code></a>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.add_reference_sequence.html#rstoolbox.components.SequenceFrame.add_reference_sequence" title="rstoolbox.components.SequenceFrame.add_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_reference_sequence</span></code></a>(seqID,&nbsp;sequence)</td>
-<td>Add a reference sequence attached to a particular sequence ID.</td>
+<td>Add a <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> attached to chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.add_reference_shift.html#rstoolbox.components.SequenceFrame.add_reference_shift" title="rstoolbox.components.SequenceFrame.add_reference_shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_reference_shift</span></code></a>(seqID,&nbsp;shift[,&nbsp;shift_labels])</td>
 <td>Add a reference shift attached to a particular sequence ID.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.add_reference_structure.html#rstoolbox.components.SequenceFrame.add_reference_structure" title="rstoolbox.components.SequenceFrame.add_reference_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_reference_structure</span></code></a>(seqID,&nbsp;structure)</td>
-<td>Add a reference structure attached to a particular sequence ID.</td>
+<td>Add a <code class="docutils literal notranslate"><span class="pre">reference_structure</span></code> attached to chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.delete_empty.html#rstoolbox.components.SequenceFrame.delete_empty" title="rstoolbox.components.SequenceFrame.delete_empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_empty</span></code></a>([pick])</td>
 <td>Setter/Getter for the delete empty configuration.</td>
@@ -152,25 +152,25 @@ slicing another, one should expect the index to start in 1.</p>
 <td>Remove all reference data regarding a particular seqID.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.get_available_references.html#rstoolbox.components.SequenceFrame.get_available_references" title="rstoolbox.components.SequenceFrame.get_available_references"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_references</span></code></a>()</td>
-<td>Identify for which seqIDs there is some reference data.</td>
+<td>List which <strong>decoy chain</strong> identifiers have some kind of reference data.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.get_key_residues.html#rstoolbox.components.SequenceFrame.get_key_residues" title="rstoolbox.components.SequenceFrame.get_key_residues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_key_residues</span></code></a>([key_residues])</td>
 <td>Extract those residues from the <a class="reference internal" href="#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> that are really necessary</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.get_reference_sequence.html#rstoolbox.components.SequenceFrame.get_reference_sequence" title="rstoolbox.components.SequenceFrame.get_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_sequence</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Get a reference sequence attached to a particular sequence ID.</td>
+<td>Get the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> attached to chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.get_reference_shift.html#rstoolbox.components.SequenceFrame.get_reference_shift" title="rstoolbox.components.SequenceFrame.get_reference_shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_shift</span></code></a>(seqID)</td>
 <td>Get a reference shift attached to a particular sequence ID.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.get_reference_structure.html#rstoolbox.components.SequenceFrame.get_reference_structure" title="rstoolbox.components.SequenceFrame.get_reference_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_structure</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Get a reference structure attached to a particular sequence ID.</td>
+<td>Get the <code class="docutils literal notranslate"><span class="pre">reference_structure</span></code> attached to chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.has_reference_sequence.html#rstoolbox.components.SequenceFrame.has_reference_sequence" title="rstoolbox.components.SequenceFrame.has_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_reference_sequence</span></code></a>(seqID)</td>
-<td>Checks if there is a reference sequence for the provided sequence ID.</td>
+<td>Checks if there is a <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> for <code class="docutils literal notranslate"><span class="pre">sequID</span></code>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.has_reference_structure.html#rstoolbox.components.SequenceFrame.has_reference_structure" title="rstoolbox.components.SequenceFrame.has_reference_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_reference_structure</span></code></a>(seqID)</td>
-<td>Checks if there is a reference structure for the provided sequence ID.</td>
+<td>Checks if there is a <code class="docutils literal notranslate"><span class="pre">reference_structure</span></code> for <code class="docutils literal notranslate"><span class="pre">sequID</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="SequenceFrame/rstoolbox.components.SequenceFrame.is_transposed.html#rstoolbox.components.SequenceFrame.is_transposed" title="rstoolbox.components.SequenceFrame.is_transposed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_transposed</span></code></a>()</td>
 <td><a class="reference internal" href="#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a>, when created, has each column specify a residue type and each row specify a sequence position.</td>

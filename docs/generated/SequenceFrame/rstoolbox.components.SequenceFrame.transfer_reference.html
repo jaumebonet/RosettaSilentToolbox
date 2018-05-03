@@ -116,27 +116,20 @@
 <dl class="method">
 <dt id="rstoolbox.components.SequenceFrame.transfer_reference">
 <code class="descclassname">SequenceFrame.</code><code class="descname">transfer_reference</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.SequenceFrame.transfer_reference" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transfer reference from one data container to another. This <strong>overwrittes</strong> previous
-references completely. Use with care.</p>
+<dd><p>Transfer reference data from one container to another.</p>
+<p>This <strong>overwrittes</strong> previous references completely. <strong>Use with care.</strong></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>df</strong> – Data container. Derives from <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>df</strong> (Union[<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>, <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>]) – Data container.</p>
+</td>
 </tr>
-</tbody>
-</table>
-<p>or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.
-:type df: <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
-<table class="docutils field-list" frame="void" rules="none">
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">If trying to add a reference type to/from a class without it</td>
+<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">if trying to add a reference type to/from a class without it.</td>
 </tr>
 </tbody>
 </table>

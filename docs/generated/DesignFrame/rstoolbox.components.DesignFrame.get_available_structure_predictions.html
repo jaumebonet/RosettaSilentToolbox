@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="rstoolbox.components.DesignFrame.get_available_structures" href="rstoolbox.components.DesignFrame.get_available_structures.html" />
-    <link rel="prev" title="rstoolbox.components.DesignFrame.get_available_sequences" href="rstoolbox.components.DesignFrame.get_available_sequences.html" />
+    <link rel="next" title="rstoolbox.components.DesignFrame.get_structure_prediction" href="rstoolbox.components.DesignFrame.get_structure_prediction.html" />
+    <link rel="prev" title="rstoolbox.components.DesignFrame.get_structure" href="rstoolbox.components.DesignFrame.get_structure.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -116,23 +116,22 @@
 <dl class="method">
 <dt id="rstoolbox.components.DesignFrame.get_available_structure_predictions">
 <code class="descclassname">DesignFrame.</code><code class="descname">get_available_structure_predictions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.get_available_structure_predictions" title="Permalink to this definition">¶</a></dt>
-<dd><p>List which structure prediction identifiers are available in the data container</p>
+<dd><p>List which <strong>structure prediction</strong> identifiers are available in the data container.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">If the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">if the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
 </tr>
 </tbody>
 </table>
-<p class="last">or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
 </td>
 </tr>
 </tbody>
