@@ -24,7 +24,7 @@ from matplotlib import colors
 
 # This Library
 
-__all__ = ['positional_structural_similarity_plot']
+__all__ = ['positional_structural_similarity_plot', 'plot_ramachandran']
 
 
 def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
@@ -117,11 +117,15 @@ def plot_ramachandran( df, seqID, fig, title=None, save_figure=None, prefix=""):
         :return:        A ramachandran plot in RAMPAGE style.
         """
     # Data type management.
-    if not isinstance(df, pd.DataFrame):
-        raise ValueError("Input data must be in a DataFrame, DesignFrame or SequenceFrame")
-    if not (isinstance(df.get_phi(seqID), pd.Series) or isinstance(df.get_phi(seqID), np.array)):
+    from rstoolbox.components import DesignSeries
+    from rstoolbox.utils import add_top_title
+    if not isinstance(df, pd.Series):
+        raise ValueError("Input data must be in a Series or DesignSeries")
+    if not isinstance(df, DesignSeries):
+        df = DesignSeries(df)
+    if not isinstance(df.get_phi(seqID), np.ndarray):
         raise ValueError("Ramachandran plot function can only be applied on one decoy at once.")
-    if not (isinstance(df.get_psi(seqID), pd.Series) or isinstance(df.get_psi(seqID), np.array)):
+    if not isinstance(df.get_psi(seqID), np.ndarray):
         raise ValueError("Ramachandran plot function can only be applied on one decoy at once.")
 
     # General variable for the background preferences.
@@ -169,19 +173,29 @@ def plot_ramachandran( df, seqID, fig, title=None, save_figure=None, prefix=""):
 
     # Ramachandran residue classification.
     seq = df.get_sequence(seqID)
-    rama_types = []
+    rama_types = {
+                  "GLY": [],
+                  "PRO": [],
+                  "PRE-PRO": [],
+                  "GENERAL": []
+    }
     for i,aa in enumerate(seq):
         if aa == "G":
-            rama_types.append("GLY")
+            #rama_types.append("GLY")
+            rama_types["GLY"].append(i)
         elif aa == "P":
-            rama_types.append("PRO")
-        elif i+1 < len(df) and df["amino acid"][i+1] == "P":
-            rama_types.append("PRE-PRO")
+            #rama_types.append("PRO")
+            rama_types["PRO"].append(i)
+        elif i+1 < len(seq) and seq[i+1] == "P":
+            #rama_types.append("PRE-PRO")
+            rama_types["PRE-PRO"].append(i)
         else:
-            rama_types.append("General")
+            #rama_types.append("General")
+            rama_types["GENERAL"].append(i)
 
     # Generate the plots
     #fig = plt.figure(figsize=(15,10))
+    order = ["GENERAL", "GLY", "PRE-PRO", "PRO"]
     grid = (2, 2)
     ax = [plt.subplot2grid(grid, (0, 0), fig=fig),
           plt.subplot2grid(grid, (0, 1), fig=fig),
@@ -189,17 +203,21 @@ def plot_ramachandran( df, seqID, fig, title=None, save_figure=None, prefix=""):
           plt.subplot2grid(grid, (1, 1), fig=fig)]
     for i, (key, val) in enumerate(sorted(rama_preferences.items(), key=lambda x: x[0].lower())):
         #plt.title(key)
+        phi = df.get_phi(seqID)[rama_types[order[i]]]
+        psi = df.get_psi(seqID)[rama_types[order[i]]]
+
         ax[i].imshow(rama_pref_values[key],
                   cmap=rama_preferences[key]["cmap"],
                   norm=colors.BoundaryNorm(rama_preferences[key]["bounds"],
                   rama_preferences[key]["cmap"].N),
                   extent=(-180, 180, 180, -180))
-        ax[i].scatter(df.get_phi(seqID),
-                      df.get_psi(seqID),
+        ax[i].scatter(phi,
+                      psi,
                       color="black")
+        add_top_title( ax[i], order[i])
         #plt.scatter(outliers[key]["x"], outliers[key]["y"], color="red")
-        ax[i].xlim([-180, 180])
-        ax[i].ylim([-180, 180])
+        ax[i].set_xlim([-180, 180])
+        ax[i].set_ylim([-180, 180])
         ax[i].plot([-180, 180], [0, 0], color="black")
         ax[i].plot([0, 0], [-180, 180], color="black")
         ax[i].locator_params(axis='x', nbins=7)
