@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="rstoolbox.components.DesignFrame.get_available_labels" href="rstoolbox.components.DesignFrame.get_available_labels.html" />
-    <link rel="prev" title="rstoolbox.components.DesignFrame.add_source_files" href="rstoolbox.components.DesignFrame.add_source_files.html" />
+    <link rel="next" title="rstoolbox.components.DesignFrame.add_source_file" href="rstoolbox.components.DesignFrame.add_source_file.html" />
+    <link rel="prev" title="rstoolbox.components.DesignFrame.transfer_reference" href="rstoolbox.components.DesignFrame.transfer_reference.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -122,20 +122,20 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the reference sequence</li>
-<li><strong>shift_labels</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – When removing the shift, apply it to any label that has been shifted</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>shift_labels</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When removing the shift, should automatically
+revert it to any label present in the data container? (Default is <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">If the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">if the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></td>
 </tr>
 </tbody>
 </table>
-<p class="last">or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
 </td>
 </tr>
 </tbody>

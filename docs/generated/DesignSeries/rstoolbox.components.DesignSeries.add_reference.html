@@ -123,11 +123,12 @@ and <a class="reference internal" href="rstoolbox.components.DesignSeries.add_re
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the reference sequence</li>
-<li><strong>sequence</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Reference sequence.</li>
-<li><strong>structure</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Reference structure.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>sequence</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Reference sequence.</li>
+<li><strong>structure</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Reference structure.</li>
 <li><strong>shift</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>]) – Starting residue number or per-residue number assignment.</li>
-<li><strong>shift_labels</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – When adding the shift, apply it to any label</li>
+<li><strong>shift_labels</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When adding the shift, should it be automatically
+applied to any label present in the data container? (Default is <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>).</li>
 </ul>
 </td>
 </tr>
@@ -135,7 +136,7 @@ and <a class="reference internal" href="rstoolbox.components.DesignSeries.add_re
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">If trying to add a reference type to a class without it</td>
+<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">if trying to add a reference type to/from a class without it.</td>
 </tr>
 </tbody>
 </table>
@@ -143,6 +144,15 @@ and <a class="reference internal" href="rstoolbox.components.DesignSeries.add_re
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../DesignFrame/rstoolbox.components.DesignFrame.add_reference_sequence.html#rstoolbox.components.DesignFrame.add_reference_sequence" title="rstoolbox.components.DesignFrame.add_reference_sequence"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.add_reference_sequence()</span></code></a>
+<a class="reference internal" href="../DesignFrame/rstoolbox.components.DesignFrame.add_reference_structure.html#rstoolbox.components.DesignFrame.add_reference_structure" title="rstoolbox.components.DesignFrame.add_reference_structure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.add_reference_structure()</span></code></a>
+<a class="reference internal" href="../DesignFrame/rstoolbox.components.DesignFrame.add_reference_shift.html#rstoolbox.components.DesignFrame.add_reference_shift" title="rstoolbox.components.DesignFrame.add_reference_shift"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.add_reference_shift()</span></code></a>
+<a class="reference internal" href="rstoolbox.components.DesignSeries.add_reference_sequence.html#rstoolbox.components.DesignSeries.add_reference_sequence" title="rstoolbox.components.DesignSeries.add_reference_sequence"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignSeries.add_reference_sequence()</span></code></a>
+<a class="reference internal" href="rstoolbox.components.DesignSeries.add_reference_structure.html#rstoolbox.components.DesignSeries.add_reference_structure" title="rstoolbox.components.DesignSeries.add_reference_structure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignSeries.add_reference_structure()</span></code></a>
+<a class="reference internal" href="rstoolbox.components.DesignSeries.add_reference_shift.html#rstoolbox.components.DesignSeries.add_reference_shift" title="rstoolbox.components.DesignSeries.add_reference_shift"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignSeries.add_reference_shift()</span></code></a></p>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>

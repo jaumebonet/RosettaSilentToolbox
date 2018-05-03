@@ -1,16 +1,42 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   22-Feb-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: reference.py
-# @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+
+.. func:: get_available_references
+.. func:: has_reference_sequence
+.. func:: add_reference_sequence
+.. func:: get_reference_sequence
+.. func:: has_reference_structure
+.. func:: add_reference_structure
+.. func:: get_reference_structure
+.. func:: get_reference_shift
+.. func:: add_reference_shift
+.. func:: add_reference
+.. func:: transfer_reference
+.. func:: delete_reference
+"""
+# Standard Libraries
 import copy
 import warnings
 
+# External Libraries
 import six
 import pandas as pd
 import numpy as np
+
+# This Library
+
+
+__all__ = ['get_available_references', 'has_reference_sequence',
+           'add_reference_sequence', 'get_reference_sequence',
+           'has_reference_structure', 'add_reference_structure',
+           'get_reference_structure', 'get_reference_shift',
+           'add_reference_shift', 'add_reference', 'transfer_reference',
+           'delete_reference']
 
 
 def _has_reference( obj, ctype, seqID ):
@@ -38,47 +64,75 @@ def _get_key_reference( obj, ctype, seqID, key_residues ):
 
     kr = get_selection(key_residues, seqID, sft, len(seq))
 
+    # -1 as we are accessing string count
     return "".join(np.array(list(seq))[kr - 1])
 
 
 def get_available_references( self ):
-    """
-    Identify for which seqIDs there is some reference data.
+    """List which **decoy chain** identifiers have some kind of reference data.
+
+    :return: :func:`list` of :class:`str`
+
+    :TypeError: If applied over a data container without ``_reference`` attribute.
+
+    .. seealso::
+        :meth:`.DesignFrame.has_reference_sequence`
+        :meth:`.DesignFrame.has_reference_structure`
+        :meth:`.DesignSeries.has_reference_sequence`
+        :meth:`.DesignSeries.has_reference_structure`
     """
     return list(self._reference.keys())
 
 
 def has_reference_sequence( self, seqID ):
-    """
-    Checks if there is a reference sequence for the provided
-    sequence ID.
+    """Checks if there is a ``reference_sequence`` for ``sequID``.
 
-    :param seqID: Identifier of the reference sequence
-    :type seqID: :py:class:`str`
+    :param str seqID: |seqID_param|.
 
-    :return: bool
+    :return: :class:`bool`
 
     :raises:
-        :TypeError: If applied over a data container without `_reference` attribute.
+        :TypeError: If applied over a data container without ``_reference`` attribute.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'sequence': 'AB'})
+           ...: df.add_reference_sequence('A', df.iloc[0].get_sequence('A'))
+           ...: df.has_reference_sequence('A')
+           ...: df.has_reference_sequence('B')
     """
     return _has_reference(self, "sequence", seqID)
 
 
 def add_reference_sequence( self, seqID, sequence ):
-    """
-    Add a reference sequence attached to a particular sequence ID.
+    """Add a ``reference_sequence`` attached to chain ``seqID``.
 
-    :param seqID: Identifier of the reference sequence
-    :type seqID: :py:class:`str`
-    :param sequence: Reference sequence.
-    :type sequence: :py:class:`str`
+    :param str seqID: |seqID_param|.
+    :param str sequence: Reference sequence.
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-            or :py:class:`~pandas.Series`
-        :ValueError: If ``sequence`` is not a :class:`str`
-        :KeyError: If the data container does not contain sequence data for the given seqID.
-        :IndexError: If a reference structure exists and sequence length do not match
+        :TypeError: |indf_error|.
+        :ValueError: if ``sequence`` is not a :class:`str`
+        :KeyError: |seqID_error|.
+        :IndexError: If a ``reference_structure`` for ``seqID`` exists
+            but length does not match.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'sequence': 'AB'})
+           ...: df.add_reference_sequence('A', df.iloc[0].get_sequence('A'))
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
@@ -97,19 +151,27 @@ def add_reference_sequence( self, seqID, sequence ):
 
 
 def get_reference_sequence( self, seqID, key_residues=None ):
-    """
-    Get a reference sequence attached to a particular sequence ID.
+    """Get the ``reference_sequence`` attached to chain ``seqID``.
 
-    :param seqID: Identifier of the reference sequence
-    :type seqID: :py:class:`str`
-    :param key_residues: Residues of interest to pick
-    :type key_residues: Union[:py:class:`int`,
-        :py:class:`list`(:py:class:`int`), :py:class:`.Selection` ]
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
-        :KeyError: If there is no reference sequence for seqID.
+        :TypeError: |indf_error|.
+        :KeyError: |reference_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'sequence': 'AB'})
+           ...: df.add_reference_sequence('A', df.iloc[0].get_sequence('A'))
+           ...: df.get_reference_sequence('A')
     """
     if key_residues is None:
         return _get_reference(self, "sequence", seqID)
@@ -118,36 +180,53 @@ def get_reference_sequence( self, seqID, key_residues=None ):
 
 
 def has_reference_structure( self, seqID ):
-    """
-    Checks if there is a reference structure for the provided
-    sequence ID.
+    """Checks if there is a ``reference_structure`` for ``sequID``.
 
-    :param seqID: Identifier of the reference structure
-    :type seqID: :py:class:`str`
+    :param str seqID: |seqID_param|.
 
-    :return: bool
+    :return: :class:`bool`
 
     :raises:
-        :TypeError: If applied over a data container without `_reference` attribute.
+        :TypeError: If applied over a data container without ``_reference`` attribute.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'sequence': 'C', 'structure': 'C'})
+           ...: df.add_reference_structure('C', df.iloc[0].get_structure('C'))
+           ...: df.has_reference_structure('C')
     """
     return _has_reference(self, "structure", seqID)
 
 
 def add_reference_structure( self, seqID, structure ):
-    """
-    Add a reference structure attached to a particular sequence ID.
+    """Add a ``reference_structure`` attached to chain ``seqID``.
 
-    :param seqID: Identifier of the reference structure
-    :type seqID: :py:class:`str`
-    :param structure: Reference structure.
-    :type structure: :py:class:`str`
+    :param str seqID: |seqID_param|.
+    :param str structure: Reference structure.
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-            or :py:class:`~pandas.Series`
-        :ValueError: If ``sequence`` is not a :class:`str`
-        :KeyError: If the data container does not contain structure data for the given seqID.
-        :IndexError: If a reference sequence exists and structure length do not match
+        :TypeError: |indf_error|.
+        :ValueError: if ``structure`` is not a :class:`str`
+        :KeyError: |seqID_error|.
+        :IndexError: If a ``reference_sequence`` for ``seqID`` exists
+            but length does not match.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'sequence': 'C', 'structure': 'C'})
+           ...: df.add_reference_structure('C', df.iloc[0].get_structure('C'))
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
@@ -166,19 +245,27 @@ def add_reference_structure( self, seqID, structure ):
 
 
 def get_reference_structure( self, seqID, key_residues=None ):
-    """
-    Get a reference structure attached to a particular sequence ID.
+    """Get the ``reference_structure`` attached to chain ``seqID``.
 
-    :param seqID: Identifier of the reference structure
-    :type seqID: :py:class:`str`
-    :param key_residues: Residues of interest to pick
-    :type key_residues: Union[:py:class:`int`,
-        :py:class:`list`(:py:class:`int`), :py:class:`.Selection` ]
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
-        :KeyError: If there is no reference structure for seqID.
+        :TypeError: |indf_error|.
+        :KeyError: |referencestr_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'sequence': 'C', 'structure': 'C'})
+           ...: df.add_reference_structure('C', df.iloc[0].get_structure('C'))
+           ...: df.get_reference_structure('C')
     """
     if key_residues is None:
         return _get_reference( self, "structure", seqID )
@@ -187,8 +274,7 @@ def get_reference_structure( self, seqID, key_residues=None ):
 
 
 def add_reference_shift( self, seqID, shift, shift_labels=False ):
-    """
-    Add a reference shift attached to a particular sequence ID.
+    """Add a ``reference_shift`` attached to a chain ``seqID``.
 
     **What is shift?** In case the sequence does not start in 1,
     shift defines how to count it. It is a way to keep plotting
@@ -196,26 +282,38 @@ def add_reference_shift( self, seqID, shift, shift_labels=False ):
     There are two main ways to set the shift:
 
     #. Provide the number of the first residue of the chain; the \
-    rest will be set up from there.
+    rest will be set up from there. This is the simplest option, \
+    when its just a matter of the structure not actually starting \
+    at the begining of the real protein sequence.
     #. If the original PDB has breaks, one will need to provide an \
-    array with the numbers of each position.
+    array with the numbers of each position. This is the only solution \
+    to consistently track those positions.
 
-    :param seqID: Identifier of the reference sequence
-    :type seqID: :py:class:`str`
+    :param str seqID: |seqID_param|.
     :param shift: Starting residue number or per-residue number assignment.
-    :type shift: Union[:py:class:`int`, :py:class:`list`]
-    :type shift: :py:class:`bool`
-    :param shift_labels: When adding the shift, apply it to any label
-    :type shift_labels: :py:class:`bool`
+    :type shift: Union[:class:`int`, :func:`list` of :class:`int`]
+    :param bool shift_labels: When adding the shift, should it be automatically
+        applied to any label present in the data container? (Default is :data:`False`).
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-            or :py:class:`~pandas.Series`
+        :TypeError: |indf_error|.
         :KeyError: If there is no reference structure or sequence for seqID.
         :KeyError: If shift is a list and the data container does not contain structure
             or sequence data for the given seqID.
         :IndexError: If shift is a list and the length is different than the reference
             sequence/structure
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'sequence': 'C', 'structure': 'C'})
+           ...: df.add_reference_structure('C', df.iloc[0].get_structure('C'))
+           ...: df.add_reference_shift('C', 3)
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
@@ -251,19 +349,29 @@ def add_reference_shift( self, seqID, shift, shift_labels=False ):
 
 
 def get_reference_shift( self, seqID ):
-    """
-    Get a reference shift attached to a particular sequence ID.
-    If none was provided will return 1 as default.
+    """Get a ``reference_shift`` attached to a particular ``seqID``.
 
-    :param seqID: Identifier of the reference sequence
-    :type seqID: :py:class:`str`
+    If none was provided, it will return **1** as default.
 
-    :type shift: Union[:py:class:`int`, :py:class:`list`]
+    :param str seqID: |seqID_param|.
+
+    :type shift: Union[:class:`int`, :class:`list`]
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
-        :KeyError: If there is no reference structure or sequence for seqID.
+        :TypeError: |indf_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'sequence': 'C', 'structure': 'C'})
+           ...: df.add_reference_structure('C', df.iloc[0].get_structure('C'))
+           ...: df.add_reference_shift('C', 3)
+           ...: df.get_reference_shift('C')
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")
@@ -278,23 +386,27 @@ def get_reference_shift( self, seqID ):
 
 
 def add_reference( self, seqID, sequence="", structure="", shift=1, shift_labels=False ):
-    """
-    Single access to :py:meth:`.add_reference_sequence`, :py:meth:`.add_reference_structure`
-    and :py:meth:`.add_reference_shift`.
+    """Single access to :meth:`.add_reference_sequence`, :meth:`.add_reference_structure`
+    and :meth:`.add_reference_shift`.
 
-    :param seqID: Identifier of the reference sequence
-    :type seqID: :py:class:`str`
-    :param sequence: Reference sequence.
-    :type sequence: :py:class:`str`
-    :param structure: Reference structure.
-    :type structure: :py:class:`str`
+    :param str seqID: |seqID_param|.
+    :param str sequence: Reference sequence.
+    :param str structure: Reference structure.
     :param shift: Starting residue number or per-residue number assignment.
-    :type shift: Union[:py:class:`int`, :py:class:`list`]
-    :param shift_labels: When adding the shift, apply it to any label
-    :type shift_labels: :py:class:`bool`
+    :type shift: Union[:class:`int`, :class:`list`]
+    :param bool shift_labels: When adding the shift, should it be automatically
+        applied to any label present in the data container? (Default is :data:`False`).
 
     :raises:
-        :AttributeError: If trying to add a reference type to a class without it
+        :AttributeError: if trying to add a reference type to/from a class without it.
+
+    .. seealso::
+        :meth:`DesignFrame.add_reference_sequence`
+        :meth:`DesignFrame.add_reference_structure`
+        :meth:`DesignFrame.add_reference_shift`
+        :meth:`DesignSeries.add_reference_sequence`
+        :meth:`DesignSeries.add_reference_structure`
+        :meth:`DesignSeries.add_reference_shift`
     """
     if len(sequence) > 0:
         try:
@@ -313,16 +425,15 @@ def add_reference( self, seqID, sequence="", structure="", shift=1, shift_labels
 
 
 def transfer_reference( self, df ):
-    """
-    Transfer reference from one data container to another. This **overwrittes** previous
-    references completely. Use with care.
+    """Transfer reference data from one container to another.
 
-    :param df: Data container. Derives from :py:class:`~pandas.DataFrame`
-    or :py:class:`~pandas.Series`.
-    :type df: :py:class:`str`
+    This **overwrittes** previous references completely. **Use with care.**
+
+    :param df: |df_param|.
+    :type df: Union[:class:`~pandas.DataFrame`, :class:`~pandas.Series`]
 
     :raises:
-        :AttributeError: If trying to add a reference type to/from a class without it
+        :AttributeError: if trying to add a reference type to/from a class without it.
     """
     try:
         self._reference = copy.deepcopy(df._reference)
@@ -331,17 +442,14 @@ def transfer_reference( self, df ):
 
 
 def delete_reference( self, seqID, shift_labels=False ):
-    """
-    Remove all reference data regarding a particular seqID.
+    """Remove all reference data regarding a particular seqID.
 
-    :param seqID: Identifier of the reference sequence
-    :type seqID: :py:class:`str`
-    :param shift_labels: When removing the shift, apply it to any label that has been shifted
-    :type shift_labels: :py:class:`bool`
+    :param str seqID: |seqID_param|.
+    :param bool shift_labels: When removing the shift, should automatically
+        revert it to any label present in the data container? (Default is :data:`False`).
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+        :TypeError: |indf_error|
     """
     if not isinstance(self, (pd.DataFrame, pd.Series)):
         raise TypeError("Data container has to be a DataFrame/Series or a derived class.")

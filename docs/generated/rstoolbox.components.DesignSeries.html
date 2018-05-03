@@ -132,13 +132,13 @@ the analysis of a single design decoys.</p>
 <td>Single access to <a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.add_reference_sequence.html#rstoolbox.components.DesignSeries.add_reference_sequence" title="rstoolbox.components.DesignSeries.add_reference_sequence"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_reference_sequence()</span></code></a>, <a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.add_reference_structure.html#rstoolbox.components.DesignSeries.add_reference_structure" title="rstoolbox.components.DesignSeries.add_reference_structure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_reference_structure()</span></code></a> and <a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.add_reference_shift.html#rstoolbox.components.DesignSeries.add_reference_shift" title="rstoolbox.components.DesignSeries.add_reference_shift"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_reference_shift()</span></code></a>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.add_reference_sequence.html#rstoolbox.components.DesignSeries.add_reference_sequence" title="rstoolbox.components.DesignSeries.add_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_reference_sequence</span></code></a>(seqID,&nbsp;sequence)</td>
-<td>Add a reference sequence attached to a particular sequence ID.</td>
+<td>Add a <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> attached to chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.add_reference_shift.html#rstoolbox.components.DesignSeries.add_reference_shift" title="rstoolbox.components.DesignSeries.add_reference_shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_reference_shift</span></code></a>(seqID,&nbsp;shift[,&nbsp;shift_labels])</td>
-<td>Add a reference shift attached to a particular sequence ID.</td>
+<td>Add a <code class="docutils literal notranslate"><span class="pre">reference_shift</span></code> attached to a chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.add_reference_structure.html#rstoolbox.components.DesignSeries.add_reference_structure" title="rstoolbox.components.DesignSeries.add_reference_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_reference_structure</span></code></a>(seqID,&nbsp;structure)</td>
-<td>Add a reference structure attached to a particular sequence ID.</td>
+<td>Add a <code class="docutils literal notranslate"><span class="pre">reference_structure</span></code> attached to chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.delete_reference.html#rstoolbox.components.DesignSeries.delete_reference" title="rstoolbox.components.DesignSeries.delete_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_reference</span></code></a>(seqID[,&nbsp;shift_labels])</td>
 <td>Remove all reference data regarding a particular seqID.</td>
@@ -156,16 +156,16 @@ the analysis of a single design decoys.</p>
 <td>List which slabels are available in the data container.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_available_references.html#rstoolbox.components.DesignSeries.get_available_references" title="rstoolbox.components.DesignSeries.get_available_references"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_references</span></code></a>()</td>
-<td>Identify for which seqIDs there is some reference data.</td>
+<td>List which <strong>decoy chain</strong> identifiers have some kind of reference data.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_available_sequences.html#rstoolbox.components.DesignSeries.get_available_sequences" title="rstoolbox.components.DesignSeries.get_available_sequences"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_sequences</span></code></a>()</td>
-<td>List which sequence identifiers are available in the data container</td>
+<td>List which <strong>sequence</strong> identifiers are available in the data container</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_available_structure_predictions.html#rstoolbox.components.DesignSeries.get_available_structure_predictions" title="rstoolbox.components.DesignSeries.get_available_structure_predictions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_structure_predictions</span></code></a>()</td>
-<td>List which structure prediction identifiers are available in the data container</td>
+<td>List which <strong>structure prediction</strong> identifiers are available in the data container.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_available_structures.html#rstoolbox.components.DesignSeries.get_available_structures" title="rstoolbox.components.DesignSeries.get_available_structures"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_available_structures</span></code></a>()</td>
-<td>List which structure identifiers are available in the data container</td>
+<td>List which <strong>structure</strong> identifiers are available in the data container</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_id.html#rstoolbox.components.DesignSeries.get_id" title="rstoolbox.components.DesignSeries.get_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_id</span></code></a>()</td>
 <td>Return identifier data for the design(s).</td>
@@ -174,7 +174,7 @@ the analysis of a single design decoys.</p>
 <td>List for which sequence identifiers mutants have been calculated.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_label.html#rstoolbox.components.DesignSeries.get_label" title="rstoolbox.components.DesignSeries.get_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_label</span></code></a>(label[,&nbsp;seqID])</td>
-<td>Return the content(s) of the labels of interest.</td>
+<td>Return the content(s) of the <strong>labels</strong> of interest as a <a class="reference internal" href="rstoolbox.components.Selection.html#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a> for a given sequece.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_mutation_count.html#rstoolbox.components.DesignSeries.get_mutation_count" title="rstoolbox.components.DesignSeries.get_mutation_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mutation_count</span></code></a>(seqID)</td>
 <td>Return the number of mutantion positions data for <cite>seqID</cite> available in the container.</td>
@@ -186,31 +186,31 @@ the analysis of a single design decoys.</p>
 <td>Return the mutantions data for <code class="docutils literal notranslate"><span class="pre">seqID</span></code> available in the container.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_reference_sequence.html#rstoolbox.components.DesignSeries.get_reference_sequence" title="rstoolbox.components.DesignSeries.get_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_sequence</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Get a reference sequence attached to a particular sequence ID.</td>
+<td>Get the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> attached to chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_reference_shift.html#rstoolbox.components.DesignSeries.get_reference_shift" title="rstoolbox.components.DesignSeries.get_reference_shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_shift</span></code></a>(seqID)</td>
-<td>Get a reference shift attached to a particular sequence ID.</td>
+<td>Get a <code class="docutils literal notranslate"><span class="pre">reference_shift</span></code> attached to a particular <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_reference_structure.html#rstoolbox.components.DesignSeries.get_reference_structure" title="rstoolbox.components.DesignSeries.get_reference_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reference_structure</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Get a reference structure attached to a particular sequence ID.</td>
+<td>Get the <code class="docutils literal notranslate"><span class="pre">reference_structure</span></code> attached to chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_sequence.html#rstoolbox.components.DesignSeries.get_sequence" title="rstoolbox.components.DesignSeries.get_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequence</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Return the sequence data for <cite>seqID</cite> available in the container.</td>
+<td>Return the <strong>sequence</strong> data for <code class="docutils literal notranslate"><span class="pre">seqID</span></code> available in the container.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_sequential_data.html#rstoolbox.components.DesignSeries.get_sequential_data" title="rstoolbox.components.DesignSeries.get_sequential_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequential_data</span></code></a>(query,&nbsp;seqID)</td>
 <td>Provides data on the requested query.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_structure.html#rstoolbox.components.DesignSeries.get_structure" title="rstoolbox.components.DesignSeries.get_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_structure</span></code></a>(seqID[,&nbsp;key_residues])</td>
-<td>Return the structure(s) data.</td>
+<td>Return the <strong>structure</strong> data for <code class="docutils literal notranslate"><span class="pre">seqID</span></code> available in the container.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.get_structure_prediction.html#rstoolbox.components.DesignSeries.get_structure_prediction" title="rstoolbox.components.DesignSeries.get_structure_prediction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_structure_prediction</span></code></a>(seqID[,&nbsp;key_residues])</td>
 <td>Return the structure prediction(s) data.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.has_reference_sequence.html#rstoolbox.components.DesignSeries.has_reference_sequence" title="rstoolbox.components.DesignSeries.has_reference_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_reference_sequence</span></code></a>(seqID)</td>
-<td>Checks if there is a reference sequence for the provided sequence ID.</td>
+<td>Checks if there is a <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> for <code class="docutils literal notranslate"><span class="pre">sequID</span></code>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.has_reference_structure.html#rstoolbox.components.DesignSeries.has_reference_structure" title="rstoolbox.components.DesignSeries.has_reference_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_reference_structure</span></code></a>(seqID)</td>
-<td>Checks if there is a reference structure for the provided sequence ID.</td>
+<td>Checks if there is a <code class="docutils literal notranslate"><span class="pre">reference_structure</span></code> for <code class="docutils literal notranslate"><span class="pre">sequID</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.identify_mutants.html#rstoolbox.components.DesignSeries.identify_mutants" title="rstoolbox.components.DesignSeries.identify_mutants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">identify_mutants</span></code></a>(seqID)</td>
 <td>Assess mutations of each decoy for sequence <code class="docutils literal notranslate"><span class="pre">seqID</span></code> againt the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</td>
@@ -222,7 +222,7 @@ the analysis of a single design decoys.</p>
 <td>Score sequences according to a provided PSSM matrix.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="DesignSeries/rstoolbox.components.DesignSeries.transfer_reference.html#rstoolbox.components.DesignSeries.transfer_reference" title="rstoolbox.components.DesignSeries.transfer_reference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transfer_reference</span></code></a>(df)</td>
-<td>Transfer reference from one data container to another.</td>
+<td>Transfer reference data from one container to another.</td>
 </tr>
 </tbody>
 </table>
