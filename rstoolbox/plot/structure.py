@@ -113,8 +113,9 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
                              df.index.values[-1], 5))
 
 def plot_ramachandran( df, seqID, fig):
-    """Generates a ramachandran plot in RAMPAGE style. For more details and sources
-    please refert to:
+    """Generates a ramachandran plot in RAMPAGE style.
+
+    For more details and sources please refert to:
 
         https://warwick.ac.uk/fac/sci/moac/people/students/peter_cock/python/ramachandran/
 
