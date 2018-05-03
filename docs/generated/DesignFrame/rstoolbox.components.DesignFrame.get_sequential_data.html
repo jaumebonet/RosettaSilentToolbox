@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="rstoolbox.components.DesignFrame.get_source_files" href="rstoolbox.components.DesignFrame.get_source_files.html" />
-    <link rel="prev" title="rstoolbox.components.DesignFrame.get_sequence_with" href="rstoolbox.components.DesignFrame.get_sequence_with.html" />
+    <link rel="next" title="rstoolbox.components.DesignFrame.get_available_labels" href="rstoolbox.components.DesignFrame.get_available_labels.html" />
+    <link rel="prev" title="rstoolbox.components.DesignFrame.get_structure_prediction" href="rstoolbox.components.DesignFrame.get_structure_prediction.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -117,33 +117,68 @@
 <dt id="rstoolbox.components.DesignFrame.get_sequential_data">
 <code class="descclassname">DesignFrame.</code><code class="descname">get_sequential_data</code><span class="sig-paren">(</span><em>query</em>, <em>seqID</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.get_sequential_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provides data on the requested query.</p>
+<p>Basically, this allows <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> access to the other getters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>query</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Query type: <cite>sequence</cite>, <cite>structure</cite>, <cite>structure_prediction</cite>.</li>
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the structure of interest.</li>
+<li><strong>query</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Query type: <code class="docutils literal notranslate"><span class="pre">sequence</span></code>, <code class="docutils literal notranslate"><span class="pre">structure</span></code>, <code class="docutils literal notranslate"><span class="pre">structure_prediction</span></code>.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">py:class:<cite>str</cite> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> - depending on the input</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">If the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">if the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">If <code class="docutils literal notranslate"><span class="pre">query</span></code> has a non-accepted value.</td>
 </tr>
 </tbody>
 </table>
-<p class="last">or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>
-:KeyError: If <cite>query</cite> has a non-accepted value.</p>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="rstoolbox.components.DesignFrame.get_sequence.html#rstoolbox.components.DesignFrame.get_sequence" title="rstoolbox.components.DesignFrame.get_sequence"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.get_sequence()</span></code></a>
+<a class="reference internal" href="rstoolbox.components.DesignFrame.get_structure.html#rstoolbox.components.DesignFrame.get_structure" title="rstoolbox.components.DesignFrame.get_structure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.get_structure()</span></code></a>
+<a class="reference internal" href="rstoolbox.components.DesignFrame.get_structure_prediction.html#rstoolbox.components.DesignFrame.get_structure_prediction" title="rstoolbox.components.DesignFrame.get_structure_prediction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.get_structure_prediction()</span></code></a>
+<a class="reference internal" href="../DesignSeries/rstoolbox.components.DesignSeries.get_sequence.html#rstoolbox.components.DesignSeries.get_sequence" title="rstoolbox.components.DesignSeries.get_sequence"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignSeries.get_sequence()</span></code></a>
+<a class="reference internal" href="../DesignSeries/rstoolbox.components.DesignSeries.get_structure.html#rstoolbox.components.DesignSeries.get_structure" title="rstoolbox.components.DesignSeries.get_structure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignSeries.get_structure()</span></code></a>
+<a class="reference internal" href="../DesignSeries/rstoolbox.components.DesignSeries.get_structure_prediction.html#rstoolbox.components.DesignSeries.get_structure_prediction" title="rstoolbox.components.DesignSeries.get_structure_prediction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignSeries.get_structure_prediction()</span></code></a></p>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_ssebig.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;structure&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">get_sequential_data</span><span class="p">(</span><span class="s1">&#39;sequence&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">get_sequential_data</span><span class="p">(</span><span class="s1">&#39;structure&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="go">0    TTWIKFFAGGTLVEEFEYSSVNWEEIEKRAWKKLGRWKKAEEGDLMIVYPDGKVVSWA</span>
+<span class="go">1    NTWSTNILNGHPKITLLVEERGAEEIHLEWLKKQGLRKKAEENVYTTKLPNGAVKVYG</span>
+<span class="go">2    PRWFIAMGDGVIWEIVLGSEQNLEEIAKKGLKRRGLYKKAEESIYTIIYPDGIAHTFG</span>
+<span class="go">3    PYEWVFIINGVPQTTWNHPPTKMEELEKFARKKGGSSKKAEEGKFAIIIWKGYFIVSD</span>
+<span class="go">4    LREYLVEAGGYPQSSAWRTKTGLEEAMREILEKKGLMKKAEEGRDLRFLPKGIVRVQA</span>
+<span class="go">Name: sequence_C, dtype: object</span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">0    LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL</span>
+<span class="go">1    LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHLLLLLLLLLLLEEEELLLLLEEEEL</span>
+<span class="go">2    LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL</span>
+<span class="go">3    LLLEEEEELLEEEEEELLLLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL</span>
+<span class="go">4    LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL</span>
+<span class="go">Name: structure_C, dtype: object</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>

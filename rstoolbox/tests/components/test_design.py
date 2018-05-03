@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 02-May-2018
+# @Last modified time: 03-May-2018
 
 
 import os
@@ -18,6 +18,7 @@ import rstoolbox.io as ri
 import rstoolbox.components as rc
 import rstoolbox.plot as rp
 import rstoolbox.analysis as ra
+from rstoolbox.tests.helper import random_frequency_matrix
 
 
 class TestDesign( object ):
@@ -32,6 +33,7 @@ class TestDesign( object ):
         self.silent1 = os.path.join(self.dirpath, 'input_2seq.minisilent.gz')
         self.silent2 = os.path.join(self.dirpath, 'input_sse.minsilent.gz')
         self.silent3 = os.path.join(self.dirpath, 'input_ssebig.minisilent.gz')
+        self.silent4 = os.path.join(self.dirpath, 'input_3ssepred.minisilent.gz')
 
     @pytest.fixture(autouse=True)
     def setup( self, tmpdir ):
@@ -97,6 +99,13 @@ class TestDesign( object ):
         assert df.get_available_structure_predictions() == []
         with pytest.raises(KeyError):
             assert len(df.get_structure_prediction("C")) == 6
+
+        sc_des  = {'sequence': 'A', 'structure': 'A', 'psipred': 'A'}
+        df = ri.parse_rosetta_file(self.silent4, sc_des)
+        sr = df.iloc[0]
+        assert df.get_available_structure_predictions() == ['A']
+        assert df.get_structure_prediction('A')[0] == sr.get_structure_prediction('A')
+        assert len(df.get_structure_prediction('A')[0]) == 88
 
     def test_reference( self ):
         """
@@ -253,6 +262,18 @@ class TestDesign( object ):
         assert dfwt.shape[0] == 36
         assert 0 in dfwt.get_mutation_count('B').values
         assert refseq in dfwt.get_sequence('B').values
+
+        # Make mutants from Matrix
+        dfwt = rc.DesignFrame({"description": ["reference"], "sequence_B": [refseq]})
+        dfwt.add_reference_sequence('B', refseq)
+        matrix = random_frequency_matrix(len(df.get_reference_sequence('B')), 0)
+        key_res = [3, 5, 8, 12, 15, 19, 25, 27]
+        mutants = dfwt.generate_mutants_from_matrix('B', matrix, 5, key_res)
+        assert isinstance(mutants, list)
+        assert len(mutants) == 1
+        mutants = mutants[0].identify_mutants('B')
+        assert mutants.shape[0] == 5
+        assert mutants.pssm_score_B.mean() != 0
 
         # write to resfiles
         df.make_resfile("B", "NATAA", os.path.join(self.tmpdir, "mutanttest.resfile"))

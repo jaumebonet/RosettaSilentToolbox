@@ -66,7 +66,7 @@ def positional_structural_count( df, seqID=None, key_residues=None ):
             raise AttributeError("seqID needs to be provided")
         if not "structure_{}".format(seqID) in df:
             raise KeyError("Structure {} not found in decoys.".format(seqID))
-        seqdata = df.get_structure(seqID)
+        seqdata = df.get_sequential_data('structure', seqID)
         seqdata = seqdata.apply(lambda x: pd.Series(list(x)))
         for _, i in enumerate(seqdata.columns.values):
             qseq = "".join(seqdata[i].tolist())

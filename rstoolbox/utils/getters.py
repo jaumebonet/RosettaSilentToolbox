@@ -1,13 +1,35 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   22-Feb-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: getters.py
-# @Last modified by:   bonet
-# @Last modified time: 27-Mar-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+.. func:: get_id
+.. func:: get_available_sequences
+.. func:: get_sequence
+.. func:: get_available_structures
+.. func:: get_structure
+.. func:: get_available_structure_predictions
+.. func:: get_structure_prediction
+.. func:: get_sequential_data
+.. func:: get_available_labels
+.. func:: get_label
+"""
+# Standard Libraries
+
+# External Libraries
 import pandas as pd
 import numpy as np
+
+# This Library
+
+
+__all__ = ['get_id', 'get_available_sequences', 'get_sequence',
+           'get_available_structures', 'get_structure',
+           'get_available_structure_predictions', 'get_structure_prediction',
+           'get_sequential_data', 'get_available_labels', 'get_label']
 
 
 def _check_type( obj ):
@@ -44,59 +66,83 @@ def _get_key_sequence( obj, ctype, seqID, key_residues ):
     kr = get_selection(key_residues, seqID, sft, length)
 
     if isinstance(obj, pd.Series):
+        # -1 because we access string positions
         return "".join(np.array(list(seq))[kr - 1])
     else:
         return seq.apply(lambda seq: "".join(np.array(list(seq))[kr - 1]))
 
 
 def get_id( self ):
-    """
-    Return identifier data for the design(s).
+    """Return identifier data for the design(s).
 
-    :return: :py:class:`str` or :py:class:`~pandas.Series`
+    :return: :class:`str` or :class:`~pandas.Series` - depending on the input
 
     :raises:
-        :TypeError: If the data container is not `~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
-        :KeyError: If the column `sequence_[seqID]` is cannot be found.
+        :TypeError: |indf_error|
+        :KeyError: If the column ``description`` cannot be found.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz")
+           ...: df.get_id()
     """
     _check_type(self)
     if "description" not in self:
-        raise KeyError(
-            "Identifiers not found in data set. "
-            "Column `description` is missing.")
+        raise KeyError("Identifiers not found in data set. Column `description` is missing.")
     return self["description"]
 
 
 def get_available_sequences( self ):
-    """
-    List which sequence identifiers are available in the data container
+    """List which **sequence** identifiers are available in the data container
 
-    :return: :py:class:`list`
+    :return: :func:`list` of :class:`str`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+        :TypeError: |indf_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'sequence': 'AB'})
+           ...: df.get_available_sequences()
     """
     _check_type(self)
     return _get_available(self, "sequence_")
 
 
 def get_sequence( self, seqID, key_residues=None ):
-    """
-    Return the sequence data for `seqID` available in the container.
+    """Return the **sequence** data for ``seqID`` available in the container.
 
-    :param seqID: Identifier of the sequence of interest.
-    :type seqID: :py:class:`str`
-    :param key_residues: Residues of interest. Are affected by the reference shift (if any).
-    :type key_residues: Union[:py:class:`list`[:py:class:`int`], :py:class:`str`]
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
 
-    :return: :py:class:`str` or :py:class:`~pandas.Series`
+    :return: :class:`str` or :class:`~pandas.Series` - depending on the input
 
     :raises:
-        :TypeError: If the data container is not `~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
-        :KeyError: If the column `sequence_[seqID]` is cannot be found.
+        :TypeError: |indf_error|.
+        :KeyError: |seqID_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'sequence': 'AB'})
+           ...: df.get_sequence('B')
     """
     _check_type(self)
     if key_residues is None:
@@ -107,33 +153,51 @@ def get_sequence( self, seqID, key_residues=None ):
 
 def get_available_structures( self ):
     """
-    List which structure identifiers are available in the data container
+    List which **structure** identifiers are available in the data container
 
-    :return: :py:class:`list`
+    :return: :func:`list` of :class:`str`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+        :TypeError: |indf_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'structure': 'C'})
+           ...: df.get_available_structures()
     """
     _check_type(self)
     return _get_available(self, "structure_")
 
 
 def get_structure( self, seqID, key_residues=None ):
-    """
-    Return the structure(s) data.
+    """Return the **structure** data for ``seqID`` available in the container.
 
-    :param seqID: Identifier of the structure of interest.
-    :type seqID: :py:class:`str`
-    :param key_residues: Residues of interest. Are affected by the reference shift (if any).
-    :type key_residues: Union[:py:class:`list`[:py:class:`int`], :py:class:`str`]
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
 
-    :return: py:class:`str` or :py:class:`~pandas.Series`
+    :return: :class:`str` or :class:`~pandas.Series` - depending on the input
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
-        :KeyError: If the column `structure_[seqID] is cannot be found.
+        :TypeError: |indf_error|.
+        :KeyError: If the column ``structure_<seqID>`` cannot be found.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'structure': 'C'})
+           ...: df.get_structure('C').iloc[:5]
     """
     _check_type(self)
     if key_residues is None:
@@ -143,14 +207,12 @@ def get_structure( self, seqID, key_residues=None ):
 
 
 def get_available_structure_predictions( self ):
-    """
-    List which structure prediction identifiers are available in the data container
+    """ List which **structure prediction** identifiers are available in the data container.
 
-    :return: :py:class:`list`
+    :return: :func:`list` of :class:`str`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+        :TypeError: |indf_error|.
     """
     _check_type(self)
     return _get_available(self, "psipred_")
@@ -160,17 +222,15 @@ def get_structure_prediction( self, seqID, key_residues=None ):
     """
     Return the structure prediction(s) data.
 
-    :param seqID: Identifier of the structure of interest.
-    :type seqID: :py:class:`str`
-    :param key_residues: Residues of interest. Are affected by the reference shift (if any).
-    :type key_residues: Union[:py:class:`list`[:py:class:`int`], :py:class:`str`]
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
 
-    :return: py:class:`str` or :py:class:`~pandas.Series`
+    :return: :class:`str` or :class:`~pandas.Series` - depending on the input
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
-        :KeyError: If the column `psipred_[seqID] is cannot be found.
+        :TypeError: |indf_error|.
+        :KeyError: If the column ``psipred_<seqID>`` cannot be found.
     """
     _check_type(self)
     if key_residues is None:
@@ -180,20 +240,38 @@ def get_structure_prediction( self, seqID, key_residues=None ):
 
 
 def get_sequential_data( self, query, seqID ):
-    """
-    Provides data on the requested query.
+    """Provides data on the requested query.
 
-    :param query: Query type: `sequence`, `structure`, `structure_prediction`.
-    :type query: :py:class:`str`
-    :param seqID: Identifier of the structure of interest.
-    :type seqID: :py:class:`str`
+    Basically, this allows :class:`str` access to the other getters.
 
-    :return: py:class:`str` or :py:class:`~pandas.Series`
+    :param str query: Query type: ``sequence``, ``structure``, ``structure_prediction``.
+    :param str seqID: |seqID_param|.
+
+    :return: :class:`str` or :class:`~pandas.Series` - depending on the input
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
-        :KeyError: If `query` has a non-accepted value.
+        :TypeError: |indf_error|.
+        :KeyError: If ``query`` has a non-accepted value.
+
+    .. seealso::
+        :meth:`.DesignFrame.get_sequence`
+        :meth:`.DesignFrame.get_structure`
+        :meth:`.DesignFrame.get_structure_prediction`
+        :meth:`.DesignSeries.get_sequence`
+        :meth:`.DesignSeries.get_structure`
+        :meth:`.DesignSeries.get_structure_prediction`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'sequence': 'C', 'structure': 'C'})
+           ...: df.get_sequential_data('sequence', 'C').iloc[:5]
+           ...: df.get_sequential_data('structure', 'C').iloc[:5]
     """
     queries = ["sequence", "structure", "structure_prediction"]
     if query.lower() not in queries:
@@ -211,36 +289,57 @@ def get_available_labels( self ):
     """
     List which slabels are available in the data container.
 
-    :return: :py:class:`list`
+    :return: :func:`list` of :class:`str`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
+        :TypeError: |indf_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'labels': ['MOTIF', 'CONTACT', 'CONTEXT'],
+           ...:                          'sequence': 'A'})
+           ...: df.get_available_labels()
     """
     _check_type(self)
     return _get_available(self, "lbl_")
 
 
 def get_label( self, label, seqID=None ):
-    """
-    Return the content(s) of the labels of interest. As a py:class:`.Selection`
-    for a given sequece. If only one seqID is available, it will automatically
-    pick labels for that, even if other data is present; otherwise, seqID must
-    be provided. This takes into account availability of sequence, structure and
-    psipred data.
+    """Return the content(s) of the **labels** of interest as a :class:`.Selection`
+    for a given sequece.
 
-    :param label: Label identifier. Will be uppercased.
-    :type label: :py:class:`str`
-    :param seqID: Identifier of the sequence of interest.
-    :type seqID: :py:class:`str`
+    If only one ``seqID`` is available, it will automatically pick labels for that,
+    even if other data is present; otherwise, ``seqID`` must be provided. This takes
+    into account availability of sequence, structure and psipred data.
 
-    :return: py:class:`.Selection`
+    :param str label: Label identifier. Will be uppercased.
+    :param str seqID: |seqID_param|.
+
+    :return: :class:`.Selection`
 
     :raises:
-        :TypeError: If the data container is not :py:class:`~pandas.DataFrame`
-        or :py:class:`~pandas.Series`
-        :KeyError: If [seqID] is not specified and more than one seqID is possible.
-        :KeyError: If the column `lbl_[label]` is cannot be found.
+        :TypeError: |indf_error|.
+        :KeyError: If ``seqID`` is not specified and more than one ``seqID`` is possible.
+        :KeyError: If the column ``lbl_<label>`` cannot be found.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'labels': ['MOTIF', 'CONTACT', 'CONTEXT'],
+           ...:                          'sequence': 'A'})
+           ...: df.get_label('CONTACT', 'A')
+           ...: df.get_label('CONTACT', 'B')
     """
     _check_type(self)
     if seqID is None:

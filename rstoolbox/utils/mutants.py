@@ -11,6 +11,12 @@
 .. func:: get_mutation_positions
 .. func:: get_mutation_count
 .. func:: identify_mutants
+.. func:: generate_mutant_variants
+.. func:: generate_mutants_from_matrix
+.. func:: generate_wt_reversions
+.. func:: score_by_pssm
+.. func:: make_resfile
+.. func:: view_mutants_alignment
 """
 # Standard Libraries
 import os

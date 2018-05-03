@@ -16,6 +16,8 @@ import numpy as np
 
 # This Library
 
+__all__ = ['random_frequency_matrix']
+
 
 def random_frequency_matrix(size, seed=None):
     """Generate a random frequency matrix.
