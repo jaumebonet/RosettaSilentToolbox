@@ -33,6 +33,7 @@ class TestDesign( object ):
         self.silent1 = os.path.join(self.dirpath, 'input_2seq.minisilent.gz')
         self.silent2 = os.path.join(self.dirpath, 'input_sse.minsilent.gz')
         self.silent3 = os.path.join(self.dirpath, 'input_ssebig.minisilent.gz')
+        self.silent4 = os.path.join(self.dirpath, 'input_3ssepred.minisilent.gz')
 
     @pytest.fixture(autouse=True)
     def setup( self, tmpdir ):
@@ -98,6 +99,13 @@ class TestDesign( object ):
         assert df.get_available_structure_predictions() == []
         with pytest.raises(KeyError):
             assert len(df.get_structure_prediction("C")) == 6
+
+        sc_des  = {'sequence': 'A', 'structure': 'A', 'psipred': 'A'}
+        df = ri.parse_rosetta_file(self.silent4, sc_des)
+        sr = df.iloc[0]
+        assert df.get_available_structure_predictions() == ['A']
+        assert df.get_structure_prediction('A')[0] == sr.get_structure_prediction('A')
+        assert len(df.get_structure_prediction('A')[0]) == 88
 
     def test_reference( self ):
         """
