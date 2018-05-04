@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
 """
 .. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
+.. codeauthor:: Zander Harteveld <zandermilanh@gmail.com>
 
 .. affiliation::
     Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
     Bruno Correia <bruno.correia@epfl.ch>
 
 .. func:: positional_structural_similarity_plot
-.. func:: sequence_similarity
-.. func:: positional_sequence_similarity
-.. func:: binary_similarity
-.. func:: binary_overlap
+.. func:: plot_ramachandran
+.. func:: plot_dssp_vs_psipred
 """
 # Standard Libraries
-from rstoolbox.components import DesignSeries
-from rstoolbox.utils import add_top_title
+import os
 
 # External Libraries
-import os
+import six
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -25,6 +23,9 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 
 # This Library
+from rstoolbox.components import DesignSeries
+from rstoolbox.utils import add_top_title
+
 
 __all__ = ['positional_structural_similarity_plot', 'plot_ramachandran', 'plot_dssp_vs_psipred']
 
@@ -112,6 +113,7 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
     ax.set_xticklabels(range(df.index.values[0],
                              df.index.values[-1], 5))
 
+
 def plot_ramachandran( df, seqID, fig):
     """Generates a ramachandran plot in RAMPAGE style.
 
@@ -146,19 +148,16 @@ def plot_ramachandran( df, seqID, fig):
         In [1]: import rstoolbox as rb
            ...: import pandas as pd
            ...: plt.style.use('ggplot')
-           ...: pylab.rcParams["figure.figsize"] = (20, 5)
            ...: definitions = {
-                               "scores": ["score"],
-                               "sequence" : "A",
-                               "psipred" : "*",
-                               "structure" : "*",
-                               "dihedrals": "*"
-                               }
+           ...:                "scores": ["score"],
+           ...:                "sequence" : "A",
+           ...:                "psipred" : "*",
+           ...:                "structure" : "*",
+           ...:                "dihedrals": "*"
+           ...:                }
            ...: dsf = rb.io.parse_rosetta_file(
-                    "~/RosettaSilentToolbox/rstoolbox/tests/data/input_3ssepred.minisilent.gz",
-                    definitions )
-           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
-           ...:                         {'scores': ['score'], 'structure': 'C'})
+           ...:     "../rstoolbox/tests/data/input_3ssepred.minisilent.gz",
+           ...:     definitions )
            ...: figure = plt.figure(figsize=(15,10))
            ...: rb.plot.plot_ramachandran(dsf.iloc[0], "A", figure)
            ...: plt.tight_layout()
@@ -173,13 +172,9 @@ def plot_ramachandran( df, seqID, fig):
     if not isinstance(df, DesignSeries):
         df = DesignSeries(df)
     if not isinstance(df.get_phi(seqID), np.ndarray):
-        raise ValueError(
-        "Ramachandran plot function can only be applied on one decoy at once."
-        )
+        raise ValueError("Ramachandran plot function can only be applied on one decoy at once.")
     if not isinstance(df.get_psi(seqID), np.ndarray):
-        raise ValueError(
-        "Ramachandran plot function can only be applied on one decoy at once."
-        )
+        raise ValueError("Ramachandran plot function can only be applied on one decoy at once.")
 
     # General variable for the background preferences.
     cwd = os.path.dirname(__file__)
@@ -215,29 +210,30 @@ def plot_ramachandran( df, seqID, fig):
             for line in fn:
                 if not line.startswith("#"):
                     # Preference file has values for every second position only
-                    rama_pref_values[key][int(float(line.split()[1])) + 180][int(float(line.split()[0])) + 180] = float(
+                    lp = [float(_) for _ in line.split()]
+                    rama_pref_values[key][int(lp[1]) + 180][int(lp[0]) + 180] = float(
                         line.split()[2])
-                    rama_pref_values[key][int(float(line.split()[1])) + 179][int(float(line.split()[0])) + 179] = float(
+                    rama_pref_values[key][int(lp[1]) + 179][int(lp[0]) + 179] = float(
                         line.split()[2])
-                    rama_pref_values[key][int(float(line.split()[1])) + 179][int(float(line.split()[0])) + 180] = float(
+                    rama_pref_values[key][int(lp[1]) + 179][int(lp[0]) + 180] = float(
                         line.split()[2])
-                    rama_pref_values[key][int(float(line.split()[1])) + 180][int(float(line.split()[0])) + 179] = float(
+                    rama_pref_values[key][int(lp[1]) + 180][int(lp[0]) + 179] = float(
                         line.split()[2])
 
     # Ramachandran residue classification.
     seq = df.get_sequence(seqID)
     rama_types = {
-                  "GLY": [],
-                  "PRO": [],
-                  "PRE-PRO": [],
-                  "GENERAL": []
+        "GLY": [],
+        "PRO": [],
+        "PRE-PRO": [],
+        "GENERAL": []
     }
-    for i,aa in enumerate(seq):
+    for i, aa in enumerate(seq):
         if aa == "G":
             rama_types["GLY"].append(i)
         elif aa == "P":
             rama_types["PRO"].append(i)
-        elif i+1 < len(seq) and seq[i+1] == "P":
+        elif i + 1 < len(seq) and seq[i + 1] == "P":
             rama_types["PRE-PRO"].append(i)
         else:
             rama_types["GENERAL"].append(i)
@@ -256,10 +252,10 @@ def plot_ramachandran( df, seqID, fig):
         psi = all_psi[rama_types[order[i]]]
 
         ax[i].imshow(rama_pref_values[key],
-                  cmap=rama_preferences[key]["cmap"],
-                  norm=colors.BoundaryNorm(rama_preferences[key]["bounds"],
-                  rama_preferences[key]["cmap"].N),
-                  extent=(-180, 180, 180, -180))
+                     cmap=rama_preferences[key]["cmap"],
+                     norm=colors.BoundaryNorm(rama_preferences[key]["bounds"],
+                     rama_preferences[key]["cmap"].N),
+                     extent=(-180, 180, 180, -180))
         ax[i].scatter(phi,
                       psi,
                       color="black")
@@ -272,8 +268,7 @@ def plot_ramachandran( df, seqID, fig):
         ax[i].set_xlabel(r'$\phi$ [degrees]')
         ax[i].set_ylabel(r'$\psi$ [degrees]')
         ax[i].grid()
-    #plt.tight_layout()
-    #fig.subplots_adjust(top=1.2)
+
 
 def plot_dssp_vs_psipred( df, seqID, ax ):
     """Generates a horizontal heatmap showing differences in psipred predictions
@@ -286,7 +281,7 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     below.
 
     :param df: |df_param|, where ONE column cotains the dssp assignments and
-    a second column the psipred predictions.
+        a second column the psipred predictions.
     :type df: :class:`~pandas.Series`
     :param ax: |axis_param|.
     :type ax: :class:`~matplotlib.axes.Axes`
@@ -294,26 +289,24 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     .. seealso::
         :func:`.positional_sequence_similarity_plot`
 
-    .. rubric:: Example
+    .. rubric:: Example1
 
     .. ipython::
 
         In [1]: import rstoolbox as rb
            ...: import pandas as pd
            ...: plt.style.use('ggplot')
-           ...: pylab.rcParams["figure.figsize"] = (20, 5)
+           ...: fig = plt.figure(figsize=(20, 5))
            ...: definitions = {
-                               "scores": ["score"],
-                               "sequence" : "A",
-                               "psipred" : "*",
-                               "structure" : "*",
-                               "dihedrals": "*"
-                               }
+           ...:                "scores": ["score"],
+           ...:                "sequence": "A",
+           ...:                "psipred": "*",
+           ...:                "structure": "*",
+           ...:                "dihedrals": "*"
+           ...:                }
            ...: dsf = rb.io.parse_rosetta_file(
-                    "~/RosettaSilentToolbox/rstoolbox/tests/data/input_3ssepred.minisilent.gz",
-                    definitions )
-           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
-           ...:                         {'scores': ['score'], 'structure': 'C'})
+           ...:     "../rstoolbox/tests/data/input_3ssepred.minisilent.gz",
+           ...:     definitions )
            ...: ax = plt.gca()
            ...: rb.plot.plot_dssp_vs_psipred(dsf.iloc[0], "A", ax)
            ...: plt.tight_layout()
@@ -322,45 +315,42 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
         @savefig plot_dssp_vs_psipred.png width=5in
         In [2]: plt.show()
 
+    .. rubric:: Example2
+
+    .. ipython::
+
         In [3]: import rstoolbox as rb
            ...: import pandas as pd
            ...: plt.style.use('ggplot')
-           ...: pylab.rcParams["figure.figsize"] = (20, 5)
+           ...: fig = plt.figure(figsize=(20, 20))
            ...: definitions = {
-                               "scores": ["score"],
-                               "sequence" : "A",
-                               "psipred" : "*",
-                               "structure" : "*",
-                               "dihedrals": "*"
-                               }
+           ...:                "scores": ["score"],
+           ...:                "sequence": "A",
+           ...:                "psipred": "*",
+           ...:                "structure": "*",
+           ...:                "dihedrals": "*"
+           ...:                }
            ...: dsf = rb.io.parse_rosetta_file(
-                    "~/RosettaSilentToolbox/rstoolbox/tests/data/input_3ssepred.minisilent.gz",
-                    definitions )
-           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
-           ...:                         {'scores': ['score'], 'structure': 'C'})
-           ...: fig = plt.figure()
+           ...:     "../rstoolbox/tests/data/input_3ssepred.minisilent.gz",
+           ...:     definitions )
            ...: for i in range(len(dsf)):
            ...:     ax = fig.add_subplot(6, 1, i+1)
            ...:     rb.plot.plot_dssp_vs_psipred( dsf.iloc[i], "A", ax )
            ...: plt.tight_layout()
            ...: fig.subplots_adjust(top=1.2)
 
-           @savefig plot_dssp_vs_psipred_multi.png width=5in
-           In [4]: plt.show()
+        @savefig plot_dssp_vs_psipred_multi.png width=5in
+        In [4]: plt.show()
     """
     # Data type management.
     if not isinstance(df, pd.Series):
         raise ValueError("Input data must be in a Series or DesignSeries")
     if not isinstance(df, DesignSeries):
         df = DesignSeries(df)
-    if not isinstance(df.get_structure(seqID), str):
-        raise ValueError(
-        "Heatmap can only be generated for one decoy at once."
-        )
-    if not isinstance(df.get_structure_prediction(seqID), str):
-        raise ValueError(
-        "Heatmap can only be generated for one decoy at once."
-        )
+    if not isinstance(df.get_structure(seqID), six.string_types):
+        raise ValueError("Heatmap can only be generated for one decoy at once.")
+    if not isinstance(df.get_structure_prediction(seqID), six.string_types):
+        raise ValueError("Heatmap can only be generated for one decoy at once.")
 
     # get dssp and psipred
     dssp    = df.get_structure(seqID)
@@ -381,8 +371,8 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     d = {
         "dssp": dssp_scores,
         "psipred": psipred_scores
-        }
-    dfheat = pd.DataFrame(d, index=range(1, len(dssp)+1)).T
+    }
+    dfheat = pd.DataFrame(d, index=range(1, len(dssp) + 1)).T
     labels = pd.DataFrame([list(dssp), list(psipred)], index=["dssp", "psipred"])
 
     # Plot

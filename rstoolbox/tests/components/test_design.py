@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 03-May-2018
+# @Last modified time: 04-May-2018
 
 
 import os
@@ -409,10 +409,13 @@ class TestDesign( object ):
                                    filename='plot_ramachandran.png')
     def test_ramachandran_plot(self):
         # Start test
-        sa_des = {"scores": ["score"], "dihedrals": "*"}
-        df = ri.parse_rosetta_file(self.silent3, sa_des)
+        sa_des = {"scores": ["score"], "sequence": "*", "dihedrals": "*"}
+        df = ri.parse_rosetta_file(self.silent4, sa_des)
 
-        fig = plt.figure(figsize=(15,10))
+        fig = plt.figure(figsize=(15, 10))
+        fig2 = plt.figure(figsize=(15, 10))
+        with pytest.raises(ValueError):
+            rp.plot_ramachandran(df, "A", fig2)
         rp.plot_ramachandran(df.iloc[0], "A", fig)
         plt.tight_layout()
         return fig
@@ -421,10 +424,10 @@ class TestDesign( object ):
                                    filename='plot_dssp_vs_psipred.png')
     def test_plot_dssp_vs_psipred(self):
         # Start test
-        sa_des = {"scores": ["score"], "psipred" : "*", "structure" : "*"}
-        df = ri.parse_rosetta_file(self.silent3, sa_des)
+        sa_des = {"scores": ["score"], "psipred": "*", "structure": "*"}
+        df = ri.parse_rosetta_file(self.silent4, sa_des)
 
-        fig = plt.figure(figsize=(15,10))
+        fig = plt.figure(figsize=(15, 10))
         ax = plt.gca()
         rp.plot_dssp_vs_psipred( df.iloc[0], "A", ax )
         plt.tight_layout()

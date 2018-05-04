@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>rstoolbox.components.DesignFrame.identify_mutants &#8212; rstoolbox 0.0.6 documentation</title>
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/functions.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="rstoolbox.components.DesignFrame.get_identified_mutants" href="rstoolbox.components.DesignFrame.get_identified_mutants.html" />
+    <link rel="prev" title="rstoolbox.components.DesignFrame.structure_frequencies" href="rstoolbox.components.DesignFrame.structure_frequencies.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          rstoolbox</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.6</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../scripts.html">Scripts</a></li>
+                <li><a href="../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">An introduction to rstoolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Available direct executables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rosettascripts.html">RosettaScripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whatsnew.html">What’s new</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">rstoolbox.components.DesignFrame.identify_mutants</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="rstoolbox-components-designframe-identify-mutants">
+<h1>rstoolbox.components.DesignFrame.identify_mutants<a class="headerlink" href="#rstoolbox-components-designframe-identify-mutants" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="rstoolbox.components.DesignFrame.identify_mutants">
+<code class="descclassname">DesignFrame.</code><code class="descname">identify_mutants</code><span class="sig-paren">(</span><em>seqID</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.identify_mutants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assess mutations of each decoy for sequence <code class="docutils literal notranslate"><span class="pre">seqID</span></code> againt the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</p>
+<p>Adds to the container two new columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column</th>
+<th class="head">Data Content</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>mutants_&lt;seqID&gt;</strong></td>
+<td>Lists the <strong>mutations</strong> of the particular decoy</td>
+</tr>
+<tr class="row-odd"><td><strong>mutant_positions_&lt;seqID&gt;</strong></td>
+<td>Lists the <strong>positions</strong> of mutations in the particular decoy</td>
+</tr>
+<tr class="row-even"><td><strong>mutant_count_&lt;seqID&gt;</strong></td>
+<td><strong>Count</strong> of the number of mutations</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> and design sequence must be of the same length. If that is <strong>not</strong>
+the case, it could be solved with the use of a non <code class="docutils literal notranslate"><span class="pre">string.ascii_uppercase</span></code> character like
+<cite>“*”</cite>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Union[<a class="reference internal" href="../rstoolbox.components.DesignSeries.html#rstoolbox.components.DesignSeries" title="rstoolbox.components.DesignSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignSeries</span></code></a>, <a class="reference internal" href="../rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>] -
+a copy of the data container with the new columns.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ValueError:</th><td class="field-body">If length of <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> and decoy are not the same.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_sequence</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">get_sequence</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">identify_mutants</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">     score                                                                                                            sequence_B                                                                                                                                                                                                                                                                                                                                                                                                                         mutants_B                                                                                                                                                                                                                                              mutant_positions_B  mutant_count_B</span>
+<span class="go">1 -214.362  PKPEEAMREAYKLIKKYMLKAQKEAQEEWERMRRTDGTKEEKDMFPEKMIAQALRAIGEIFNAYYWAFLKLQEFKKYPSVRWEEQEEARKRLKIMMKIGAEWAREIAREMKERIKR  T1P,R2K,R7M,E8R,R9E,W11Y,R12K,A14I,E15K,I16K,A17Y,R19L,G21A,W22Q,E23K,H25A,E26Q,R27E,W31R,W32M,K33R,A35T,S36D,K37G,G38T,R39K,R42K,L45F,R48K,A52Q,E64Y,W65Y,Q66W,M67A,R68F,E70K,M71L,E72Q,K73E,E74F,R75K,N77Y,N79S,A80V,G81R,E82W,K84E,M85Q,K86E,Q88A,K89R,E91R,A92L,W93K,K94I,I95M,A96M,Y97K,Y98I,W99G,G100A,L101E,M102W,A104R,Y105E,W106I,I107A,K108R,Q109E,H110M,R111K,K113R,E114I,R115K,K116R                                  1,2,7,8,9,11,12,14,15,16,17,19,21,22,23,25,26,27,31,32,33,35,36,37,38,39,42,45,48,52,64,65,66,67,68,70,71,72,73,74,75,77,79,80,81,82,84,85,86,88,89,91,92,93,94,95,96,97,98,99,100,101,102,104,105,106,107,108,109,110,111,113,114,115,116                      75            </span>
+<span class="go">2 -203.582  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW  R2K,A6M,R7A,E8R,R9E,W11Y,R12K,L13R,A14M,E15L,I16K,M18L,R19K,K20Q,W22E,H25M,E26K,E28M,W29Y,W31Q,W32M,R34K,A35G,S36V,K37D,G38S,R39K,L45E,R48K,A52I,I60L,E64W,W65M,Q66K,M67A,R68L,L69R,E70H,E72K,K73E,E74L,N77L,P78G,N79T,A80S,E82P,E83K,K84E,M85E,K86E,E87K,Q88H,K89W,K90R,E91W,A92I,W93F,K94E,I95L,A96H,Y97R,Y98W,W99A,L101E,M102E,A103I,A104Q,Y105R,W106A,I107A,K108E,Q109I,H110Q,R111E,E112R,E114A,K116W                         2,6,7,8,9,11,12,13,14,15,16,18,19,20,22,25,26,28,29,31,32,34,35,36,37,38,39,45,48,52,60,64,65,66,67,68,69,70,72,73,74,77,78,79,80,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,101,102,103,104,105,106,107,108,109,110,111,112,114,116                 77            </span>
+<span class="go">3 -213.779  TKPEEWARWAYKEHLKMAEKHRKEMEIEWEELKRRDGKEEEKDMWPERMIAMALRAIGELFNHHMYAEMRAKEEKKKPEAKTEEARRARREIMKYHHEAGRLIEEAMRRLMERHKK  R2K,A6W,R7A,E8R,R9W,W11Y,R12K,L13E,A14H,E15L,I16K,A17M,M18A,R19E,G21H,W22R,E23K,H25M,R27I,W31E,W32L,A35R,S36D,K37G,G38K,R39E,R42K,L45W,A52M,I60L,A63H,E64H,W65M,Q66Y,M67A,R68E,L69M,E70R,M71A,E72K,K73E,R75K,N77K,N79E,G81K,E82T,K84E,M85A,K86R,E87R,Q88A,K89R,K90R,A92I,W93M,I95Y,A96H,Y97H,Y98E,W99A,L101R,M102L,A103I,A104E,Y105E,W106A,I107M,K108R,Q109R,H110L,R111M,K113R,E114H,R115K                                        2,6,7,8,9,11,12,13,14,15,16,17,18,19,21,22,23,25,27,31,32,35,36,37,38,39,42,45,52,60,63,64,65,66,67,68,69,70,71,72,73,75,77,79,81,82,84,85,86,87,88,89,90,92,93,95,96,97,98,99,101,102,103,104,105,106,107,108,109,110,111,113,114,115                          74            </span>
+<span class="go">4 -213.972  KKWEEMMREAERQGKEYAQKAWKEALLEWKWMRKRPVTEEMKDMAPEWMIAAALRAIGEHFNIYWQQKLEHEKLRKIPNVPEEELEKGKEELKRIEEEAARMAEKYMQELRKKMES  T1K,R2K,P3W,A6M,R7M,E8R,R9E,W11E,L13Q,A14G,E15K,I16E,A17Y,M18A,R19Q,G21A,E23K,H25A,E26L,R27L,E30K,W32M,K33R,R34K,A35R,S36P,K37V,G38T,R39E,E41M,R42K,L45A,R48W,I60H,A63I,E64Y,M67Q,R68K,M71H,E74L,N77I,A80V,G81P,K84E,M85L,K86E,E87K,Q88G,K90E,A92L,W93K,K94R,A96E,Y97E,Y98E,W99A,G100A,L101R,A104E,Y105K,W106Y,I107M,K108Q,Q109E,H110L,E112K,E114M,R115E,K116S                                                                    1,2,3,6,7,8,9,11,13,14,15,16,17,18,19,21,23,25,26,27,30,32,33,34,35,36,37,38,39,41,42,45,48,60,63,64,67,68,71,74,77,80,81,84,85,86,87,88,90,92,93,94,96,97,98,99,100,101,104,105,106,107,108,109,110,112,114,115,116                                            69            </span>
+<span class="go">5 -195.138  PRPEEMARFAKEEMHKHEEKAYREFLLEYELAIRKNPTEEPKDMQPEWAIAAALRAIGEIFNQWMYHLLEIRKENGSSHTRYEEREKYRKLAKRLHEEAAKEIWKFMHEAMRRFES  T1P,A6M,R7A,E8R,R9F,W11K,R12E,L13E,A14M,E15H,I16K,A17H,M18E,R19E,G21A,W22Y,E23R,H25F,E26L,R27L,W29Y,W31L,W32A,K33I,A35K,S36N,K37P,G38T,R39E,E41P,R42K,L45Q,R48W,M49A,A63Q,E64W,W65M,Q66Y,M67H,R68L,M71I,E72R,R75N,K76G,N77S,P78S,N79H,A80T,G81R,E82Y,K84E,M85R,K86E,E87K,Q88Y,K89R,E91L,W93K,K94R,I95L,A96H,Y97E,Y98E,W99A,G100A,L101K,M102E,A103I,A104W,Y105K,W106F,I107M,K108H,Q109E,H110A,R111M,E112R,K113R,E114F,R115E,K116S  1,6,7,8,9,11,12,13,14,15,16,17,18,19,21,22,23,25,26,27,29,31,32,33,35,36,37,38,39,41,42,45,48,49,63,64,65,66,67,68,71,72,75,76,77,78,79,80,81,82,84,85,86,87,88,89,91,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116  81            </span>
+</pre></div>
+</div>
+</dd></dl>
+
+<span class="target" id="definitions"></span></div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, Jaume Bonet.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+    </p>
+  </div>
+</footer>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-74877325-2');
+</script>
+
+  </body>
+</html>
