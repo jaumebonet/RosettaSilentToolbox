@@ -404,3 +404,28 @@ class TestDesign( object ):
         rp.positional_structural_similarity_plot(pd.concat([df1, df2], axis=1), ax00)
         plt.tight_layout()
         return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_ramachandran.png')
+    def test_ramachandran_plot(self):
+        # Start test
+        sa_des = {"scores": ["score"], "dihedrals": "*"}
+        df = ri.parse_rosetta_file(self.silent3, sa_des)
+
+        fig = plt.figure(figsize=(15,10))
+        rp.plot_ramachandran(df.iloc[0], "A", fig)
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_dssp_vs_psipred.png')
+    def test_plot_dssp_vs_psipred(self):
+        # Start test
+        sa_des = {"scores": ["score"], "psipred" : "*", "structure" : "*"}
+        df = ri.parse_rosetta_file(self.silent3, sa_des)
+
+        fig = plt.figure(figsize=(15,10))
+        ax = plt.gca()
+        rp.plot_dssp_vs_psipred( df.iloc[0], "A", ax )
+        plt.tight_layout()
+        return fig
