@@ -17,6 +17,9 @@ rstoolbox.components.DesignFrame
       ~DesignFrame.get_available_structure_predictions
       ~DesignFrame.get_structure_prediction
       ~DesignFrame.get_sequential_data
+      ~DesignFrame.get_dihedrals
+      ~DesignFrame.get_phi
+      ~DesignFrame.get_psi
       ~DesignFrame.get_available_labels
       ~DesignFrame.get_label
 

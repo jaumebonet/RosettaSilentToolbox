@@ -100,12 +100,18 @@ class TestDesign( object ):
         with pytest.raises(KeyError):
             assert len(df.get_structure_prediction("C")) == 6
 
-        sc_des  = {'sequence': 'A', 'structure': 'A', 'psipred': 'A'}
+        sc_des  = {'sequence': 'A', 'structure': 'A', 'psipred': 'A', 'dihedrals': 'A'}
         df = ri.parse_rosetta_file(self.silent4, sc_des)
         sr = df.iloc[0]
         assert df.get_available_structure_predictions() == ['A']
         assert df.get_structure_prediction('A')[0] == sr.get_structure_prediction('A')
         assert len(df.get_structure_prediction('A')[0]) == 88
+
+        assert isinstance(df.get_dihedrals("A"), pd.DataFrame)
+        assert isinstance(sr.get_dihedrals("A"), list)
+        for e in sr.get_dihedrals("A"):
+            assert isinstance(e, np.ndarray)
+        assert np.array_equal(df.get_dihedrals("A").iloc[0][0], sr.get_dihedrals("A")[0])
 
     def test_reference( self ):
         """
@@ -287,7 +293,7 @@ class TestDesign( object ):
         assert os.path.isfile(os.path.join(self.tmpdir, "mutanttest.clw"))
 
         # plot mutant
-        fig = fig = plt.figure(figsize=(30, 10))
+        fig = plt.figure(figsize=(30, 10))
         ax = plt.subplot2grid((1, 1), (0, 0), fig=fig)
         rp.plot_alignment(df, "B", ax, matrix="BLOSUM62")
         return fig

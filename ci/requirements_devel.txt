@@ -7,5 +7,5 @@ coveralls
 python-coveralls
 codacy-coverage
 
-sphinx
-sphinx_bootstrap_theme<=0.6
+sphinx>=1.7
+sphinx_bootstrap_theme>=0.6

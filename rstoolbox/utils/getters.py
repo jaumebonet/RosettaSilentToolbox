@@ -225,6 +225,12 @@ def get_dihedrals( self, seqID, key_residues=None ):
         :TypeError: |indf_error|.
         :KeyError: |seqID_error|.
 
+    .. seealso::
+        :meth:`.DesignFrame.get_phi`
+        :meth:`.DesignFrame.get_psi`
+        :meth:`.DesignSeries.get_phi`
+        :meth:`.DesignSeries.get_psi`
+
     .. rubric:: Example
 
     .. ipython::
