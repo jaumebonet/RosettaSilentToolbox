@@ -26,7 +26,7 @@ from matplotlib import colors
 
 # This Library
 
-__all__ = ['positional_structural_similarity_plot', 'plot_ramachandran']
+__all__ = ['positional_structural_similarity_plot', 'plot_ramachandran', 'plot_dssp_vs_psipred']
 
 
 def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
@@ -115,13 +115,12 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
 def plot_ramachandran( df, seqID, fig):
     """Generates a ramachandran plot in RAMPAGE style.
 
-    For more details and sources please refert to:
+    For more details and sources please refert to
+    `ramachandran plot for python
+    <https://warwick.ac.uk/fac/sci/moac/people/students/peter_cock/python/ramachandran/>`_
 
-        https://warwick.ac.uk/fac/sci/moac/people/students/peter_cock/python/ramachandran/
-
-    Background distribution data taken from:
-
-        https://github.com/S-John-S/Ramachandran-Plot.git
+    Background distribution data taken from
+    `git repository <https://github.com/S-John-S/Ramachandran-Plot.git>`_
 
     The phi - psi dihedrals should be present in the DesignSerie. If this is not the case,
     consider computing them using for example the :func:`.get_sequence_and_structure`.
@@ -275,3 +274,124 @@ def plot_ramachandran( df, seqID, fig):
         ax[i].grid()
     #plt.tight_layout()
     #fig.subplots_adjust(top=1.2)
+
+def plot_dssp_vs_psipred( df, seqID, ax ):
+    """Generates a horizontal heatmap showing differences in psipred predictions
+    to dssp assignments.
+
+    The dssp and psipred strings should be present in the DesignSerie. If not
+    the case, consider computing them using for example the
+    :func:`.get_sequence_and_structure`. Note that this function will only plot
+    the heatmap for a single decoy. If more are requested, please see the example
+    below.
+
+    :param df: |df_param|, where ONE column cotains the dssp assignments and
+    a second column the psipred predictions.
+    :type df: :class:`~pandas.Series`
+    :param ax: |axis_param|.
+    :type ax: :class:`~matplotlib.axes.Axes`
+
+    .. seealso::
+        :func:`.positional_sequence_similarity_plot`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: import rstoolbox as rb
+           ...: import pandas as pd
+           ...: plt.style.use('ggplot')
+           ...: pylab.rcParams["figure.figsize"] = (20, 5)
+           ...: definitions = {
+                               "scores": ["score"],
+                               "sequence" : "A",
+                               "psipred" : "*",
+                               "structure" : "*",
+                               "dihedrals": "*"
+                               }
+           ...: dsf = rb.io.parse_rosetta_file(
+                    "~/RosettaSilentToolbox/rstoolbox/tests/data/input_3ssepred.minisilent.gz",
+                    definitions )
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'scores': ['score'], 'structure': 'C'})
+           ...: ax = plt.gca()
+           ...: rb.plot.plot_dssp_vs_psipred(dsf.iloc[0], "A", ax)
+           ...: plt.tight_layout()
+           ...: fig.subplots_adjust(top=1.2)
+
+        @savefig plot_dssp_vs_psipred.png width=5in
+        In [2]: plt.show()
+
+        In [3]: import rstoolbox as rb
+           ...: import pandas as pd
+           ...: plt.style.use('ggplot')
+           ...: pylab.rcParams["figure.figsize"] = (20, 5)
+           ...: definitions = {
+                               "scores": ["score"],
+                               "sequence" : "A",
+                               "psipred" : "*",
+                               "structure" : "*",
+                               "dihedrals": "*"
+                               }
+           ...: dsf = rb.io.parse_rosetta_file(
+                    "~/RosettaSilentToolbox/rstoolbox/tests/data/input_3ssepred.minisilent.gz",
+                    definitions )
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'scores': ['score'], 'structure': 'C'})
+           ...: fig = plt.figure()
+           ...: for i in range(len(dsf)):
+           ...:     ax = fig.add_subplot(6, 1, i+1)
+           ...:     rb.plot.plot_dssp_vs_psipred( dsf.iloc[i], "A", ax )
+           ...: plt.tight_layout()
+           ...: fig.subplots_adjust(top=1.2)
+
+           @savefig plot_dssp_vs_psipred_multi.png width=5in
+           In [4]: plt.show()
+    """
+    # Data type management.
+    if not isinstance(df, pd.Series):
+        raise ValueError("Input data must be in a Series or DesignSeries")
+    if not isinstance(df, DesignSeries):
+        df = DesignSeries(df)
+    if not isinstance(df.get_structure(seqID), str):
+        raise ValueError(
+        "Heatmap can only be generated for one decoy at once."
+        )
+    if not isinstance(df.get_structure_prediction(seqID), str):
+        raise ValueError(
+        "Heatmap can only be generated for one decoy at once."
+        )
+
+    # get dssp and psipred
+    dssp    = df.get_structure(seqID)
+    psipred = df.get_structure_prediction(seqID)
+
+    # Compute scores
+    dssp_scores = []
+    psipred_scores = []
+    for daa, paa in zip(dssp, psipred):
+        if daa == paa:
+            dssp_scores.append(0)
+            psipred_scores.append(0)
+        else:
+            dssp_scores.append(1)
+            psipred_scores.append(1)
+
+    # Create secondary frames
+    d = {
+        "dssp": dssp_scores,
+        "psipred": psipred_scores
+        }
+    dfheat = pd.DataFrame(d, index=range(1, len(dssp)+1)).T
+    labels = pd.DataFrame([list(dssp), list(psipred)], index=["dssp", "psipred"])
+
+    # Plot
+    sns.heatmap(dfheat,
+                linewidths=.5,
+                cmap=sns.color_palette("RdYlGn_r", 5),
+                square=True,
+                annot=labels,
+                cbar=False,
+                alpha=0.5,
+                fmt="",
+                ax=ax)
