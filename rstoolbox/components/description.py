@@ -38,8 +38,6 @@ class Description( object ):
         self.sequence          = params.get("sequence",          None)
         self.structure         = params.get("structure",         None)
         self.psipred           = params.get("psipred",           None)
-        #self.phi               = params.get("phi",               None)
-        #self.psi               = params.get("psi",               None)
         self.dihedrals         = params.get("dihedrals",         None)
         self.labels            = params.get("labels",            None)
 

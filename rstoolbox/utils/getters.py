@@ -151,6 +151,7 @@ def get_sequence( self, seqID, key_residues=None ):
     else:
         return _get_key_sequence(self, "sequence", seqID, key_residues)
 
+
 def get_phi( self, seqID, key_residues=None ):
     """Return the **phi** angle for ``seqID`` available in the container.
 
@@ -181,6 +182,7 @@ def get_phi( self, seqID, key_residues=None ):
     else:
         return _get_key_sequence(self, "phi", seqID, key_residues)
 
+
 def get_psi( self, seqID, key_residues=None ):
     """Return the **psi** angle for ``seqID`` available in the container.
 
@@ -210,6 +212,7 @@ def get_psi( self, seqID, key_residues=None ):
         return self[_check_column(self, "psi", seqID)]
     else:
         return _get_key_sequence(self, "psi", seqID, key_residues)
+
 
 def get_dihedrals( self, seqID, key_residues=None ):
     """Return the **dihedrals** data for ``phi-psi`` available in the container.
@@ -257,6 +260,7 @@ def get_dihedrals( self, seqID, key_residues=None ):
         else:
             return [_get_key_sequence(self, "phi", seqID, key_residues),
                     _get_key_sequence(self, "psi", seqID, key_residues)]
+
 
 def get_available_structures( self ):
     """

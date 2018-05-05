@@ -575,9 +575,11 @@ def get_sequence_and_structure( pdbfile ):
         raise IOError("Structure {} cannot be found".format(pdbfile))
     minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.minisilent"
     if os.path.isfile(minisilent):
-        return parse_rosetta_file(minisilent, {"sequence": "*", "structure": "*", "dihedrals": "*"})
+        return parse_rosetta_file(minisilent, \
+               {"sequence": "*", "structure": "*", "dihedrals": "*"})
     elif os.path.isfile(minisilent + ".gz"):
-        return parse_rosetta_file(minisilent + ".gz", {"sequence": "*", "structure": "*", "dihedrals": "*"})
+        return parse_rosetta_file(minisilent + \
+               ".gz", {"sequence": "*", "structure": "*", "dihedrals": "*"})
 
     with open("dssp.xml", "w") as fd:
         fd.write(baseline())
@@ -607,6 +609,7 @@ def get_sequence_and_structure( pdbfile ):
             raise ValueError("Execution has failed\n")
     else:
         raise ValueError("Execution has failed\n")
+
 
 def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True ):
     """
