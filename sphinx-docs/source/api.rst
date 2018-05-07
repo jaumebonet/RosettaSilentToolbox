@@ -87,6 +87,8 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.plot_fragments
    ~plot.plot_fragment_profiles
    ~plot.plot_alignment
+   ~plot.plot_ramachandran
+   ~plot.plot_dssp_vs_psipred
 
 Utils: Plot
 -----------

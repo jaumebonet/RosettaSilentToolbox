@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>rstoolbox.plot.plot_ramachandran &#8212; rstoolbox 0.0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/functions.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="rstoolbox.plot.plot_dssp_vs_psipred" href="rstoolbox.plot.plot_dssp_vs_psipred.html" />
+    <link rel="prev" title="rstoolbox.plot.plot_alignment" href="rstoolbox.plot.plot_alignment.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          rstoolbox</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.6</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../scripts.html">Scripts</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rosettascripts.html">RosettaScripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">rstoolbox.plot.plot_ramachandran</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="rstoolbox-plot-plot-ramachandran">
+<h1>rstoolbox.plot.plot_ramachandran<a class="headerlink" href="#rstoolbox-plot-plot-ramachandran" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="rstoolbox.plot.plot_ramachandran">
+<code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_ramachandran</code><span class="sig-paren">(</span><em>df</em>, <em>seqID</em>, <em>fig</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_ramachandran" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a ramachandran plot in RAMPAGE style.</p>
+<p>For more details and sources please refert to
+<a class="reference external" href="https://warwick.ac.uk/fac/sci/moac/people/students/peter_cock/python/ramachandran/">ramachandran plot for python</a></p>
+<p>Background distribution data taken from
+<a class="reference external" href="https://github.com/S-John-S/Ramachandran-Plot.git">git repository</a></p>
+<p>The phi - psi dihedrals should be present in the DesignSerie. If this is not the case,
+consider computing them using for example the <a class="reference internal" href="rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sequence_and_structure()</span></code></a>.
+Note that this function will only plot the ramachandran for a single decoy. If one
+would like to compute it for mutiple decoys, please see the example below.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>) – Data container, where ONE column cotains the phi and a second column
+the psi angles.</li>
+<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> axis to which we will plot.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sequence_and_structure()</span></code></a>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_dihedrals()</span></code>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_phi()</span></code>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_psi()</span></code></p>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">rstoolbox</span> <span class="kn">as</span> <span class="nn">rb</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;ggplot&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">definitions</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">   ...: </span>               <span class="s2">&quot;scores&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">],</span>
+<span class="gp">   ...: </span>               <span class="s2">&quot;sequence&quot;</span> <span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>               <span class="s2">&quot;psipred&quot;</span> <span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>               <span class="s2">&quot;structure&quot;</span> <span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>               <span class="s2">&quot;dihedrals&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span>
+<span class="gp">   ...: </span>               <span class="p">}</span>
+<span class="gp">   ...: </span><span class="n">dsf</span> <span class="o">=</span> <span class="n">rb</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_rosetta_file</span><span class="p">(</span>
+<span class="gp">   ...: </span>    <span class="s2">&quot;../rstoolbox/tests/data/input_3ssepred.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="n">definitions</span> <span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">figure</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">rb</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_ramachandran</span><span class="p">(</span><span class="n">dsf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">figure</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">   ...: </span><span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [10]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/plot_ramachandran.png"><img alt="../_images/plot_ramachandran.png" src="../_images/plot_ramachandran.png" style="width: 5in;" /></a>
+</dd></dl>
+
+<span class="target" id="definitions"></span></div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, Jaume Bonet.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+    </p>
+  </div>
+</footer>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-74877325-2');
+</script>
+
+  </body>
+</html>

@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 03-May-2018
+# @Last modified time: 04-May-2018
 
 
 import os
@@ -100,12 +100,18 @@ class TestDesign( object ):
         with pytest.raises(KeyError):
             assert len(df.get_structure_prediction("C")) == 6
 
-        sc_des  = {'sequence': 'A', 'structure': 'A', 'psipred': 'A'}
+        sc_des  = {'sequence': 'A', 'structure': 'A', 'psipred': 'A', 'dihedrals': 'A'}
         df = ri.parse_rosetta_file(self.silent4, sc_des)
         sr = df.iloc[0]
         assert df.get_available_structure_predictions() == ['A']
         assert df.get_structure_prediction('A')[0] == sr.get_structure_prediction('A')
         assert len(df.get_structure_prediction('A')[0]) == 88
+
+        assert isinstance(df.get_dihedrals("A"), pd.DataFrame)
+        assert isinstance(sr.get_dihedrals("A"), list)
+        for e in sr.get_dihedrals("A"):
+            assert isinstance(e, np.ndarray)
+        assert np.array_equal(df.get_dihedrals("A").iloc[0][0], sr.get_dihedrals("A")[0])
 
     def test_reference( self ):
         """
@@ -287,7 +293,7 @@ class TestDesign( object ):
         assert os.path.isfile(os.path.join(self.tmpdir, "mutanttest.clw"))
 
         # plot mutant
-        fig = fig = plt.figure(figsize=(30, 10))
+        fig = plt.figure(figsize=(30, 10))
         ax = plt.subplot2grid((1, 1), (0, 0), fig=fig)
         rp.plot_alignment(df, "B", ax, matrix="BLOSUM62")
         return fig
@@ -396,5 +402,33 @@ class TestDesign( object ):
         fig = plt.figure(figsize=(35, 10))
         ax00 = plt.subplot2grid((1, 1), (0, 0))
         rp.positional_structural_similarity_plot(pd.concat([df1, df2], axis=1), ax00)
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_ramachandran.png')
+    def test_ramachandran_plot(self):
+        # Start test
+        sa_des = {"scores": ["score"], "sequence": "*", "dihedrals": "*"}
+        df = ri.parse_rosetta_file(self.silent4, sa_des)
+
+        fig = plt.figure(figsize=(15, 10))
+        fig2 = plt.figure(figsize=(15, 10))
+        with pytest.raises(ValueError):
+            rp.plot_ramachandran(df, "A", fig2)
+        rp.plot_ramachandran(df.iloc[0], "A", fig)
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_dssp_vs_psipred.png')
+    def test_plot_dssp_vs_psipred(self):
+        # Start test
+        sa_des = {"scores": ["score"], "psipred": "*", "structure": "*"}
+        df = ri.parse_rosetta_file(self.silent4, sa_des)
+
+        fig = plt.figure(figsize=(15, 10))
+        ax = plt.gca()
+        rp.plot_dssp_vs_psipred( df.iloc[0], "A", ax )
         plt.tight_layout()
         return fig

@@ -203,7 +203,7 @@
 <td>Write a sequence profile from <a class="reference internal" href="generated/rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> to load into Rosetta’s <strong>SeqprofConsensus</strong>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequence_and_structure</span></code></a>(pdbfile)</td>
-<td>Provided a PDB file, it will run a small <strong>RosettaScript</strong> to capture its sequence and structure.</td>
+<td>Provided a PDB file, it will run a small <strong>RosettaScript</strong> to capture its sequence and structure, i.e.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.make_structures.html#rstoolbox.io.make_structures" title="rstoolbox.io.make_structures"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_structures</span></code></a>(df[,&nbsp;outdir,&nbsp;tagsfilename,&nbsp;…])</td>
 <td>Extract the selected decoys (if any).</td>
@@ -280,6 +280,12 @@ plotting library, but some special plotting alternatives are offered through <co
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_alignment.html#rstoolbox.plot.plot_alignment" title="rstoolbox.plot.plot_alignment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_alignment</span></code></a>(df,&nbsp;seqID,&nbsp;ax[,&nbsp;line_break,&nbsp;…])</td>
 <td>Make an image representing the alignment of sequences with higlights to mutant positions.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_ramachandran.html#rstoolbox.plot.plot_ramachandran" title="rstoolbox.plot.plot_ramachandran"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ramachandran</span></code></a>(df,&nbsp;seqID,&nbsp;fig)</td>
+<td>Generates a ramachandran plot in RAMPAGE style.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_dssp_vs_psipred.html#rstoolbox.plot.plot_dssp_vs_psipred" title="rstoolbox.plot.plot_dssp_vs_psipred"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_dssp_vs_psipred</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
+<td>Generates a horizontal heatmap showing differences in psipred predictions to dssp assignments.</td>
 </tr>
 </tbody>
 </table>

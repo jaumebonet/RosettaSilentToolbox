@@ -117,6 +117,12 @@ def _add_sequences( manager, data, chains ):
     if len(chains["psipred"]) > 0:
         for ssename, str3d in manager.get_expected_psipred( chains ):
             data.setdefault( ssename, [] ).append( str3d )
+    if len(chains["phi"]) > 0:
+        for ssename, str3d in manager.get_expected_dihedrals( chains, "phi" ):
+            data.setdefault( ssename, [] ).append( str3d )
+    if len(chains["psi"]) > 0:
+        for ssename, str3d in manager.get_expected_dihedrals( chains, "psi" ):
+            data.setdefault( ssename, [] ).append( str3d )
 
     for x in [i for i in data if i.startswith("lbl_")]:
         data[x][-1] = rc.Selection(data[x][-1]).map_to_sequences(ochaini)
@@ -239,7 +245,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
 
         if line.startswith("SCORE"):
             per_res = {}
-            chains  = {"id": [], "seq": "", "dssp": "", "psipred": ""}
+            chains  = {"id": [], "seq": "", "dssp": "", "psipred": "", "phi": [], "psi": []}
 
             # General scores
             for cv, value in enumerate( line.strip().split()[1:] ):
@@ -308,6 +314,12 @@ def parse_rosetta_file( filename, description=None, multi=False ):
                 labinfo = label.split(":")
                 if "lbl_" + labinfo[0].upper() in data:
                     data["lbl_" + labinfo[0].upper()][-1] = labinfo[1]
+            continue
+        if line.startswith("REMARK PHI"):
+            chains["phi"] = [float(x) for x in line.split()[2].strip().split(",")]
+            continue
+        if line.startswith("REMARK PSI"):
+            chains["psi"] = [float(x) for x in line.split()[2].strip().split(",")]
             continue
 
     df = rc.DesignFrame( data )
@@ -537,7 +549,7 @@ def write_fragment_sequence_profiles( df, filename=None, consensus=None ):
 def get_sequence_and_structure( pdbfile ):
     """
     Provided a PDB file, it will run a small **RosettaScript** to capture its sequence and
-    structure.
+    structure, i.e. dssp and phi-psi dihedrals.
 
     .. note::
         **Requires a Rosetta local installation** if file is not present.
@@ -563,9 +575,11 @@ def get_sequence_and_structure( pdbfile ):
         raise IOError("Structure {} cannot be found".format(pdbfile))
     minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.minisilent"
     if os.path.isfile(minisilent):
-        return parse_rosetta_file(minisilent, {"sequence": "*", "structure": "*"})
+        return parse_rosetta_file(minisilent, \
+               {"sequence": "*", "structure": "*", "dihedrals": "*"})
     elif os.path.isfile(minisilent + ".gz"):
-        return parse_rosetta_file(minisilent + ".gz", {"sequence": "*", "structure": "*"})
+        return parse_rosetta_file(minisilent + \
+               ".gz", {"sequence": "*", "structure": "*", "dihedrals": "*"})
 
     with open("dssp.xml", "w") as fd:
         fd.write(baseline())
