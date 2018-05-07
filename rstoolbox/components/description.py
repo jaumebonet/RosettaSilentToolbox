@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: description.py
 # @Last modified by:   bonet
-# @Last modified time: 05-Apr-2018
+# @Last modified time: 07-May-2018
 
 
 import re
@@ -117,7 +117,7 @@ class Description( object ):
     def setup_labels( self, data ):
         if self.labels is not None:
             for l in self.labels:
-                data.setdefault("lbl_" + l.upper(), []).append("0")
+                data.setdefault("lbl_" + l.upper(), []).append("")
         return data
 
     def get_expected_sequences( self, chains ):

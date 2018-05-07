@@ -71,10 +71,16 @@ def _get_key_sequence( obj, ctype, seqID, key_residues ):
     kr = get_selection(key_residues, seqID, sft, length)
 
     if isinstance(obj, pd.Series):
-        # -1 because we access string positions
-        return "".join(np.array(list(seq))[kr - 1])
+        if len(kr) > 1:
+            # -1 because we access string positions
+            return "".join(np.array(list(seq))[kr - 1])
+        else:
+            return ""
     else:
-        return seq.apply(lambda seq: "".join(np.array(list(seq))[kr - 1]))
+        if len(kr) > 1:
+            return seq.apply(lambda seq: "".join(np.array(list(seq))[kr - 1]))
+        else:
+            return seq.apply(lambda seq: "")
 
 
 def get_id( self ):

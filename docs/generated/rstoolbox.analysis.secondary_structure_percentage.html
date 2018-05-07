@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rstoolbox.analysis.positional_structural_identity &#8212; rstoolbox 0.0.6 documentation</title>
+    <title>rstoolbox.analysis.secondary_structure_percentage &#8212; rstoolbox 0.0.6 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="rstoolbox.analysis.secondary_structure_percentage" href="rstoolbox.analysis.secondary_structure_percentage.html" />
-    <link rel="prev" title="rstoolbox.analysis.positional_structural_count" href="rstoolbox.analysis.positional_structural_count.html" />
+    <link rel="next" title="rstoolbox.analysis.cumulative" href="rstoolbox.analysis.cumulative.html" />
+    <link rel="prev" title="rstoolbox.analysis.positional_structural_identity" href="rstoolbox.analysis.positional_structural_identity.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -81,7 +81,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">rstoolbox.analysis.positional_structural_identity</a></li>
+<li><a class="reference internal" href="#">rstoolbox.analysis.secondary_structure_percentage</a></li>
 </ul>
 </ul>
 </li>
@@ -111,46 +111,59 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <div class="section" id="rstoolbox-analysis-positional-structural-identity">
-<h1>rstoolbox.analysis.positional_structural_identity<a class="headerlink" href="#rstoolbox-analysis-positional-structural-identity" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="rstoolbox-analysis-secondary-structure-percentage">
+<h1>rstoolbox.analysis.secondary_structure_percentage<a class="headerlink" href="#rstoolbox-analysis-secondary-structure-percentage" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="rstoolbox.analysis.positional_structural_identity">
-<code class="descclassname">rstoolbox.analysis.</code><code class="descname">positional_structural_identity</code><span class="sig-paren">(</span><em>df</em>, <em>seqID=None</em>, <em>ref_sse=None</em>, <em>key_residues=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.analysis.positional_structural_identity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Per position evaluation of how many times the provided data matches the expected
-<code class="docutils literal notranslate"><span class="pre">reference_structure</span></code>.</p>
+<dt id="rstoolbox.analysis.secondary_structure_percentage">
+<code class="descclassname">rstoolbox.analysis.</code><code class="descname">secondary_structure_percentage</code><span class="sig-paren">(</span><em>df</em>, <em>seqID</em>, <em>key_residues=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.analysis.secondary_structure_percentage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the percentage of the different secondary structure types.</p>
+<p>Requires secondary structure data.</p>
+<p>Adds 3 new columns to the data container:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">New Column</th>
+<th class="head">Data Content</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>structure_&lt;seqID&gt;_H</strong></td>
+<td>Percentage of <strong>alpha helices</strong> in the structure.</td>
+</tr>
+<tr class="row-odd"><td><strong>structure_&lt;seqID&gt;_E</strong></td>
+<td>Percentage of <strong>beta sheets</strong> in the structure.</td>
+</tr>
+<tr class="row-even"><td><strong>structure_&lt;seqID&gt;_L</strong></td>
+<td>Percentage of <strong>loops</strong> in the structure.</td>
+</tr>
+</tbody>
+</table>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>]) – Data container.</li>
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest. Required when input is <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a></li>
-<li><strong>ref_sse</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Reference sequence. Required when input is <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>.
-Will overwrite the reference sequence of <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> if provided.</li>
+<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.DesignSeries.html#rstoolbox.components.DesignSeries" title="rstoolbox.components.DesignSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignSeries</span></code></a>]) – Data container.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
 <li><strong>key_residues</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="rstoolbox.components.Selection.html#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a>]) – Residues of interest.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> - where rows are sequence positions and
-columns are <code class="docutils literal notranslate"><span class="pre">sse</span></code> (expected secondary structure),
-<code class="docutils literal notranslate"><span class="pre">max_sse</span></code> (most represented secondary structure) and
-<code class="docutils literal notranslate"><span class="pre">identity_perc</span></code> (percentage of matched secondary structure).</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.DesignSeries.html#rstoolbox.components.DesignSeries" title="rstoolbox.components.DesignSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignSeries</span></code></a>]</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">if the data passed is not in Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>,
-<a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>]. It will <em>not</em> try to cast a provided
-<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>, as it would not be possible to know into which of
-the two possible inputs it needs to be casted.</td>
+<tr class="field-odd field"><th class="field-name" colspan="2">NotImplementedError:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">if the data passed is not in Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>,
+<a class="reference internal" href="rstoolbox.components.DesignSeries.html#rstoolbox.components.DesignSeries" title="rstoolbox.components.DesignSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignSeries</span></code></a>].</td>
 </tr>
-<tr class="field-even field"><th class="field-name">AttributeError:</th><td class="field-body">if input is <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> and <code class="docutils literal notranslate"><span class="pre">seqID</span></code> is not provided.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">KeyError:</th><td class="field-body">if there is no structure information for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys when input is <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">AttributeError:</th><td class="field-body">if input is <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> and <code class="docutils literal notranslate"><span class="pre">ref_sse</span></code> is not provided.</td>
+<tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">if there is no structure information for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys.</td>
 </tr>
 </tbody>
 </table>
@@ -160,22 +173,21 @@ the two possible inputs it needs to be casted.</td>
 </table>
 <p class="rubric">Example</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
-<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.analysis</span> <span class="kn">import</span> <span class="n">positional_structural_identity</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.analysis</span> <span class="kn">import</span> <span class="n">secondary_structure_percentage</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_ssebig.minisilent.gz&quot;</span><span class="p">,</span>
 <span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="s1">&#39;structure&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">})</span>
-<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_structure</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">positional_structural_identity</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">secondary_structure_percentage</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[8]: </span><span class="go"></span>
-<span class="go">   identity_perc max_sse sse</span>
-<span class="go">1  1.000000       L       L </span>
-<span class="go">2  0.212389       E       E </span>
-<span class="go">3  0.985841       E       E </span>
-<span class="go">4  1.000000       E       E </span>
-<span class="go">5  1.000000       E       E </span>
+<span class="gh">Out[7]: </span><span class="go"></span>
+<span class="go">    score                                                 structure_C  structure_C_H  structure_C_E  structure_C_L</span>
+<span class="go">0 -64.070  LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL  0.206897       0.379310       0.413793     </span>
+<span class="go">1 -70.981  LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHLLLLLLLLLLLEEEELLLLLEEEEL  0.189655       0.396552       0.413793     </span>
+<span class="go">2 -43.863  LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL  0.206897       0.431034       0.362069     </span>
+<span class="go">3 -75.847  LLLEEEEELLEEEEEELLLLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL  0.206897       0.362069       0.431034     </span>
+<span class="go">4 -55.347  LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL  0.206897       0.379310       0.413793     </span>
 </pre></div>
 </div>
 </dd></dl>

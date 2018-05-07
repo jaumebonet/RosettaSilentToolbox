@@ -69,7 +69,10 @@ Helper functions for sequence analysis. They can be called through ``rstoolbox.a
    ~analysis.binary_overlap
    ~analysis.positional_structural_count
    ~analysis.positional_structural_identity
+   ~analysis.secondary_structure_percentage
    ~analysis.cumulative
+   ~analysis.selector_percentage
+   ~analysis.label_percentage
 
 Plot
 ----

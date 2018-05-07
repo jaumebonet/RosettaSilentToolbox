@@ -535,7 +535,7 @@ def selector_percentage( df, seqID, key_residues, selection_name='selection' ):
            ...: pd.set_option('display.width', 1000)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'C'})
-           ...: df = selector_percentage(df, 'C')
+           ...: df = selector_percentage(df, 'C', '1-15')
            ...: df.head()
     """
     from rstoolbox.components import DesignFrame, DesignSeries
@@ -554,22 +554,23 @@ def selector_percentage( df, seqID, key_residues, selection_name='selection' ):
 
 
 def label_percentage( df, seqID, label ):
-    """Calculate the percentage coverage of a ``label``over the sequence.
+    """Calculate the percentage coverage of a ``label`` over the sequence.
 
     Depends on sequence information and label data for the ``seqID``.
 
     Adds a new column to the data container:
 
-    ===========================  =======================================================
+    ===========================  ====================================================
     New Column                   Data Content
-    ===========================  =======================================================
+    ===========================  ====================================================
     **<label>_<seqID>_perc**     Percentage of the sequence covered by the ``label``.
-    ===========================  =======================================================
+    ===========================  ====================================================
 
     :param df: |df_param|.
     :type df: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
     :param str seqID: |seqID_param|.
     :param str lable: Label identifier.
+    :param key_residues: |keyres_param|.
     :type key_residues: |keyres_types|
 
     :return: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
@@ -588,8 +589,9 @@ def label_percentage( df, seqID, label ):
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
-           ...:                         {'scores': ['score'], 'sequence': 'C'})
-           ...: df = label_percentage(df, 'C')
+           ...:                         {'scores': ['score'], 'sequence': '*',
+           ...:                          'labels': ['MOTIF']})
+           ...: df = label_percentage(df, 'B', 'MOTIF')
            ...: df.head()
     """
     from rstoolbox.components import DesignFrame, DesignSeries
