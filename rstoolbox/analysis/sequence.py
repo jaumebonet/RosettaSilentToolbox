@@ -26,7 +26,7 @@ from .SimilarityMatrix import SimilarityMatrix as SM
 
 __all__ = ['sequential_frequencies', 'sequence_similarity',
            'positional_sequence_similarity', 'binary_similarity',
-           'binary_overlap']
+           'binary_overlap', 'selector_percentage', 'label_percentage']
 
 
 def _get_sequential_table( seqType ):
@@ -495,3 +495,113 @@ def binary_overlap( df, seqID, key_residues=None, matrix="IDENTITY" ):
             if bool(int(b)):
                 result[_] = 1
     return result
+
+
+def selector_percentage( df, seqID, key_residues, selection_name='selection' ):
+    """Calculate the percentage coverage of a :class:`.Selection`
+    over the sequence.
+
+    Depends on sequence information for the ``seqID``.
+
+    Adds a new column to the data container:
+
+    ====================================  =======================================================
+    New Column                             Data Content
+    ====================================  =======================================================
+    **<selection_name>_<seqID>_perc**     Percentage of the sequence covered by the key_residues.
+    ====================================  =======================================================
+
+    :param df: |df_param|.
+    :type df: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+    :param str selection_name: Prefix to add to the selection. Default is ``selection``.
+
+    :return: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
+
+    :raises:
+        :NotImplementedError: if the data passed is not in Union[:class:`.DesignFrame`,
+            :class:`.DesignSeries`].
+        :KeyError: |seqID_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import selector_percentage
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'scores': ['score'], 'sequence': 'C'})
+           ...: df = selector_percentage(df, 'C')
+           ...: df.head()
+    """
+    from rstoolbox.components import DesignFrame, DesignSeries
+    colname = '{0}_{1}_perc'.format(selection_name, seqID)
+
+    if isinstance(df, DesignFrame):
+        df2 = df.apply(lambda row: selector_percentage(row, seqID, key_residues),
+                       axis=1, result_type='expand')
+        return df2
+    elif isinstance(df, DesignSeries):
+        seq1 = list(df.get_sequence(seqID))
+        seq2 = list(df.get_sequence(seqID, key_residues))
+        return df.append(pd.Series([float(len(seq2)) / len(seq1)], [colname]))
+    else:
+        raise NotImplementedError
+
+
+def label_percentage( df, seqID, label ):
+    """Calculate the percentage coverage of a ``label``over the sequence.
+
+    Depends on sequence information and label data for the ``seqID``.
+
+    Adds a new column to the data container:
+
+    ===========================  =======================================================
+    New Column                   Data Content
+    ===========================  =======================================================
+    **<label>_<seqID>_perc**     Percentage of the sequence covered by the ``label``.
+    ===========================  =======================================================
+
+    :param df: |df_param|.
+    :type df: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
+    :param str seqID: |seqID_param|.
+    :param str lable: Label identifier.
+    :type key_residues: |keyres_types|
+
+    :return: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
+
+    :raises:
+        :NotImplementedError: if the data passed is not in Union[:class:`.DesignFrame`,
+            :class:`.DesignSeries`].
+        :KeyError: |lblID_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import label_percentage
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score'], 'sequence': 'C'})
+           ...: df = label_percentage(df, 'C')
+           ...: df.head()
+    """
+    from rstoolbox.components import DesignFrame, DesignSeries
+    colname = '{0}_{1}_perc'.format(label.upper(), seqID)
+
+    if isinstance(df, DesignFrame):
+        df2 = df.apply(lambda row: label_percentage(row, seqID, label),
+                       axis=1, result_type='expand')
+        return df2
+    elif isinstance(df, DesignSeries):
+        seq1 = list(df.get_sequence(seqID))
+        seq2 = list(df.get_sequence(seqID, df.get_label(label, seqID)))
+        return df.append(pd.Series([float(len(seq2)) / len(seq1)], [colname]))
+    else:
+        raise NotImplementedError

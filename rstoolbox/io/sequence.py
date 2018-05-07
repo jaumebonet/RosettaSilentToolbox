@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequence.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
+# @Last modified time: 07-May-2018
 
 
 import os
@@ -11,13 +11,16 @@ import re
 import gzip
 import bisect
 
+import pandas as pd
+
 import rstoolbox.core as core
 import rstoolbox.components as cp
 from rstoolbox.io.rosetta import _gather_file_list
 from rstoolbox.utils.getters import _check_column
 
 
-__all__ = ["read_fasta", "write_fasta", "write_clustalw", "write_mutant_alignments"]
+__all__ = ['read_fasta', 'write_fasta', 'write_clustalw', 'write_mutant_alignments',
+           'read_hmmsearch']
 
 
 def read_fasta( filename, expand=False, multi=False ):
@@ -305,6 +308,78 @@ def write_mutant_alignments( df, seqID, filename=None ):
     df[_check_column(df, "sequence", seqID)] = df.apply(lambda row: mask_row(row, seqID), axis=1)
 
     return write_clustalw(df, seqID, filename)
+
+
+def read_hmmsearch( filename ):
+    """Read output from ``hmmsearch``.
+
+    Processess the output of Hidden Markov Models search over a set
+    of sequences with `hmmsearch <http://hmmer.org/>`_.
+
+    Will return a :class:`~pandas.DataFrame` with the following columns:
+
+    ====================  ===================================================
+    Column Name           Data Content
+    ====================  ===================================================
+    **description**       Sequence identifier.
+    **full-e-value**      E-value for full sequence match.
+    **full-score**        Score for full sequence match.
+    **full-bias**         Bias for full sequence.
+    **dom-e-value**       E-values for best scored domain.
+    **dom-score**         Score for best scored domain.
+    **dom-bias**          Bias for best scored domain.
+    **dom-exp**           Expected number of domains.
+    **dom-N**             Actual number of domains.
+    ====================  ===================================================
+
+    :param str filename: Name of the ``hmmsearch`` output file.
+
+    :return: :class:`~pandas.DataFrame`
+
+    :raises:
+        :IOError: if ``filename`` does not exist.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import read_hmmsearch
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = read_hmmsearch("../rstoolbox/tests/data/search.hmm.gz")
+           ...: df.head()
+    """
+    if not os.path.isfile(filename):
+        raise IOError('{} cannot be found'.format(filename))
+
+    data = {'full-e-value': [], 'full-score': [], 'full-bias': [],
+            'dom-e-value': [], 'dom-score': [], 'dom-bias': [],
+            'dom-exp': [], 'dom-N': [], 'description': []}
+    read = False
+    fd = open(filename)if not filename.endswith("gz") else gzip.open(filename)
+    for line in fd:
+        line = line.decode('utf8') if filename.endswith(".gz") else line
+        if len(line.strip()) == 0:
+            continue
+        if line.strip().startswith('------'):
+            read = True
+            continue
+        if line.startswith('Domain annotation for each sequence:'):
+            read = False
+            break
+        if read:
+            line = line.strip().split()
+            data['full-e-value'].append(float(line[0]))
+            data['full-score'].append(float(line[1]))
+            data['full-bias'].append(float(line[2]))
+            data['dom-e-value'].append(float(line[3]))
+            data['dom-score'].append(float(line[4]))
+            data['dom-bias'].append(float(line[5]))
+            data['dom-exp'].append(float(line[6]))
+            data['dom-N'].append(float(line[7]))
+            data['description'].append(line[8])
+    fd.close()
+    return pd.DataFrame(data)
 
 
 def mlcs(strings):

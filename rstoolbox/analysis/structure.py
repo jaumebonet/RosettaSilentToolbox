@@ -18,7 +18,8 @@ import pandas as pd
 
 # This Library
 
-__all__ = ['positional_structural_count', 'positional_structural_identity']
+__all__ = ['positional_structural_count', 'positional_structural_identity',
+           'secondary_structure_percentage']
 
 
 def positional_structural_count( df, seqID=None, key_residues=None ):
@@ -182,3 +183,64 @@ def positional_structural_identity( df, seqID=None, ref_sse=None, key_residues=N
     else:
         dfo.index = shft
     return dfo.loc[list(get_selection(key_residues, seqID, list(dfo.index)))]
+
+
+def secondary_structure_percentage( df, seqID, key_residues=None ):
+    """Calculate the percentage of the different secondary structure types.
+
+    Requires secondary structure data.
+
+    Adds 3 new columns to the data container:
+
+    ===============================  ===================================================
+    New Column                       Data Content
+    ===============================  ===================================================
+    **structure_<seqID>_H**          Percentage of **alpha helices** in the structure.
+    **structure_<seqID>_E**          Percentage of **beta sheets** in the structure.
+    **structure_<seqID>_L**          Percentage of **loops** in the structure.
+    ===============================  ===================================================
+
+    :param df: |df_param|.
+    :type df: Union[:py:class:`.DesignFrame`, :py:class:`.DesignSeries`]
+    :param str seqID: |seqID_param|.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+
+    :return: Union[:py:class:`.DesignFrame`, :py:class:`.DesignSeries`]
+
+    :raises:
+        :NotImplementedError: if the data passed is not in Union[:class:`.DesignFrame`,
+            :class:`.DesignSeries`].
+        :KeyError: |sseID_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import secondary_structure_percentage
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
+           ...:                         {'scores': ['score'], 'structure': 'C'})
+           ...: df = secondary_structure_percentage(df, 'C')
+           ...: df.head()
+    """
+    from rstoolbox.components import DesignFrame, DesignSeries
+    H = 'structure_{}_H'.format(seqID)
+    E = 'structure_{}_E'.format(seqID)
+    L = 'structure_{}_L'.format(seqID)
+
+    if isinstance(df, DesignFrame):
+        df2 = df.apply(lambda row: secondary_structure_percentage(row,
+                                                                  seqID,
+                                                                  key_residues),
+                       axis=1, result_type='expand')
+        return df2
+    elif isinstance(df, DesignSeries):
+        sse = list(df.get_structure(seqID, key_residues))
+        csse = collections.Counter(sse)
+        return df.append(pd.Series([float(csse['H']) / len(sse), float(csse['E']) / len(sse),
+                         float(csse['L']) / len(sse)], [H, E, L]))
+    else:
+        raise NotImplementedError

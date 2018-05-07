@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_design.py
 # @Last modified by:   bonet
-# @Last modified time: 04-May-2018
+# @Last modified time: 07-May-2018
 
 
 import os
@@ -385,6 +385,15 @@ class TestDesign( object ):
         assert "".join(list(dfsm.sse.values)) == sse_ref
         assert "".join(list(dfsm.max_sse.values)) == diff1
         assert dfsm.identity_perc.mean() == pytest.approx(0.8121, rel=1e-3)
+
+        # percentages
+        dfpc = ra.secondary_structure_percentage(df, 'C')
+        assert 'structure_C_H' in dfpc.columns
+        assert 'structure_C_E' in dfpc.columns
+        assert 'structure_C_L' in dfpc.columns
+        assert dfpc['structure_C_H'].max() == pytest.approx(0.2413, rel=1e-3)
+        assert dfpc['structure_C_E'].mean() == pytest.approx(0.4038, rel=1e-3)
+        assert dfpc['structure_C_L'].min() == pytest.approx(0.3275, rel=1e-3)
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_sse_profile.png')

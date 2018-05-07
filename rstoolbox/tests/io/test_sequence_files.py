@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_read_sequence_files.py
 # @Last modified by:   bonet
-# @Last modified time: 09-Apr-2018
+# @Last modified time: 07-May-2018
 
 
 # Standard Libraries
@@ -13,7 +13,7 @@ import os
 import pytest
 
 # This Library
-from rstoolbox.io import read_fasta, write_fasta
+from rstoolbox.io import read_fasta, write_fasta, read_hmmsearch
 
 
 class TestReadSilentFiles( object ):
@@ -106,3 +106,8 @@ class TestReadSilentFiles( object ):
             newid = df["description"].values[0]
             expected = df2[df2["description"] == newid.split(":")[0]]["sequence_A"].values[0]
             assert expected == newseq
+
+    def test_hmm( self ):
+        df = read_hmmsearch(os.path.join(self.dirpath, 'search.hmm.gz'))
+        assert df.shape[0] == 4927
+        assert df[df['full-e-value'] < 10].shape[0] == 2645

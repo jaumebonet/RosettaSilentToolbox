@@ -59,10 +59,10 @@ def _get_available( obj, ctype ):
 
 def _get_key_sequence( obj, ctype, seqID, key_residues ):
     from rstoolbox.components import get_selection
-    from .reference import _get_reference
+    from .reference import get_reference_shift
 
     seq = obj[_check_column(obj, ctype, seqID)]
-    sft = _get_reference(obj, "sft", seqID)
+    sft = get_reference_shift(obj, seqID)
 
     if isinstance(obj, pd.Series):
         length = len(seq)

@@ -2,8 +2,8 @@
 # @Date:   19-Feb-2018
 # @Email:  jaume.bonet@gmail.com
 # @Filename: rosetta.py
-# @Last modified by:   hartevel
-# @Last modified time: 2018-04-12T15:28:04+02:00
+# @Last modified by:   bonet
+# @Last modified time: 07-May-2018
 
 
 import os
@@ -22,6 +22,11 @@ import pandas as pd
 import rstoolbox.core as core
 import rstoolbox.components as rc
 from rstoolbox.utils import baseline
+
+__all__ = ['open_rosetta_file', 'parse_rosetta_file', 'parse_rosetta_contacts',
+           'parse_rosetta_fragments', 'write_rosetta_fragments',
+           'write_fragment_sequence_profiles', 'get_sequence_and_structure',
+           'make_structures']
 
 _headers = ["SCORE", "REMARK", "RES_NUM", "FOLD_TREE", "RT",
             "ANNOTATED_SEQUENCE", "NONCANONICAL_CONNECTION",
@@ -575,11 +580,11 @@ def get_sequence_and_structure( pdbfile ):
         raise IOError("Structure {} cannot be found".format(pdbfile))
     minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.minisilent"
     if os.path.isfile(minisilent):
-        return parse_rosetta_file(minisilent, \
-               {"sequence": "*", "structure": "*", "dihedrals": "*"})
+        return parse_rosetta_file(minisilent,
+                                  {"sequence": "*", "structure": "*", "dihedrals": "*"})
     elif os.path.isfile(minisilent + ".gz"):
-        return parse_rosetta_file(minisilent + \
-               ".gz", {"sequence": "*", "structure": "*", "dihedrals": "*"})
+        return parse_rosetta_file(minisilent + ".gz",
+                                  {"sequence": "*", "structure": "*", "dihedrals": "*"})
 
     with open("dssp.xml", "w") as fd:
         fd.write(baseline())

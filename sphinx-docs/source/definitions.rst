@@ -29,6 +29,7 @@
 .. |seqID_error| replace:: if there is no sequence information for chain ``seqID`` of the decoys
 .. |sseID_error| replace:: if there is no structure information for chain ``seqID`` of the decoys
 .. |mutID_error| replace:: if there is no mutation information for chain ``seqID`` of the decoys
+.. |lblID_error| replace:: if there is no label information for chain ``seqID`` of the decoys
 
 .. |indf_error| replace:: if the data container is not :class:`~pandas.DataFrame` or :class:`~pandas.Series`
 
