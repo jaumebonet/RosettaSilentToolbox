@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: Selection.py
 # @Last modified by:   bonet
-# @Last modified time: 02-May-2018
+# @Last modified time: 07-May-2018
 
 
 import copy
@@ -168,6 +168,12 @@ class Selection( object ):
             self._asarr = sorted(list(set(selection)))
         elif selection is None:
             pass
+        elif isinstance(selection, Selection):
+            self._asarr = selection._asarr
+            self._seqID = selection._seqID
+            self._revrs = selection._revrs
+            self._isarr = selection._isarr
+            self._ialen = selection._ialen
         else:
             raise AttributeError("Unable to processs the provided selection")
 

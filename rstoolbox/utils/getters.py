@@ -14,12 +14,16 @@
 .. func:: get_available_structure_predictions
 .. func:: get_structure_prediction
 .. func:: get_sequential_data
+.. func:: get_dihedrals
+.. func:: get_phi
+.. func:: get_psi
 .. func:: get_available_labels
 .. func:: get_label
 """
 # Standard Libraries
 
 # External Libraries
+import six
 import pandas as pd
 import numpy as np
 
@@ -452,6 +456,11 @@ def get_label( self, label, seqID=None ):
            ...: df.get_label('CONTACT', 'A')
            ...: df.get_label('CONTACT', 'B')
     """
+    from rstoolbox.components import Selection, SelectionContainer
+    listtypes = (list, np.ndarray, six.string_types)
+    if six.PY3:
+        listtypes = (list, np.ndarray, range, six.string_types)
+
     _check_type(self)
     if seqID is None:
         ss = set(get_available_sequences(self))
@@ -465,5 +474,9 @@ def get_label( self, label, seqID=None ):
     data = self[_check_column(self, "lbl", label.upper())]
     if isinstance(self, pd.DataFrame):
         return data.apply(lambda x: x[seqID])
-    else:
+    elif isinstance(data, SelectionContainer):
         return data[seqID]
+    elif isinstance(data, Selection):
+        return data
+    elif isinstance(data, listtypes):
+        return Selection(data)

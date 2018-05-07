@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: sequenceFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
+# @Last modified time: 07-May-2018
 
 # Standard Libraries
 
@@ -144,7 +144,8 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
             sft = 1
 
         kr = get_selection(key_residues, seqID, sft, self.shape[0])
-        return self.loc[kr]
+        # -1 as we access array-like positioning
+        return self.iloc[kr - 1]
 
     def max_hight( self ):
         """
