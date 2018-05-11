@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: fragments.py
 # @Last modified by:   bonet
-# @Last modified time: 01-May-2018
+# @Last modified time: 11-May-2018
 
 
 import pandas as pd
@@ -258,7 +258,7 @@ def plot_fragments( small_frags, large_frags, small_ax, large_ax, small_color=0,
             ru.add_top_title(small_ax, "{}mers".format(small_frags["size"].values[0]))
             ru.add_top_title(large_ax, "{}mers".format(large_frags["size"].values[0]))
         elif titles.lower() == "right":
-            ru.add_right_title(small_ax, "{}mers".format(small_frags["size"].values[0]))
-            ru.add_right_title(large_ax, "{}mers".format(large_frags["size"].values[0]))
+            ru.add_left_title(small_ax, "{}mers".format(small_frags["size"].values[0]))
+            ru.add_left_title(large_ax, "{}mers".format(large_frags["size"].values[0]))
         else:
             pass

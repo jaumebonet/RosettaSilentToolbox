@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_read_sequence_files.py
 # @Last modified by:   bonet
-# @Last modified time: 07-May-2018
+# @Last modified time: 09-May-2018
 
 
 # Standard Libraries
@@ -109,5 +109,6 @@ class TestReadSilentFiles( object ):
 
     def test_hmm( self ):
         df = read_hmmsearch(os.path.join(self.dirpath, 'search.hmm.gz'))
-        assert df.shape[0] == 4927
-        assert df[df['full-e-value'] < 10].shape[0] == 2645
+        assert df.shape[0] == 4932
+        assert len(df['description'].unique()) == 4927
+        assert df[df['full-e-value'] < 10].shape[0] == 2650

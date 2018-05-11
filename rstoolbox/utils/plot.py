@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: plot.py
 # @Last modified by:   bonet
-# @Last modified time: 12-Apr-2018
+# @Last modified time: 11-May-2018
 
 
 import numpy as np
@@ -13,11 +13,11 @@ from matplotlib.cm import get_cmap
 import six
 
 
-__all__ = ["add_right_title", "add_top_title", "add_white_to_cmap",
-           "color_variant", "discrete_cmap_from_colors"]
+__all__ = ['add_right_title', 'add_top_title', 'add_left_title',
+           'add_white_to_cmap', 'color_variant', 'discrete_cmap_from_colors']
 
 
-def add_right_title(ax, title, **kwargs ):
+def add_left_title(ax, title, **kwargs ):
     """
     Add a centered title on right of the selected axis.
     All :py:func:`~matplotlib.Axes.annotate` parameters are
@@ -37,6 +37,30 @@ def add_right_title(ax, title, **kwargs ):
     kwargs.setdefault("xycoords", ax.yaxis.label)
     kwargs.setdefault("textcoords", 'offset points')
     kwargs.setdefault("ha", 'right')
+    kwargs.setdefault("va", 'center')
+
+    ax.annotate(title, **kwargs)
+
+
+def add_right_title(ax, title, **kwargs ):
+    """
+    Add a centered title on left of the selected axis.
+    All :py:func:`~matplotlib.Axes.annotate` parameters are
+    accessible.
+
+    :param axis: Target plot axis.
+    :type axis: :py:class:`~matplotlib.Axes`
+    :param title: Title text to add.
+    :type title: :py:class:`str`
+    """
+
+    if title is None:
+        return
+    kwargs.setdefault("xy", (1, 0.5))
+    kwargs.setdefault("xytext", (5, 0))
+    kwargs.setdefault("xycoords", "axes fraction")
+    kwargs.setdefault("textcoords", 'offset points')
+    kwargs.setdefault("ha", 'left')
     kwargs.setdefault("va", 'center')
 
     ax.annotate(title, **kwargs)

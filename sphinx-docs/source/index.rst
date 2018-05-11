@@ -58,6 +58,9 @@ To see the code or report a bug, please visit the `github repository
    <div class="col-md-3">
    <h3>People</h3>
 
+This library has been developed by members of the `Laboratory of Protein Design and
+Immunoengineering <http://lpdi.epfl.ch>`_. Members have contributed both by coding
+and or requesting new features.
 
 .. raw:: html
 
@@ -65,14 +68,18 @@ To see the code or report a bug, please visit the `github repository
    <div class="col-md-3">
    <h3>Credits</h3>
 
+``rstoolbox`` would not be possible without `pandas <https://pandas.pydata.org/>`_,
+`numpy <http://www.numpy.org/>`_, `matplotlib <https://matplotlib.org/>`_
+   and `seaborn <https://seaborn.pydata.org/>`_ plotting.
+
 .. raw:: html
 
    </div>
    <div class="col-md-3">
    <h3>Source</h3>
 
-As ``rstoolbox`` is `open source <https://github.com/jaumebonet/RosettaSilentToolbox/>`_,
-we welcome :ref:`any collaboration <contributing>` in order to improve it.
+``rstoolbox`` is `open source <https://github.com/jaumebonet/RosettaSilentToolbox/>`_.
+We welcome :ref:`any collaboration <contributing>` in order to improve it.
 
 .. raw:: html
 
@@ -82,7 +89,7 @@ we welcome :ref:`any collaboration <contributing>` in order to improve it.
 
 If you find any problem or unexpected behaviour, let us know
 through our `issue tracker <https://github.com/jaumebonet/RosettaSilentToolbox/issues>`_
-so that we can evaluate it and fix it.
+so that we can evaluate and fix it.
 
 .. raw:: html
 

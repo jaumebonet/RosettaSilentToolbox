@@ -1,18 +1,27 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   19-Feb-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: sequence.py
-# @Last modified by:   bonet
-# @Last modified time: 07-May-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+.. func:: read_fasta
+.. func:: write_fasta
+.. func:: write_clustalw
+.. func:: write_mutant_alignments
+.. func:: read_hmmsearch
+"""
+# Standard Libraries
 import os
 import re
 import gzip
 import bisect
 
+# External Libraries
 import pandas as pd
 
+# This Library
 import rstoolbox.core as core
 import rstoolbox.components as cp
 from rstoolbox.io.rosetta import _gather_file_list
@@ -355,19 +364,24 @@ def read_hmmsearch( filename ):
     data = {'full-e-value': [], 'full-score': [], 'full-bias': [],
             'dom-e-value': [], 'dom-score': [], 'dom-bias': [],
             'dom-exp': [], 'dom-N': [], 'description': []}
-    read = False
+    dat2 = {'description': [], 'score': [], 'bias': [], 'c-Evalue': [],
+            'i-Evalue': [], 'hmmfrom': [], 'hmmto': [], 'alifrom': [],
+            'alito': [], 'envfrom': [], 'envto': [], 'acc': []}
+    nam2 = ''
+    read = 0
+    ali = re.compile('\d+\s[\!\?][\s\S]*')
     fd = open(filename)if not filename.endswith("gz") else gzip.open(filename)
     for line in fd:
         line = line.decode('utf8') if filename.endswith(".gz") else line
         if len(line.strip()) == 0:
             continue
-        if line.strip().startswith('------'):
-            read = True
+        if line.strip().startswith('------') and read != 2:
+            read = 1
             continue
         if line.startswith('Domain annotation for each sequence:'):
-            read = False
-            break
-        if read:
+            read = 2
+            continue
+        if read == 1:
             line = line.strip().split()
             data['full-e-value'].append(float(line[0]))
             data['full-score'].append(float(line[1]))
@@ -378,8 +392,28 @@ def read_hmmsearch( filename ):
             data['dom-exp'].append(float(line[6]))
             data['dom-N'].append(float(line[7]))
             data['description'].append(line[8])
+        if read == 2:
+            if line.startswith('>>'):
+                nam2 = line.split()[1].strip()
+                continue
+            if re.match(ali, line.strip()):
+                dat2['description'].append(nam2)
+                lnp = line.strip().split()
+                dat2['score'].append(float(lnp[2]))
+                dat2['bias'].append(float(lnp[3]))
+                dat2['c-Evalue'].append(float(lnp[4]))
+                dat2['i-Evalue'].append(float(lnp[5]))
+                dat2['hmmfrom'].append(int(lnp[6]))
+                dat2['hmmto'].append(int(lnp[7]))
+                dat2['alifrom'].append(int(lnp[9]))
+                dat2['alito'].append(int(lnp[10]))
+                dat2['envfrom'].append(int(lnp[12]))
+                dat2['envto'].append(int(lnp[13]))
+                dat2['acc'].append(float(lnp[15]))
+                continue
     fd.close()
-    return pd.DataFrame(data)
+    return pd.merge(pd.DataFrame(data), pd.DataFrame(dat2),
+                    on='description', how='outer').fillna(0)
 
 
 def mlcs(strings):
