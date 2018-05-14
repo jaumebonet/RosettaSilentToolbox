@@ -1,13 +1,12 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
-# @Author: Jaume Bonet <bonet>
-# @Date:   12-Apr-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: check_mutants.py
-# @Last modified by:   bonet
-# @Last modified time: 14-May-2018
-
-
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+"""
 # Standard Libraries
 import argparse
 import math
@@ -93,8 +92,8 @@ def main( options ):
 
     # Logo Plot
     logof = options.ofile + "_logo" + "." + options.iformat
-    logo_plot(df, options.seqID, refseq=options.ffile is not None,
-              line_break=50, font_size=int(options.ifont) )
+    lfig, laxes = logo_plot(df, options.seqID, refseq=options.ffile is not None,
+                            line_break=50, font_size=int(options.ifont) )
     plt.tight_layout()
     plt.savefig(logof)
 
@@ -104,16 +103,16 @@ def main( options ):
         chunks = len(df.get_sequence(options.seqID).values[0])
         chunks = int(math.ceil(float(chunks) / 50))
         high_correct = math.ceil(df.shape[0] / 7.0)
-        fig = plt.figure(figsize=(chunks * high_correct * 10, 10))
+        afig = plt.figure(figsize=(chunks * high_correct * 10, 10))
         grid = (chunks, 1)
         ax = []
         for i in range(chunks):
-            ax.append(plt.subplot2grid(grid, (i, 0), fig=fig))
+            ax.append(plt.subplot2grid(grid, (i, 0), fig=afig))
         plot_alignment( df, options.seqID, ax, line_break=50, matrix=None )
         plt.savefig(alimgf)
 
-    return fig
+    return lfig, afig
 
 
 if __name__ == '__main__':
-    fig = main( get_options() )
+    lfig, afig = main( get_options() )
