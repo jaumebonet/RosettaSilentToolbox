@@ -116,40 +116,60 @@
 <dl class="method">
 <dt id="rstoolbox.components.FragmentFrame.add_quality_measure">
 <code class="descclassname">FragmentFrame.</code><code class="descname">add_quality_measure</code><span class="sig-paren">(</span><em>filename</em>, <em>pdbfile=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.FragmentFrame.add_quality_measure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add to the data the RMSD quality measure provided
-by the r_fraq_qual app from Rosetta.</p>
+<dd><p>Add RMSD quality measure to the fragment data.</p>
+<p>The RMSD quality measurement is performed by the <code class="docutils literal notranslate"><span class="pre">r_fraq_qual</span></code> application
+from <em>Rosetta</em>. It can be called as:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>r_fraq_qual.linuxgccrelease -in:file:native &lt;pdb&gt; -f &lt;fragfile&gt; -out:qual &lt;output&gt;
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Name containing the quality measure.
-If filename is None, it assumes that there is RMSD quality
-yet, so it’ll run it as long as the <a class="reference internal" href="../rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>
-has a source file. Standart output will be the name of the source
-file with the extension “.qual”. If this file exists, it will be
-automatically picked.</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Name containing the quality measure. If <code class="docutils literal notranslate"><span class="pre">filename</span></code> is None,
+it assumes that RMSD quality has not been calculated yet, so it’ll run the
+<code class="docutils literal notranslate"><span class="pre">r_fraq_qual</span></code> application as long as the <a class="reference internal" href="../rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>
+has a <code class="docutils literal notranslate"><span class="pre">source_file</span></code>. Standart output will be the name of the source
+file with the extension “.qual”. If a file with this naming schema exists,
+it will be automatically picked. To be able to run <em>Rosetta</em> it will need
+a <code class="docutils literal notranslate"><span class="pre">pdbfile</span></code>.</li>
 <li><strong>pdbfile</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – In case the quality has to be calculated. Provide the
-PDB over which to calculate it. Default is None.</li>
+PDB over which to calculate it. Default is <a class="reference external" href="https://docs.python.org/2/library/constants.html#None" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raise:</th><td class="field-body"><p class="first">IOError if filename does not exist.</p>
-</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">IOError:</th><td class="field-body">if <code class="docutils literal notranslate"><span class="pre">filename</span></code> does not exist.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body"><p class="first">IOError if pdbfile is provided and does not exist.</p>
-</td>
+<tr class="field-even field"><th class="field-name">IOError:</th><td class="field-body">if <code class="docutils literal notranslate"><span class="pre">pdbfile</span></code> is provided and does not exist.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raise:</th><td class="field-body"><p class="first">IOError if the rosetta executable is not found.
-Depends on rosetta.path and rosetta.compilation</p>
-</td>
+<tr class="field-odd field"><th class="field-name">IOError:</th><td class="field-body">if the <em>Rosetta</em> executable is not found.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body"><p class="first last">AttributeError if filename is None and there is no attached
-source file to the object.</p>
+<tr class="field-even field"><th class="field-name">AttributeError:</th><td class="field-body">if <code class="docutils literal notranslate"><span class="pre">filename</span></code> is <a class="reference external" href="https://docs.python.org/2/library/constants.html#None" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> and there is no attached
+<code class="docutils literal notranslate"><span class="pre">source_file</span></code> to the object.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">ValueError:</th><td class="field-body">if no rmsd data is assigned. Might indicate that wrong data is
+trying to be assigned.</td>
+</tr>
+</tbody>
+</table>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Depends on <a class="reference internal" href="../../tutorials/options.html#options"><span class="std std-ref">rosetta.path</span></a> and <a class="reference internal" href="../../tutorials/options.html#options"><span class="std std-ref">rosetta.compilation</span></a>,
+if the quality file is not provided.</p>
+</div>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">Some configurations of this function require a local installation of <strong>Rosetta</strong>.</p>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>

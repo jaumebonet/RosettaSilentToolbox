@@ -1,16 +1,28 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   19-Feb-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: plot.py
-# @Last modified by:   bonet
-# @Last modified time: 11-May-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+.. func:: add_left_title
+.. func:: add_right_title
+.. func:: add_top_title
+.. func:: add_white_to_cmap
+.. func:: color_variant
+.. func:: discrete_cmap_from_colors
+"""
+# Standard Libraries
+
+# External Libraries
 import numpy as np
 import seaborn as sns
 from matplotlib import colors
 from matplotlib.cm import get_cmap
 import six
+
+# This Library
 
 
 __all__ = ['add_right_title', 'add_top_title', 'add_left_title',
@@ -18,15 +30,14 @@ __all__ = ['add_right_title', 'add_top_title', 'add_left_title',
 
 
 def add_left_title(ax, title, **kwargs ):
-    """
-    Add a centered title on right of the selected axis.
-    All :py:func:`~matplotlib.Axes.annotate` parameters are
+    """Add a centered title on the left of the selected axis.
+
+    All :func:`~matplotlib.Axes.annotate` parameters are
     accessible.
 
     :param axis: Target plot axis.
-    :type axis: :py:class:`~matplotlib.Axes`
-    :param title: Title text to add.
-    :type title: :py:class:`str`
+    :type axis: :class:`~matplotlib.Axes`
+    :param str title: Title text to add.
     """
 
     if title is None:
@@ -43,15 +54,14 @@ def add_left_title(ax, title, **kwargs ):
 
 
 def add_right_title(ax, title, **kwargs ):
-    """
-    Add a centered title on left of the selected axis.
-    All :py:func:`~matplotlib.Axes.annotate` parameters are
+    """Add a centered title on rigth of the selected axis.
+
+    All :func:`~matplotlib.Axes.annotate` parameters are
     accessible.
 
     :param axis: Target plot axis.
-    :type axis: :py:class:`~matplotlib.Axes`
-    :param title: Title text to add.
-    :type title: :py:class:`str`
+    :type axis: :class:`~matplotlib.Axes`
+    :param str title: Title text to add.
     """
 
     if title is None:
@@ -67,15 +77,14 @@ def add_right_title(ax, title, **kwargs ):
 
 
 def add_top_title( ax, title, **kwargs ):
-    """
-    Add a centered title on top of the selected axis.
-    All :py:func:`~matplotlib.Axes.annotate` parameters are
+    """Add a centered title on top of the selected axis.
+
+    All :func:`~matplotlib.Axes.annotate` parameters are
     accessible.
 
     :param axis: Target plot axis.
     :type axis: :py:class:`~matplotlib.Axes`
-    :param title: Title text to add.
-    :type title: :py:class:`str`
+    :param str title: Title text to add.
     """
     if title is None:
         return
@@ -91,21 +100,19 @@ def add_top_title( ax, title, **kwargs ):
 
 
 def add_white_to_cmap( color=None, cmap=None, n_colors=10 ):
-    """
-    Generate a new colormap with white as first instance.
+    """Generate a new colormap with white as first instance.
 
     :param color: Color identifier.
     :type color: Union[:class:`str`, :class:`int`]
     :param cmap: Cmap identifier. Incompatible with color.
     :type cmap: Union[:class:`str`, :class:`~matplotlib.colors.Colormap`]
-    :param n_colors: Number discret colors to generate from.
-    :type n_colors: :class:`int`
+    :param int n_colors: Number discret colors to generate from.
 
     :return: :class:`~matplotlib.colors.Colormap`
 
     :raises:
-        :AttributeError: If both `color` and `cmap` are specified or if
-            none of them are
+        :AttributeError: If both ``color`` and ``cmap`` are specified or if
+            none of them are.
     """
     if (color is None and cmap is None) or (color is not None and cmap is not None):
         raise AttributeError("Specify either color or cmap.")
@@ -123,14 +130,14 @@ def add_white_to_cmap( color=None, cmap=None, n_colors=10 ):
 
 
 def color_variant(color, brightness_offset=1):
-    """
-    Shift a color towards more darker (negative `brightness_offset`) or more
-    lighter (positive `brightness_offset`).
+    """Make a color darker or lighter.
+
+    Shift a color towards more darker (negative ``brightness_offset``) or more
+    lighter (positive ``brightness_offset``).
 
     :param color: Input color, as an RGB tuple or in hex code.
     :type color: Union[:py:class:`str`, :py:class:`tuple`]
-    :param brightness_offset: Level of offset from the initial color.
-    :type brightness_offset: :py:class:`int`
+    :param int brightness_offset: Level of offset from the initial color.
 
     :return: :class:`str` - Color in hex format.
     """
@@ -151,8 +158,7 @@ def color_variant(color, brightness_offset=1):
 
 
 def discrete_cmap_from_colors( color_list ):
-    """
-    Make a discrete :class:`~matplotlib.colors.Colormap` out of a list of colors.
+    """Make a discrete :class:`~matplotlib.colors.Colormap` out of a list of colors.
 
     :param color_list: Colors from which to do the map.
     :type color_list: :func:`list` of rgb colors.

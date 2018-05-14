@@ -117,14 +117,17 @@
 <dt id="rstoolbox.components.FragmentFrame.make_sequence_matrix">
 <code class="descclassname">FragmentFrame.</code><code class="descname">make_sequence_matrix</code><span class="sig-paren">(</span><em>frequency=False</em>, <em>round=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.FragmentFrame.make_sequence_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a PSSM-like matrix from the fragments.</p>
+<p>The matrix will contain, for each position the relative enrichment of each
+residue type. By default, this will be:</p>
+<p><span class="math notranslate">\(logodd(f(ni)/f(bi))\)</span></p>
+<p>unless <code class="docutils literal notranslate"><span class="pre">frequency</span></code> is requested.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>frequency</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Return the matrix with frequency values? Default will
-return the values as <span class="math notranslate">\(logodd(f(ni)/f(bi))\)</span>.</li>
-<li><strong>round</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Round-floor the values.</li>
+<li><strong>frequency</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Return the matrix with frequency values..</li>
+<li><strong>round</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Round-floor the values.</li>
 </ul>
 </td>
 </tr>

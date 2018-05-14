@@ -116,11 +116,34 @@
 <dl class="class">
 <dt id="rstoolbox.components.FragmentFrame">
 <em class="property">class </em><code class="descclassname">rstoolbox.components.</code><code class="descname">FragmentFrame</code><span class="sig-paren">(</span><em>*args</em>, <em>**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.FragmentFrame" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> extends <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>
-adding some functionalities in order to facilitate comparissons.
-Filled through the functions provided through this library, each
+<dd><p>Data container for Fragment data.</p>
+<p>Extends <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> adding some functionalities in order
+to facilitate analysis, plotting and comparisson.</p>
+<p>Filled through the functions provided through this library, each
 row represents a position of a fragment, while columns describe the
 properties.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="rstoolbox.io.parse_rosetta_fragments.html#rstoolbox.io.parse_rosetta_fragments" title="rstoolbox.io.parse_rosetta_fragments"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_rosetta_fragments()</span></code></a>
+<a class="reference internal" href="rstoolbox.plot.plot_fragments.html#rstoolbox.plot.plot_fragments" title="rstoolbox.plot.plot_fragments"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_fragments()</span></code></a>
+<a class="reference internal" href="rstoolbox.plot.plot_fragment_profiles.html#rstoolbox.plot.plot_fragment_profiles" title="rstoolbox.plot.plot_fragment_profiles"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_fragment_profiles()</span></code></a></p>
+</div>
+<p>. rubric:: Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_fragments</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_fragments</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/wauto.200.3mers.gz&quot;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="go">    pdb  frame  neighbors  neighbor  position  size aa sse      phi      psi    omega</span>
+<span class="go">0  2hox  1      200        1         1         3     S  L  -154.974  117.297  176.201</span>
+<span class="go">1  2hox  1      200        1         2         3     E  E  -133.145  153.460  177.064</span>
+<span class="go">2  2hox  1      200        1         3         3     Y  E  -77.588   132.516  177.184</span>
+<span class="go">3  1ihu  1      200        2         1         3     I  L  -60.621   119.545 -179.669</span>
+<span class="go">4  1ihu  1      200        2         2         3     Q  E  -130.878  145.002 -179.783</span>
+</pre></div>
+</div>
 <p class="rubric">Methods</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -129,7 +152,7 @@ properties.</p>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.add_quality_measure.html#rstoolbox.components.FragmentFrame.add_quality_measure" title="rstoolbox.components.FragmentFrame.add_quality_measure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_quality_measure</span></code></a>(filename[,&nbsp;pdbfile])</td>
-<td>Add to the data the RMSD quality measure provided by the r_fraq_qual app from Rosetta.</td>
+<td>Add RMSD quality measure to the fragment data.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.add_source_file.html#rstoolbox.components.FragmentFrame.add_source_file" title="rstoolbox.components.FragmentFrame.add_source_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_source_file</span></code></a>(file)</td>
 <td>Adds a source file to the <a class="reference internal" href="#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>.</td>
@@ -144,10 +167,10 @@ properties.</p>
 <td>Generate a PSSM-like matrix from the fragments.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.quick_consensus_sequence.html#rstoolbox.components.FragmentFrame.quick_consensus_sequence" title="rstoolbox.components.FragmentFrame.quick_consensus_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quick_consensus_sequence</span></code></a>()</td>
-<td>Generate a consensus sequence as the most common representative for each position.</td>
+<td>Consensus sequence with the highest representative per position.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.select_quantile.html#rstoolbox.components.FragmentFrame.select_quantile" title="rstoolbox.components.FragmentFrame.select_quantile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_quantile</span></code></a>([quantile])</td>
-<td>Returns only the fragments under the rmsd threshold of the specified quantile.</td>
+<td>Returns fragments under the rmsd threshold of the specified uantile.</td>
 </tr>
 </tbody>
 </table>

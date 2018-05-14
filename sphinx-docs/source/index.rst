@@ -70,7 +70,7 @@ and or requesting new features.
 
 ``rstoolbox`` would not be possible without `pandas <https://pandas.pydata.org/>`_,
 `numpy <http://www.numpy.org/>`_, `matplotlib <https://matplotlib.org/>`_
-   and `seaborn <https://seaborn.pydata.org/>`_ plotting.
+and `seaborn <https://seaborn.pydata.org/>`_ plotting.
 
 .. raw:: html
 
