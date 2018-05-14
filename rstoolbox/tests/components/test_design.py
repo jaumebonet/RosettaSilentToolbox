@@ -1,19 +1,22 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   05-Mar-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: test_design.py
-# @Last modified by:   bonet
-# @Last modified time: 07-May-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
-
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+"""
+# Standard Libraries
 import os
 import copy
 
+# External Libraries
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import pytest
 
+# This Library
 import rstoolbox.io as ri
 import rstoolbox.components as rc
 import rstoolbox.plot as rp

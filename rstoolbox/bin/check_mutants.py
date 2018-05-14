@@ -5,7 +5,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: check_mutants.py
 # @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
+# @Last modified time: 14-May-2018
 
 
 # Standard Libraries
@@ -112,6 +112,8 @@ def main( options ):
         plot_alignment( df, options.seqID, ax, line_break=50, matrix=None )
         plt.savefig(alimgf)
 
+    return fig
+
 
 if __name__ == '__main__':
-    main( get_options() )
+    fig = main( get_options() )

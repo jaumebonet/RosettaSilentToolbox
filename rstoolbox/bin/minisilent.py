@@ -1,16 +1,18 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
-# @Author: Jaume Bonet <bonet>
-# @Date:   12-Oct-2017
-# @Email:  jaume.bonet@gmail.com
-# @Filename: minisilent.py
-# @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
-
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+"""
 # Standard Libraries
 import argparse
 import gzip
 import os
+
+# External Libraries
 
 # This Library
 from rstoolbox.io import open_rosetta_file
@@ -45,10 +47,11 @@ def get_options( *args, **kwds ):
 
 def main( options ):
     ofile = options.ofile
-    fd = gzip.open( ofile, "wb" ) if ofile.endswith(".gz") else open( ofile, "w" )
+    is_gz = ofile.endswith(".gz")
+    fd = gzip.open( ofile, "wb" ) if is_gz else open( ofile, "w" )
     infile = options.ifile if options.ifile is not None else options.ifiles
     for line, _, _, _ in open_rosetta_file( infile, options.ifile is None, check_symmetry=False ):
-        fd.write( line )
+        fd.write( line.encode('utf-8') if is_gz else line )
 
 
 if __name__ == '__main__':
