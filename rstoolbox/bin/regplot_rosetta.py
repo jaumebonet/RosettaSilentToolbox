@@ -1,12 +1,12 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
-# @Author: Jaume Bonet <bonet>
-# @Date:   23-Jan-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: regplot_rosetta.py
-# @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
-
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+"""
 # Standard Libraries
 import argparse
 
@@ -55,7 +55,7 @@ def get_options( *args, **kwds ):
     parser.add_argument('-out:silent', dest='silent', action='store_true',
                         help='If True, do not plot on screen', default=False)
     parser.add_argument('-out:file', dest='ofile', action='store',
-                        help='Output minisilent', default=None)
+                        help='Output image file', default=None)
 
     options = parser.parse_args()
 
@@ -103,7 +103,8 @@ def main( options ):
     # Show on screen
     if not options.silent:
         plt.show()
+    return fig
 
 
 if __name__ == '__main__':
-    main( get_options() )
+    fig = main( get_options() )

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
-# @Author: Jaume Bonet <bonet>
-# @Date:   17-Jan-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: plot_fragments_rmsd.py
-# @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
-
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+"""
 # Standard Libraries
 import argparse
 import os
@@ -106,7 +106,8 @@ def main( options ):
     # Show on screen
     if not options.silent:
         plt.show()
+    return fig
 
 
 if __name__ == '__main__':
-    main( get_options() )
+    fig = main( get_options() )
