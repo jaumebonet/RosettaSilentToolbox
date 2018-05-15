@@ -1,14 +1,21 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   11-May-2015
-# @Email:  jaume.bonet@gmail.com
-# @Filename: SimilarityMatrix.py
-# @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+.. class:: SimilarityMatrix
+"""
+# Standard Libraries
 from collections import deque
 import os
 import string
+
+# External Libraries
+
+# This Library
 
 
 class SimilarityMatrix(object):

@@ -8,6 +8,7 @@
 
 .. func:: positional_structural_count
 .. func:: positional_structural_identity
+.. func:: secondary_structure_percentage
 """
 
 # Standard Libraries

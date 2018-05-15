@@ -54,12 +54,12 @@ class TestExecutables( object ):
     def test_exe_rename_gz(self):
         options = Namespace(ifile=self.silent1, prefix='test', force=False,
                             ofile=os.path.join(self.tmpdir, "renamed.gz"))
-        minisilent_main(options)
+        rename_main(options)
 
     def test_exe_rename(self):
         options = Namespace(ifile=self.silent1, prefix='test', force=False,
                             ofile=os.path.join(self.tmpdir, "renamed.sc"))
-        minisilent_main(options)
+        rename_main(options)
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_exe_check_mutants_logo.png')

@@ -6,6 +6,11 @@
 .. affiliation::
     Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
     Bruno Correia <bruno.correia@epfl.ch>
+
+Transform fully-fledged silent file(s) into portable minisilent
+by storing only the content that can be processed by the ``rstoolbox``.
+
+It is very convenient to store mid-step data in git repositories.
 """
 # Standard Libraries
 import argparse
@@ -18,19 +23,25 @@ import os
 from rstoolbox.io import open_rosetta_file
 
 
-def get_options( *args, **kwds ):
-
+def make_parser( *args, **kwds ):
     parser = argparse.ArgumentParser(
-        description="Transform fully-fledged silent file(s) into portable minisilent")
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument('-in:file', dest='ifile', action='store',
-                        help='Input silent file', default=None)
+                        help='Input silent file (single entry).', default=None)
     parser.add_argument('-in:files', dest='ifiles', action='store',
-                        help='Prefix of input silent files', default=None)
+                        help='Prefix of input silent files (multiple files).'
+                        'Incompatible with ``-in:file``.', default=None)
     parser.add_argument('-out:file', dest='ofile', action='store',
-                        help='Output minisilent', default=None)
+                        help='Output name for minisilent (can be gzipped).',
+                        default=None)
     parser.add_argument('-overwrite', dest='force', action='store_true',
-                        help='Allow overwrite', default=False)
+                        help='Allows overwriting existing file.', default=False)
+    return parser
+
+
+def get_options( parser ):
 
     options = parser.parse_args()
 
@@ -55,4 +66,4 @@ def main( options ):
 
 
 if __name__ == '__main__':
-    main( get_options() )
+    main( get_options( make_parser() ) )

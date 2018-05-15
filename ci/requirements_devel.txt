@@ -9,3 +9,4 @@ codacy-coverage
 
 sphinx>=1.7
 sphinx_bootstrap_theme>=0.6
+sphinx-argparse>=0.2.2

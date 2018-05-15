@@ -6,6 +6,9 @@
 .. affiliation::
     Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
     Bruno Correia <bruno.correia@epfl.ch>
+
+Renames decoys with a new prefix identifier and the same numbering
+schema that Rosetta uses.
 """
 # Standard Libraries
 import argparse
@@ -18,19 +21,23 @@ import os
 from rstoolbox.io import parse_rosetta_file
 
 
-def get_options(*args, **kwds):
-
+def make_parser( *args, **kwds ):
     parser = argparse.ArgumentParser(
-        description="Rename the decoys with a new rule in the silent file ")
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument('-in:file', dest='ifile', action='store',
-                        help='Input silent file', default=None )
+                        help='Input silent file.', default=None )
     parser.add_argument('-prefix', dest='prefix', action='store',
-                        help='Prefix for the new naming schema', default=None )
+                        help='Prefix for the new naming schema.', default=None )
     parser.add_argument('-out:file', dest='ofile', action='store',
-                        help='Output silent file', default=None )
+                        help='Output silent file.', default=None )
     parser.add_argument('-overwrite', dest='force', action='store_true',
-                        help='Allow overwrite', default=False)
+                        help='Allow overwrite if output file exists.', default=False)
+    return parser
+
+
+def get_options( parser ):
 
     options = parser.parse_args()
 
@@ -56,8 +63,12 @@ def main( options ):
     names["new"]   = names.apply( lambda row: new_names(row["count"], options.prefix), axis=1 )
 
     # Load the silentfile and change names
-    fd   = gzip.open( options.ifile ) if options.ifile.endswith(".gz") else open( options.ifile )
-    data = "".join(fd.readlines())
+    is_gz = options.ifile.endswith(".gz")
+    fd   = gzip.open( options.ifile ) if is_gz else open( options.ifile )
+    if not is_gz:
+        data = "".join(fd.readlines())
+    else:
+        data = "".join([_.decode('utf8') for _ in fd.readlines()])
     fd.close()
 
     for index, row in names.iterrows():
@@ -71,4 +82,4 @@ def main( options ):
 
 
 if __name__ == '__main__':
-    main( get_options() )
+    main( get_options( make_parser() ) )

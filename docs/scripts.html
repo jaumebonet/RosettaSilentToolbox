@@ -81,7 +81,29 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Available direct executables</a></li>
+<li><a class="reference internal" href="#">Available direct executables</a><ul>
+<li><a class="reference internal" href="#minisilent-py">minisilent.py</a><ul>
+<li><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rename-decoys-py">rename_decoys.py</a><ul>
+<li><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#regplot-rosetta-py">regplot_rosetta.py</a><ul>
+<li><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#plot-fragments-rmsd-py">plot_fragments_rmsd.py</a><ul>
+<li><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#check-mutants-py">check_mutants.py</a><ul>
+<li><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -113,7 +135,252 @@
       
   <div class="section" id="available-direct-executables">
 <span id="scripts"></span><h1>Available direct executables<a class="headerlink" href="#available-direct-executables" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="minisilent-py">
+<h2>minisilent.py<a class="headerlink" href="#minisilent-py" title="Permalink to this headline">¶</a></h2>
+<p><p>Transform fully-fledged silent file(s) into portable minisilent
+by storing only the content that can be processed by the <code class="docutils literal notranslate"><span class="pre">rstoolbox</span></code>.</p>
+<p>It is very convenient to store mid-step data in git repositories.</p>
+</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">minisilent</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">file</span> <span class="n">IFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">files</span> <span class="n">IFILES</span><span class="p">]</span>
+                     <span class="p">[</span><span class="o">-</span><span class="n">out</span><span class="p">:</span><span class="n">file</span> <span class="n">OFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">overwrite</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-in:file</kbd></td>
+<td>Input silent file (single entry).</td></tr>
+<tr><td class="option-group">
+<kbd>-in:files</kbd></td>
+<td>Prefix of input silent files (multiple files).Incompatible with <code class="docutils literal notranslate"><span class="pre">-in:file</span></code>.</td></tr>
+<tr><td class="option-group">
+<kbd>-out:file</kbd></td>
+<td>Output name for minisilent (can be gzipped).</td></tr>
+<tr><td class="option-group">
+<kbd>-overwrite</kbd></td>
+<td>Allows overwriting existing file.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="rename-decoys-py">
+<h2>rename_decoys.py<a class="headerlink" href="#rename-decoys-py" title="Permalink to this headline">¶</a></h2>
+<p>Renames decoys with a new prefix identifier and the same numbering
+schema that Rosetta uses.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">rename_decoys</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">file</span> <span class="n">IFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">prefix</span> <span class="n">PREFIX</span><span class="p">]</span>
+                        <span class="p">[</span><span class="o">-</span><span class="n">out</span><span class="p">:</span><span class="n">file</span> <span class="n">OFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">overwrite</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-in:file</kbd></td>
+<td>Input silent file.</td></tr>
+<tr><td class="option-group">
+<kbd>-prefix</kbd></td>
+<td>Prefix for the new naming schema.</td></tr>
+<tr><td class="option-group">
+<kbd>-out:file</kbd></td>
+<td>Output silent file.</td></tr>
+<tr><td class="option-group">
+<kbd>-overwrite</kbd></td>
+<td>Allow overwrite if output file exists.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="regplot-rosetta-py">
+<h2>regplot_rosetta.py<a class="headerlink" href="#regplot-rosetta-py" title="Permalink to this headline">¶</a></h2>
+<p>Plot any two variables from the Rosetta Silent/Score file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">regplot_rosetta</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">file</span> <span class="n">IFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">files</span> <span class="n">IFILES</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">y</span> <span class="n">Y</span><span class="p">]</span>
+                          <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">x</span> <span class="n">X</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">plot</span><span class="p">:</span><span class="n">title</span> <span class="n">TITLE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">plot</span><span class="p">:</span><span class="n">color</span> <span class="n">COLOR</span><span class="p">]</span>
+                          <span class="p">[</span><span class="o">-</span><span class="n">plot</span><span class="p">:</span><span class="n">ylab</span> <span class="n">YLAB</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">plot</span><span class="p">:</span><span class="n">xlab</span> <span class="n">XLAB</span><span class="p">]</span>
+                          <span class="p">[</span><span class="o">-</span><span class="n">plot</span><span class="p">:</span><span class="n">ylim</span> <span class="n">YLIM</span> <span class="n">YLIM</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">plot</span><span class="p">:</span><span class="n">xlim</span> <span class="n">XLIM</span> <span class="n">XLIM</span><span class="p">]</span>
+                          <span class="p">[</span><span class="o">-</span><span class="n">plot</span><span class="p">:</span><span class="n">fsize</span> <span class="n">FSIZE</span> <span class="n">FSIZE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">out</span><span class="p">:</span><span class="n">silent</span><span class="p">]</span>
+                          <span class="p">[</span><span class="o">-</span><span class="n">out</span><span class="p">:</span><span class="n">file</span> <span class="n">OFILE</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-in:file</kbd></td>
+<td>Input silent file (single file)</td></tr>
+<tr><td class="option-group">
+<kbd>-in:files</kbd></td>
+<td>Prefix of input silent files (multiple files). Incompatible with <code class="docutils literal notranslate"><span class="pre">-in:file</span></code>.</td></tr>
+<tr><td class="option-group">
+<kbd>-in:y</kbd></td>
+<td>Name of the score for Y axis.</td></tr>
+<tr><td class="option-group">
+<kbd>-in:x</kbd></td>
+<td>Name of the score for X axis.</td></tr>
+<tr><td class="option-group">
+<kbd>-plot:title</kbd></td>
+<td>Title of the plot.</td></tr>
+<tr><td class="option-group">
+<kbd>-plot:color</kbd></td>
+<td><p class="first">Color of the plot. If number, it refers to the seaborn color palette.</p>
+<p class="last">Default: 0</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-plot:ylab</kbd></td>
+<td>Label for Y axis.</td></tr>
+<tr><td class="option-group">
+<kbd>-plot:xlab</kbd></td>
+<td>Label for X axis.</td></tr>
+<tr><td class="option-group">
+<kbd>-plot:ylim</kbd></td>
+<td><p class="first">Range for Y axis.</p>
+<p class="last">Default: [None, None]</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-plot:xlim</kbd></td>
+<td><p class="first">Range for X axis.</p>
+<p class="last">Default: [None, None]</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-plot:fsize</kbd></td>
+<td><p class="first">Size of the figure.</p>
+<p class="last">Default: [None, None]</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-out:silent</kbd></td>
+<td>If True, do not plot on screen.</td></tr>
+<tr><td class="option-group">
+<kbd>-out:file</kbd></td>
+<td>Output image file. If None, no file is created.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="plot-fragments-rmsd-py">
+<h2>plot_fragments_rmsd.py<a class="headerlink" href="#plot-fragments-rmsd-py" title="Permalink to this headline">¶</a></h2>
+<p><p>Generate a plot for fragment RMSD evaluation. Requires the output from the
+<code class="docutils literal notranslate"><span class="pre">r_fraq_qual</span></code> application in <strong>Rosetta</strong>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Depends on <a class="reference internal" href="tutorials/options.html#options"><span class="std std-ref">rosetta.path</span></a> and <a class="reference internal" href="tutorials/options.html#options"><span class="std std-ref">rosetta.compilation</span></a>,
+if the quality file is not provided.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="generated/FragmentFrame/rstoolbox.components.FragmentFrame.add_quality_measure.html#rstoolbox.components.FragmentFrame.add_quality_measure" title="rstoolbox.components.FragmentFrame.add_quality_measure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FragmentFrame.add_quality_measure()</span></code></a>.</p>
+</div>
+</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">plot_fragments_rmsd</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">frag</span><span class="p">:</span><span class="n">small</span> <span class="n">FSMALL</span><span class="p">]</span>
+                              <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">qual</span><span class="p">:</span><span class="n">small</span> <span class="n">QSMALL</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">frag</span><span class="p">:</span><span class="n">large</span> <span class="n">FLARGE</span><span class="p">]</span>
+                              <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">qual</span><span class="p">:</span><span class="n">large</span> <span class="n">QLARGE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">pdb</span> <span class="n">PDB</span><span class="p">]</span>
+                              <span class="p">[</span><span class="o">-</span><span class="n">out</span><span class="p">:</span><span class="n">silent</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">out</span><span class="p">:</span><span class="nb">format</span> <span class="n">FORMAT</span><span class="p">]</span>
+                              <span class="p">[</span><span class="o">-</span><span class="n">out</span><span class="p">:</span><span class="n">file</span> <span class="n">OFILE</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-in:frag:small</kbd></td>
+<td>Name of the small fragments file.</td></tr>
+<tr><td class="option-group">
+<kbd>-in:qual:small</kbd></td>
+<td>Name of the small fragments quality file.</td></tr>
+<tr><td class="option-group">
+<kbd>-in:frag:large</kbd></td>
+<td>Name of the large fragments file.</td></tr>
+<tr><td class="option-group">
+<kbd>-in:qual:large</kbd></td>
+<td>Name of the large fragments quality file.</td></tr>
+<tr><td class="option-group">
+<kbd>-in:pdb</kbd></td>
+<td>PDB file. If quality files are not provided, this input is needed so that <code class="docutils literal notranslate"><span class="pre">r_fraq_qual</span></code> can be executed.</td></tr>
+<tr><td class="option-group">
+<kbd>-out:silent</kbd></td>
+<td>If True, do not plot on screen.</td></tr>
+<tr><td class="option-group">
+<kbd>-out:format</kbd></td>
+<td><p class="first">Make plot vertical (v) or horizontal (h).</p>
+<p class="last">Default: “h”</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-out:file</kbd></td>
+<td>Output image file (.png/.svg). If None, no image is created.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="check-mutants-py">
+<h2>check_mutants.py<a class="headerlink" href="#check-mutants-py" title="Permalink to this headline">¶</a></h2>
+<p><p>Check the sequences in the silent files. Creates logo plot and multiple
+sequence alignment both in text and image format.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="generated/rstoolbox.plot.logo_plot.html#rstoolbox.plot.logo_plot" title="rstoolbox.plot.logo_plot"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot.logo_plot()</span></code></a>
+<a class="reference internal" href="generated/rstoolbox.plot.plot_alignment.html#rstoolbox.plot.plot_alignment" title="rstoolbox.plot.plot_alignment"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot.plot_alignment()</span></code></a>
+<a class="reference internal" href="generated/rstoolbox.io.write_clustalw.html#rstoolbox.io.write_clustalw" title="rstoolbox.io.write_clustalw"><code class="xref py py-func docutils literal notranslate"><span class="pre">io.write_clustalw()</span></code></a></p>
+</div>
+</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">check_mutants</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">file</span> <span class="n">IFILE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">files</span> <span class="n">IFILES</span><span class="p">]</span>
+                        <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">fasta</span> <span class="n">IFASTA</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">wtfasta</span> <span class="n">FFILE</span><span class="p">]</span>
+                        <span class="p">[</span><span class="o">-</span><span class="ow">in</span><span class="p">:</span><span class="n">seqID</span> <span class="n">SEQID</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">out</span><span class="p">:</span><span class="n">prefix</span> <span class="n">OFILE</span><span class="p">]</span>
+                        <span class="p">[</span><span class="o">-</span><span class="n">out</span><span class="p">:</span><span class="nb">format</span> <span class="p">{</span><span class="n">png</span><span class="p">,</span><span class="n">svg</span><span class="p">}]</span> <span class="p">[</span><span class="o">-</span><span class="n">out</span><span class="p">:</span><span class="n">font</span> <span class="n">IFONT</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="Named Arguments">
+<h3>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this headline">¶</a></h3>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd>-in:file</kbd></td>
+<td>Input silent file (single file).</td></tr>
+<tr><td class="option-group">
+<kbd>-in:files</kbd></td>
+<td>Prefix of input silent files (multiple files).Incompatible with <code class="docutils literal notranslate"><span class="pre">-in:file</span></code>.</td></tr>
+<tr><td class="option-group">
+<kbd>-in:fasta</kbd></td>
+<td>Input designs in fasta format.Incompatible with <code class="docutils literal notranslate"><span class="pre">-in:file</span></code> or <code class="docutils literal notranslate"><span class="pre">-in:files</span></code>.</td></tr>
+<tr><td class="option-group">
+<kbd>-in:wtfasta</kbd></td>
+<td>Rerefence sequence (single FASTA).</td></tr>
+<tr><td class="option-group">
+<kbd>-in:seqID</kbd></td>
+<td><p class="first">Sequence chain identifier.</p>
+<p class="last">Default: “A”</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-out:prefix</kbd></td>
+<td>Prefix for the outputs.</td></tr>
+<tr><td class="option-group">
+<kbd>-out:format</kbd></td>
+<td><p class="first">Possible choices: png, svg</p>
+<p>Ouptut images format (png/svg).</p>
+<p class="last">Default: “png”</p>
+</td></tr>
+<tr><td class="option-group">
+<kbd>-out:font</kbd></td>
+<td><p class="first">Font size for logo plot (might need manual adjustment).</p>
+<p class="last">Default: 35</p>
+</td></tr>
+</tbody>
+</table>
+</div>
 <span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>

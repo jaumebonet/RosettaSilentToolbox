@@ -6,6 +6,8 @@
 .. affiliation::
     Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
     Bruno Correia <bruno.correia@epfl.ch>
+
+Plot any two variables from the Rosetta Silent/Score file.
 """
 # Standard Libraries
 import argparse
@@ -25,37 +27,44 @@ mpl.rcParams['svg.fonttype'] = 'none'
 sns.set_style("whitegrid")
 
 
-def get_options( *args, **kwds ):
-
+def make_parser( *args, **kwds ):
     parser = argparse.ArgumentParser(
-        description="Plot two variables from the Rosetta Silent/Score file.")
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument('-in:file', dest='ifile', action='store',
-                        help='Input silent file', default=None)
+                        help='Input silent file (single file)', default=None)
     parser.add_argument('-in:files', dest='ifiles', action='store',
-                        help='Prefix of input silent files', default=None)
+                        help='Prefix of input silent files (multiple files). '
+                        'Incompatible with ``-in:file``.', default=None)
     parser.add_argument('-in:y', dest='y', action='store',
-                        help='Name of the score for Y axis', default=None)
+                        help='Name of the score for Y axis.', default=None)
     parser.add_argument('-in:x', dest='x', action='store',
-                        help='Name of the score for X axis', default=None)
+                        help='Name of the score for X axis.', default=None)
     parser.add_argument('-plot:title', dest='title', action='store',
-                        help='Title of the plot', default=None)
+                        help='Title of the plot.', default=None)
     parser.add_argument('-plot:color', dest='color', action='store',
-                        help='Color of the plot', default=0  )
+                        help='Color of the plot. If number, it refers to '
+                        'the seaborn color palette.', default=0  )
     parser.add_argument('-plot:ylab', dest='ylab', action='store',
-                        help='Label for Y axis', default=None)
+                        help='Label for Y axis.', default=None)
     parser.add_argument('-plot:xlab', dest='xlab', action='store',
-                        help='Label for X axis', default=None)
+                        help='Label for X axis.', default=None)
     parser.add_argument('-plot:ylim', dest='ylim', action='store',
-                        help='Range for Y axis', nargs=2, default=[None, None])
+                        help='Range for Y axis.', nargs=2, default=[None, None])
     parser.add_argument('-plot:xlim', dest='xlim', action='store',
-                        help='Range for X axis', nargs=2,  default=[None, None])
+                        help='Range for X axis.', nargs=2,  default=[None, None])
     parser.add_argument('-plot:fsize', dest='fsize', action='store',
-                        help='Size of the figure', nargs=2, default=[None, None])
+                        help='Size of the figure.', nargs=2, default=[None, None])
     parser.add_argument('-out:silent', dest='silent', action='store_true',
-                        help='If True, do not plot on screen', default=False)
+                        help='If True, do not plot on screen.', default=False)
     parser.add_argument('-out:file', dest='ofile', action='store',
-                        help='Output image file', default=None)
+                        help='Output image file. If None, no file is created.',
+                        default=None)
+    return parser
+
+
+def get_options( parser ):
 
     options = parser.parse_args()
 
@@ -107,4 +116,4 @@ def main( options ):
 
 
 if __name__ == '__main__':
-    fig = main( get_options() )
+    fig = main( get_options( make_parser() ) )

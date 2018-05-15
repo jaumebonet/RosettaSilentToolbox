@@ -114,7 +114,7 @@ class FragmentFrame( pd.DataFrame ):
         """Add RMSD quality measure to the fragment data.
 
         The RMSD quality measurement is performed by the ``r_fraq_qual`` application
-        from *Rosetta*. It can be called as:
+        from **Rosetta**. It can be called as:
 
         .. code-block:: bash
 

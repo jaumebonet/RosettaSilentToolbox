@@ -116,6 +116,12 @@ class TestDesign( object ):
             assert isinstance(e, np.ndarray)
         assert np.array_equal(df.get_dihedrals("A").iloc[0][0], sr.get_dihedrals("A")[0])
 
+        # these are the ranges of the rosetta angles.
+        assert sr.get_phi("A").max() <= 180
+        assert sr.get_phi("A").min() >= -180
+        assert sr.get_psi("A").max() <= 180
+        assert sr.get_psi("A").min() >= -180
+
     def test_reference( self ):
         """
         Test reference data usage.
@@ -184,6 +190,39 @@ class TestDesign( object ):
         assert df.get_reference_shift("A") == 1
         with pytest.raises(KeyError):
             df.get_reference_sequence("A")
+
+    def test_labels(self):
+        sc_des  = {"scores": ["score"], "labels": ["MOTIF", "CONTACT", "CONTEXT"],
+                   "sequence": "AB"}
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        df = ra.selector_percentage(df, "A", "10-25", "test")
+        df = ra.selector_percentage(df, "B", "12-20", "test")
+        assert set(df.columns) == set(['score', 'lbl_MOTIF', 'lbl_CONTACT',
+                                       'lbl_CONTEXT', 'sequence_A', 'sequence_B',
+                                       'test_A_perc', 'test_B_perc'])
+        assert len(df['test_A_perc'].unique()) == 1
+        assert len(df['test_B_perc'].unique()) == 1
+        assert df['test_A_perc'].values[0] == pytest.approx(0.1019, rel=1e-3)
+        assert df['test_B_perc'].values[0] == pytest.approx(0.07758, rel=1e-3)
+
+        df = ra.label_percentage(df, "A", "CONTEXT")
+        df = ra.label_percentage(df, "A", "CONTACT")
+        df = ra.label_percentage(df, "A", "MOTIF")
+        df = ra.label_percentage(df, "B", "CONTACT")
+        df = ra.label_percentage(df, "B", "MOTIF")
+        df = ra.label_percentage(df, "B", "CONTEXT")
+        assert len(df['CONTEXT_A_perc'].unique()) == 1
+        assert df['CONTEXT_A_perc'].values[0] == 1
+        assert len(df['MOTIF_A_perc'].unique()) == 1
+        assert df['MOTIF_A_perc'].values[0] == 0
+        assert len(df['CONTACT_A_perc'].unique()) > 1
+        assert df['CONTACT_A_perc'].mean() == pytest.approx(0.0552, rel=1e-3)
+        assert len(df['CONTEXT_B_perc'].unique()) == 1
+        assert df['CONTEXT_B_perc'].values[0] == 0
+        assert len(df['MOTIF_B_perc'].unique()) == 1
+        assert df['MOTIF_B_perc'].values[0] == pytest.approx(0.1896, rel=1e-3)
+        assert len(df['CONTACT_B_perc'].unique()) > 1
+        assert df['CONTACT_B_perc'].mean() == pytest.approx(0.4669, rel=1e-3)
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_mutants_alignment.png')

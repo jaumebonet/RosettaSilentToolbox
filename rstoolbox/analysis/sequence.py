@@ -11,6 +11,8 @@
 .. func:: positional_sequence_similarity
 .. func:: binary_similarity
 .. func:: binary_overlap
+.. func:: selector_percentage
+.. func:: label_percentage
 """
 # Standard Libraries
 import copy
@@ -539,10 +541,11 @@ def selector_percentage( df, seqID, key_residues, selection_name='selection' ):
            ...: df.head()
     """
     from rstoolbox.components import DesignFrame, DesignSeries
+
     colname = '{0}_{1}_perc'.format(selection_name, seqID)
 
     if isinstance(df, DesignFrame):
-        df2 = df.apply(lambda row: selector_percentage(row, seqID, key_residues),
+        df2 = df.apply(lambda row: selector_percentage(row, seqID, key_residues, selection_name),
                        axis=1, result_type='expand')
         return df2
     elif isinstance(df, DesignSeries):

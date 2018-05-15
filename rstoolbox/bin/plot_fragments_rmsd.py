@@ -6,6 +6,16 @@
 .. affiliation::
     Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
     Bruno Correia <bruno.correia@epfl.ch>
+
+Generate a plot for fragment RMSD evaluation. Requires the output from the
+``r_fraq_qual`` application in **Rosetta**.
+
+.. note::
+    Depends on :ref:`rosetta.path <options>` and :ref:`rosetta.compilation <options>`,
+    if the quality file is not provided.
+
+.. seealso::
+    :meth:`.FragmentFrame.add_quality_measure`.
 """
 # Standard Libraries
 import argparse
@@ -27,9 +37,10 @@ mpl.rcParams['svg.fonttype'] = 'none'
 sns.set_style("whitegrid")
 
 
-def get_options( *args, **kwds ):
-
-    parser = argparse.ArgumentParser(description="Generate a plot for fragment RMSD evaluation.")
+def make_parser( *args, **kwds ):
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument('-in:frag:small', dest='fsmall', action='store',
                         help='Name of the small fragments file.', default=None)
@@ -40,13 +51,19 @@ def get_options( *args, **kwds ):
     parser.add_argument('-in:qual:large', dest='qlarge', action='store',
                         help='Name of the large fragments quality file.', default=None)
     parser.add_argument('-in:pdb', dest='pdb', action='store',
-                        help='PDB file (in case we need it).', default=None)
+                        help='PDB file. If quality files are not provided, this input is '
+                        'needed so that ``r_fraq_qual`` can be executed.', default=None)
     parser.add_argument('-out:silent', dest='silent', action='store_true',
-                        help='If True, do not plot on screen', default=False)
+                        help='If True, do not plot on screen.', default=False)
     parser.add_argument('-out:format', dest='format', action='store',
                         help='Make plot vertical (v) or horizontal (h).', default="h")
     parser.add_argument('-out:file', dest='ofile',  action='store',
-                        help='Output image file (.png/.svg).', default=None)
+                        help='Output image file (.png/.svg). If None, no image is created.',
+                        default=None)
+    return parser
+
+
+def get_options( parser ):
 
     options = parser.parse_args()
 
@@ -110,4 +127,4 @@ def main( options ):
 
 
 if __name__ == '__main__':
-    fig = main( get_options() )
+    fig = main( get_options( make_parser() ) )

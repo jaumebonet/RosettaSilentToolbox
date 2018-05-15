@@ -6,6 +6,14 @@
 .. affiliation::
     Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
     Bruno Correia <bruno.correia@epfl.ch>
+
+Check the sequences in the silent files. Creates logo plot and multiple
+sequence alignment both in text and image format.
+
+.. seealso::
+    :func:`.plot.logo_plot`
+    :func:`.plot.plot_alignment`
+    :func:`.io.write_clustalw`
 """
 # Standard Libraries
 import argparse
@@ -29,29 +37,36 @@ sns.set_style("whitegrid")
 rstoolbox.core.set_option("system", "overwrite", True)
 
 
-def get_options( *args, **kwds ):
-
+def make_parser( *args, **kwds ):
     parser = argparse.ArgumentParser(
-        description="Check the sequences in the silent files.")
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument('-in:file', dest='ifile', action='store',
-                        help='Input silent file', default=None)
+                        help='Input silent file (single file).', default=None)
     parser.add_argument('-in:files', dest='ifiles', action='store',
-                        help='Prefix of input silent files', default=None)
+                        help='Prefix of input silent files (multiple files).'
+                        'Incompatible with ``-in:file``.', default=None)
     parser.add_argument('-in:fasta', dest='ifasta', action='store',
-                        help='Input designs in fasta format', default=None)
+                        help='Input designs in fasta format.'
+                        'Incompatible with ``-in:file`` or ``-in:files``.',
+                        default=None)
     parser.add_argument('-in:wtfasta', dest='ffile', action='store',
-                        help='Rerefence sequence (single FASTA)', default=None)
+                        help='Rerefence sequence (single FASTA).', default=None)
     parser.add_argument('-in:seqID', dest='seqID', action='store',
-                        help='Sequence chain identifier (def: A)', default='A')
+                        help='Sequence chain identifier.', default='A')
 
     parser.add_argument('-out:prefix', dest='ofile', action='store',
-                        help='Prefix for the outputs', default=None)
+                        help='Prefix for the outputs.', default=None)
     parser.add_argument('-out:format', dest='iformat', action='store', choices=['png', 'svg'],
-                        help='Ouptut images format', default='png')
+                        help='Ouptut images format (png/svg).', default='png')
     parser.add_argument('-out:font', dest='ifont', action='store',
-                        help='Font size for logo plot (might need manual adjustment)',
+                        help='Font size for logo plot (might need manual adjustment).',
                         default=35)
+    return parser
+
+
+def get_options( parser ):
 
     options = parser.parse_args()
 
@@ -115,4 +130,4 @@ def main( options ):
 
 
 if __name__ == '__main__':
-    lfig, afig = main( get_options() )
+    lfig, afig = main( get_options( make_parser() ) )
