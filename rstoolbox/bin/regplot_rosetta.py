@@ -116,4 +116,4 @@ def main( options ):
 
 
 if __name__ == '__main__':
-    fig = main( get_options( make_parser() ) )
+    _ = main( get_options( make_parser() ) )

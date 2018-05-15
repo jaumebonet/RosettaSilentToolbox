@@ -130,4 +130,4 @@ def main( options ):
 
 
 if __name__ == '__main__':
-    lfig, afig = main( get_options( make_parser() ) )
+    _, _ = main( get_options( make_parser() ) )
