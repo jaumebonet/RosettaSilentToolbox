@@ -1,19 +1,36 @@
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
+
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+
+.. func:: plot_sequence_frequency_graph
+.. func:: plot_alignment
+.. func:: logo_plot
+.. func:: positional_sequence_similarity_plot
+.. func:: sequence_frequency_plot
+"""
+# Standard Libraries
 from distutils.version import LooseVersion
 import os
 import copy
 import math
+import operator
 
+# External Libraries
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import networkx as nx
 import matplotlib as mpl
-import matplotlib.patheffects
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, PathPatch
 from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
+# This Library
 from rstoolbox.analysis import binary_overlap
 from rstoolbox.analysis.SimilarityMatrix import SimilarityMatrix
 from rstoolbox.components import DesignFrame, SequenceFrame, get_selection
@@ -212,11 +229,11 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     if ref_seq is not "" and refseq:
         if isinstance(border_color, int):
             border_color = sns.color_palette()[border_color]
-        for i in range(len(ref_seq)):
+        for i, aa in enumerate(ref_seq):
             if aminosY:
-                aa_position = (i, order.index(ref_seq[i]))
+                aa_position = (i, order.index(aa))
             else:
-                aa_position = (order.index(ref_seq[i]), i)
+                aa_position = (order.index(aa), i)
             ax.add_patch(Rectangle(aa_position, 1, 1, fill=False, clip_on=False,
                                    edgecolor=border_color, lw=border_width, zorder=100))
 
@@ -398,16 +415,6 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     :return: :class:`~matplotlib.figure.Figure` and
         :func:`list` of :class:`~matplotlib.axes.Axes`
     """
-
-    class Scale( matplotlib.patheffects.RendererBase ):
-        def __init__( self, sx, sy=None ):
-            self._sx = sx
-            self._sy = sy
-
-        def draw_path( self, renderer, gc, tpath, affine, rgbFace ):
-            affine = affine.identity().scale(self._sx, self._sy) + affine
-            renderer.draw_path(gc, tpath, affine, rgbFace)
-
     def _letterAt( letter, x, y, yscale=1, ax=None, globscale=1.35,
                    LETTERS=None, COLOR_SCHEME=None ):
         text = LETTERS[letter]
@@ -421,12 +428,12 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     def _dataframe2logo( data ):
         aa = list(data)
         odata = []
-        for index, pos in data.iterrows():
+        for _, pos in data.iterrows():
             pdata = []
             for k in aa:
                 if pos[k] > 0.0000000:
                     pdata.append( ( k, float(pos[k]) ) )
-            odata.append(sorted(pdata, key=lambda x: x[1]))
+            odata.append(sorted(pdata, key=operator.itemgetter(1, 0)))
         return odata
 
     def _chunks(l, n):

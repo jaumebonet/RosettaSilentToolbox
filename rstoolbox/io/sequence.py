@@ -177,7 +177,7 @@ def write_fasta( df, seqID, separator=None, filename=None, split=False ):
     """
     def nomenclator(row, seqID, separator):
         sequence = row.get_sequence(seqID)
-        if sequence is None or len(sequence) == 0:
+        if sequence is None or isinstance(sequence, float) or len(sequence) == 0:
             return ""
         name = ">" + row.get_id()
         if separator is not None:

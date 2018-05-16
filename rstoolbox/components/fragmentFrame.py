@@ -8,7 +8,6 @@
 
 .. class:: FragmentFrame
 """
-
 # Standard Libraries
 import os
 import math
@@ -207,7 +206,7 @@ class FragmentFrame( pd.DataFrame ):
         df._source_file = self._source_file
         return df
 
-    def make_sequence_matrix( self, frequency=False, round=False ):
+    def make_sequence_matrix( self, frequency=False, round_data=False ):
         """Generate a PSSM-like matrix from the fragments.
 
         The matrix will contain, for each position the relative enrichment of each
@@ -218,7 +217,7 @@ class FragmentFrame( pd.DataFrame ):
         unless ``frequency`` is requested.
 
         :param bool frequency: Return the matrix with frequency values..
-        :param bool round: Round-floor the values.
+        :param bool round_data: Round-floor the values.
 
         :return: :class:`~pandas.DataFrame`
         """
@@ -245,7 +244,7 @@ class FragmentFrame( pd.DataFrame ):
                 else:
                     matrix.setdefault(aa, []).append(q)
         df = pd.DataFrame(matrix)
-        if round:
+        if round_data:
             df = df.applymap(np.around).astype(np.int64).reindex(columns=list(alphabet))
         else:
             df = df.reindex(columns=list(alphabet))

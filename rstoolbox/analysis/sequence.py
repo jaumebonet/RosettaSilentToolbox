@@ -107,7 +107,7 @@ def _sequence_similarity( qseq, rseq, matrix ):
 
 def _positional_similarity( qseq, rseq, matrix ):
     raw, idn, pos, neg = 0, 0, 0, 0
-    for i, qseqi in enumerate(qseq):
+    for _, qseqi in enumerate(qseq):
         sc = matrix.get_value(qseqi, rseq)
         raw += sc
         if qseqi == rseq:

@@ -18,6 +18,9 @@ import string
 # This Library
 
 
+__all__ = ['SimilarityMatrix']
+
+
 class SimilarityMatrix(object):
     '''
     Convert a biomatrix as downloaded from

@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: designFrame.py
 # @Last modified by:   bonet
-# @Last modified time: 28-Mar-2018
+# @Last modified time: 16-May-2018
 
 # Standard Libraries
 import itertools
@@ -16,7 +16,6 @@ import numpy as np
 
 # This Library
 from .rsbase import RSBaseDesign
-from .apply import frame_apply
 import rstoolbox.analysis as ra
 
 
@@ -438,17 +437,3 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
             for name in self._metadata:
                 setattr(self, name, getattr(other, name, self._metadata_defaults(name)))
         return self
-
-    # this is a fix until the issue is solved in pandas
-    def apply(self, func, axis=0, broadcast=None, raw=False, reduce=None,
-              result_type=None, args=(), **kwds):
-            op = frame_apply(self,
-                             func=func,
-                             axis=axis,
-                             broadcast=broadcast,
-                             raw=raw,
-                             reduce=reduce,
-                             result_type=result_type,
-                             args=args,
-                             kwds=kwds)
-            return op.get_result()
