@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: tools.py
 # @Last modified by:   bonet
-# @Last modified time: 11-Apr-2018
+# @Last modified time: 17-May-2018
 
 
 import copy
@@ -17,6 +17,10 @@ def format_Ipython():
     in **Jupyter Notebooks**.
 
     Just need to call it after importing the library.
+
+    .. note::
+        In order for this function to work, it is important that is the last
+        one in the Jupyter cell to be called.
     """
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)

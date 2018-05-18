@@ -1,15 +1,21 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   19-Feb-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: description.py
-# @Last modified by:   bonet
-# @Last modified time: 07-May-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+Controlling the type of data that is loaded into the 
+"""
+# Standard Libraries
 import re
 
+# External Libraries
 import six
 import numpy as np
+
+# This Library
 
 __all__ = ["Description"]
 

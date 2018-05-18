@@ -107,8 +107,8 @@ def main( options ):
 
     # Logo Plot
     logof = options.ofile + "_logo" + "." + options.iformat
-    lfig, laxes = logo_plot(df, options.seqID, refseq=options.ffile is not None,
-                            line_break=50, font_size=int(options.ifont) )
+    lfig, _ = logo_plot(df, options.seqID, refseq=options.ffile is not None,
+                        line_break=50, font_size=int(options.ifont) )
     plt.tight_layout()
     plt.savefig(logof)
 

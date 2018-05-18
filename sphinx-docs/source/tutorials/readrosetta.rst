@@ -4,3 +4,5 @@
 
 Reading Rosetta outputs
 =======================
+
+.. automodule:: rstoolbox.components.description
