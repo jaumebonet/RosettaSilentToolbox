@@ -81,7 +81,19 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Reading Rosetta outputs</a></li>
+<li><a class="reference internal" href="#">Reading Rosetta outputs</a><ul>
+<li><a class="reference internal" href="#scores">scores</a></li>
+<li><a class="reference internal" href="#scores-ignore">scores_ignore</a></li>
+<li><a class="reference internal" href="#scores-rename">scores_rename</a></li>
+<li><a class="reference internal" href="#scores-by-residue">scores_by_residue</a></li>
+<li><a class="reference internal" href="#naming">naming</a></li>
+<li><a class="reference internal" href="#sequence">sequence</a></li>
+<li><a class="reference internal" href="#structure">structure</a></li>
+<li><a class="reference internal" href="#psipred">psipred</a></li>
+<li><a class="reference internal" href="#dihedrals">dihedrals</a></li>
+<li><a class="reference internal" href="#labels">labels</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -111,8 +123,258 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <div class="section" id="reading-rosetta-outputs">
-<span id="readrosetta"></span><h1>Reading Rosetta outputs<a class="headerlink" href="#reading-rosetta-outputs" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-rstoolbox.components.description">
+<span id="reading-rosetta-outputs"></span><span id="readrosetta"></span><h1>Reading Rosetta outputs<a class="headerlink" href="#module-rstoolbox.components.description" title="Permalink to this headline">¶</a></h1>
+<p>One of the key advantadges of <code class="docutils literal notranslate"><span class="pre">rstoolbox</span></code> is the ability to control the amount
+and type of data that is loaded from a silent/score file. This control is managed
+through a <code class="docutils literal notranslate"><span class="pre">definition</span></code>, a dictionary that describes the type of data that can be
+loaded.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">definition</span></code> is meant to be applied to <a class="reference internal" href="../generated/rstoolbox.io.parse_rosetta_file.html#rstoolbox.io.parse_rosetta_file" title="rstoolbox.io.parse_rosetta_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_rosetta_file()</span></code></a>.</p>
+</div>
+<p>As of now, there are 10 different options that can be convined into a <code class="docutils literal notranslate"><span class="pre">definition</span></code>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">definition term</th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference internal" href="#scores"><span class="std std-ref">scores</span></a></td>
+<td>Basic selection of the scores to store. Default is
+all scores.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#scores-ignore"><span class="std std-ref">scores_ignore</span></a></td>
+<td>Selection of specific scores to ignore.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#scores-rename"><span class="std std-ref">scores_rename</span></a></td>
+<td>Rename some score names to others.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#scores-by-residue"><span class="std std-ref">scores_by_residue</span></a></td>
+<td>Pick score by residue types into a single array
+value.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#naming"><span class="std std-ref">naming</span></a></td>
+<td>Use the decoy identifier’s name to create extra
+score terms.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#sequence"><span class="std std-ref">sequence</span></a></td>
+<td>Pick sequence data from the silent file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#structure"><span class="std std-ref">structure</span></a></td>
+<td>Pick structural data from the silent file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#psipred"><span class="std std-ref">psipred</span></a></td>
+<td>Pick PSIPRED data from the silent file.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#dihedrals"><span class="std std-ref">dihedrals</span></a></td>
+<td>Retrieve dihedral data from the silent file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#labels"><span class="std std-ref">labels</span></a></td>
+<td>Retrieve residue labels from the silent file.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">definition</span></code> can be passed directly as a dictionary or can be saved as a
+<strong>JSON</strong> or <strong>YAML</strong> file and loaded from there.</p>
+</div>
+<div class="section" id="scores">
+<span id="id1"></span><h2>scores<a class="headerlink" href="#scores" title="Permalink to this headline">¶</a></h2>
+<p>This is the most basic parameter, and refer to regular scores in the silent/score
+file. It allows to select just the scores that are wanted for the analysis.
+There are three main ways to define <code class="docutils literal notranslate"><span class="pre">scores</span></code>, provide a list naming the
+scores of interest:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;packstat&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>add a string asterisc if all scores all wanted (this is the default value for this
+parameter):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>or add a minus sign, which will ignore all scores:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="s1">&#39;-&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">ifile</span> <span class="o">=</span> <span class="s1">&#39;../rstoolbox/tests/data/input_2seq.minisilent.gz&#39;</span>
+<span class="gp">   ...: </span><span class="n">definition1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;packstat&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">]}</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">definition1</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[7]: </span><span class="go"></span>
+<span class="go">     score  packstat                     description</span>
+<span class="go">0 -206.678  0.633     test_3lhp_binder_labeled_00001</span>
+<span class="go">1 -214.362  0.577     test_3lhp_binder_labeled_00002</span>
+<span class="go">2 -203.582  0.568     test_3lhp_binder_labeled_00003</span>
+<span class="go">3 -213.779  0.614     test_3lhp_binder_labeled_00004</span>
+<span class="go">4 -213.972  0.591     test_3lhp_binder_labeled_00005</span>
+
+<span class="gp">In [8]: </span><span class="n">definition2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span><span class="p">}</span>
+<span class="gp">   ...: </span><span class="n">df1</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">definition2</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df2</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df1</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[11]: </span><span class="go"></span>
+<span class="go">     score    fa_atr   fa_rep   fa_sol  fa_intra_rep  fa_elec  pro_close  hbond_sr_bb  hbond_lr_bb               ...                LRMSD2Target  LRMSDH2Target  LRMSDLH2Target  cav_vol  design_score  packstat  rmsd_drift    time                     description</span>
+<span class="go">0 -206.678 -1510.021  268.657  853.020  2.921        -145.015  5.825     -150.177     -2.452                     ...                4.404         4.055          2.490           387.371 -255.445       0.633     1.677       3194.0  test_3lhp_binder_labeled_00001</span>
+<span class="go">1 -214.362 -1490.968  267.328  824.258  3.019        -133.421  6.018     -151.609     -2.452                     ...                4.469         4.124          2.730           332.657 -264.239       0.577     2.240       3210.0  test_3lhp_binder_labeled_00002</span>
+<span class="go">2 -203.582 -1483.595  268.234  831.771  2.823        -133.837  6.049     -151.148     -3.091                     ...                5.208         4.598          2.907           333.851 -256.270       0.568     1.522       3235.0  test_3lhp_binder_labeled_00003</span>
+<span class="go">3 -213.779 -1519.755  271.747  863.244  2.763        -149.878  5.899     -153.525     -2.452                     ...                5.728         4.866          3.002           280.594 -260.461       0.614     1.791       3237.0  test_3lhp_binder_labeled_00004</span>
+<span class="go">4 -213.972 -1504.434  267.568  841.170  2.782        -129.666  5.839     -150.024     -2.452                     ...                3.787         3.258          2.692           330.420 -267.847       0.591     1.745       3239.0  test_3lhp_binder_labeled_00005</span>
+
+<span class="go">[5 rows x 34 columns]</span>
+
+<span class="gp">In [12]: </span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">columns</span> <span class="o">==</span> <span class="n">df2</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="gh">Out[12]: </span><span class="go">True</span>
+
+<span class="gp">In [13]: </span><span class="n">definition3</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="s1">&#39;-&#39;</span><span class="p">}</span>
+<span class="gp">   ....: </span><span class="n">df3</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">definition3</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">df3</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[15]: </span><span class="go"></span>
+<span class="go">Empty DesignFrame</span>
+<span class="go">Columns: []</span>
+<span class="go">Index: []</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="scores-ignore">
+<span id="id2"></span><h2>scores_ignore<a class="headerlink" href="#scores-ignore" title="Permalink to this headline">¶</a></h2>
+<p>This is basically the oposite from the previous one, meant in case particular scores are
+to be ignored. This is usefull when expecting to mix data from different experiments but
+one has generated more score data than the other (for example, one needed loop closure and
+includes some <code class="docutils literal notranslate"><span class="pre">loop_closure</span></code> scores). Extra scores can affect the concatenation of the
+different data containers as per <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/index.html#module-pandas" title="(in pandas v0.23.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pandas</span></code></a> constraints. There are two ways to define
+<code class="docutils literal notranslate"><span class="pre">scores_ignore</span></code>, either list the scores to skip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;scores_ignore&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;loop_closure&#39;</span><span class="p">,</span> <span class="s1">&#39;packstat&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>or a string asterisc if aiming to ignore all scores:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;scores_ignore&#39;</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="scores-rename">
+<span id="id3"></span><h2>scores_rename<a class="headerlink" href="#scores-rename" title="Permalink to this headline">¶</a></h2>
+<p>Allows to retrieve a particular score term with a different name. Again, usefull to
+merge data from multiple runs when some naming is not matching. It is defined as a
+dictionary in which keys are the original score names and values the new naming
+schema:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;scores_rename&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;grmsd&#39;</span><span class="p">:</span> <span class="s1">&#39;globalRMSD&#39;</span><span class="p">,</span> <span class="s1">&#39;lrmsd&#39;</span><span class="p">:</span> <span class="s1">&#39;localRMSD&#39;</span><span class="p">}}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="scores-by-residue">
+<span id="id4"></span><h2>scores_by_residue<a class="headerlink" href="#scores-by-residue" title="Permalink to this headline">¶</a></h2>
+<p>Scores that target per-residue values are normally ignored by the library. This parameter
+allows for them to be captured as a single vector score. As of now, the only available
+score is <code class="docutils literal notranslate"><span class="pre">residue_ddg_</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;scores_by_residue&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;residue_ddg_&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>as provided by <strong>Rosetta</strong>’s‘ <code class="docutils literal notranslate"><span class="pre">ddG</span></code> mover:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ddG</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(&amp;string)&quot;</span> <span class="n">per_residue_ddg</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="s2">&quot;/&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="naming">
+<span id="id5"></span><h2>naming<a class="headerlink" href="#naming" title="Permalink to this headline">¶</a></h2>
+<p>Naming conventions are important. As long as one keeps that in mind, one could target
+particular identifiers inside a decoy description as new score columns, thus allowing
+to cluster different decoys for analysis. As an example, let’s assume that the naming
+of a set of decoys is such as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nubinitio_auto_2015_binder_2pw9C_0001</span>
+</pre></div>
+</div>
+<p>In this case, three of the forut first elements of the identifier relate to the
+conditions of the experiment. To capture them, an array needs to be defined. As long
+as an identifier is set for an element, that element will be captured as a new score.
+Elements can be skiped with an empty string. The array has to be long enough to capture
+all the elements of interest, but it does not need to have as many fields as elements
+in the definition. Thus:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;naming&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;experiment&#39;</span><span class="p">,</span> <span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;binder&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>will create the three new scores with value <code class="docutils literal notranslate"><span class="pre">nubinitio</span></code>, <code class="docutils literal notranslate"><span class="pre">auto</span></code>, <code class="docutils literal notranslate"><span class="pre">binder</span></code>.</p>
+</div>
+<div class="section" id="sequence">
+<span id="id6"></span><h2>sequence<a class="headerlink" href="#sequence" title="Permalink to this headline">¶</a></h2>
+<p>Sequence data is integrated into the silent file as default. It can be captured
+and used to evaluate mutants and sequence drift amongst others. To retrieve that
+data, a string with the identifiers of all the chains of interest need to be
+provided, thus:</p>
+<blockquote>
+<div>{‘sequence’: ‘AB’}</div></blockquote>
+<p>will allow to capture the sequence for chains <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code>. Sequence data can
+then be accessed through the appropiate getter functions of <a class="reference internal" href="../generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>
+and <a class="reference internal" href="../generated/rstoolbox.components.DesignSeries.html#rstoolbox.components.DesignSeries" title="rstoolbox.components.DesignSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignSeries</span></code></a>, and is expected for any of the sequence analysis
+functions and plots.</p>
+</div>
+<div class="section" id="structure">
+<span id="id7"></span><h2>structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<p>Secondary structure data can be loaded into the silent file by means of <strong>Rosetta</strong>’s
+<code class="docutils literal notranslate"><span class="pre">WriteSSEMover</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">WriteSSEMover</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(&amp;string;)&quot;</span> <span class="n">dssp</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+<p>Similarly to <code class="docutils literal notranslate"><span class="pre">sequence</span></code>, it can be loaded as extra data by calling the chains of
+interest:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;structure&#39;</span><span class="p">:</span> <span class="s1">&#39;AB&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="psipred">
+<span id="id8"></span><h2>psipred<a class="headerlink" href="#psipred" title="Permalink to this headline">¶</a></h2>
+<p>Secondary structure prediction data can be loaded into the silent file by means
+of <strong>Rosetta</strong>’s <code class="docutils literal notranslate"><span class="pre">WriteSSEMover</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">WriteSSEMover</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(&amp;string;)&quot;</span> <span class="n">cmd</span><span class="o">=</span><span class="s2">&quot;/path/to/psipred&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+<p>Similarly to <code class="docutils literal notranslate"><span class="pre">sequence</span></code> and <code class="docutils literal notranslate"><span class="pre">structure</span></code>, it can be loaded as extra data by
+calling the chains of interest:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;psipred&#39;</span><span class="p">:</span> <span class="s1">&#39;AB&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dihedrals">
+<span id="id9"></span><h2>dihedrals<a class="headerlink" href="#dihedrals" title="Permalink to this headline">¶</a></h2>
+<p>Phi and psi dihedral angle data can be loaded into the silent file by means
+of <strong>Rosetta</strong>’s <code class="docutils literal notranslate"><span class="pre">WriteSSEMover</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">WriteSSEMover</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(&amp;string;)&quot;</span> <span class="n">write_phipsi</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+<p>Angle data from specific chains can be loaded as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">:</span> <span class="s1">&#39;AB&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>The data will be loaded as a single array of floats.</p>
+</div>
+<div class="section" id="labels">
+<span id="id10"></span><h2>labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h2>
+<p>Residue labels allow to target residues through a simulation by a particular tag.
+They can also be used to highlight residues with particular properties during the
+simulation. They can be saved into the silent file with <strong>Rosetta</strong>’s
+<code class="docutils literal notranslate"><span class="pre">DisplayPoseLabelsMover</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">DisplayPoseLabelsMover</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(&amp;string;)&quot;</span> <span class="n">write</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+<p>To retrieve that data, a list with the names of the labels of interest can be
+provided:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MOTIF&#39;</span><span class="p">,</span> <span class="s1">&#39;CONTEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;HOTSPOTS&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</div>
 <span class="target" id="definitions"></span></div>
 
 
@@ -132,7 +394,7 @@
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

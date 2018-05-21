@@ -36,6 +36,7 @@ Helper functions to read/write direct sequence information. They can be called t
    ~io.write_fasta
    ~io.write_clustalw
    ~io.write_mutant_alignments
+   ~io.read_hmmsearch
 
 IO: Rosetta
 -----------
@@ -68,6 +69,9 @@ Helper functions for sequence analysis. They can be called through ``rstoolbox.a
    ~analysis.binary_overlap
    ~analysis.positional_structural_count
    ~analysis.positional_structural_identity
+   ~analysis.secondary_structure_percentage
+   ~analysis.selector_percentage
+   ~analysis.label_percentage
    ~analysis.cumulative
 
 Plot

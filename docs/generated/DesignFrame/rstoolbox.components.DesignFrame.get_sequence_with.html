@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="rstoolbox.components.DesignFrame.get_source_files" href="rstoolbox.components.DesignFrame.get_source_files.html" />
-    <link rel="prev" title="rstoolbox.components.DesignFrame.add_source_files" href="rstoolbox.components.DesignFrame.add_source_files.html" />
+    <link rel="next" title="rstoolbox.components.DesignFrame.generate_mutant_variants" href="rstoolbox.components.DesignFrame.generate_mutant_variants.html" />
+    <link rel="prev" title="rstoolbox.components.DesignFrame.get_mutations" href="rstoolbox.components.DesignFrame.get_mutations.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -116,8 +116,8 @@
 <dl class="method">
 <dt id="rstoolbox.components.DesignFrame.get_sequence_with">
 <code class="descclassname">DesignFrame.</code><code class="descname">get_sequence_with</code><span class="sig-paren">(</span><em>seqID</em>, <em>selection</em>, <em>confidence=1</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.get_sequence_with" title="Permalink to this definition">¶</a></dt>
-<dd><p>Selects those decoys with a particular set of residue matches.
-Basically, is meant to find, for example, all the decoys in which
+<dd><p>Selects those decoys with a particular set of residue matches.</p>
+<p>Basically, is meant to find, for example, all the decoys in which
 position 25 is A and position 46 is T.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -125,18 +125,33 @@ position 25 is A and position 46 is T.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – List of tuples with position and residue
-type (in 1 letter code)</li>
+<li><strong>selection</strong> (<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>) – List of tuples with position and residue
+type (in 1 letter code).</li>
 <li><strong>confidence</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Percentage of the number of the selection
 rules that we expect the matches to fulfill. Default is 1 (all).</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Filtered <a class="reference internal" href="../rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="../rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> - filtered by the requested sequence</p>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">get_sequence_with</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">)])</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="go">     score                                                                                                            sequence_B</span>
+<span class="go">0 -206.678  TRPEEARERAWRLAEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK</span>
+<span class="go">2 -203.582  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW</span>
+<span class="go">3 -213.779  TKPEEWARWAYKEHLKMAEKHRKEMEIEWEELKRRDGKEEEKDMWPERMIAMALRAIGELFNHHMYAEMRAKEEKKKPEAKTEEARRARREIMKYHHEAGRLIEEAMRRLMERHKK</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>
@@ -158,7 +173,7 @@ rules that we expect the matches to fulfill. Default is 1 (all).</li>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

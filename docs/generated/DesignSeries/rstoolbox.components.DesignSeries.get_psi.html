@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>rstoolbox.components.DesignSeries.get_psi &#8212; rstoolbox 0.0.6 documentation</title>
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/functions.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="rstoolbox.components.DesignSeries.get_available_labels" href="rstoolbox.components.DesignSeries.get_available_labels.html" />
+    <link rel="prev" title="rstoolbox.components.DesignSeries.get_phi" href="rstoolbox.components.DesignSeries.get_phi.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          rstoolbox</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.6</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../scripts.html">Scripts</a></li>
+                <li><a href="../../tutorial.html">Tutorial</a></li>
+                <li><a href="../../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">An introduction to rstoolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Available direct executables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rosettascripts.html">RosettaScripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../whatsnew.html">What’s new</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">rstoolbox.components.DesignSeries.get_psi</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="rstoolbox-components-designseries-get-psi">
+<h1>rstoolbox.components.DesignSeries.get_psi<a class="headerlink" href="#rstoolbox-components-designseries-get-psi" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="rstoolbox.components.DesignSeries.get_psi">
+<code class="descclassname">DesignSeries.</code><code class="descname">get_psi</code><span class="sig-paren">(</span><em>seqID</em>, <em>key_residues=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignSeries.get_psi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the <strong>psi</strong> angle for <code class="docutils literal notranslate"><span class="pre">seqID</span></code> available in the container.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>key_residues</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="../rstoolbox.components.Selection.html#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a>]) – Residues of interest.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> - depending on the input</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">TypeError:</th><td class="field-body">if the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">if there is no sequence information for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_3ssepred.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">get_psi</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="go">0    [164.661, 150.087, 119.623, 115.362, -155.17, 123.998, 148.106, 150.569, -66.751, 149.403, 77.0877, -39.5719, -159.326, -23.0949, -48.6027, -26.7601, -31.28, -36.8263, -43.1164, -35.4481, -43.9254, -42.4413, -41.7514, -40.6107, -40.7361, -42.1048, -44.9068, -40.6943, -43.0689, -37.3256, -34.5339, -38.6798, -48.7832, 72.397, -56.9976, 153.554, -175.239, -120.787, -85.2328, 169.026, -109.39, 145.207, -138.15, -169.078, 150.014, 111.266, 117.966, 5.6953, 157.169, 156.98, 89.8704, -136.934, -9.25997, 98.711, 116.919, 93.2433, 106.857, 153.613, 110.497, 149.146, 153.408, 171.208, 134.479, -93.331, 31.9771, -159.617, 155.123, 76.814, -94.3691, 73.1756, -107.933, -52.312, -46.2727, -46.9492, -48.785, -54.633, -47.5691, -42.3296, -39.1751, -38.4809, -38.7348, -32.9575, -13.3517, -75.3045, -29.0373, -161.562, 127.788, 0.0]        </span>
+<span class="go">1    [162.965, -164.225, -34.0043, 8.85527, -24.3956, -154.047, 156.743, 143.496, 133.005, 155.171, 100.96, 172.661, -169.473, 102.678, -179.031, 146.196, 20.002, -28.5055, -36.5834, -41.1777, -41.6388, -41.3714, -39.6893, -38.428, -31.6549, -38.5835, -41.6909, -42.1998, -44.1118, -32.7253, -43.8515, -30.7535, -13.2974, -30.3794, 106.202, -12.8488, 6.96259, -132.251, -73.3121, -166.338, 3.54106, 128.256, -177.336, 130.2, -31.2203, 175.675, 117.966, 5.69565, 110.817, 120.839, -177.386, -137.617, 20.0555, 160.541, 148.183, 130.778, 127.967, 130.769, 136.532, -169.238, 175.789, 154.854, 114.716, 156.7, -158.093, 74.524, 64.4922, -30.1124, -41.9066, -30.2669, -39.1229, -43.0649, -46.0508, -51.7954, -40.2392, -49.8739, -42.5548, -35.9985, -42.0859, -42.1466, -47.761, -42.6881, -39.7717, -38.3591, -10.693, 113.6, 76.6789, 0.0]      </span>
+<span class="go">2    [-36.6151, 77.6359, 138.027, -82.6268, -170.139, -177.225, 124.947, 145.058, 151.785, -164.03, 167.88, 66.0045, -5.94848, 50.1516, -156.601, 60.096, -38.4393, -43.1195, -42.9347, -46.387, -39.4517, -42.2064, -42.0858, -38.197, -44.7035, -37.2539, -45.5505, -34.8134, -22.079, -17.4863, -27.8694, -33.3036, 87.2296, 120.279, -70.1579, -162.906, -25.4812, 26.5519, -71.5355, -160.563, 153.12, 163.139, -168.774, -169.047, 173.039, -171.765, 117.966, 5.69591, 149.113, 130.576, 114.897, 55.9569, 14.0423, -172.024, 147.28, 158.957, -174.766, 76.7075, 147.362, 145.882, -94.7636, -175.109, -146.414, 151.507, 141.159, 79.8535, 82.9142, -33.5887, -49.3872, -40.7357, -42.2621, -45.7134, -40.3885, -48.7876, -32.4082, -38.2188, -31.4677, 79.6423, -156.067, 151.307, 124.367, 71.7051, 135.455, -63.2273, -158.543, 76.6323, 119.659, 0.0]    </span>
+<span class="go">3    [117.496, -11.3731, -53.3122, 153.517, 166.495, 168.689, 167.963, 129.07, 161.848, -138.456, 145.636, 163.691, -158.493, -14.1438, 160.355, 79.5594, -21.2701, -57.1116, -41.1553, -43.4537, -44.5348, -40.697, -40.3215, -41.9621, -33.5367, -46.6888, -44.9681, -41.6766, -59.9738, -35.6396, -46.9359, -37.0827, -41.2982, -26.0202, -22.6247, -63.7589, -28.2083, -33.5636, 83.0674, -170.671, 58.6035, 126.887, 154.525, 148.274, 148.762, 138.45, 117.966, 5.69563, 151.149, 85.0293, 93.0266, -58.8035, -161.725, 142.135, 146.458, 167.91, 128.772, 135.918, 117.729, -161.966, 112.69, 154.248, -31.1545, -17.029, -21.3539, -84.5057, 151.137, 135.105, -165.301, -40.5337, -39.6317, -31.8448, -49.377, -42.26, -46.8348, -38.1685, -37.7617, -35.6452, -41.0422, -50.1765, -51.7362, -35.9518, -44.9389, -35.5323, -46.1849, -5.59276, 47.6071, 0.0] </span>
+<span class="go">4    [-41.2448, 164.521, 102.189, 135.635, -168.713, 117.037, 123.559, 120.363, -168.34, -167.983, 109.318, 128.882, 179.228, -151.901, -9.2696, 120.054, -19.5789, -15.9829, -24.5394, -46.7948, -39.0487, -41.2638, -42.1803, -38.758, -39.9661, -42.4795, -42.6707, -38.7506, -44.5398, -40.1081, -35.1974, -28.5745, -25.3242, -44.7861, -160.403, 170.683, -10.1834, -171.113, 173.075, -114.526, -80.7707, 149.293, 158.069, 123.667, 140.248, -167.12, 117.966, 5.69524, 157.155, 145.857, 122.691, 37.6218, 12.0355, 113.534, 159.423, 134.935, 82.4823, 130.767, 145.299, 131.092, -160.535, 167.244, 53.127, 64.9725, -153.834, 160.108, 170.361, -35.8148, -35.9075, -38.9878, -39.6537, -42.7431, -41.3393, -46.3302, -40.8915, -38.0494, -36.9368, -35.3763, -41.7832, -46.6273, -45.9729, -42.5121, -39.8494, -35.2318, -21.7038, -164.18, -163.68, 0.0]</span>
+<span class="go">5    [152.563, 123.148, -162.008, 125.912, -162.377, 140.969, 153.391, 87.476, 141.363, 124.586, 105.243, 129.551, -27.4552, 9.33164, -131.03, 23.7244, -42.9759, -42.7378, -45.8322, -43.9435, -43.2669, -37.9424, -37.1009, -46.7617, -46.362, -46.0284, -45.1227, -47.0611, -17.5413, -8.64561, -179.317, -162.4, -40.2392, -158.398, -142.004, 53.2999, 54.9688, -30.8801, 120.002, 15.0025, 81.0473, 153.83, -13.889, 126.974, 141.743, -139.479, 117.966, 5.69512, 152.287, 139.519, 144.843, -139.482, -33.5997, 114.946, 124.015, 160.556, 157.078, -171.777, 151.189, -175.908, 108.888, 102.4, -162.013, -164.205, 98.4849, -118.238, 89.3546, -31.5063, -48.3918, -36.7014, -46.1568, -47.3615, -38.8732, -45.0906, -35.8594, -43.7385, -41.1583, -37.414, -39.4092, -42.5353, -40.741, -41.846, -39.0157, -44.7091, -35.9366, -2.85101, 45.7682, 0.0]     </span>
+<span class="go">Name: psi_A, dtype: object</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<span class="target" id="definitions"></span></div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, Jaume Bonet.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
+    </p>
+  </div>
+</footer>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-74877325-2');
+</script>
+
+  </body>
+</html>

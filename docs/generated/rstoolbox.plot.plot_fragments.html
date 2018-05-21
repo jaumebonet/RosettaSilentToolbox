@@ -119,8 +119,41 @@
 <dd><p>Plot RMSD quality of a pair of <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> in two provided axis.
 Thought to more easily print both small and large fragments together.</p>
 <p>On plotting, fragment RMSD values are assigned to the first position of the fragments.
-This means that the plots will have a length of</p>
-<p><span class="math notranslate">\(len(sequence) - len(fragment set)\)</span></p>
+This means that the plots will have a length of:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>:math:`len(sequence) - len(fragment set)`
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>small_frags</strong> (<a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>) – Data for the small fragments.</li>
+<li><strong>large_frags</strong> (<a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>) – Data for the large fragments.</li>
+<li><strong>small_ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Axis where to print the small fragments.</li>
+<li><strong>large_ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Axis where to print the large fragments.</li>
+<li><strong>small_color</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – Color to use on the small fragments. If string,
+that is the assumed color. If integer, it will provide that position for the
+currently active color palette in seaborn.</li>
+<li><strong>large_color</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – Color to use on the large fragments. If string,
+that is the assumed color. If integer, it will provide that position for the
+currently active color palette in seaborn.</li>
+<li><strong>small_max</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Max value for the y (RMSD) axis of the small fragments. If
+not provided, the system picks it according to the given data.</li>
+<li><strong>large_max</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Max value for the y (RMSD) axis of the large fragments. If
+not provided, the system picks it according to the given data.</li>
+<li><strong>titles</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Title placement. Options are “top” or “right”. Other options
+will result in no titles added to the plot.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="rstoolbox.plot.plot_fragment_profiles.html#rstoolbox.plot.plot_fragment_profiles" title="rstoolbox.plot.plot_fragment_profiles"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_fragment_profiles()</span></code></a></p>
+</div>
+<p class="rubric">Example</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_fragments</span>
 <span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.plot</span> <span class="kn">import</span> <span class="n">plot_fragments</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -139,36 +172,6 @@ This means that the plots will have a length of</p>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/plot_fragments_docs.png"><img alt="../_images/plot_fragments_docs.png" src="../_images/plot_fragments_docs.png" style="width: 5in;" /></a>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>small_frags</strong> (<a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>) – Data for the small fragments.</li>
-<li><strong>large_frags</strong> (<a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>) – Data for the large fragments.</li>
-<li><strong>small_ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Axis where to print the small fragments.</li>
-<li><strong>large_ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Axis where to print the large fragments.</li>
-<li><strong>small_color</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – Color to use on the small fragments. If string,
-that is the assumed color. If integer, it will provide that position for the
-currently active color palette in seaborn.</li>
-<li><strong>large_color</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – Color to use on the large fragments. If string,
-that is the assumed color. If integer, it will provide that position for the
-currently active color palette in seaborn.</li>
-<li><strong>small_max</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Max value for the y (RMSD) axis of the small fragments. If
-not provided, the system picks it according to the given data.</li>
-<li><strong>large_max</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Max value for the y (RMSD) axis of the large fragments. If
-not provided, the system picks it according to the given data.</li>
-<li><strong>titles</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Title placement. Options are “top” or “right”. Other options
-will result in no titles added to the plot.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="rstoolbox.plot.plot_fragment_profiles.html#rstoolbox.plot.plot_fragment_profiles" title="rstoolbox.plot.plot_fragment_profiles"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_fragment_profiles()</span></code></a></p>
-</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>
@@ -190,7 +193,7 @@ will result in no titles added to the plot.</li>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

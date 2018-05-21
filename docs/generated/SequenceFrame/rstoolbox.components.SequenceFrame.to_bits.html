@@ -117,8 +117,11 @@
 <dt id="rstoolbox.components.SequenceFrame.to_bits">
 <code class="descclassname">SequenceFrame.</code><code class="descname">to_bits</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.SequenceFrame.to_bits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the sequenceFrame from frequency to bits.
-Bit calculation is performed as explained in <a class="reference external" href="http://www.genome.org/cgi/doi/10.1101/gr.849004">http://www.genome.org/cgi/doi/10.1101/gr.849004</a></p>
-<p>Rseq = Smax - Sobs = log2 N - (-sum(n=1,N):pn * log2 pn)</p>
+Bit calculation is performed as explained in
+<a class="reference external" href="http://www.genome.org/cgi/doi/10.1101/gr.849004">http://www.genome.org/cgi/doi/10.1101/gr.849004</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Rseq</span> <span class="o">=</span> <span class="n">Smax</span> <span class="o">-</span> <span class="n">Sobs</span> <span class="o">=</span> <span class="n">log2</span> <span class="n">N</span> <span class="o">-</span> <span class="p">(</span><span class="o">-</span><span class="nb">sum</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">):</span><span class="n">pn</span> <span class="o">*</span> <span class="n">log2</span> <span class="n">pn</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="docutils">
 <dt>Where:</dt>
 <dd><ul class="first last simple">
@@ -133,7 +136,7 @@ different reasons will translate into different maximum expected height.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a new <a class="reference internal" href="../rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="../rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> - with the new scoring system</td>
 </tr>
 </tbody>
 </table>
@@ -158,7 +161,7 @@ different reasons will translate into different maximum expected height.</li>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

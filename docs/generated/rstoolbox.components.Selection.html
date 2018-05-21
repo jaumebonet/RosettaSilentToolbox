@@ -130,7 +130,7 @@ Thus, a <a class="reference internal" href="#rstoolbox.components.Selection" tit
 <span class="gp">   ...: </span>
 </pre></div>
 </div>
-<p>If a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> is provided, <a class="reference internal" href="#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a> will try to
+<p>If a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a> is provided, <a class="reference internal" href="#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a> will try to
 extract the appropiate content.</p>
 <p>If <strong>regular numbering</strong> is provided, it will assume that it refers to direct
 sequence positions.</p>
@@ -146,6 +146,27 @@ when applied to the different functons and data containers.</p>
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>PDB numbering</strong> cannot combine selections from multiple chains.</p>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>selection</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code>, <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>]) – Residue positions that define the sequence selection.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">if the provided selection object cannot be processed.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ValueError:</th><td class="field-body">if values provided cannot be properly converted to an integer list.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
 <p>Multiple operations are available for Selection.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">sele</span> <span class="o">=</span> <span class="n">Selection</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">25</span><span class="p">])</span>
 <span class="gp">   ...: </span><span class="c1"># Negate selection: will call &#39;select all except&#39;</span>
@@ -188,27 +209,6 @@ when applied to the different functons and data containers.</p>
 <p class="first admonition-title">Warning</p>
 <p class="last"><em>Shifted</em> and <em>Unshifted</em> <a class="reference internal" href="#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a> cannot operate between them.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>selection</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code>, <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>]) – Residue positions that define the sequence selection.</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">If the provided selection object cannot be processed.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">ValueError:</th><td class="field-body">If values provided cannot be properly converted to an integer list.</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
 <p class="rubric">Methods</p>
 <table border="1" class="longtable docutils">
 <colgroup>
@@ -263,7 +263,7 @@ when applied to the different functons and data containers.</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

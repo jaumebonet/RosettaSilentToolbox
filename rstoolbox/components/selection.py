@@ -1,18 +1,25 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   13-Dec-2017
-# @Email:  jaume.bonet@gmail.com
-# @Filename: Selection.py
-# @Last modified by:   bonet
-# @Last modified time: 02-May-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+.. class:: FragmentFrame
+"""
+# Standard Libraries
 import copy
 from itertools import groupby, count
 import re
 
+# External Libraries
 import six
 from pandas import Series
 import numpy as np
+
+# This Library
+
 
 __all__ = ["Selection", "SelectionContainer", "get_selection"]
 
@@ -23,16 +30,13 @@ def get_selection( key_residues, seqID, shift=1, length=None ):
     Call this function in any function with the ``key_residues`` parameter. It will
     manage the type of input and return the appropiate list of selected residues.
 
-    :param key_residues: Residues of interest.
-    :type key_residues: Union[:class:`int`, :func:`list` of :class:`int`,
-                              :class:`str`, :class:`.Selection`]
-    :param seqID: Identifier of the working sequence.
-    :type seqID: :class:`str`
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_types|
+    :param str seqID: |seqID_param|.
     :param shift: Starting residue number or per-residue number assignment.
     :type shift: Union[:class:`int`, :func:`list` of :class:`int`]
-    :param length: Length of the sequence over which it will be applied. Needed in
-        case of inverted :class:`.Selection`.
-    :type length: :class:`int`
+    :param int length: Length of the sequence over which it will be applied.
+        Needed in case of inverted :class:`.Selection`.
 
     :return: :class:`~numpy.ndarray`
 
@@ -100,6 +104,12 @@ class Selection( object ):
     .. note::
         **PDB numbering** cannot combine selections from multiple chains.
 
+    :param selection: Residue positions that define the sequence selection.
+    :type selection: Union[:class:`str`, :func:`list`, :class:`~pandas.Series`]
+
+    :raises:
+        :AttributeError: if the provided selection object cannot be processed.
+        :ValueError: if values provided cannot be properly converted to an integer list.
 
     Multiple operations are available for Selection.
 
@@ -136,13 +146,6 @@ class Selection( object ):
 
         *Shifted* and *Unshifted* :class:`.Selection` cannot operate between them.
 
-    :param selection: Residue positions that define the sequence selection.
-    :type selection: Union[:class:`str`, :func:`list`, :class:`~pandas.Series`]
-
-    :raises:
-        :AttributeError: If the provided selection object cannot be processed.
-        :ValueError: If values provided cannot be properly converted to an integer list.
-
     """
     def __init__( self, selection=None ):
 
@@ -168,27 +171,17 @@ class Selection( object ):
             self._asarr = sorted(list(set(selection)))
         elif selection is None:
             pass
+        elif isinstance(selection, Selection):
+            self._asarr = selection._asarr
+            self._seqID = selection._seqID
+            self._revrs = selection._revrs
+            self._isarr = selection._isarr
+            self._ialen = selection._ialen
         else:
             raise AttributeError("Unable to processs the provided selection")
 
     def to_list( self, length=None ):
-        """
-        Provide the values of the :class:`.Selection` as a list of integers.
-
-        .. ipython::
-
-            In [1]: from rstoolbox.components import Selection
-               ...: ss = Selection("3-5,13-15,21,25")
-               ...: ss.to_list()
-
-        If the :class:`.Selection` **is reversed**, the ``length`` over which it will
-        be applied needs to be provided, so that the actual selected positions can
-        be determined.
-
-        .. ipython::
-
-            In [2]: sr = ~ss
-               ...: ss.to_list(25)
+        """Provide the values of the :class:`.Selection` as a list of integers.
 
         :param length: Expected total length of the sequence to which the
             :class:`.Selection` will be applied.
@@ -200,6 +193,23 @@ class Selection( object ):
         :raises:
             :AttributeError: If the :class:`.Selection` is reversed and no
                 ``length`` is provided.
+
+        If the :class:`.Selection` **is reversed**, the ``length`` over which it will
+        be applied needs to be provided, so that the actual selected positions can
+        be determined.
+
+        .. ipython::
+
+            In [2]: sr = ~ss
+               ...: ss.to_list(25)
+
+        .. rubric:: Example
+
+        .. ipython::
+
+            In [1]: from rstoolbox.components import Selection
+               ...: ss = Selection("3-5,13-15,21,25")
+               ...: ss.to_list()
         """
         if not self._revrs:
             return self._asarr
@@ -213,8 +223,11 @@ class Selection( object ):
             return sorted(self._isarr)
 
     def to_string( self ):
-        """
-        Provide the values of the :class:`.Selection` as a string.
+        """Provide the values of the :class:`.Selection` as a string.
+
+        :return: :class:`str`
+
+        .. rubric:: Example
 
         .. ipython::
 
@@ -229,16 +242,19 @@ class Selection( object ):
 
             In [1]: ss.shift("A", 3).to_string()
 
-        :return: :class:`str`
+
         """
         return self._list_to_string()
 
     def seqID( self ):
-        """
-        Identifier of the sequence to which :class:`.Selection` is assigned.
+        """Identifier of the sequence to which :class:`.Selection` is assigned.
 
         A :class:`.Selection` only has ``seqID`` if :meth:`~Selection.is_shifted`,
         otherwise ``seqID`` is :data:`None`.
+
+        :return: :class:`str`
+
+        .. rubric:: Example
 
         .. ipython::
 
@@ -247,14 +263,15 @@ class Selection( object ):
                ...: ss.seqID()
 
             In [1]: ss.shift("A", 3).seqID()
-
-        :return: :class:`str`
         """
         return self._seqID
 
     def is_empty( self ):
-        """
-        Evaluate if :class:`.Selection` is empty.
+        """Evaluate if :class:`.Selection` is empty.
+
+        :return: :class:`bool`
+
+        .. rubric:: Example
 
         .. ipython::
 
@@ -263,15 +280,17 @@ class Selection( object ):
                ...: ss.is_empty()
 
             In [1]: Selection().is_empty()
-
-        :return: :class:`bool`
         """
         return len(self._asarr) == 0
 
     def is_shifted( self ):
-        """
-        Evaluate if :class:`.Selection` is shifted. Is the selection is shifted,
-        it will need to be assigned to a seqID.
+        """Evaluate if :class:`.Selection` is shifted.
+
+        Is the selection is shifted, it will need to be assigned to a seqID.
+
+        :return: :class:`bool`
+
+        .. rubric:: Example
 
         .. ipython::
 
@@ -280,14 +299,11 @@ class Selection( object ):
                ...: ss.is_shifted()
 
             In [1]: ss.shift("A", 3).is_shifted()
-
-        :return: :class:`bool`
         """
         return bool(self._seqID)
 
     def map_to_sequences( self, sequence_map ):
-        """
-        Generator for :func:`.parse_rosetta_file`.
+        """Generator for :func:`.parse_rosetta_file`.
 
         This function is not really expected to be directly accessed by the user.
 
@@ -303,20 +319,6 @@ class Selection( object ):
             If a ``seqID`` is present in the ``sequence_map`` but has no residue
             selected, an empty :class:`.Selection` will be generated for that key.
 
-        .. ipython::
-
-            In [1]: from rstoolbox.components import Selection
-               ...: seq = ["A",] * 14 + ["B",] * 11
-               ...: "".join(seq)
-
-            In [1]: ss = Selection([3, 4, 5, 13, 14, 15, 21, 25])
-               ...: sd = ss.map_to_sequences(seq)
-               ...: for seqID in sd:
-               ...:     print seqID, sd[seqID]
-
-        .. warning::
-            It cannot be applied to an already shifted :class:`.Selection`.
-
         :param sequence_map: List with ``seqID`` per position.
         :type sequence_map: :func:`list` of :class:`str`
 
@@ -328,6 +330,22 @@ class Selection( object ):
 
         .. seealso::
             :func:`.parse_rosetta_file`
+
+        .. warning::
+            It cannot be applied to an already shifted :class:`.Selection`.
+
+        .. rubric:: Example
+
+        .. ipython::
+
+            In [1]: from rstoolbox.components import Selection
+               ...: seq = ["A",] * 14 + ["B",] * 11
+               ...: "".join(seq)
+
+            In [1]: ss = Selection([3, 4, 5, 13, 14, 15, 21, 25])
+               ...: sd = ss.map_to_sequences(seq)
+               ...: for seqID in sd:
+               ...:     print seqID, sd[seqID]
         """
         if self._seqID is not None:
             raise KeyError("The Selection has already an assigned sequence id")
@@ -343,8 +361,7 @@ class Selection( object ):
         return x
 
     def shift( self, seqID, shift ):
-        """
-        Shifts the :class:`.Selection` according to a value and sets
+        """Shifts the :class:`.Selection` according to a value and sets
         up the chain to which it is associated.
 
         There are *two* ways in which a shift can be provided:
@@ -375,12 +392,11 @@ class Selection( object ):
 
             In [1]: ss.shift("A", seq)
 
-        :param seqID: Identifier of the reference sequence
-        :type seqID: :class:`str`
+        :param str seqID: |seqID_param|.
         :param shift: Expected displacement
         :type shift: Union[:class:`int`, :func:`list` of :class:`int`]
 
-        :return: New shifted :class:`.Selection`.
+        :return: :class:`.Selection` - new shifted selection
 
         .. seealso::
             :meth:`~Selection.unshift`
@@ -395,8 +411,7 @@ class Selection( object ):
         return newsele
 
     def unshift( self, seqID, shift ):
-        """
-        Unhifts the :class:`.Selection` according to a value.
+        """Unhifts the :class:`.Selection` according to a value.
 
         Inverst the shift in the :class:`.Selection` to allow for
         direct sequence position targeting.
@@ -435,8 +450,7 @@ class Selection( object ):
 
             In [1]: sf.unshift("A", seq)
 
-        :param seqID: Identifier of the reference sequence
-        :type seqID: :class:`str`
+        :param str seqID: |seqID_param|.
         :param shift: Expected displacement.
         :type shift: Union[:class:`int`, :func:`list` of :class:`int`]
 
@@ -458,8 +472,7 @@ class Selection( object ):
     # PRIVATE METHODS
     #
     def _string_to_list( self, selection ):
-        """
-        Will transform the string definition inside the object to an array.
+        """Will transform the string definition inside the object to an array.
 
         :param selection: Representation of the selection positions
         :type selection: :class:`str`
@@ -486,15 +499,13 @@ class Selection( object ):
         return sorted(list(set(o)))
 
     def _evaluate_number( self, number ):
-        """
-        Return integer value from a string taking into account possible
-        seqID assignation.
+        """Return integer value from a string taking into account possible
+        ``seqID`` assignation.
 
         :return: :class:`int`
 
         :raises:
-            :AttributeError: If it finds a seqID that does not match with
-            the expected ones.
+            :AttributeError: |seqID_error|.
         """
         number = number.strip()
         if self._seqID is None:
@@ -597,8 +608,7 @@ class Selection( object ):
 
 
 class SelectionContainer( object ):
-    """
-    Helper class to manage representation of selectors in :mod:`pandas`.
+    """Helper class to manage representation of selectors in :mod:`pandas`.
 
     A :class:`.SelectionContainer` is generated when labels are read through
     the :func:`.parse_rosetta_file`, as **ResidueLabels** are saved in
@@ -642,17 +652,16 @@ class SelectionContainer( object ):
         self._content = dict(args)
 
     def shift( self, seqID, value ):
-        """
-        Helper to ease the apply function. Shifts by value the labels
-        assigned to a given seqID.
+        """Shifts by value the labels assigned to a given ``seqID``.
 
-        :param seqID: Identifier of the reference sequence
-        :type seqID: :class:`str`
+        Helper to ease the apply function.
+
+        :param str seqID: |seqID_param|.
         :param value: Identifier of the reference sequence
         :type value: Union[:class:`int`, :class:`list` of :class:`int`]
 
         :raises:
-            :ValueError: If the :py:class:`.Selection` is already shifted
+            :ValueError: if the :class:`.Selection` is already shifted
 
         .. seealso::
             :meth:`Selection.shift`
@@ -663,17 +672,16 @@ class SelectionContainer( object ):
             self[seqID] = self[seqID].shift(seqID, value)
 
     def unshift( self, seqID, value ):
-        """
-        Helper to ease the apply function. Unshifts by value the labels
-        assigned to a given seqID.
+        """Unshifts by value the labels assigned to a given seqID.
 
-        :param seqID: Identifier of the reference sequence
-        :type seqID: :py:class:`str`
+        Helper to ease the apply function.
+
+        :param str seqID: |seqID_param|.
         :param value: Identifier of the reference sequence
         :type value: Union[:class:`int`, :class:`list` of :class:`int`]
 
         :raises:
-            :ValueError: If the :py:class:`.Selection` is already shifted
+            :ValueError: if the :class:`.Selection` is already shifted
 
         .. seealso::
             :meth:`Selection.unshift`

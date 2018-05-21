@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="rstoolbox.io.parse_rosetta_contacts" href="rstoolbox.io.parse_rosetta_contacts.html" />
-    <link rel="prev" title="rstoolbox.io.write_mutant_alignments" href="rstoolbox.io.write_mutant_alignments.html" />
+    <link rel="prev" title="rstoolbox.io.read_hmmsearch" href="rstoolbox.io.read_hmmsearch.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -142,21 +142,6 @@ scores. The fine control of these options is explained in detail in
 <span class="n">df</span> <span class="o">=</span> <span class="n">rstoolbox</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;silentfile&quot;</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For example:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
-<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">   ...: </span>
-<span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">     score    fa_atr   fa_rep   fa_sol  fa_intra_rep  fa_elec  pro_close  hbond_sr_bb  hbond_lr_bb  hbond_bb_sc               ...                GRMSD2Template  LRMSD2Target  LRMSDH2Target  LRMSDLH2Target  cav_vol  design_score  packstat  rmsd_drift    time                     description</span>
-<span class="go">0 -206.678 -1510.021  268.657  853.020  2.921        -145.015  5.825     -150.177     -2.452       -13.326                    ...                1.927           4.404         4.055          2.49            387.371 -255.445       0.633     1.677       3194.0  test_3lhp_binder_labeled_00001</span>
-<span class="go">1 -214.362 -1490.968  267.328  824.258  3.019        -133.421  6.018     -151.609     -2.452       -12.584                    ...                2.417           4.469         4.124          2.73            332.657 -264.239       0.577     2.240       3210.0  test_3lhp_binder_labeled_00002</span>
-
-<span class="go">[2 rows x 34 columns]</span>
-</pre></div>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -166,7 +151,7 @@ scores. The fine control of these options is explained in detail in
 <li><strong>description</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – Parsing rules. It can be a dictionary describing
 the rules or the name of a file containing such dictionary. The
 dictionary definition is explained in <a class="reference internal" href="../tutorials/readrosetta.html#readrosetta"><span class="std std-ref">tutorial: reading Rosetta</span></a>.</li>
-<li><strong>multi</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, indicates that data is readed from multiple files.</li>
+<li><strong>multi</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, indicates that data is readed from multiple files.</li>
 </ul>
 </td>
 </tr>
@@ -187,6 +172,21 @@ dictionary definition is explained in <a class="reference internal" href="../tut
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="go">     score    fa_atr   fa_rep   fa_sol  fa_intra_rep  fa_elec  pro_close  hbond_sr_bb  hbond_lr_bb               ...                LRMSD2Target  LRMSDH2Target  LRMSDLH2Target  cav_vol  design_score  packstat  rmsd_drift    time                     description</span>
+<span class="go">0 -206.678 -1510.021  268.657  853.020  2.921        -145.015  5.825     -150.177     -2.452                     ...                4.404         4.055          2.49            387.371 -255.445       0.633     1.677       3194.0  test_3lhp_binder_labeled_00001</span>
+<span class="go">1 -214.362 -1490.968  267.328  824.258  3.019        -133.421  6.018     -151.609     -2.452                     ...                4.469         4.124          2.73            332.657 -264.239       0.577     2.240       3210.0  test_3lhp_binder_labeled_00002</span>
+
+<span class="go">[2 rows x 34 columns]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>
@@ -208,7 +208,7 @@ dictionary definition is explained in <a class="reference internal" href="../tut
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

@@ -20,7 +20,7 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="rstoolbox.io.parse_rosetta_file" href="rstoolbox.io.parse_rosetta_file.html" />
+    <link rel="next" title="rstoolbox.io.read_hmmsearch" href="rstoolbox.io.read_hmmsearch.html" />
     <link rel="prev" title="rstoolbox.io.write_clustalw" href="rstoolbox.io.write_clustalw.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -118,16 +118,16 @@
 <code class="descclassname">rstoolbox.io.</code><code class="descname">write_mutant_alignments</code><span class="sig-paren">(</span><em>df</em>, <em>seqID</em>, <em>filename=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.write_mutant_alignments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes a text file containing only the positions changed with respect to
 the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</p>
-<p>The format will be CLUSTALW but residues that repeat the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>
+<p>The format will be <strong>CLUSTALW</strong> but residues that repeat the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>
 are substituted by “.”.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>]) – Data content.</li>
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier(s) of the sequences expected to be printed.</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Output file name.</li>
+<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>]) – Data content.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Output file name.</li>
 </ul>
 </td>
 </tr>
@@ -141,7 +141,7 @@ are substituted by “.”.</p>
 <tr class="field-odd field"><th class="field-name">IOError:</th><td class="field-body">If <code class="docutils literal notranslate"><span class="pre">filename</span></code> exists and global option <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.overwrite</span></a>
 is not <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">AttributeError:</th><td class="field-body">If any of the requested seqID cannot be found.</td>
+<tr class="field-even field"><th class="field-name">AttributeError:</th><td class="field-body">if there is no sequence information for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys.</td>
 </tr>
 </tbody>
 </table>
@@ -151,8 +151,7 @@ is not <a class="reference external" href="https://docs.python.org/2/library/con
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Depends on <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.overwrite</span></a> and
-<a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.output</span></a>.</p>
+<p class="last">Depends on <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.overwrite</span></a> and <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.output</span></a>.</p>
 </div>
 </dd></dl>
 
@@ -175,7 +174,7 @@ is not <a class="reference external" href="https://docs.python.org/2/library/con
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

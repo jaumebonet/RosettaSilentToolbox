@@ -116,18 +116,19 @@
 <dl class="method">
 <dt id="rstoolbox.components.DesignFrame.sequence_distance">
 <code class="descclassname">DesignFrame.</code><code class="descname">sequence_distance</code><span class="sig-paren">(</span><em>seqID</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.sequence_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a matrix counting the distance between each pair of sequences in the
+<dd><p>Make identity sequence distance between the selected decoys.</p>
+<p>Generate a matrix counting the distance between each pair of sequences in the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">designFrame</span></code>. This is a time-consuming operation; better to execute it over a
 specific set of selected decoys that over all your designs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the sequence of interest.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</td>
 </tr>
 </tbody>
 </table>
-<p>return: <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
+<p>return: <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> - table with the sequence distances.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -136,7 +137,7 @@ specific set of selected decoys that over all your designs.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">KeyError:</th><td class="field-body">if <code class="docutils literal notranslate"><span class="pre">seqID</span></code> cannot be found.</td>
+<tr class="field-odd field"><th class="field-name">KeyError:</th><td class="field-body">if there is no sequence information for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">if <code class="docutils literal notranslate"><span class="pre">description</span></code> column cannot be found.</td>
 </tr>
@@ -146,6 +147,24 @@ specific set of selected decoys that over all your designs.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">],</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">sequence_distance</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="go">                                test_3lhp_binder_labeled_00001  test_3lhp_binder_labeled_00002  test_3lhp_binder_labeled_00003  test_3lhp_binder_labeled_00004  test_3lhp_binder_labeled_00005  test_3lhp_binder_labeled_00006</span>
+<span class="go">test_3lhp_binder_labeled_00001  0                               75                              77                              74                              69                              81                            </span>
+<span class="go">test_3lhp_binder_labeled_00002  75                              0                               75                              65                              66                              73                            </span>
+<span class="go">test_3lhp_binder_labeled_00003  77                              75                              0                               68                              81                              76                            </span>
+<span class="go">test_3lhp_binder_labeled_00004  74                              65                              68                              0                               74                              71                            </span>
+<span class="go">test_3lhp_binder_labeled_00005  69                              66                              81                              74                              0                               66                            </span>
+<span class="go">test_3lhp_binder_labeled_00006  81                              73                              76                              71                              66                              0                             </span>
+</pre></div>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>
@@ -167,7 +186,7 @@ specific set of selected decoys that over all your designs.</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

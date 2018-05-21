@@ -1,4 +1,10 @@
 ---
+engines:
+ duplication:
+   enabled: true
+   exclude_paths:
+     - "rstoolbox/bin/**"
+
 exclude_paths:
   - "rstoolbox/tests/**"
   - "*/_version.py"

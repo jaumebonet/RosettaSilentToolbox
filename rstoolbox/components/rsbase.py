@@ -1,15 +1,21 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   22-Feb-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: rsbase.py
-# @Last modified by:   bonet
-# @Last modified time: 11-Apr-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+.. class:: RSBaseDesign
+.. class:: RSBaseFrequency
+"""
+# Standard Libraries
 import sys
 
+# External Libraries
 import six
 
+# This Library
 import rstoolbox.utils as ru
 
 __all__ = ["RSBaseDesign", "RSBaseFrequency"]

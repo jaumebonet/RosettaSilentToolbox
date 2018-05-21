@@ -1,28 +1,39 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   19-Feb-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: sequence.py
-# @Last modified by:   bonet
-# @Last modified time: 13-Apr-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+.. func:: read_fasta
+.. func:: write_fasta
+.. func:: write_clustalw
+.. func:: write_mutant_alignments
+.. func:: read_hmmsearch
+"""
+# Standard Libraries
 import os
 import re
 import gzip
 import bisect
 
+# External Libraries
+import pandas as pd
+
+# This Library
 import rstoolbox.core as core
 import rstoolbox.components as cp
 from rstoolbox.io.rosetta import _gather_file_list
 from rstoolbox.utils.getters import _check_column
 
 
-__all__ = ["read_fasta", "write_fasta", "write_clustalw", "write_mutant_alignments"]
+__all__ = ['read_fasta', 'write_fasta', 'write_clustalw', 'write_mutant_alignments',
+           'read_hmmsearch']
 
 
 def read_fasta( filename, expand=False, multi=False ):
-    """
-    Reads one or more **FASTA** files and returns the appropiate object
+    """Reads one or more **FASTA** files and returns the appropiate object
     containing the requested data: the :class:`.DesignFrame`.
 
     The default generated :class:`.DesignFrame` will contain two columns:
@@ -60,21 +71,15 @@ def read_fasta( filename, expand=False, multi=False ):
         Notice everything from the original ``description`` after the ``|`` symbol
         is lost after that process.
 
-    :param filename: file name or file pattern to search.
-    :type filename: :class:`str`
-    :param expand: Try to better associate sequence ID if format is **PDB FASTA**.
-    :type expand: :class:`bool`
-    :param multi: When :data:`True`, indicates that data is readed from
+    :param str filename: file name or file pattern to search.
+    :param bool expand: Try to better associate sequence ID if format is **PDB FASTA**.
+    :param bool multi: When :data:`True`, indicates that data is readed from
         multiple files.
-    :type multi: :class:`bool`
 
-    :return: :py:class:`.DesignFrame`.
+    :return: :class:`.DesignFrame`.
 
     :raises:
         :IOError: if ``filename`` cannot be found.
-
-    .. note::
-        Depends on :ref:`system.output <options>`.
 
     .. seealso::
         :func:`~.write_fasta`
@@ -106,8 +111,7 @@ def read_fasta( filename, expand=False, multi=False ):
 
 
 def write_fasta( df, seqID, separator=None, filename=None, split=False ):
-    """
-    Writes fasta files of the selected decoys.
+    """Writes fasta files of the selected decoys.
 
     It assumes that the provided data is contained in a :class:`.DesignFrame`
     or a :class:`~pandas.DataFrame`.
@@ -138,34 +142,29 @@ def write_fasta( df, seqID, separator=None, filename=None, split=False ):
 
     :param df: Data content.
     :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
-    :param seqID: Identifier(s) of the sequences expected to be printed.
-    :type seqID: :class:`str`
-    :param separator: Add ``seqID`` to sequence identifier through a particular
+    :param str seqID: |seqID_param|.
+    :param str separator: Add ``seqID`` to sequence identifier through a particular
         string separator. If multiple ``seqID`` are provided, it defaults to ``:``.
-    :type separator: :class:`str`
-    :param filename: Output file name.
-    :type filename: :class:`str`
-    :param split: Split each fasta in a different file. ``filename`` first part of the filename
+    :param str filename: Output file name.
+    :param bool split: Split each fasta in a different file. ``filename`` first part of the filename
         is used as `prefix`, with a following enumeration.
-    :type split: :class:`bool`
 
     :return: :class:`str` - **FASTA** formated string.
 
     :raises:
         :IOError: If ``filename`` exists and global option :ref:`system.overwrite <options>`
             is not :data:`True`.
-        :AttributeError: If any of the requested seqID cannot be found.
+        :AttributeError: |seqID_error|.
 
     .. note::
-        Depends on :ref:`system.overwrite <options>` and
-        :ref:`system.output <options>`.
+        Depends on :ref:`system.overwrite <options>` and :ref:`system.output <options>`.
 
     .. seealso::
-        :func:`~.write_fasta`
+        :func:`~.read_fasta`
     """
     def nomenclator(row, seqID, separator):
         sequence = row.get_sequence(seqID)
-        if sequence is None or len(sequence) == 0:
+        if sequence is None or isinstance(sequence, float) or len(sequence) == 0:
             return ""
         name = ">" + row.get_id()
         if separator is not None:
@@ -203,8 +202,7 @@ def write_fasta( df, seqID, separator=None, filename=None, split=False ):
 
 
 def write_clustalw( df, seqID, filename=None ):
-    """
-    Write sequences of selected designs as a CLUSTALW alignment.
+    """Write sequences of selected designs as a CLUSTALW alignment.
 
     If a ``reference_sequence`` exists, it is set up as the first sequence
     of the alignment. The name assigned to it will be the multipl longest common
@@ -214,7 +212,7 @@ def write_clustalw( df, seqID, filename=None ):
 
     :param df: Data content.
     :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
-    :param seqID: Identifier(s) of the sequences expected to be printed.
+    :param str seqID: |seqID_param|.
     :type seqID: :class:`str`
     :param filename: Output file name.
     :type filename: :class:`str`
@@ -224,11 +222,10 @@ def write_clustalw( df, seqID, filename=None ):
     :raises:
         :IOError: If ``filename`` exists and global option :ref:`system.overwrite <options>`
             is not :data:`True`.
-        :AttributeError: If any of the requested seqID cannot be found.
+        :AttributeError: |seqID_error|.
 
     .. note::
-        Depends on :ref:`system.overwrite <options>` and
-        :ref:`system.output <options>`.
+        Depends on :ref:`system.overwrite <options>` and :ref:`system.output <options>`.
     """
     def chunkstring(string, length):
         return [string[0 + i:length + i] for i in range(0, len(string), length)]
@@ -267,30 +264,26 @@ def write_clustalw( df, seqID, filename=None ):
 
 
 def write_mutant_alignments( df, seqID, filename=None ):
-    """
-    Writes a text file containing only the positions changed with respect to
+    """Writes a text file containing only the positions changed with respect to
     the ``reference_sequence``.
 
-    The format will be CLUSTALW but residues that repeat the ``reference_sequence``
+    The format will be **CLUSTALW** but residues that repeat the ``reference_sequence``
     are substituted by ".".
 
     :param df: Data content.
     :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
-    :param seqID: Identifier(s) of the sequences expected to be printed.
-    :type seqID: :class:`str`
-    :param filename: Output file name.
-    :type filename: :class:`str`
+    :param str seqID: |seqID_param|.
+    :param str filename: Output file name.
 
     :return: :class:`str` - **CLUSTALW** formated string.
 
     :raises:
         :IOError: If ``filename`` exists and global option :ref:`system.overwrite <options>`
             is not :data:`True`.
-        :AttributeError: If any of the requested seqID cannot be found.
+        :AttributeError: |seqID_error|.
 
     .. note::
-        Depends on :ref:`system.overwrite <options>` and
-        :ref:`system.output <options>`.
+        Depends on :ref:`system.overwrite <options>` and :ref:`system.output <options>`.
     """
     def mask_row(row, seqID):
         pos = row.get_mutation_positions(seqID)
@@ -305,6 +298,103 @@ def write_mutant_alignments( df, seqID, filename=None ):
     df[_check_column(df, "sequence", seqID)] = df.apply(lambda row: mask_row(row, seqID), axis=1)
 
     return write_clustalw(df, seqID, filename)
+
+
+def read_hmmsearch( filename ):
+    """Read output from ``hmmsearch``.
+
+    Processess the output of Hidden Markov Models search over a set
+    of sequences with `hmmsearch <http://hmmer.org/>`_.
+
+    Will return a :class:`~pandas.DataFrame` with the following columns:
+
+    ====================  ===================================================
+    Column Name           Data Content
+    ====================  ===================================================
+    **description**       Sequence identifier.
+    **full-e-value**      E-value for full sequence match.
+    **full-score**        Score for full sequence match.
+    **full-bias**         Bias for full sequence.
+    **dom-e-value**       E-values for best scored domain.
+    **dom-score**         Score for best scored domain.
+    **dom-bias**          Bias for best scored domain.
+    **dom-exp**           Expected number of domains.
+    **dom-N**             Actual number of domains.
+    ====================  ===================================================
+
+    :param str filename: Name of the ``hmmsearch`` output file.
+
+    :return: :class:`~pandas.DataFrame`
+
+    :raises:
+        :IOError: if ``filename`` does not exist.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import read_hmmsearch
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = read_hmmsearch("../rstoolbox/tests/data/search.hmm.gz")
+           ...: df.head()
+    """
+    if not os.path.isfile(filename):
+        raise IOError('{} cannot be found'.format(filename))
+
+    data = {'full-e-value': [], 'full-score': [], 'full-bias': [],
+            'dom-e-value': [], 'dom-score': [], 'dom-bias': [],
+            'dom-exp': [], 'dom-N': [], 'description': []}
+    dat2 = {'description': [], 'score': [], 'bias': [], 'c-Evalue': [],
+            'i-Evalue': [], 'hmmfrom': [], 'hmmto': [], 'alifrom': [],
+            'alito': [], 'envfrom': [], 'envto': [], 'acc': []}
+    nam2 = ''
+    read = 0
+    ali = re.compile('\d+\s[\!\?][\s\S]*')
+    fd = open(filename)if not filename.endswith("gz") else gzip.open(filename)
+    for line in fd:
+        line = line.decode('utf8') if filename.endswith(".gz") else line
+        if len(line.strip()) == 0:
+            continue
+        if line.strip().startswith('------') and read != 2:
+            read = 1
+            continue
+        if line.startswith('Domain annotation for each sequence:'):
+            read = 2
+            continue
+        if read == 1:
+            line = line.strip().split()
+            data['full-e-value'].append(float(line[0]))
+            data['full-score'].append(float(line[1]))
+            data['full-bias'].append(float(line[2]))
+            data['dom-e-value'].append(float(line[3]))
+            data['dom-score'].append(float(line[4]))
+            data['dom-bias'].append(float(line[5]))
+            data['dom-exp'].append(float(line[6]))
+            data['dom-N'].append(float(line[7]))
+            data['description'].append(line[8])
+        if read == 2:
+            if line.startswith('>>'):
+                nam2 = line.split()[1].strip()
+                continue
+            if re.match(ali, line.strip()):
+                dat2['description'].append(nam2)
+                lnp = line.strip().split()
+                dat2['score'].append(float(lnp[2]))
+                dat2['bias'].append(float(lnp[3]))
+                dat2['c-Evalue'].append(float(lnp[4]))
+                dat2['i-Evalue'].append(float(lnp[5]))
+                dat2['hmmfrom'].append(int(lnp[6]))
+                dat2['hmmto'].append(int(lnp[7]))
+                dat2['alifrom'].append(int(lnp[9]))
+                dat2['alito'].append(int(lnp[10]))
+                dat2['envfrom'].append(int(lnp[12]))
+                dat2['envto'].append(int(lnp[13]))
+                dat2['acc'].append(float(lnp[15]))
+                continue
+    fd.close()
+    return pd.merge(pd.DataFrame(data), pd.DataFrame(dat2),
+                    on='description', how='outer').fillna(0)
 
 
 def mlcs(strings):

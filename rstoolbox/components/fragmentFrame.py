@@ -1,10 +1,13 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   09-Jan-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: fragmentFrame.py
-# @Last modified by:   bonet
-# @Last modified time: 09-Apr-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+
+.. class:: FragmentFrame
+"""
 # Standard Libraries
 import os
 import math
@@ -24,13 +27,29 @@ __all__ = ["FragmentFrame"]
 
 
 class FragmentFrame( pd.DataFrame ):
-    """
-    The :py:class:`.FragmentFrame` extends :py:class:`pandas.DataFrame`
-    adding some functionalities in order to facilitate comparissons.
+    """Data container for Fragment data.
+
+    Extends :py:class:`pandas.DataFrame` adding some functionalities in order
+    to facilitate analysis, plotting and comparisson.
+
     Filled through the functions provided through this library, each
     row represents a position of a fragment, while columns describe the
     properties.
 
+    .. seealso::
+        :func:`.parse_rosetta_fragments`
+        :func:`.plot_fragments`
+        :func:`.plot_fragment_profiles`
+
+    . rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_fragments
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_fragments("../rstoolbox/tests/data/wauto.200.3mers.gz")
+           ...: df.head()
     """
     _metadata = ['_source_file']
     _internal_names = pd.DataFrame._internal_names + ['_crunched']
@@ -45,37 +64,42 @@ class FragmentFrame( pd.DataFrame ):
         self._source_file = source_file
 
     def add_source_file( self, file ):
-        """
-        Adds a source file to the :py:class:`.FragmentFrame`. This can be used to automatically
-        generate the fragment RMSD quality.
+        """Adds a source file to the :class:`.FragmentFrame`.
+
+        If loaded through :func:`.parse_rosetta_fragments`, the source file is
+        automatically added.
+
+        This can be used to automatically generate the fragment RMSD quality.
 
         :param str file: Name of the file.
+
+        .. seealso:
+            :meth:`FragmentFrame.add_quality_measure`
         """
-        self._source_file = file
+        self._source_file = os.path.abspath(file)
 
     def get_source_file( self ):
-        """
-        Returns the file name linked to this :py:class:`.FragmentFrame`.
+        """Returns the file name linked to this :class:`.FragmentFrame`.
 
-        :return: File name.
+        :return: :class:`str` - Source file path.
         """
         return self._source_file
 
     def has_source_file( self ):
-        """
-        Checks if there is a source file added.
+        """Checks if there is a source file added.
 
         :return: bool
         """
         return self._source_file is not None
 
     def is_comparable( self, df ):
-        """
-        Evaluate if the current :py:class:`.FragmentFrame` is comparable to
-        the provided one. This is checked on terms of (a) covered sequence
-        length -range- and (2) fragment size.
+        """Evaluate if the current :class:`.FragmentFrame` is comparable to
+        the provided one.
 
-        :return: True if the two :class:`.FragmentFrame` are comparable.
+        This is checked on terms of (a) covered sequence length -range- and
+        (2) fragment size.
+
+        :return: :class:`bool` - True if the two :class:`.FragmentFrame` are comparable.
         """
         if max(self["position"]) != max(df["position"]):
             return False
@@ -86,24 +110,40 @@ class FragmentFrame( pd.DataFrame ):
         return True
 
     def add_quality_measure( self, filename, pdbfile=None ):
-        """
-        Add to the data the RMSD quality measure provided
-        by the r_fraq_qual app from Rosetta.
+        """Add RMSD quality measure to the fragment data.
 
-        :param str filename: Name containing the quality measure.
-            If filename is None, it assumes that there is RMSD quality
-            yet, so it'll run it as long as the :py:class:`.FragmentFrame`
-            has a source file. Standart output will be the name of the source
-            file with the extension ".qual". If this file exists, it will be
-            automatically picked.
+        The RMSD quality measurement is performed by the ``r_fraq_qual`` application
+        from **Rosetta**. It can be called as:
+
+        .. code-block:: bash
+
+           r_fraq_qual.linuxgccrelease -in:file:native <pdb> -f <fragfile> -out:qual <output>
+
+        :param str filename: Name containing the quality measure. If ``filename`` is None,
+            it assumes that RMSD quality has not been calculated yet, so it'll run the
+            ``r_fraq_qual`` application as long as the :class:`.FragmentFrame`
+            has a ``source_file``. Standart output will be the name of the source
+            file with the extension ".qual". If a file with this naming schema exists,
+            it will be automatically picked. To be able to run *Rosetta* it will need
+            a ``pdbfile``.
         :param str pdbfile: In case the quality has to be calculated. Provide the
-            PDB over which to calculate it. Default is None.
-        :raise: IOError if filename does not exist.
-        :raise: IOError if pdbfile is provided and does not exist.
-        :raise: IOError if the rosetta executable is not found.
-            Depends on rosetta.path and rosetta.compilation
-        :raise: AttributeError if filename is None and there is no attached
-            source file to the object.
+            PDB over which to calculate it. Default is :data:`None`.
+
+        :raises:
+            :IOError: if ``filename`` does not exist.
+            :IOError: if ``pdbfile`` is provided and does not exist.
+            :IOError: if the *Rosetta* executable is not found.
+            :AttributeError: if ``filename`` is :data:`None` and there is no attached
+                ``source_file`` to the object.
+            :ValueError: if no rmsd data is assigned. Might indicate that wrong data is
+                trying to be assigned.
+
+        .. note::
+            Depends on :ref:`rosetta.path <options>` and :ref:`rosetta.compilation <options>`,
+            if the quality file is not provided.
+
+        .. attention::
+            Some configurations of this function require a local installation of **Rosetta**.
         """
         if filename is None and not self.has_source_file():
             raise AttributeError("No quality file is provided and no source file can be found.")
@@ -138,20 +178,21 @@ class FragmentFrame( pd.DataFrame ):
                          names=["size", "frame", "neighbor", "rmsd", "_null1", "_null2"],
                          usecols=["size", "frame", "neighbor", "rmsd"])
 
-        return self.merge(df, how='left', on=["size", "frame", "neighbor"])
+        df = self.merge(df, how='left', on=["size", "frame", "neighbor"])
+        if (df['rmsd'].isnull()).all():
+            raise ValueError('No rmsd was assigned to the fragment data. '
+                             'Check that the correct quality data is being assigned.')
+        return df
 
     def select_quantile( self, quantile=0.25 ):
-        """
-        Returns only the fragments under the rmsd threshold of the specified
-        quantile.
+        """Returns fragments under the rmsd threshold of the specified uantile.
 
-        :param quantile: Quantile maximum limit.
-        :type quantile: :class:`float`
+        :param float quantile: Quantile maximum limit.
 
         :return: :class:`.FragmentFrame` - The filtered data.
 
         :raises:
-            :KeyError: if the `rmsd` column cannot be found.
+            :KeyError: if the ``rmsd`` column cannot be found.
 
         .. seealso::
             :meth:`~.FragmentFrame.add_quality_measure`
@@ -165,15 +206,18 @@ class FragmentFrame( pd.DataFrame ):
         df._source_file = self._source_file
         return df
 
-    def make_sequence_matrix( self, frequency=False, round=False ):
-        """
-        Generate a PSSM-like matrix from the fragments.
+    def make_sequence_matrix( self, frequency=False, round_data=False ):
+        """Generate a PSSM-like matrix from the fragments.
 
-        :param frequency: Return the matrix with frequency values? Default will
-            return the values as :math:`logodd(f(ni)/f(bi))`.
-        :type frequency: :class:`bool`
-        :param round: Round-floor the values.
-        :type round: :class:`bool`
+        The matrix will contain, for each position the relative enrichment of each
+        residue type. By default, this will be:
+
+        :math:`logodd(f(ni)/f(bi))`
+
+        unless ``frequency`` is requested.
+
+        :param bool frequency: Return the matrix with frequency values..
+        :param bool round_data: Round-floor the values.
 
         :return: :class:`~pandas.DataFrame`
         """
@@ -200,7 +244,7 @@ class FragmentFrame( pd.DataFrame ):
                 else:
                     matrix.setdefault(aa, []).append(q)
         df = pd.DataFrame(matrix)
-        if round:
+        if round_data:
             df = df.applymap(np.around).astype(np.int64).reindex(columns=list(alphabet))
         else:
             df = df.reindex(columns=list(alphabet))
@@ -208,15 +252,19 @@ class FragmentFrame( pd.DataFrame ):
         return df
 
     def make_per_position_frequency_network( self ):
-        """
-        Generate a :class:`~networkx.DiGraph` in which each node is a residue type and each
-        edge the frequency expected for that residue type in that position according to the
-        frequency matrix. As a matter of fact, the edge is the *inverted frequency*, as the
-        idea is to use the graph to calculate the shortest paths (i.e. the more probable
-        sequences).
+        """Generate a graph representation of the per-residue frequency.
+
+        Generate a directed graph of class :class:`~networkx.DiGraph` in which each node is
+        a residue type and each edge the frequency expected for that residue type in that
+        position according to the frequency matrix. As a matter of fact, the edge is the
+        *inverted frequency*, as the idea is to use the graph to calculate the shortest paths
+        (i.e. the more probable sequences).
 
         :return: :class:`~networkx.DiGraph` - with as many nodes as the 20 possible amino acids
             by the length of the sequence.
+
+        .. seealso::
+            :meth:`.FragmentFrame.make_frequency_network`
         """
         matrix = self.make_sequence_matrix(frequency=True)
 
@@ -235,17 +283,20 @@ class FragmentFrame( pd.DataFrame ):
         return g
 
     def make_frequency_network( self, use_rmsd=False ):
-        """
-        Generate a :class:`~networkx.DiGraph` n which each node is a residue type and each
+        """Generate a graph with per-position frequency between residue types at each position.
+
+        Generate a :class:`~networkx.DiGraph` in which each node is a residue type and each
         edge the frequency expected for the transition between residue-type in position i and
         residue-type in position i+1.
 
-        :param use_rmsd: When :data:`True`, correct the pair counts by the RMSD. Basically,
+        :param bool use_rmsd: When :data:`True`, correct the pair counts by the RMSD. Basically,
             the smaller the RMSD, the more the count weights.
-        :type use_rmsd: :class:`bool`
 
         :return: :class:`~networkx.DiGraph` - with as many nodes as the 20 possible amino acids
             by the length of the sequence.
+
+        .. seealso::
+            :meth:`.FragmentFrame.make_per_position_frequency_network`
         """
         G = nx.DiGraph()
         min_nodes = []
@@ -298,8 +349,7 @@ class FragmentFrame( pd.DataFrame ):
         return G
 
     def quick_consensus_sequence( self ):
-        """
-        Generate a consensus sequence as the most common representative for each position.
+        """Consensus sequence with the highest representative per position.
 
         :return: :class:`str` - consensus sequence
         """
@@ -311,9 +361,7 @@ class FragmentFrame( pd.DataFrame ):
         return "".join(consensus)
 
     def quick_consensus_secondary_structure( self ):
-        """
-        Generate a consensus secondary structure as the most common representative for each
-        position.
+        """Consensus secondary structure with the highest representative per position.
 
         :return: :class:`str` - consensus secondary structure
         """
@@ -323,63 +371,6 @@ class FragmentFrame( pd.DataFrame ):
             qseq = sorted(Counter(values).most_common(), key=lambda x: (-x[1], x[0]))[0]
             consensus.append(qseq[0])
         return "".join(consensus)
-
-    def angle_coverage( self, df, threshold=5 ):
-        """
-        Check, for frame (window) how many shared fragments do to fragment set
-        have. Two fragments are considered equal if all their angles are under a
-        threshold.
-        :param FragmentFrame df: :py:class:`.FragmentFrame` to compare to.
-        :param float threshold: Degrees of difference allowed.
-        :return: List. For each frame the number of shared fragments, the number of
-            fragments in that frame for the current :py:class:`.FragmentFrame` and
-            for  the provided one.
-        :raises: AssertionError if the two sets are not comparable.
-        :raises: ValueError if the other DataFrame is not a :py:class:`.FragmentFrame`
-        """
-        # We assume none of the two are crunched
-        if "_anglesAll" not in self:
-            assert self.is_comparable(df), "The two sets cannot be compared."
-            assert isinstance(df, FragmentFrame), "Compare must be done between FragmentFrames."
-            return self._crunch("angles").angle_coverage(df._crunch("angles"), threshold)
-
-        def angle(a1, a2):
-            return 180 - abs((abs(a1 - a2) % 360) - 180)
-
-        def compare_angles(a1, a2, thr):
-            return not (pd.Series(zip(a1, a2)).apply(lambda row: (angle(row[0], row[1]) <= thr).all()) == False).any()
-
-        def compare_frame( line, df, thr ):
-            return df.apply(lambda row: compare_angles(row["_anglesAll"], line, thr), axis=1)
-
-        if self["frame"].nunique() == 1:
-            counter = 0
-            counter = self.apply(lambda row: compare_frame(row["_anglesAll"], df, threshold), axis=1).apply(lambda row: (row == True).any() ).sum()
-            return counter, self.shape[0], df.shape[0]
-        else:
-            sys.stdout.write("Angle coverage: This process is computationaly expensive. Will take a bit.")
-            data = []
-            for i in self["frame"].unique():
-                data.append(self[self["frame"] == i].angle_coverage(df[df["frame"] == i]))
-            return data
-
-    def _crunch( self, what ):
-        """
-        Crunching is a process by which the :py:class:`.FragmentFrame` is compressed
-        so flatten the requested values
-        :param str what: what to crunch: angles, seq, sse
-        :return: The crunched :py:class:`.FragmentFrame`.
-        """
-        df = self.copy()
-        if what in self._crunched:
-            return self._crunched[what]
-        if what.lower() == "angles":
-            df["_anglesAll"] = df.apply(lambda row: list(row[["phi", "psi", "omega"]]), axis=1)
-            df = df.drop(["phi", "psi", "omega"], axis=1)
-            df = FragmentFrame(df.groupby(["frame", "neighbor"])["_anglesAll"].apply(np.hstack).reset_index())
-
-        self._crunched[what] = df
-        return self._crunched[what]
 
     def _metadata_defaults(self, name):
         if name == "_source_file":

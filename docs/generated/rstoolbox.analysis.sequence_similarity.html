@@ -167,7 +167,7 @@ logic (_x, _y, _z, …).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.22.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>]) – Data container.</li>
+<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>]) – Data container.</li>
 <li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
 <li><strong>key_residues</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="rstoolbox.components.Selection.html#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a>]) – Residues of interest.</li>
 <li><strong>matrix</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the matrix used to evaluate similarity. Default is <code class="docutils literal notranslate"><span class="pre">BLOSUM62</span></code>.</li>
@@ -205,12 +205,14 @@ logic (_x, _y, _z, …).</p>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
 <span class="gh">Out[8]: </span><span class="go"></span>
-<span class="go">     score                                                                                                            sequence_B  blosum62_B_raw  blosum62_B_identity  blosum62_B_positive  blosum62_B_negative                                                                                                        blosum62_B_ali  blosum62_B_perc</span>
-<span class="go">0 -214.362  PKPEEAMREAYKLIKKYMLKAQKEAQEEWERMRRTDGTKEEKDMFPEKMIAQALRAIGEIFNAYYWAFLKLQEFKKYPSVRWEEQEEARKRLKIMMKIGAEWAREIAREMKERIKR  183             41                   68                   48                   .+PEEA...A++L.+..M.K..+E.+.EWE..+R....+EE+DM.PE+MIA.ALRAIGEIFNA.+...L++++.+K.P+...E+.+E.+K....+.......A....++.+E+.++  0.288189       </span>
-<span class="go">1 -203.582  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW  154             39                   65                   51                   T+PEE....A++....A+++G.EE.+R.+E..K+....+EERDM.PE+MIA.ALRAIGE+FNA..+....M++.RK...+G.++.++..+..+++..+.G.......+....K.R.  0.242520       </span>
-<span class="go">2 -213.779  TKPEEWARWAYKEHLKMAEKHRKEMEIEWEELKRRDGKEEEKDMWPERMIAMALRAIGELFNHHMYAEMRAKEEKKKPEAKTEEARRARREIMKYHHEAGRLIEEAMRRLMERHKK  178             42                   63                   53                   T+PEE....A++.......K..+E.E.EWE..KR.....EE+DM.PERMIA.ALRAIGE+FN......+..++E+K.P.A..E+.+..++E..K..+..G.+....+++..E+.+K  0.280315       </span>
-<span class="go">3 -213.972  KKWEEMMREAERQGKEYAQKAWKEALLEWKWMRKRPVTEEMKDMAPEWMIAAALRAIGEHFNIYWQQKLEHEKLRKIPNVPEEELEKGKEELKRIEEEAARMAEKYMQELRKKMES  208             47                   67                   49                   .+.EE....A.R..+...+K.W+E...EW+W.++.....E.+DM.PE.MIAAALRAIGE.FN..WQ.+LE.EK.RK.PN..EE++++.K+E..+I......MA..++++.R+K...  0.327559       </span>
-<span class="go">4 -195.138  PRPEEMARFAKEEMHKHEEKAYREFLLEYELAIRKNPTEEPKDMQPEWAIAAALRAIGEIFNQWMYHLLEIRKENGSSHTRYEEREKYRKLAKRLHEEAAKEIWKFMHEAMRRFES  101             35                   52                   64                   .RPEE....A.........K.+.E...E+E...R.+...E.+DM.PE..IAAALRAIGEIFN......LE+.KE..+.+...E+.++.+K.A.++..........++.+...+...  0.159055       </span>
+<span class="go">     score                                                                                                            sequence_B       ...                                                                                                               blosum62_B_ali  blosum62_B_perc</span>
+<span class="go">0 -214.362  PKPEEAMREAYKLIKKYMLKAQKEAQEEWERMRRTDGTKEEKDMFPEKMIAQALRAIGEIFNAYYWAFLKLQEFKKYPSVRWEEQEEARKRLKIMMKIGAEWAREIAREMKERIKR       ...         .+PEEA...A++L.+..M.K..+E.+.EWE..+R....+EE+DM.PE+MIA.ALRAIGEIFNA.+...L++++.+K.P+...E+.+E.+K....+.......A....++.+E+.++  0.288189       </span>
+<span class="go">1 -203.582  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW       ...         T+PEE....A++....A+++G.EE.+R.+E..K+....+EERDM.PE+MIA.ALRAIGE+FNA..+....M++.RK...+G.++.++..+..+++..+.G.......+....K.R.  0.242520       </span>
+<span class="go">2 -213.779  TKPEEWARWAYKEHLKMAEKHRKEMEIEWEELKRRDGKEEEKDMWPERMIAMALRAIGELFNHHMYAEMRAKEEKKKPEAKTEEARRARREIMKYHHEAGRLIEEAMRRLMERHKK       ...         T+PEE....A++.......K..+E.E.EWE..KR.....EE+DM.PERMIA.ALRAIGE+FN......+..++E+K.P.A..E+.+..++E..K..+..G.+....+++..E+.+K  0.280315       </span>
+<span class="go">3 -213.972  KKWEEMMREAERQGKEYAQKAWKEALLEWKWMRKRPVTEEMKDMAPEWMIAAALRAIGEHFNIYWQQKLEHEKLRKIPNVPEEELEKGKEELKRIEEEAARMAEKYMQELRKKMES       ...         .+.EE....A.R..+...+K.W+E...EW+W.++.....E.+DM.PE.MIAAALRAIGE.FN..WQ.+LE.EK.RK.PN..EE++++.K+E..+I......MA..++++.R+K...  0.327559       </span>
+<span class="go">4 -195.138  PRPEEMARFAKEEMHKHEEKAYREFLLEYELAIRKNPTEEPKDMQPEWAIAAALRAIGEIFNQWMYHLLEIRKENGSSHTRYEEREKYRKLAKRLHEEAAKEIWKFMHEAMRRFES       ...         .RPEE....A.........K.+.E...E+E...R.+...E.+DM.PE..IAAALRAIGEIFN......LE+.KE..+.+...E+.++.+K.A.++..........++.+...+...  0.159055       </span>
+
+<span class="go">[5 rows x 8 columns]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -234,7 +236,7 @@ logic (_x, _y, _z, …).</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

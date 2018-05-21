@@ -1,11 +1,22 @@
+# -*- coding: utf-8 -*-
 # pylint: disable-msg=W0614,W0401,W0611,W0622
-
 # flake8: noqa
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+
+.. class:: DesignSeries
+.. class:: DesignFrame
+"""
+# Standard Libraries
 import platform
 import os
 import multiprocessing
 
+# External Libraries
 from libconfig import *
 
 try:

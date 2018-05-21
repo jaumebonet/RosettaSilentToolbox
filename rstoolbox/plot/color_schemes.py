@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
+
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+
+.. func:: color_scheme
+"""
+# Standard Libraries
+
+# External Libraries
+
+# This Library
+
 
 def color_scheme( name ):
     if name.upper() == "WEBLOGO":

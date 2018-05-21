@@ -1,11 +1,11 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   09-Apr-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: test_fragments.py
-# @Last modified by:   bonet
-# @Last modified time: 09-Apr-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
-
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+"""
 # Standard Libraries
 import os
 
@@ -37,6 +37,8 @@ class TestFragments( object ):
         # auto-load
         df3 = df3.add_quality_measure(None)
         # load target quality file
+        with pytest.raises(ValueError):
+            df9 = df9.add_quality_measure(self.frag3q)
         df9 = df9.add_quality_measure(self.frag9q)
 
         assert df3.is_comparable(df9) is False

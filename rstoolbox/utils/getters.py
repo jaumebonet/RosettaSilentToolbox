@@ -14,12 +14,16 @@
 .. func:: get_available_structure_predictions
 .. func:: get_structure_prediction
 .. func:: get_sequential_data
+.. func:: get_dihedrals
+.. func:: get_phi
+.. func:: get_psi
 .. func:: get_available_labels
 .. func:: get_label
 """
 # Standard Libraries
 
 # External Libraries
+import six
 import pandas as pd
 import numpy as np
 
@@ -55,10 +59,10 @@ def _get_available( obj, ctype ):
 
 def _get_key_sequence( obj, ctype, seqID, key_residues ):
     from rstoolbox.components import get_selection
-    from .reference import _get_reference
+    from .reference import get_reference_shift
 
     seq = obj[_check_column(obj, ctype, seqID)]
-    sft = _get_reference(obj, "sft", seqID)
+    sft = get_reference_shift(obj, seqID)
 
     if isinstance(obj, pd.Series):
         length = len(seq)
@@ -67,10 +71,16 @@ def _get_key_sequence( obj, ctype, seqID, key_residues ):
     kr = get_selection(key_residues, seqID, sft, length)
 
     if isinstance(obj, pd.Series):
-        # -1 because we access string positions
-        return "".join(np.array(list(seq))[kr - 1])
+        if len(kr) > 1:
+            # -1 because we access string positions
+            return "".join(np.array(list(seq))[kr - 1])
+        else:
+            return ""
     else:
-        return seq.apply(lambda seq: "".join(np.array(list(seq))[kr - 1]))
+        if len(kr) > 1:
+            return seq.apply(lambda seq: "".join(np.array(list(seq))[kr - 1]))
+        else:
+            return seq.apply(lambda seq: "")
 
 
 def get_id( self ):
@@ -452,6 +462,11 @@ def get_label( self, label, seqID=None ):
            ...: df.get_label('CONTACT', 'A')
            ...: df.get_label('CONTACT', 'B')
     """
+    from rstoolbox.components import Selection, SelectionContainer
+    listtypes = (list, np.ndarray, six.string_types)
+    if six.PY3:
+        listtypes = (list, np.ndarray, range, six.string_types)
+
     _check_type(self)
     if seqID is None:
         ss = set(get_available_sequences(self))
@@ -465,5 +480,9 @@ def get_label( self, label, seqID=None ):
     data = self[_check_column(self, "lbl", label.upper())]
     if isinstance(self, pd.DataFrame):
         return data.apply(lambda x: x[seqID])
-    else:
+    elif isinstance(data, SelectionContainer):
         return data[seqID]
+    elif isinstance(data, Selection):
+        return data
+    elif isinstance(data, listtypes):
+        return Selection(data)

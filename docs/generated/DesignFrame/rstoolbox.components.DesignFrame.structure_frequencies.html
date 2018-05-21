@@ -116,11 +116,12 @@
 <dl class="method">
 <dt id="rstoolbox.components.DesignFrame.structure_frequencies">
 <code class="descclassname">DesignFrame.</code><code class="descname">structure_frequencies</code><span class="sig-paren">(</span><em>seqID</em>, <em>seqType='protein'</em>, <em>cleanExtra=True</em>, <em>cleanUnused=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.structure_frequencies" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a <a class="reference internal" href="../rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for the frequencies of
-the secondary structure in the __DesignFrame__ with seqID identifier.
-If there is a reference_structure for this seqID, it will also
-be attached to the __SequenceFrame__.
-All letters in the secondary structure will be capitalized. All symbols that
+<dd><p>Create a frequency-based <a class="reference internal" href="../rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for secondary structure assignation.</p>
+<p>Generates a <a class="reference internal" href="../rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a> for the frequencies of
+the secondary structure in the <code class="xref py py-class docutils literal notranslate"><span class="pre">designFrame</span></code> with <code class="docutils literal notranslate"><span class="pre">seqID</span></code> identifier.
+If there is a reference_structure for this <code class="docutils literal notranslate"><span class="pre">seqID</span></code>, it will also
+be attached to the <a class="reference internal" href="../rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a>.</p>
+<p>All letters in the secondary structure will be capitalized. All symbols that
 do not belong to string.ascii_uppercase will be transformed to “*”
 as this is the symbol recognized by the substitution matrices.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -128,11 +129,11 @@ as this is the symbol recognized by the substitution matrices.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the secondary structure sets of interest.</li>
-<li><strong>seqType</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Type of sequence: protein.</li>
-<li><strong>cleanExtra</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Remove from the SequenceFrame the non-regular
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>seqType</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Type of sequence: <code class="docutils literal notranslate"><span class="pre">protein</span></code>, <code class="docutils literal notranslate"><span class="pre">dna</span></code>, <code class="docutils literal notranslate"><span class="pre">rna</span></code>.</li>
+<li><strong>cleanExtra</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Remove from the class:<cite>.SequenceFrame</cite> the non-regular
 amino/nucleic acids if they are empty for all positions.</li>
-<li><strong>cleanUnused</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Remove from the SequenceFrame the regular
+<li><strong>cleanUnused</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Remove from the class:<cite>.SequenceFrame</cite> the regular
 amino/nucleic acids if they frequency is equal or under the value . Default is -1,
 so nothing is deleted.</li>
 </ul>
@@ -143,6 +144,13 @@ so nothing is deleted.</li>
 </tr>
 </tbody>
 </table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="rstoolbox.components.DesignFrame.sequence_frequencies.html#rstoolbox.components.DesignFrame.sequence_frequencies" title="rstoolbox.components.DesignFrame.sequence_frequencies"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.sequence_frequencies()</span></code></a>
+<a class="reference internal" href="rstoolbox.components.DesignFrame.sequence_bits.html#rstoolbox.components.DesignFrame.sequence_bits" title="rstoolbox.components.DesignFrame.sequence_bits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.sequence_bits()</span></code></a>
+<a class="reference internal" href="rstoolbox.components.DesignFrame.structure_bits.html#rstoolbox.components.DesignFrame.structure_bits" title="rstoolbox.components.DesignFrame.structure_bits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.structure_bits()</span></code></a>
+<a class="reference internal" href="../rstoolbox.analysis.sequential_frequencies.html#rstoolbox.analysis.sequential_frequencies" title="rstoolbox.analysis.sequential_frequencies"><code class="xref py py-func docutils literal notranslate"><span class="pre">sequential_frequencies()</span></code></a></p>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>
@@ -164,7 +172,7 @@ so nothing is deleted.</li>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

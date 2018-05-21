@@ -1,19 +1,36 @@
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
+
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+
+.. func:: plot_sequence_frequency_graph
+.. func:: plot_alignment
+.. func:: logo_plot
+.. func:: positional_sequence_similarity_plot
+.. func:: sequence_frequency_plot
+"""
+# Standard Libraries
 from distutils.version import LooseVersion
 import os
 import copy
 import math
+import operator
 
+# External Libraries
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import networkx as nx
 import matplotlib as mpl
-import matplotlib.patheffects
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, PathPatch
 from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
+# This Library
 from rstoolbox.analysis import binary_overlap
 from rstoolbox.analysis.SimilarityMatrix import SimilarityMatrix
 from rstoolbox.components import DesignFrame, SequenceFrame, get_selection
@@ -35,8 +52,7 @@ def barcode_plot( df, column_name, ax, color="blue" ):
 
 
 def plot_sequence_frequency_graph( G, ax ):
-    """
-    Given a sequence frequency graph as obtained through
+    """Given a sequence frequency graph as obtained through
     :meth:`.FragmentFrame.make_frequency_network` or
     :meth:`.FragmentFrame.make_per_position_frequency_network`,
     generate a plot representing the possible transitions between
@@ -65,8 +81,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
                              refseq=True, key_residues=None, border_color="green",
                              border_width=2, labelsize=None, xrotation=0, yrotation=0,
                              **kwargs ):
-    """
-    Makes a heatmap subplot into the provided axis showing the sequence distribution
+    """Makes a heatmap subplot into the provided axis showing the sequence distribution
     of each residue type for each position.
 
     A part from the function arguments, any argument that can be provided to the
@@ -85,6 +100,32 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     #. **You don't want a color bar?** \
         Add the parameter: ``cbar=False``
 
+    :param df: Data container.
+    :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
+    :param str seqID: |seqID_param|.
+    :param ax: Where to plot the heatmap.
+    :type ax: :class:`~matplotlib.axes.Axes`
+    :param bool aminosY: Set to :data:`False` to get invert the orientation of the heatmap.
+    :param float clean_unused: Remove amino acids from the plot when they never get represented
+        over the given frequency. Residues present in the reference sequence are not taken
+        into account.
+    :param rbool efseq: if :data:`True` (default), mark the original residues according to
+        the reference sequence.
+    :param key_residues: |keyres_param|.
+    :type key_residue: |keyres_types|
+    :param border_color: Color to use to mark the original residue types.
+    :type border_color: Union[:class:`int`, :class:`str`]
+    :param int border_width: Line width used to mark the original residue types.
+    :param int labelsize: Change the size of the text in the axis.
+    :param float xrotation: Rotation to apply in the x-axis text (degrees).
+    :param float yrotation: Rotation to apply in the y-axis text (degrees).
+
+    :raises:
+        :ValueError: if input is not a :class:`~pandas.DataFrame` derived object.
+        :KeyError: |reference_error|.
+
+    .. rubric:: Example
+
     .. ipython::
 
         In [1]: from rstoolbox.io import parse_rosetta_file
@@ -98,39 +139,6 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
 
         @savefig sequence_frequency_plot_docs.png width=5in
         In [2]: plt.show()
-
-    :param df: Data container.
-    :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
-    :param seqID: Identifier of the query sequence.
-    :type seqID: :class:`str`
-    :param ax: Where to plot the heatmap.
-    :type ax: :class:`~matplotlib.axes.Axes`
-    :param aminosY: Set to :data:`False` to get invert the orientation of the heatmap.
-    :type aminosY: :class:`bool`
-    :param clean_unused: Remove amino acids from the plot when they never get represented
-        over the given frequency. Residues present in the reference sequence are not taken
-        into account.
-    :type clean_unused: :class:`float`
-    :param refseq: if :data:`True` (default), mark the original residues according to
-        the reference sequence.
-    :type refseq: :class:`bool`
-    :param key_residues: Residues of interest to be plotted.
-    :type key_residue: Union[:class:`int`, :func:`list` of :class:`int`, :class:`.Selection`]
-    :param border_color: Color to use to mark the original residue types.
-    :type border_color: Union[:class:`int`, :class:`str`]
-    :param border_width: Line width used to mark the original residue types.
-    :type border_width: :class:`int`
-    :param labelsize: Change the size of the text in the axis.
-    :type labelsize: :class:`int`
-    :param xrotation: Rotation to apply in the x-axis text (degrees).
-    :type xrotation: :class:`float`
-    :param yrotation: Rotation to apply in the y-axis text (degrees).
-    :type yrotation: :class:`float`
-
-    :raises:
-        :ValueError: if input is not a :class:`~pandas.DataFrame` derived object.
-        :KeyError: if reference sequence is requested but the data container
-            does not have one.
     """
 
     order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
@@ -212,36 +220,33 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     if ref_seq is not "" and refseq:
         if isinstance(border_color, int):
             border_color = sns.color_palette()[border_color]
-        for i in range(len(ref_seq)):
+        for i, aa in enumerate(ref_seq):
             if aminosY:
-                aa_position = (i, order.index(ref_seq[i]))
+                aa_position = (i, order.index(aa))
             else:
-                aa_position = (order.index(ref_seq[i]), i)
+                aa_position = (order.index(aa), i)
             ax.add_patch(Rectangle(aa_position, 1, 1, fill=False, clip_on=False,
                                    edgecolor=border_color, lw=border_width, zorder=100))
 
 
 def plot_alignment( df, seqID, ax, line_break=None, matrix=None ):
-    """
-    Make an image representing the alignment of sequences with higlights to mutant positions.
+    """Make an image representing the alignment of sequences with higlights to mutant positions.
 
     :param df: Data container.
     :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
-    :param seqID: Identifier of the query sequence.
-    :type seqID: :class:`str`
+    :param str seqID: |seqID_param|.
     :param ax: Where to plot the heatmap. If a list of axis is provided, it assumes that one wants
         to split the alignment in that many pieces.
     :type ax: Union[:class:`~matplotlib.axes.Axes`, :func:`list` of
         :class:`~matplotlib.axes.Axes`]
-    :param matrix: Identifier of the matrix used to evaluate similarity. Default is :data:`None`:
+    :param str matrix: Identifier of the matrix used to evaluate similarity. Default is :data:`None`:
         highlight differences.
-    :type matrix: :class:`str`
 
     :raises:
         :ValueError: if input is not a :class:`~pandas.DataFrame` derived object.
         :KeyError: if reference sequence is requested but the data container
             does not have one.
-        :KeyError: if there is no reference sequence for the requested id.
+        :KeyError: |reference_error|.
     """
     def score(col, matrix):
         if matrix is None:
@@ -327,18 +332,16 @@ def plot_alignment( df, seqID, ax, line_break=None, matrix=None ):
 
 def positional_sequence_similarity_plot( df, ax, identity_color="green",
                                          similarity_color="orange" ):
-    """
-    Generates a plot covering the amount of identities and positives matches from a population
+    """Generates a plot covering the amount of identities and positives matches from a population
     of designs to a reference sequence according to a substitution matrix.
 
-    Input data can/should be generated with :py:func:`.positional_sequence_similarity`.
+    Input data can/should be generated with :func:`.positional_sequence_similarity`.
 
     :param df: Input data, where rows are positions and columns are
         `identity_perc` and `positive_perc`
     :type df: :py:class:`~pandas.DataFrame`
     :param ax: matplotlib axis to which we will plot.
     :type ax: :py:class:`~matplotlib.axes.Axes`
-
     """
 
     # Color management
@@ -361,8 +364,25 @@ def positional_sequence_similarity_plot( df, ax, identity_color="green",
 
 def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
                font_size=35, colors="WEBLOGO" ):
-    """
-    Generates classic **LOGO** plots.
+    """Generates classic **LOGO** plots.
+
+    :param df: Data container.
+    :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
+    :param str seqID: |seqID_param|.
+    :param bool refseq: if :data:`True` (default), mark the original residues according to
+        the reference sequence.
+    :param key_residues: |keyres_param|.
+    :type key_residue: |keyres_param|
+    :param int line_break: Force a line-change in the plot after n residues are plotted.
+    :param float font_size: Expected size of the axis font.
+    :param colors: Colors to assign; it can be the name of a available color set or
+        a dictionary with a color for each type.
+    :type colors: Union[:class:`str`, :class:`dict`]
+
+    :return: :class:`~matplotlib.figure.Figure` and
+        :func:`list` of :class:`~matplotlib.axes.Axes`
+
+    .. rubric:: Example
 
     .. ipython::
 
@@ -377,37 +397,7 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
 
         @savefig sequence_logo_plot_docs.png width=5in
         In [2]: plt.show()
-
-    :param df: Data container.
-    :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
-    :param seqID: Identifier of the query sequence.
-    :type seqID: :class:`str`
-    :param refseq: if :data:`True` (default), mark the original residues according to
-        the reference sequence.
-    :type refseq: :class:`bool`
-    :param key_residues: Residues of interest to be plotted.
-    :type key_residue: Union[:class:`int`, :func:`list` of :class:`int`, :class:`.Selection`]
-    :param line_break: Force a line-change in the plot after n residues are plotted.
-    :type line_break: :class:`int`
-    :param font_size: Expected size of the axis font.
-    :type font_size: :class:`float`
-    :param colors: Colors to assign; it can be the name of a available color set or
-        a dictionary with a color for each type.
-    :type colors: Union[:class:`str`, :class:`dict`]
-
-    :return: :class:`~matplotlib.figure.Figure` and
-        :func:`list` of :class:`~matplotlib.axes.Axes`
     """
-
-    class Scale( matplotlib.patheffects.RendererBase ):
-        def __init__( self, sx, sy=None ):
-            self._sx = sx
-            self._sy = sy
-
-        def draw_path( self, renderer, gc, tpath, affine, rgbFace ):
-            affine = affine.identity().scale(self._sx, self._sy) + affine
-            renderer.draw_path(gc, tpath, affine, rgbFace)
-
     def _letterAt( letter, x, y, yscale=1, ax=None, globscale=1.35,
                    LETTERS=None, COLOR_SCHEME=None ):
         text = LETTERS[letter]
@@ -421,12 +411,12 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     def _dataframe2logo( data ):
         aa = list(data)
         odata = []
-        for index, pos in data.iterrows():
+        for _, pos in data.iterrows():
             pdata = []
             for k in aa:
                 if pos[k] > 0.0000000:
                     pdata.append( ( k, float(pos[k]) ) )
-            odata.append(sorted(pdata, key=lambda x: x[1]))
+            odata.append(sorted(pdata, key=operator.itemgetter(1, 0)))
         return odata
 
     def _chunks(l, n):
@@ -491,13 +481,15 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         # data and key_residues management.
         _data = data.get_key_residues(krs[_])
 
+        maxv = int(math.ceil(data.max_hight()))
+
         ticks = len(_data)
         if line_break is not None and len(_data) < line_break:
             ticks = line_break
         ax.set_xticks(np.arange(0.5, ticks + 1))
-        ax.set_yticks( range(0, 2) )
+        ax.set_yticks( range(0, maxv + 1) )
         ax.set_xticklabels( _data.index.values )
-        ax.set_yticklabels( np.arange( 0, 2, 1 ) )
+        ax.set_yticklabels( np.arange( 0, maxv + 1, 1 ) )
         if ref_seq is not None:
             ax2 = ax.twiny()
             ax2.set_xticks(ax.get_xticks())

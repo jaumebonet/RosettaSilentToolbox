@@ -3,7 +3,7 @@
 # @Email:  jaume.bonet@gmail.com
 # @Filename: test_selection.py
 # @Last modified by:   bonet
-# @Last modified time: 14-Mar-2018
+# @Last modified time: 07-May-2018
 
 
 import pytest
@@ -93,6 +93,13 @@ class TestSelection( object ):
 
             shw = "2A-5A,15,21A-24A,68A,72A"
             s = rc.Selection(shw)
+
+    def test_input_selection_or_None( self ):
+
+        s = rc.Selection()
+        assert len(s) == 0
+        s2 = rc.Selection(s)
+        assert len(s) == len(s2)
 
     def test_operations( self ):
 
