@@ -6,7 +6,9 @@
     Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
     Bruno Correia <bruno.correia@epfl.ch>
 
-.. func:: baseline
+.. func:: format_Ipython
+.. func:: add_column
+.. func:: split_values
 """
 # Standard Libraries
 import copy
