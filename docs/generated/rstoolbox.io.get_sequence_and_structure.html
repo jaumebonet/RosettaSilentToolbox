@@ -120,16 +120,21 @@
 structure, i.e. dssp and phi-psi dihedrals.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last"><strong>Requires a Rosetta local installation</strong> if file is not present.</p>
+<p class="last">Depends on <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">rosetta.path</span></a> and <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">rosetta.compilation</span></a>,
+if the quality file is not provided.</p>
 </div>
-<p>It will generate an output file called: <code class="docutils literal notranslate"><span class="pre">[pdbfile].dssp.minisilent</span></code>. If this file
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">This function <strong>REQUIRES</strong> a local installation of <strong>Rosetta</strong>.</p>
+</div>
+<p>It will generate an output file called: <code class="docutils literal notranslate"><span class="pre">&lt;pdbfile&gt;.dssp.minisilent</span></code>. If this file
 already exists, it will be directly read. You can choose to compress it;
-<code class="docutils literal notranslate"><span class="pre">[pdbfile].dssp.minisilent.gz</span></code> will also work.</p>
+<code class="docutils literal notranslate"><span class="pre">&lt;pdbfile&gt;.dssp.minisilent.gz</span></code> will also work.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pdbfile</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the input structure.</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pdbfile</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Name of the input structure.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</p>
@@ -151,6 +156,21 @@ already exists, it will be directly read. You can choose to compress it;
 </tr>
 </tbody>
 </table>
+<p>The script that is runned (and that can be runned outside and then brough back to
+your computer) is:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.utils</span> <span class="kn">import</span> <span class="n">baseline</span>
+<span class="gp">   ...: </span><span class="k">print</span> <span class="n">baseline</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="go">&lt;ROSETTASCRIPTS&gt;</span>
+<span class="go">    &lt;MOVERS&gt;</span>
+<span class="go">        &lt;WriteSSEMover dssp=&quot;1&quot; name=&quot;w&quot; write_phipsi=&quot;true&quot; /&gt;</span>
+<span class="go">    &lt;/MOVERS&gt;</span>
+<span class="go">    &lt;PROTOCOLS&gt;</span>
+<span class="go">        &lt;Add mover=&quot;w&quot; /&gt;</span>
+<span class="go">    &lt;/PROTOCOLS&gt;</span>
+<span class="go">&lt;/ROSETTASCRIPTS&gt;</span>
+</pre></div>
+</div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="rstoolbox.utils.baseline.html#rstoolbox.utils.baseline" title="rstoolbox.utils.baseline"><code class="xref py py-func docutils literal notranslate"><span class="pre">baseline()</span></code></a></p>

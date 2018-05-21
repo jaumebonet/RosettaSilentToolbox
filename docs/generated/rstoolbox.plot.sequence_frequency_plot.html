@@ -128,6 +128,44 @@ sequence positions as x-axis.</p>
 <li><strong>Do you want to put the color bar in a different axis?</strong>         This is quite recommendable, as the color bar in the same axis does not         tend to look that good. Add the parameter: <code class="docutils literal notranslate"><span class="pre">cbar_ax=[second_axis]</span></code></li>
 <li><strong>You don’t want a color bar?</strong>         Add the parameter: <code class="docutils literal notranslate"><span class="pre">cbar=False</span></code></li>
 </ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a>]) – Data container.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Where to plot the heatmap.</li>
+<li><strong>aminosY</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Set to <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> to get invert the orientation of the heatmap.</li>
+<li><strong>clean_unused</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Remove amino acids from the plot when they never get represented
+over the given frequency. Residues present in the reference sequence are not taken
+into account.</li>
+<li><strong>efseq</strong> (<em>rbool</em>) – if <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> (default), mark the original residues according to
+the reference sequence.</li>
+<li><strong>key_residues</strong> – Residues of interest.</li>
+<li><strong>border_color</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Color to use to mark the original residue types.</li>
+<li><strong>border_width</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Line width used to mark the original residue types.</li>
+<li><strong>labelsize</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Change the size of the text in the axis.</li>
+<li><strong>xrotation</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Rotation to apply in the x-axis text (degrees).</li>
+<li><strong>yrotation</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Rotation to apply in the y-axis text (degrees).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ValueError:</th><td class="field-body">if input is not a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> derived object.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">if there is no <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
 <span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.plot</span> <span class="kn">import</span> <span class="n">sequence_frequency_plot</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -142,44 +180,6 @@ sequence positions as x-axis.</p>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/sequence_frequency_plot_docs.png"><img alt="../_images/sequence_frequency_plot_docs.png" src="../_images/sequence_frequency_plot_docs.png" style="width: 5in;" /></a>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a>]) – Data container.</li>
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the query sequence.</li>
-<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Where to plot the heatmap.</li>
-<li><strong>aminosY</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Set to <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> to get invert the orientation of the heatmap.</li>
-<li><strong>clean_unused</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Remove amino acids from the plot when they never get represented
-over the given frequency. Residues present in the reference sequence are not taken
-into account.</li>
-<li><strong>refseq</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> (default), mark the original residues according to
-the reference sequence.</li>
-<li><strong>key_residues</strong> – Residues of interest to be plotted.</li>
-<li><strong>border_color</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Color to use to mark the original residue types.</li>
-<li><strong>border_width</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Line width used to mark the original residue types.</li>
-<li><strong>labelsize</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Change the size of the text in the axis.</li>
-<li><strong>xrotation</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Rotation to apply in the x-axis text (degrees).</li>
-<li><strong>yrotation</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Rotation to apply in the y-axis text (degrees).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ValueError:</th><td class="field-body">if input is not a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> derived object.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">if reference sequence is requested but the data container
-does not have one.</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>

@@ -117,6 +117,30 @@
 <dt id="rstoolbox.plot.logo_plot">
 <code class="descclassname">rstoolbox.plot.</code><code class="descname">logo_plot</code><span class="sig-paren">(</span><em>df</em>, <em>seqID</em>, <em>refseq=True</em>, <em>key_residues=None</em>, <em>line_break=None</em>, <em>font_size=35</em>, <em>colors='WEBLOGO'</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.logo_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates classic <strong>LOGO</strong> plots.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a>]) – Data container.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>refseq</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – if <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> (default), mark the original residues according to
+the reference sequence.</li>
+<li><strong>key_residues</strong> – Residues of interest.</li>
+<li><strong>line_break</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Force a line-change in the plot after n residues are plotted.</li>
+<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Expected size of the axis font.</li>
+<li><strong>colors</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – Colors to assign; it can be the name of a available color set or
+a dictionary with a color for each type.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> and
+<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
 <span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.plot</span> <span class="kn">import</span> <span class="n">logo_plot</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -131,29 +155,6 @@
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/sequence_logo_plot_docs.png"><img alt="../_images/sequence_logo_plot_docs.png" src="../_images/sequence_logo_plot_docs.png" style="width: 5in;" /></a>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.SequenceFrame.html#rstoolbox.components.SequenceFrame" title="rstoolbox.components.SequenceFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFrame</span></code></a>]) – Data container.</li>
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the query sequence.</li>
-<li><strong>refseq</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – if <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a> (default), mark the original residues according to
-the reference sequence.</li>
-<li><strong>key_residues</strong> – Residues of interest to be plotted.</li>
-<li><strong>line_break</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Force a line-change in the plot after n residues are plotted.</li>
-<li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Expected size of the axis font.</li>
-<li><strong>colors</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – Colors to assign; it can be the name of a available color set or
-a dictionary with a color for each type.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> and
-<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a></p>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>

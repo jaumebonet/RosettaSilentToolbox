@@ -116,7 +116,133 @@
 <dl class="function">
 <dt id="rstoolbox.utils.split_values">
 <code class="descclassname">rstoolbox.utils.</code><code class="descname">split_values</code><span class="sig-paren">(</span><em>df</em>, <em>keys</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.utils.split_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Reshape the data to aide plotting of multiple comparable scores.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This might change the data in a way that a decoy would be repeated
+multiple times.</p>
+</div>
+<p>The dictionary that needs to be provided to split the data container has three
+main keys:</p>
+<ol class="arabic simple">
+<li><code class="docutils literal notranslate"><span class="pre">keep</span></code>: Identity the columns to keep (they cannot be the ones that split).         If not provided, all columns are kept.</li>
+<li><code class="docutils literal notranslate"><span class="pre">split</span></code>: List with columns to split. Each position is a tuple. The first position         is the name of the column to split and the rest will be the value names that will be         used to identify it.</li>
+<li><code class="docutils literal notranslate"><span class="pre">names</span></code>: Names of the columns. The first one will be the name of the column where the         values will be assigned, the rest will be the names of the columns for the rest of the         identifiers.</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data container.</li>
+<li><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – Selection of the columns to keep and split.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.utils</span> <span class="kn">import</span> <span class="n">split_values</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">ifile</span> <span class="o">=</span> <span class="s1">&#39;../rstoolbox/tests/data/input_2seq.minisilent.gz&#39;</span>
+<span class="gp">   ...: </span><span class="n">scorel</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;GRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;GRMSD2Template&#39;</span><span class="p">,</span> <span class="s1">&#39;LRMSD2Target&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>          <span class="s1">&#39;LRMSDH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;LRMSDLH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">]</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="n">scorel</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">df</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[8]: </span><span class="go"></span>
+<span class="go">     score  GRMSD2Target  GRMSD2Template  LRMSD2Target  LRMSDH2Target  LRMSDLH2Target                     description</span>
+<span class="go">0 -206.678  1.976         1.927           4.404         4.055          2.490           test_3lhp_binder_labeled_00001</span>
+<span class="go">1 -214.362  2.659         2.417           4.469         4.124          2.730           test_3lhp_binder_labeled_00002</span>
+<span class="go">2 -203.582  2.026         1.607           5.208         4.598          2.907           test_3lhp_binder_labeled_00003</span>
+<span class="go">3 -213.779  2.407         2.047           5.728         4.866          3.002           test_3lhp_binder_labeled_00004</span>
+<span class="go">4 -213.972  2.245         1.907           3.787         3.258          2.692           test_3lhp_binder_labeled_00005</span>
+<span class="go">5 -195.138  2.581         2.453           5.021         4.127          2.473           test_3lhp_binder_labeled_00006</span>
+
+<span class="gp">In [9]: </span><span class="n">split1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;split&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;GRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;grmsdTr&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;GRMSD2Template&#39;</span><span class="p">,</span> <span class="s1">&#39;grmsdTp&#39;</span><span class="p">),</span>
+<span class="gp">   ...: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;lrmsdTp&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;LRMSDH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;lrmsdh2&#39;</span><span class="p">),</span>
+<span class="gp">   ...: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSDLH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;lrmsdlh2&#39;</span><span class="p">)],</span>
+<span class="gp">   ...: </span><span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rmsd&#39;</span><span class="p">,</span> <span class="s1">&#39;rmsd_type&#39;</span><span class="p">]}</span>
+<span class="gp">   ...: </span><span class="n">split_values</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">split1</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[10]: </span><span class="go"></span>
+<span class="go">     score                     description   rmsd rmsd_type</span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  1.976  grmsdTr </span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  2.659  grmsdTr </span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  2.026  grmsdTr </span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  2.407  grmsdTr </span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  2.245  grmsdTr </span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  2.581  grmsdTr </span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  1.927  grmsdTp </span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  2.417  grmsdTp </span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  1.607  grmsdTp </span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  2.047  grmsdTp </span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  1.907  grmsdTp </span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  2.453  grmsdTp </span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  4.404  lrmsdTp </span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  4.469  lrmsdTp </span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  5.208  lrmsdTp </span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  5.728  lrmsdTp </span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  3.787  lrmsdTp </span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  5.021  lrmsdTp </span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  4.055  lrmsdh2 </span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  4.124  lrmsdh2 </span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  4.598  lrmsdh2 </span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  4.866  lrmsdh2 </span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  3.258  lrmsdh2 </span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  4.127  lrmsdh2 </span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  2.490  lrmsdlh2</span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  2.730  lrmsdlh2</span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  2.907  lrmsdlh2</span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  3.002  lrmsdlh2</span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  2.692  lrmsdlh2</span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  2.473  lrmsdlh2</span>
+
+<span class="gp">In [11]: </span><span class="n">split2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;split&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;GRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;global&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">),</span>
+<span class="gp">   ....: </span>                    <span class="p">(</span><span class="s1">&#39;GRMSD2Template&#39;</span><span class="p">,</span> <span class="s1">&#39;global&#39;</span><span class="p">,</span> <span class="s1">&#39;template&#39;</span><span class="p">),</span>
+<span class="gp">   ....: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">),</span>
+<span class="gp">   ....: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSDH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="s1">&#39;helix2&#39;</span><span class="p">),</span>
+<span class="gp">   ....: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSDLH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="s1">&#39;lhelix2&#39;</span><span class="p">)],</span>
+<span class="gp">   ....: </span><span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rmsd&#39;</span><span class="p">,</span> <span class="s1">&#39;rmsd_type&#39;</span><span class="p">,</span> <span class="s1">&#39;rmsd_target&#39;</span><span class="p">]}</span>
+<span class="gp">   ....: </span><span class="n">split_values</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">split2</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[12]: </span><span class="go"></span>
+<span class="go">     score                     description   rmsd rmsd_type rmsd_target</span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  1.976  global    target    </span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  2.659  global    target    </span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  2.026  global    target    </span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  2.407  global    target    </span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  2.245  global    target    </span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  2.581  global    target    </span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  1.927  global    template  </span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  2.417  global    template  </span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  1.607  global    template  </span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  2.047  global    template  </span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  1.907  global    template  </span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  2.453  global    template  </span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  4.404  local     target    </span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  4.469  local     target    </span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  5.208  local     target    </span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  5.728  local     target    </span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  3.787  local     target    </span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  5.021  local     target    </span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  4.055  local     helix2    </span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  4.124  local     helix2    </span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  4.598  local     helix2    </span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  4.866  local     helix2    </span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  3.258  local     helix2    </span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  4.127  local     helix2    </span>
+<span class="go">0 -206.678  test_3lhp_binder_labeled_00001  2.490  local     lhelix2   </span>
+<span class="go">1 -214.362  test_3lhp_binder_labeled_00002  2.730  local     lhelix2   </span>
+<span class="go">2 -203.582  test_3lhp_binder_labeled_00003  2.907  local     lhelix2   </span>
+<span class="go">3 -213.779  test_3lhp_binder_labeled_00004  3.002  local     lhelix2   </span>
+<span class="go">4 -213.972  test_3lhp_binder_labeled_00005  2.692  local     lhelix2   </span>
+<span class="go">5 -195.138  test_3lhp_binder_labeled_00006  2.473  local     lhelix2   </span>
+</pre></div>
+</div>
+</dd></dl>
 
 <span class="target" id="definitions"></span></div>
 

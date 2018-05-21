@@ -33,8 +33,7 @@ __all__ = ['read_fasta', 'write_fasta', 'write_clustalw', 'write_mutant_alignmen
 
 
 def read_fasta( filename, expand=False, multi=False ):
-    """
-    Reads one or more **FASTA** files and returns the appropiate object
+    """Reads one or more **FASTA** files and returns the appropiate object
     containing the requested data: the :class:`.DesignFrame`.
 
     The default generated :class:`.DesignFrame` will contain two columns:
@@ -72,21 +71,15 @@ def read_fasta( filename, expand=False, multi=False ):
         Notice everything from the original ``description`` after the ``|`` symbol
         is lost after that process.
 
-    :param filename: file name or file pattern to search.
-    :type filename: :class:`str`
-    :param expand: Try to better associate sequence ID if format is **PDB FASTA**.
-    :type expand: :class:`bool`
-    :param multi: When :data:`True`, indicates that data is readed from
+    :param str filename: file name or file pattern to search.
+    :param bool expand: Try to better associate sequence ID if format is **PDB FASTA**.
+    :param bool multi: When :data:`True`, indicates that data is readed from
         multiple files.
-    :type multi: :class:`bool`
 
-    :return: :py:class:`.DesignFrame`.
+    :return: :class:`.DesignFrame`.
 
     :raises:
         :IOError: if ``filename`` cannot be found.
-
-    .. note::
-        Depends on :ref:`system.output <options>`.
 
     .. seealso::
         :func:`~.write_fasta`
@@ -118,8 +111,7 @@ def read_fasta( filename, expand=False, multi=False ):
 
 
 def write_fasta( df, seqID, separator=None, filename=None, split=False ):
-    """
-    Writes fasta files of the selected decoys.
+    """Writes fasta files of the selected decoys.
 
     It assumes that the provided data is contained in a :class:`.DesignFrame`
     or a :class:`~pandas.DataFrame`.
@@ -150,30 +142,25 @@ def write_fasta( df, seqID, separator=None, filename=None, split=False ):
 
     :param df: Data content.
     :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
-    :param seqID: Identifier(s) of the sequences expected to be printed.
-    :type seqID: :class:`str`
-    :param separator: Add ``seqID`` to sequence identifier through a particular
+    :param str seqID: |seqID_param|.
+    :param str separator: Add ``seqID`` to sequence identifier through a particular
         string separator. If multiple ``seqID`` are provided, it defaults to ``:``.
-    :type separator: :class:`str`
-    :param filename: Output file name.
-    :type filename: :class:`str`
-    :param split: Split each fasta in a different file. ``filename`` first part of the filename
+    :param str filename: Output file name.
+    :param bool split: Split each fasta in a different file. ``filename`` first part of the filename
         is used as `prefix`, with a following enumeration.
-    :type split: :class:`bool`
 
     :return: :class:`str` - **FASTA** formated string.
 
     :raises:
         :IOError: If ``filename`` exists and global option :ref:`system.overwrite <options>`
             is not :data:`True`.
-        :AttributeError: If any of the requested seqID cannot be found.
+        :AttributeError: |seqID_error|.
 
     .. note::
-        Depends on :ref:`system.overwrite <options>` and
-        :ref:`system.output <options>`.
+        Depends on :ref:`system.overwrite <options>` and :ref:`system.output <options>`.
 
     .. seealso::
-        :func:`~.write_fasta`
+        :func:`~.read_fasta`
     """
     def nomenclator(row, seqID, separator):
         sequence = row.get_sequence(seqID)
@@ -215,8 +202,7 @@ def write_fasta( df, seqID, separator=None, filename=None, split=False ):
 
 
 def write_clustalw( df, seqID, filename=None ):
-    """
-    Write sequences of selected designs as a CLUSTALW alignment.
+    """Write sequences of selected designs as a CLUSTALW alignment.
 
     If a ``reference_sequence`` exists, it is set up as the first sequence
     of the alignment. The name assigned to it will be the multipl longest common
@@ -226,7 +212,7 @@ def write_clustalw( df, seqID, filename=None ):
 
     :param df: Data content.
     :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
-    :param seqID: Identifier(s) of the sequences expected to be printed.
+    :param str seqID: |seqID_param|.
     :type seqID: :class:`str`
     :param filename: Output file name.
     :type filename: :class:`str`
@@ -236,11 +222,10 @@ def write_clustalw( df, seqID, filename=None ):
     :raises:
         :IOError: If ``filename`` exists and global option :ref:`system.overwrite <options>`
             is not :data:`True`.
-        :AttributeError: If any of the requested seqID cannot be found.
+        :AttributeError: |seqID_error|.
 
     .. note::
-        Depends on :ref:`system.overwrite <options>` and
-        :ref:`system.output <options>`.
+        Depends on :ref:`system.overwrite <options>` and :ref:`system.output <options>`.
     """
     def chunkstring(string, length):
         return [string[0 + i:length + i] for i in range(0, len(string), length)]
@@ -279,30 +264,26 @@ def write_clustalw( df, seqID, filename=None ):
 
 
 def write_mutant_alignments( df, seqID, filename=None ):
-    """
-    Writes a text file containing only the positions changed with respect to
+    """Writes a text file containing only the positions changed with respect to
     the ``reference_sequence``.
 
-    The format will be CLUSTALW but residues that repeat the ``reference_sequence``
+    The format will be **CLUSTALW** but residues that repeat the ``reference_sequence``
     are substituted by ".".
 
     :param df: Data content.
     :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
-    :param seqID: Identifier(s) of the sequences expected to be printed.
-    :type seqID: :class:`str`
-    :param filename: Output file name.
-    :type filename: :class:`str`
+    :param str seqID: |seqID_param|.
+    :param str filename: Output file name.
 
     :return: :class:`str` - **CLUSTALW** formated string.
 
     :raises:
         :IOError: If ``filename`` exists and global option :ref:`system.overwrite <options>`
             is not :data:`True`.
-        :AttributeError: If any of the requested seqID cannot be found.
+        :AttributeError: |seqID_error|.
 
     .. note::
-        Depends on :ref:`system.overwrite <options>` and
-        :ref:`system.output <options>`.
+        Depends on :ref:`system.overwrite <options>` and :ref:`system.output <options>`.
     """
     def mask_row(row, seqID):
         pos = row.get_mutation_positions(seqID)

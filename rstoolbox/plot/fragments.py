@@ -1,20 +1,30 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   17-Jan-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: fragments.py
-# @Last modified by:   bonet
-# @Last modified time: 11-May-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
 
+.. func:: plot_fragment_profiles
+.. func:: plot_fragments
+"""
+# Standard Libraries
+
+# External Libraries
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
+# This Library
 import rstoolbox.utils as ru
 import rstoolbox.analysis as ra
 from .sequence import positional_sequence_similarity_plot
 from .structure import positional_structural_similarity_plot
+
+
+__all__ = ['plot_fragment_profiles', 'plot_fragments']
 
 
 def _sse_frequencies_match( sse_fit, frags ):
@@ -52,9 +62,26 @@ def _seq_frequencies_match( seq_fit, frags ):
 
 
 def plot_fragment_profiles( fig, small_frags, large_frags, ref_seq, ref_sse, matrix="BLOSUM62" ):
-    """
-    Plots a full summary of the a :class:`.FragmentFrame` quality with sequence and expected
+    """Plots a full summary of the a :class:`.FragmentFrame` quality with sequence and expected
     secondary structure match.
+
+    :param fig: Figure into which the data is going to be plotted.
+    :type fig: :class:`~matplotlib.figure.Figure`
+    :param small_frags: Data for the small fragments.
+    :type small_frags: :class:`.FragmentFrame`
+    :param large_frags: Data for the large fragments.
+    :type large_frags: :class:`.FragmentFrame`
+    :param str ref_seq: Reference sequence over which to compare.
+    :param str ref_sse: Reference secondary structure over which to compare.
+    :param str matrix: Sequence similarity matrix to use for calculations.
+        Defualt is ``BLOSUM62``.
+
+    :return: :func:`list` of :class:`~matplotlib.axes.Axes`
+
+    .. seealso::
+        :func:`.plot_fragments`
+
+    .. rubric:: Example
 
     .. ipython::
 
@@ -73,25 +100,6 @@ def plot_fragment_profiles( fig, small_frags, large_frags, ref_seq, ref_sse, mat
 
         @savefig plot_fragment_profiles_docs.png width=5in
         In [2]: plt.show()
-
-    :param fig: Figure into which the data is going to be plotted.
-    :type fig: :class:`~matplotlib.figure.Figure`
-    :param small_frags: Data for the small fragments.
-    :type small_frags: :class:`.FragmentFrame`
-    :param large_frags: Data for the large fragments.
-    :type large_frags: :class:`.FragmentFrame`
-    :param ref_seq: Reference sequence over which to compare.
-    :type ref_seq: :class:`str`
-    :param ref_sse: Reference secondary structure over which to compare.
-    :type ref_sse: :class:`str`
-    :param matrix: Sequence similarity matrix to use for calculations.
-        Defualt is ``BLOSUM62``.
-    :type matrix: :class:`str`
-
-    :return: :func:`list` of :class:`~matplotlib.axes.Axes`
-
-    .. seealso::
-        :func:`.plot_fragments`
     """
 
     # make subplots
@@ -161,10 +169,37 @@ def plot_fragments( small_frags, large_frags, small_ax, large_ax, small_color=0,
     Thought to more easily print both small and large fragments together.
 
     On plotting, fragment RMSD values are assigned to the first position of the fragments.
-    This means that the plots will have a length of
+    This means that the plots will have a length of::
 
-    :math:`len(sequence) - len(fragment set)`
+        :math:`len(sequence) - len(fragment set)`
 
+    :param small_frags: Data for the small fragments.
+    :type small_frags: :class:`.FragmentFrame`
+    :param large_frags: Data for the large fragments.
+    :type large_frags: :class:`.FragmentFrame`
+    :param small_ax: Axis where to print the small fragments.
+    :type small_ax: :class:`~matplotlib.axes.Axes`
+    :param large_ax: Axis where to print the large fragments.
+    :type large_ax: :class:`~matplotlib.axes.Axes`
+    :param small_color: Color to use on the small fragments. If string,
+        that is the assumed color. If integer, it will provide that position for the
+        currently active color palette in seaborn.
+    :type small_color: Union[:class:`str`, :class:`int`]
+    :param large_color: Color to use on the large fragments. If string,
+        that is the assumed color. If integer, it will provide that position for the
+        currently active color palette in seaborn.
+    :type large_color: Union[:class:`str`, :class:`int`]
+    :param float small_max: Max value for the y (RMSD) axis of the small fragments. If
+        not provided, the system picks it according to the given data.
+    :param float large_max: Max value for the y (RMSD) axis of the large fragments. If
+        not provided, the system picks it according to the given data.
+    :param str titles: Title placement. Options are "top" or "right". Other options
+        will result in no titles added to the plot.
+
+    .. seealso::
+        :func:`.plot_fragment_profiles`
+
+    .. rubric:: Example
 
     .. ipython::
 
@@ -183,35 +218,6 @@ def plot_fragments( small_frags, large_frags, small_ax, large_ax, small_color=0,
 
         @savefig plot_fragments_docs.png width=5in
         In [2]: plt.show()
-
-    :param small_frags: Data for the small fragments.
-    :type small_frags: :class:`.FragmentFrame`
-    :param large_frags: Data for the large fragments.
-    :type large_frags: :class:`.FragmentFrame`
-    :param small_ax: Axis where to print the small fragments.
-    :type small_ax: :class:`~matplotlib.axes.Axes`
-    :param large_ax: Axis where to print the large fragments.
-    :type large_ax: :class:`~matplotlib.axes.Axes`
-    :param small_color: Color to use on the small fragments. If string,
-        that is the assumed color. If integer, it will provide that position for the
-        currently active color palette in seaborn.
-    :type small_color: Union[:class:`str`, :class:`int`]
-    :param large_color: Color to use on the large fragments. If string,
-        that is the assumed color. If integer, it will provide that position for the
-        currently active color palette in seaborn.
-    :type large_color: Union[:class:`str`, :class:`int`]
-    :param small_max: Max value for the y (RMSD) axis of the small fragments. If
-        not provided, the system picks it according to the given data.
-    :type small_max: :class:`float`
-    :param large_max: Max value for the y (RMSD) axis of the large fragments. If
-        not provided, the system picks it according to the given data.
-    :type large_max: :class:`float`
-    :param titles: Title placement. Options are "top" or "right". Other options
-        will result in no titles added to the plot.
-    :type titles: :class:`str`
-
-    .. seealso::
-        :func:`.plot_fragment_profiles`
     """
 
     # Color management

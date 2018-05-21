@@ -1,10 +1,26 @@
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
+
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+
+.. func:: multiple_distributions
+"""
+# Standard Libraries
 import itertools
 
+# External Libraries
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# This Library
 from rstoolbox.utils import add_top_title
+
+
+__all__ = ['multiple_distributions']
 
 
 def multiple_distributions( df, fig, grid, values="*", titles=None, labels=None, **kwargs ):
@@ -14,21 +30,6 @@ def multiple_distributions( df, fig, grid, values="*", titles=None, labels=None,
     A part from the fixed options, the function accepst any option of
     :func:`~seaborn.boxplot`, except for ``y``, ``data`` and ``ax``, which
     are used internally by this function.
-
-    .. ipython::
-
-        In [1]: from rstoolbox.io import parse_rosetta_file
-           ...: from rstoolbox.plot import multiple_distributions
-           ...: import matplotlib.pyplot as plt
-           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz")
-           ...: values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
-           ...:           "cav_vol", "design_score", "packstat", "rmsd_drift"]
-           ...: fig = plt.figure(figsize=(25, 10))
-           ...: axs = multiple_distributions(df, fig, (2, 4), values)
-           ...: plt.tight_layout()
-
-        @savefig multiple_distributions_docs.png width=5in
-        In [2]: plt.show()
 
     :param df: Data container
     :type df: :class:`~pandas.DataFrame`
@@ -51,6 +52,23 @@ def multiple_distributions( df, fig, grid, values="*", titles=None, labels=None,
         :ValueError: If the given grid does not have enought positions for all the requested values.
         :ValueError: It the number of values and titles do not match.
         :ValueError: It the number of values and labels do not match.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.plot import multiple_distributions
+           ...: import matplotlib.pyplot as plt
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz")
+           ...: values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
+           ...:           "cav_vol", "design_score", "packstat", "rmsd_drift"]
+           ...: fig = plt.figure(figsize=(25, 10))
+           ...: axs = multiple_distributions(df, fig, (2, 4), values)
+           ...: plt.tight_layout()
+
+        @savefig multiple_distributions_docs.png width=5in
+        In [2]: plt.show()
     """
     if values == "*":
         values = df.select_dtypes(include=[np.number]).columns.tolist()

@@ -128,7 +128,7 @@ to <em>reference</em>.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>]) – Data content.</li>
-<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier(s) of the sequences expected to be printed.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Identifier of the sequence of interest.</li>
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Output file name.</li>
 </ul>
 </td>
@@ -143,7 +143,7 @@ to <em>reference</em>.</p>
 <tr class="field-odd field"><th class="field-name">IOError:</th><td class="field-body">If <code class="docutils literal notranslate"><span class="pre">filename</span></code> exists and global option <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.overwrite</span></a>
 is not <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">AttributeError:</th><td class="field-body">If any of the requested seqID cannot be found.</td>
+<tr class="field-even field"><th class="field-name">AttributeError:</th><td class="field-body">if there is no sequence information for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys.</td>
 </tr>
 </tbody>
 </table>
@@ -153,8 +153,7 @@ is not <a class="reference external" href="https://docs.python.org/2/library/con
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Depends on <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.overwrite</span></a> and
-<a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.output</span></a>.</p>
+<p class="last">Depends on <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.overwrite</span></a> and <a class="reference internal" href="../tutorials/options.html#options"><span class="std std-ref">system.output</span></a>.</p>
 </div>
 </dd></dl>
 
