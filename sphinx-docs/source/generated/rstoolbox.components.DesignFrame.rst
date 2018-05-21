@@ -42,21 +42,25 @@ rstoolbox.components.DesignFrame
       ~DesignFrame.delete_reference
 
 
-  .. rubric:: Methods
+  .. rubric:: Source Files
   .. autosummary::
      :toctree: DesignFrame
 
       ~DesignFrame.add_source_file
       ~DesignFrame.add_source_files
-      ~DesignFrame.get_sequence_with
       ~DesignFrame.get_source_files
       ~DesignFrame.has_source_files
       ~DesignFrame.replace_source_files
-      ~DesignFrame.sequence_bits
-      ~DesignFrame.sequence_distance
-      ~DesignFrame.sequence_frequencies
-      ~DesignFrame.structure_bits
-      ~DesignFrame.structure_frequencies
+
+  .. rubric:: Frequencies
+  .. autosummary::
+     :toctree: DesignFrame
+
+     ~DesignFrame.sequence_bits
+     ~DesignFrame.sequence_distance
+     ~DesignFrame.sequence_frequencies
+     ~DesignFrame.structure_bits
+     ~DesignFrame.structure_frequencies
 
 
   .. rubric:: Mutation Methods
@@ -68,6 +72,7 @@ rstoolbox.components.DesignFrame
       ~DesignFrame.get_mutation_count
       ~DesignFrame.get_mutation_positions
       ~DesignFrame.get_mutations
+      ~DesignFrame.get_sequence_with
       ~DesignFrame.generate_mutant_variants
       ~DesignFrame.generate_mutants_from_matrix
       ~DesignFrame.generate_wt_reversions

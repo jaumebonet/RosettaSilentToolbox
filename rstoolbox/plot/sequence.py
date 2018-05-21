@@ -498,13 +498,15 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         # data and key_residues management.
         _data = data.get_key_residues(krs[_])
 
+        maxv = int(math.ceil(data.max_hight()))
+
         ticks = len(_data)
         if line_break is not None and len(_data) < line_break:
             ticks = line_break
         ax.set_xticks(np.arange(0.5, ticks + 1))
-        ax.set_yticks( range(0, 2) )
+        ax.set_yticks( range(0, maxv + 1) )
         ax.set_xticklabels( _data.index.values )
-        ax.set_yticklabels( np.arange( 0, 2, 1 ) )
+        ax.set_yticklabels( np.arange( 0, maxv + 1, 1 ) )
         if ref_seq is not None:
             ax2 = ax.twiny()
             ax2.set_xticks(ax.get_xticks())

@@ -1,10 +1,14 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   29-Jun-2017
-# @Email:  jaume.bonet@gmail.com
-# @Filename: designFrame.py
-# @Last modified by:   bonet
-# @Last modified time: 16-May-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+
+.. class:: DesignSeries
+.. class:: DesignFrame
+"""
 # Standard Libraries
 import itertools
 
@@ -24,12 +28,15 @@ __all__ = ["DesignSeries", "DesignFrame"]
 
 class DesignSeries( pd.Series, RSBaseDesign ):
     """
-    The :py:class:`.DesignSeries` extends the :py:class:`~pandas.Series`
+    The :class:`.DesignSeries` extends the :class:`~pandas.Series`
     adding some functionalities in order to improve its usability in
     the analysis of a single design decoys.
 
     It is generated as the *reduced dimensionality version* of the
-    :py:class:`.DesignFrame`.
+    :class:`.DesignFrame`.
+
+    .. seealso::
+        :class:`.DesignFrame`
     """
 
     _metadata = ['_reference']
@@ -61,7 +68,7 @@ class DesignSeries( pd.Series, RSBaseDesign ):
 
 class DesignFrame( pd.DataFrame, RSBaseDesign ):
     """
-    The :py:class:`.DesignFrame` extends the :py:class:`~pandas.DataFrame`
+    The :class:`.DesignFrame` extends the :class:`~pandas.DataFrame`
     adding some functionalities in order to improve its usability in
     the analysis of sets of design decoys.
 
@@ -74,25 +81,40 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
     #. has a column named **description** \
     that stores the identifier of the corresponding decoy.
     #. holds sequences (a design decoy might be composed of \
-    multiple chains) in columns named **sequnece_[seqID]**.
+    multiple chains) in columns named **sequence_<seqID>**.
 
     This two assumptions are easily adapted if casting a
-    :py:class:`~pandas.DataFrame` into the class, and several functions
+    :class:`~pandas.DataFrame` into the class, and several functions
     of the library depend on them.
 
-    The :py:class:`.DesignFrame` basically contains three extra attributes
+    .. note::
+        This assumptions are automatically fulfilled when the data container is
+        loaded through :func:`.parse_rosetta_file`. To obtain sequence information
+        is is necessary to request for that particular data, as described in
+        :ref:`tutorial: reading Rosetta <readrosetta>`.
+
+    The :class:`.DesignFrame` basically contains four extra attributes
     (accessible through the appropiate functions):
 
     #. **reference_sequence:** A reference sequence can be added for each ``seqID`` \
-    present in the :py:class:`.DesignFrame`. By adding this sequence, other functions \
+    present in the :class:`.DesignFrame`. By adding this sequence, other functions \
     of the library can add that information to its calculations.
+    #. **reference_structure:** A reference secondary structure can be added for each \
+    ``seqID`` present in the :class:`.DesignFrame`. By adding this sequence, other \
+    functions of the library can add that information to its calculations.
     #. **reference_shift:** A reference shift can be added for each ``seqID`` \
-    present in the :py:class:`.DesignFrame`. In short, this would be the initial number \
+    present in the :class:`.DesignFrame`. In short, this would be the initial number \
     of the protein in the source PDB. This allows working with the right numbering. This \
-    value is, by default, 1 in all ``seqID``.
+    value is, by default, 1 in all ``seqID``. A more complex alternative allows for a \
+    list of numbers to also be assigned as ``reference_shift``. This is usefull when \
+    the original structure does not have a continuous numbering schema.
     #. **source_files:** The object stores the source files from which it has been loaded \
-    (as long as it is loaded with :py:func:`.parse_rosetta_file`). This information can \
+    (as long as it is loaded with :func:`.parse_rosetta_file`). This information can \
     be used to extract the structures from the silent files.
+
+    .. seealso::
+        :func:`.parse_rosetta_file`
+
     """
     _metadata = ['_reference', '_source_files']
     _subtyp = 'design_frame'
@@ -105,65 +127,80 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         self._source_files = source
 
     def add_source_file( self, file ):
-        """
-        Adds a source file to the :py:class:`.DesignFrame`. This can be used to know where to
-        extract the structure from if needed.
+        """Adds a ``source_file`` to the :class:`.DesignFrame`.
+
+        This can be used to know where to extract the structure from if needed.
 
         :param str file: Name of the file to add.
         """
         self._source_files.add( file )
 
     def replace_source_files( self, files ):
-        """
-        Replaces source files of the :py:class:`.DesignFrame`. These can be used to know where to
-        extract the structure from if needed.
+        """Replaces ``source_file`` of the :class:`.DesignFrame`.
+
+        These can be used to know where to extract the structure from if needed.
 
         :param files: List of names of the files to add.
+        :type files: :func:`list` of :class:`str`
         """
         self._source_files = set( files )
 
     def add_source_files( self, files ):
-        """
-        Adds source files to the :py:class:`.DesignFrame`. These can be used to know where to
-        extract the structure from if needed.
+        """Adds ``source_file`` to the :class:`.DesignFrame`.
+
+        These can be used to know where to extract the structure from if needed.
 
         :param files: List of names of the files to add.
+        :type files: :func:`list` of :class:`str`
         """
         self._source_files = self._source_files.union( files )
 
     def get_source_files( self ):
-        """
-        Returns the set of source files linked to this :py:class:`.DesignFrame`.
+        """Get ``source_file`` stored in the data container.
 
-        :return: Set of files.
+        :return: func:`list` of :class:`str` - Set of files.
         """
         return self._source_files
 
     def has_source_files( self ):
-        """
-        Checks if there are source files added.
+        """Checks if there are source files added.
 
         :return: bool
         """
         return bool(self._source_files)
 
     def get_sequence_with( self, seqID, selection, confidence=1 ):
-        """
-        Selects those decoys with a particular set of residue matches.
+        """Selects those decoys with a particular set of residue matches.
+
         Basically, is meant to find, for example, all the decoys in which
         position 25 is A and position 46 is T.
 
-        :param str seqID: Identifier of the sequence of interest.
-        :param str selection: List of tuples with position and residue
-            type (in 1 letter code)
+        :param str seqID: |seqID_param|.
+        :param selection: List of tuples with position and residue
+            type (in 1 letter code).
+        :type selection: :func:`list` of :class:`tuple`
         :param float confidence: Percentage of the number of the selection
             rules that we expect the matches to fulfill. Default is 1 (all).
-        :return: Filtered :py:class:`.DesignFrame`
+
+        :return: :class:`.DesignFrame` - filtered by the requested sequence
+
+        .. rubric:: Example
+
+        .. ipython::
+
+            In [1]: from rstoolbox.io import parse_rosetta_file
+               ...: import pandas as pd
+               ...: pd.set_option('display.width', 1000)
+               ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+               ...:                         {'scores': ['score'], 'sequence': 'B'})
+               ...: df.get_sequence_with('B', [(1, 'T')])
         """
+        from .selection import get_selection
         def match_residues( value, seqID, confidence ):
             t = 0
             for s in selection:
-                t += 1 if value[s[0] - 1] == s[1] else 0
+                # -1 as we access string position directly
+                t += 1 if value[get_selection(s[0], seqID)[0] - 1] == s[1] else 0
             return t / float(len(selection)) >= float(confidence)
 
         return self.loc[ self.apply(
@@ -172,19 +209,30 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         )]
 
     def sequence_distance( self, seqID ):
-        """
+        """Make identity sequence distance between the selected decoys.
+
         Generate a matrix counting the distance between each pair of sequences in the
-        :py:class:`.designFrame`. This is a time-consuming operation; better to execute it over a
+        :class:`.designFrame`. This is a time-consuming operation; better to execute it over a
         specific set of selected decoys that over all your designs.
 
-        :param seqID: Identifier of the sequence of interest.
-        :type seqID: :py:class:`str`
+        :param str seqID: |seqID_param|.
 
-        return: :py:class:`~pandas.DataFrame`.
+        return: :class:`~pandas.DataFrame` - table with the sequence distances.
 
         :raises:
-            :KeyError: if ``seqID`` cannot be found.
+            :KeyError: |seqID_error|.
             :KeyError: if ``description`` column cannot be found.
+
+        .. rubric:: Example
+
+        .. ipython::
+
+            In [1]: from rstoolbox.io import parse_rosetta_file
+               ...: import pandas as pd
+               ...: pd.set_option('display.width', 1000)
+               ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+               ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
+               ...: df.sequence_distance('B')
         """
         # https://stackoverflow.com/questions/49235538/pandas-series-compare-values-all-vs-all
         a = np.array(list(map(list, self.get_sequence(seqID).values)))
@@ -202,102 +250,134 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         return pd.DataFrame(res, columns=ids, index=ids, dtype=int)
 
     def sequence_frequencies( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=-1 ):
-        """
-        Generates a :py:class:`.SequenceFrame` for the frequencies of
-        the sequences in the __DesignFrame__ with seqID identifier.
-        If there is a reference_sequence for this seqID, it will also
-        be attached to the __SequenceFrame__.
+        """Create a frequency-based :class:`.SequenceFrame`.
+
+        Generates a :class:`.SequenceFrame` for the frequencies of
+        the sequences in the :class:`.designFrame` with ``seqID`` identifier.
+        If there is a reference_sequence for this ``seqID``, it will also
+        be attached to the :class:`.SequenceFrame`.
+
         All letters in the sequence will be capitalized. All symbols that
-        do not belong to string.ascii_uppercase will be transformed to "*"
+        do not belong to ``string.ascii_uppercase`` will be transformed to "*"
         as this is the symbol recognized by the substitution matrices.
 
-        :param str seqID: Identifier of the sequence sets of interest.
-        :param str seqType: Type of sequence: protein, dna, rna.
-        :param bool cleanExtra: Remove from the SequenceFrame the non-regular
+        :param str seqID: |seqID_param|.
+        :param str seqType: Type of sequence: ``protein``, ``dna``, ``rna``.
+        :param bool cleanExtra: Remove from the class:`.SequenceFrame` the non-regular
             amino/nucleic acids if they are empty for all positions.
-        :param int cleanUnused: Remove from the SequenceFrame the regular
+        :param int cleanUnused: Remove from the class:`.SequenceFrame` the regular
             amino/nucleic acids if they frequency is equal or under the value . Default is -1,
             so nothing is deleted.
-        :return: :py:class:`.SequenceFrame`
+
+        :return: :class:`.SequenceFrame`
+
+        .. seealso::
+            :meth:`.DesignFrame.sequence_bits`
+            :meth:`.DesignFrame.structure_frequencies`
+            :meth:`.DesignFrame.structure_bits`
+            :func:`.sequential_frequencies`
         """
         return ra.sequential_frequencies(self, seqID, "sequence", seqType, cleanExtra, cleanUnused)
 
     def sequence_bits( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
-        """
-        Generates a :py:class:`.SequenceFrame` for the bits of
-        the sequences in the __DesignFrame__ with seqID identifier.
-        If there is a reference_sequence for this seqID, it will also
-        be attached to the __SequenceFrame__.
-        Bit calculation is performed as explained in http://www.genome.org/cgi/doi/10.1101/gr.849004
-        such as:
+        """Create a bit-based :class:`.SequenceFrame`.
 
-        Rseq = Smax - Sobs = log2 N - (-sum(n=1,N):pn * log2 pn)
+        Generates a :class:`.SequenceFrame` for the bits of
+        the sequences in the :class:`.designFrame` with ``seqID`` identifier.
+        If there is a reference_sequence for this ``seqID``, it will also
+        be attached to the :class:`.SequenceFrame`.
+
+        Bit calculation is performed as explained in http://www.genome.org/cgi/doi/10.1101/gr.849004
+        such as::
+
+            Rseq = Smax - Sobs = log2 N - (-sum(n=1,N):pn * log2 pn)
 
         Where:
             - N is the total number of options (4: DNA/RNA; 20: PROTEIN).
             - pn is the observed frequency of the symbol n.
 
-        :param str seqID: Identifier of the sequence sets of interest.
-        :param str seqType: Type of sequence: protein, dna, rna.
-        :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
-            shift from the reference sequence
-        :param bool cleanExtra: Remove from the SequenceFrame the non-regular
-        amino/nucleic acids if they are empty for all positions.
-        :param bool cleanUnused: Remove from the SequenceFrame the regular
-        amino/nucleic acids if they are empty for all positions
+        :param str seqID: |seqID_param|.
+        :param str seqType: Type of sequence: ``protein``, ``dna``, ``rna``.
+        :param bool cleanExtra: Remove from the class:`.SequenceFrame` the non-regular
+            amino/nucleic acids if they are empty for all positions.
+        :param int cleanUnused: Remove from the class:`.SequenceFrame` the regular
+            amino/nucleic acids if they frequency is equal or under the value . Default is -1,
+            so nothing is deleted.
 
-        :return: :py:class:`.SequenceFrame`
+        :return: :class:`.SequenceFrame`
+
+        .. seealso::
+            :meth:`.DesignFrame.sequence_frequencies`
+            :meth:`.DesignFrame.structure_frequencies`
+            :meth:`.DesignFrame.structure_bits`
+            :func:`.sequential_frequencies`
         """
         df = self.sequence_frequencies(seqID, seqType, cleanExtra, cleanUnused)
         return df.to_bits()
 
     def structure_frequencies( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=-1 ):
-        """
-        Generates a :py:class:`.SequenceFrame` for the frequencies of
-        the secondary structure in the __DesignFrame__ with seqID identifier.
-        If there is a reference_structure for this seqID, it will also
-        be attached to the __SequenceFrame__.
+        """Create a frequency-based :class:`.SequenceFrame` for secondary structure assignation.
+
+        Generates a :class:`.SequenceFrame` for the frequencies of
+        the secondary structure in the :class:`.designFrame` with ``seqID`` identifier.
+        If there is a reference_structure for this ``seqID``, it will also
+        be attached to the :class:`.SequenceFrame`.
+
         All letters in the secondary structure will be capitalized. All symbols that
         do not belong to string.ascii_uppercase will be transformed to "*"
         as this is the symbol recognized by the substitution matrices.
 
-        :param str seqID: Identifier of the secondary structure sets of interest.
-        :param str seqType: Type of sequence: protein.
-        :param bool cleanExtra: Remove from the SequenceFrame the non-regular
+        :param str seqID: |seqID_param|.
+        :param str seqType: Type of sequence: ``protein``, ``dna``, ``rna``.
+        :param bool cleanExtra: Remove from the class:`.SequenceFrame` the non-regular
             amino/nucleic acids if they are empty for all positions.
-        :param int cleanUnused: Remove from the SequenceFrame the regular
+        :param int cleanUnused: Remove from the class:`.SequenceFrame` the regular
             amino/nucleic acids if they frequency is equal or under the value . Default is -1,
             so nothing is deleted.
-        :return: :py:class:`.SequenceFrame`
+
+        :return: :class:`.SequenceFrame`
+
+        .. seealso::
+            :meth:`.DesignFrame.sequence_frequencies`
+            :meth:`.DesignFrame.sequence_bits`
+            :meth:`.DesignFrame.structure_bits`
+            :func:`.sequential_frequencies`
         """
         seqType = seqType + "_sse"
         return ra.sequential_frequencies(self, seqID, "structure", seqType, cleanExtra, cleanUnused)
 
     def structure_bits( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=False ):
-        """
-        Generates a :py:class:`.SequenceFrame` for the bits of
-        the secondary structure in the __DesignFrame__ with seqID identifier.
-        If there is a reference_structure for this seqID, it will also
-        be attached to the __SequenceFrame__.
-        Bit calculation is performed as explained in http://www.genome.org/cgi/doi/10.1101/gr.849004
-        such as:
+        """Create a bit-based :class:`.SequenceFrame` for secondary structure assignation.
 
-        Rseq = Smax - Sobs = log2 N - (-sum(n=1,N):pn * log2 pn)
+        Generates a :class:`.SequenceFrame` for the bits of
+        the secondary structure in the :class:`.designFrame` with ``seqID`` identifier.
+        If there is a reference_structure for this ``seqID``, it will also
+        be attached to the :class:`.SequenceFrame`.
+
+        Bit calculation is performed as explained in http://www.genome.org/cgi/doi/10.1101/gr.849004
+        such as::
+
+            Rseq = Smax - Sobs = log2 N - (-sum(n=1,N):pn * log2 pn)
 
         Where:
             - N is the total number of options (4: DNA/RNA; 20: PROTEIN).
             - pn is the observed frequency of the symbol n.
 
-        :param str seqID: Identifier of the sequence sets of interest.
-        :param str seqType: Type of sequence: protein, dna, rna.
-        :param int shift: Numbering assign to the first residue of the chain. Default is None, pick
-            shift from the reference sequence
-        :param bool cleanExtra: Remove from the SequenceFrame the non-regular
-        amino/nucleic acids if they are empty for all positions.
-        :param bool cleanUnused: Remove from the SequenceFrame the regular
-        amino/nucleic acids if they are empty for all positions
+        :param str seqID: |seqID_param|.
+        :param str seqType: Type of sequence: ``protein``, ``dna``, ``rna``.
+        :param bool cleanExtra: Remove from the class:`.SequenceFrame` the non-regular
+            amino/nucleic acids if they are empty for all positions.
+        :param int cleanUnused: Remove from the class:`.SequenceFrame` the regular
+            amino/nucleic acids if they frequency is equal or under the value . Default is -1,
+            so nothing is deleted.
 
-        :return: :py:class:`.SequenceFrame`
+        :return: :class:`.SequenceFrame`
+
+        .. seealso::
+            :meth:`.DesignFrame.sequence_frequencies`
+            :meth:`.DesignFrame.sequence_bits`
+            :meth:`.DesignFrame.structure_frequencies`
+            :func:`.sequential_frequencies`
         """
         df = self.structure_frequencies(seqID, seqType, cleanExtra, cleanUnused)
         return df.to_bits()
@@ -322,83 +402,6 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         def f(*args, **kwargs):
             return DesignSeries(*args, **kwargs).__finalize__(self, method='inherit')
         return f
-
-    def _box_col_values(self, values, items):
-        """ provide boxed values for a column """
-        return self._constructor_sliced(values, index=self.index,
-                                        name=items, fastpath=True)
-
-    def _ixs(self, i, axis=0):
-        """
-        i : int, slice, or sequence of integers
-        axis : int
-        """
-
-        # irow
-        if axis == 0:
-            """
-            Notes
-            -----
-            If slice passed, the resulting data will be a view
-            """
-
-            if isinstance(i, slice):
-                return self[i]
-            else:
-                label = self.index[i]
-                if isinstance(label, Index):
-                    # a location index by definition
-                    result = self.take(i, axis=axis)
-                    copy = True
-                else:
-                    new_values = self._data.fast_xs(i)
-                    if is_scalar(new_values):
-                        return new_values
-
-                    # if we are a copy, mark as such
-                    copy = (isinstance(new_values, np.ndarray) and
-                            new_values.base is None)
-                    result = self._constructor_sliced(new_values,
-                                                      index=self.columns,
-                                                      name=self.index[i],
-                                                      dtype=new_values.dtype)
-                result._set_is_copy(self, copy=copy)
-                return result
-
-        # icol
-        else:
-            """
-            Notes
-            -----
-            If slice passed, the resulting data will be a view
-            """
-
-            label = self.columns[i]
-            if isinstance(i, slice):
-                # need to return view
-                lab_slice = slice(label[0], label[-1])
-                return self.loc[:, lab_slice]
-            else:
-                if isinstance(label, Index):
-                    return self._take(i, axis=1, convert=True)
-
-                index_len = len(self.index)
-
-                # if the values returned are not the same length
-                # as the index (iow a not found value), iget returns
-                # a 0-len ndarray. This is effectively catching
-                # a numpy error (as numpy should really raise)
-                values = self._data.iget(i)
-
-                if index_len and not len(values):
-                    values = np.array([np.nan] * index_len, dtype=object)
-                result = self._constructor_sliced(
-                    values, index=self.index, name=label, fastpath=True)
-
-                # this is a cached value, mark it so
-                result._set_as_cached(label, self)
-
-                return result
 
     def __finalize__(self, other, method=None, **kwargs):
         """propagate metadata from other to self """

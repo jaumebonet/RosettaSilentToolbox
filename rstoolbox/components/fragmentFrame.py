@@ -372,63 +372,6 @@ class FragmentFrame( pd.DataFrame ):
             consensus.append(qseq[0])
         return "".join(consensus)
 
-    def angle_coverage( self, df, threshold=5 ):
-        """
-        Check, for frame (window) how many shared fragments do to fragment set
-        have. Two fragments are considered equal if all their angles are under a
-        threshold.
-        :param FragmentFrame df: :py:class:`.FragmentFrame` to compare to.
-        :param float threshold: Degrees of difference allowed.
-        :return: List. For each frame the number of shared fragments, the number of
-            fragments in that frame for the current :py:class:`.FragmentFrame` and
-            for  the provided one.
-        :raises: AssertionError if the two sets are not comparable.
-        :raises: ValueError if the other DataFrame is not a :py:class:`.FragmentFrame`
-        """
-        # We assume none of the two are crunched
-        if "_anglesAll" not in self:
-            assert self.is_comparable(df), "The two sets cannot be compared."
-            assert isinstance(df, FragmentFrame), "Compare must be done between FragmentFrames."
-            return self._crunch("angles").angle_coverage(df._crunch("angles"), threshold)
-
-        def angle(a1, a2):
-            return 180 - abs((abs(a1 - a2) % 360) - 180)
-
-        def compare_angles(a1, a2, thr):
-            return not (pd.Series(zip(a1, a2)).apply(lambda row: (angle(row[0], row[1]) <= thr).all()) == False).any()
-
-        def compare_frame( line, df, thr ):
-            return df.apply(lambda row: compare_angles(row["_anglesAll"], line, thr), axis=1)
-
-        if self["frame"].nunique() == 1:
-            counter = 0
-            counter = self.apply(lambda row: compare_frame(row["_anglesAll"], df, threshold), axis=1).apply(lambda row: (row == True).any() ).sum()
-            return counter, self.shape[0], df.shape[0]
-        else:
-            sys.stdout.write("Angle coverage: This process is computationaly expensive. Will take a bit.")
-            data = []
-            for i in self["frame"].unique():
-                data.append(self[self["frame"] == i].angle_coverage(df[df["frame"] == i]))
-            return data
-
-    def _crunch( self, what ):
-        """
-        Crunching is a process by which the :py:class:`.FragmentFrame` is compressed
-        so flatten the requested values
-        :param str what: what to crunch: angles, seq, sse
-        :return: The crunched :py:class:`.FragmentFrame`.
-        """
-        df = self.copy()
-        if what in self._crunched:
-            return self._crunched[what]
-        if what.lower() == "angles":
-            df["_anglesAll"] = df.apply(lambda row: list(row[["phi", "psi", "omega"]]), axis=1)
-            df = df.drop(["phi", "psi", "omega"], axis=1)
-            df = FragmentFrame(df.groupby(["frame", "neighbor"])["_anglesAll"].apply(np.hstack).reset_index())
-
-        self._crunched[what] = df
-        return self._crunched[what]
-
     def _metadata_defaults(self, name):
         if name == "_source_file":
             return None

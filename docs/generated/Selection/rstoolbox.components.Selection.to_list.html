@@ -117,22 +117,6 @@
 <dt id="rstoolbox.components.Selection.to_list">
 <code class="descclassname">Selection.</code><code class="descname">to_list</code><span class="sig-paren">(</span><em>length=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.Selection.to_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide the values of the <a class="reference internal" href="../rstoolbox.components.Selection.html#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a> as a list of integers.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.components</span> <span class="kn">import</span> <span class="n">Selection</span>
-<span class="gp">   ...: </span><span class="n">ss</span> <span class="o">=</span> <span class="n">Selection</span><span class="p">(</span><span class="s2">&quot;3-5,13-15,21,25&quot;</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">ss</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
-<span class="gp">   ...: </span>
-<span class="gh">Out[3]: </span><span class="go">[3, 4, 5, 13, 14, 15, 21, 25]</span>
-</pre></div>
-</div>
-<p>If the <a class="reference internal" href="../rstoolbox.components.Selection.html#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a> <strong>is reversed</strong>, the <code class="docutils literal notranslate"><span class="pre">length</span></code> over which it will
-be applied needs to be provided, so that the actual selected positions can
-be determined.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">sr</span> <span class="o">=</span> <span class="o">~</span><span class="n">ss</span>
-<span class="gp">   ...: </span><span class="n">ss</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
-<span class="gp">   ...: </span>
-<span class="gh">Out[5]: </span><span class="go">[3, 4, 5, 13, 14, 15, 21, 25]</span>
-</pre></div>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -158,6 +142,23 @@ of the selection positions.</p>
 </tr>
 </tbody>
 </table>
+<p>If the <a class="reference internal" href="../rstoolbox.components.Selection.html#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a> <strong>is reversed</strong>, the <code class="docutils literal notranslate"><span class="pre">length</span></code> over which it will
+be applied needs to be provided, so that the actual selected positions can
+be determined.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">sr</span> <span class="o">=</span> <span class="o">~</span><span class="n">ss</span>
+<span class="gp">   ...: </span><span class="n">ss</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[2]: </span><span class="go">[3, 4, 5, 13, 14, 15, 21, 25]</span>
+</pre></div>
+</div>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [3]: </span><span class="kn">from</span> <span class="nn">rstoolbox.components</span> <span class="kn">import</span> <span class="n">Selection</span>
+<span class="gp">   ...: </span><span class="n">ss</span> <span class="o">=</span> <span class="n">Selection</span><span class="p">(</span><span class="s2">&quot;3-5,13-15,21,25&quot;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">ss</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[5]: </span><span class="go">[3, 4, 5, 13, 14, 15, 21, 25]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>
@@ -179,7 +180,7 @@ of the selection positions.</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

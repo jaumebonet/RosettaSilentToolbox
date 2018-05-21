@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="rstoolbox.components.DesignSeries.make_resfile" href="rstoolbox.components.DesignSeries.make_resfile.html" />
-    <link rel="prev" title="rstoolbox.components.DesignSeries.has_reference_structure" href="rstoolbox.components.DesignSeries.has_reference_structure.html" />
+    <link rel="next" title="rstoolbox.components.DesignSeries.get_identified_mutants" href="rstoolbox.components.DesignSeries.get_identified_mutants.html" />
+    <link rel="prev" title="rstoolbox.components.DesignSeries.delete_reference" href="rstoolbox.components.DesignSeries.delete_reference.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -179,12 +179,14 @@ a copy of the data container with the new columns.</p>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">identify_mutants</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span>
 <span class="gh">Out[6]: </span><span class="go"></span>
-<span class="go">     score                                                                                                            sequence_B                                                                                                                                                                                                                                                                                                                                                                                                                         mutants_B                                                                                                                                                                                                                                              mutant_positions_B  mutant_count_B</span>
-<span class="go">1 -214.362  PKPEEAMREAYKLIKKYMLKAQKEAQEEWERMRRTDGTKEEKDMFPEKMIAQALRAIGEIFNAYYWAFLKLQEFKKYPSVRWEEQEEARKRLKIMMKIGAEWAREIAREMKERIKR  T1P,R2K,R7M,E8R,R9E,W11Y,R12K,A14I,E15K,I16K,A17Y,R19L,G21A,W22Q,E23K,H25A,E26Q,R27E,W31R,W32M,K33R,A35T,S36D,K37G,G38T,R39K,R42K,L45F,R48K,A52Q,E64Y,W65Y,Q66W,M67A,R68F,E70K,M71L,E72Q,K73E,E74F,R75K,N77Y,N79S,A80V,G81R,E82W,K84E,M85Q,K86E,Q88A,K89R,E91R,A92L,W93K,K94I,I95M,A96M,Y97K,Y98I,W99G,G100A,L101E,M102W,A104R,Y105E,W106I,I107A,K108R,Q109E,H110M,R111K,K113R,E114I,R115K,K116R                                  1,2,7,8,9,11,12,14,15,16,17,19,21,22,23,25,26,27,31,32,33,35,36,37,38,39,42,45,48,52,64,65,66,67,68,70,71,72,73,74,75,77,79,80,81,82,84,85,86,88,89,91,92,93,94,95,96,97,98,99,100,101,102,104,105,106,107,108,109,110,111,113,114,115,116                      75            </span>
-<span class="go">2 -203.582  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW  R2K,A6M,R7A,E8R,R9E,W11Y,R12K,L13R,A14M,E15L,I16K,M18L,R19K,K20Q,W22E,H25M,E26K,E28M,W29Y,W31Q,W32M,R34K,A35G,S36V,K37D,G38S,R39K,L45E,R48K,A52I,I60L,E64W,W65M,Q66K,M67A,R68L,L69R,E70H,E72K,K73E,E74L,N77L,P78G,N79T,A80S,E82P,E83K,K84E,M85E,K86E,E87K,Q88H,K89W,K90R,E91W,A92I,W93F,K94E,I95L,A96H,Y97R,Y98W,W99A,L101E,M102E,A103I,A104Q,Y105R,W106A,I107A,K108E,Q109I,H110Q,R111E,E112R,E114A,K116W                         2,6,7,8,9,11,12,13,14,15,16,18,19,20,22,25,26,28,29,31,32,34,35,36,37,38,39,45,48,52,60,64,65,66,67,68,69,70,72,73,74,77,78,79,80,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,101,102,103,104,105,106,107,108,109,110,111,112,114,116                 77            </span>
-<span class="go">3 -213.779  TKPEEWARWAYKEHLKMAEKHRKEMEIEWEELKRRDGKEEEKDMWPERMIAMALRAIGELFNHHMYAEMRAKEEKKKPEAKTEEARRARREIMKYHHEAGRLIEEAMRRLMERHKK  R2K,A6W,R7A,E8R,R9W,W11Y,R12K,L13E,A14H,E15L,I16K,A17M,M18A,R19E,G21H,W22R,E23K,H25M,R27I,W31E,W32L,A35R,S36D,K37G,G38K,R39E,R42K,L45W,A52M,I60L,A63H,E64H,W65M,Q66Y,M67A,R68E,L69M,E70R,M71A,E72K,K73E,R75K,N77K,N79E,G81K,E82T,K84E,M85A,K86R,E87R,Q88A,K89R,K90R,A92I,W93M,I95Y,A96H,Y97H,Y98E,W99A,L101R,M102L,A103I,A104E,Y105E,W106A,I107M,K108R,Q109R,H110L,R111M,K113R,E114H,R115K                                        2,6,7,8,9,11,12,13,14,15,16,17,18,19,21,22,23,25,27,31,32,35,36,37,38,39,42,45,52,60,63,64,65,66,67,68,69,70,71,72,73,75,77,79,81,82,84,85,86,87,88,89,90,92,93,95,96,97,98,99,101,102,103,104,105,106,107,108,109,110,111,113,114,115                          74            </span>
-<span class="go">4 -213.972  KKWEEMMREAERQGKEYAQKAWKEALLEWKWMRKRPVTEEMKDMAPEWMIAAALRAIGEHFNIYWQQKLEHEKLRKIPNVPEEELEKGKEELKRIEEEAARMAEKYMQELRKKMES  T1K,R2K,P3W,A6M,R7M,E8R,R9E,W11E,L13Q,A14G,E15K,I16E,A17Y,M18A,R19Q,G21A,E23K,H25A,E26L,R27L,E30K,W32M,K33R,R34K,A35R,S36P,K37V,G38T,R39E,E41M,R42K,L45A,R48W,I60H,A63I,E64Y,M67Q,R68K,M71H,E74L,N77I,A80V,G81P,K84E,M85L,K86E,E87K,Q88G,K90E,A92L,W93K,K94R,A96E,Y97E,Y98E,W99A,G100A,L101R,A104E,Y105K,W106Y,I107M,K108Q,Q109E,H110L,E112K,E114M,R115E,K116S                                                                    1,2,3,6,7,8,9,11,13,14,15,16,17,18,19,21,23,25,26,27,30,32,33,34,35,36,37,38,39,41,42,45,48,60,63,64,67,68,71,74,77,80,81,84,85,86,87,88,90,92,93,94,96,97,98,99,100,101,104,105,106,107,108,109,110,112,114,115,116                                            69            </span>
-<span class="go">5 -195.138  PRPEEMARFAKEEMHKHEEKAYREFLLEYELAIRKNPTEEPKDMQPEWAIAAALRAIGEIFNQWMYHLLEIRKENGSSHTRYEEREKYRKLAKRLHEEAAKEIWKFMHEAMRRFES  T1P,A6M,R7A,E8R,R9F,W11K,R12E,L13E,A14M,E15H,I16K,A17H,M18E,R19E,G21A,W22Y,E23R,H25F,E26L,R27L,W29Y,W31L,W32A,K33I,A35K,S36N,K37P,G38T,R39E,E41P,R42K,L45Q,R48W,M49A,A63Q,E64W,W65M,Q66Y,M67H,R68L,M71I,E72R,R75N,K76G,N77S,P78S,N79H,A80T,G81R,E82Y,K84E,M85R,K86E,E87K,Q88Y,K89R,E91L,W93K,K94R,I95L,A96H,Y97E,Y98E,W99A,G100A,L101K,M102E,A103I,A104W,Y105K,W106F,I107M,K108H,Q109E,H110A,R111M,E112R,K113R,E114F,R115E,K116S  1,6,7,8,9,11,12,13,14,15,16,17,18,19,21,22,23,25,26,27,29,31,32,33,35,36,37,38,39,41,42,45,48,49,63,64,65,66,67,68,71,72,75,76,77,78,79,80,81,82,84,85,86,87,88,89,91,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116  81            </span>
+<span class="go">     score      ...       mutant_count_B</span>
+<span class="go">1 -214.362      ...        75           </span>
+<span class="go">2 -203.582      ...        77           </span>
+<span class="go">3 -213.779      ...        74           </span>
+<span class="go">4 -213.972      ...        69           </span>
+<span class="go">5 -195.138      ...        81           </span>
+
+<span class="go">[5 rows x 5 columns]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -208,7 +210,7 @@ a copy of the data container with the new columns.</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
     </p>
   </div>
 </footer>

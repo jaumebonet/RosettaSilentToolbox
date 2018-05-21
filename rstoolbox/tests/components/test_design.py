@@ -224,6 +224,14 @@ class TestDesign( object ):
         assert len(df['CONTACT_B_perc'].unique()) > 1
         assert df['CONTACT_B_perc'].mean() == pytest.approx(0.4669, rel=1e-3)
 
+    def test_getseqs(self):
+        sc_des  = {"sequence": "B"}
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        assert df.shape[0] == 6
+        df.get_sequence_with('B', [(1, 'T')]).shape[0] == 3
+
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_mutants_alignment.png')
     def test_mutants(self):
@@ -353,6 +361,54 @@ class TestDesign( object ):
         df.add_reference_sequence("B", refseq)
 
         fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50 )
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_logo_noref.png')
+    def test_logo_plot_noref(self):
+        refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
+                 "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"
+
+        sc_des  = {"sequence": "B"}
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+
+        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50 )
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_logo_bits.png')
+    def test_logo_plot_bits(self):
+        refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
+                 "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"
+
+        sc_des  = {"sequence": "B"}
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        df.add_reference_sequence("B", refseq)
+        df = df.sequence_bits('B')
+
+        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50 )
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_logo_bits_noref.png')
+    def test_logo_plot_bits_noref(self):
+        refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
+                 "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"
+
+        sc_des  = {"sequence": "B"}
+
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        df = df.sequence_bits('B')
+
+        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50 )
         plt.tight_layout()
         return fig
 
