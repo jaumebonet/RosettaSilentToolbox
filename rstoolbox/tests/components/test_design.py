@@ -349,6 +349,20 @@ class TestDesign( object ):
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_summary.png')
+    def test_summary_plot(self):
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1)
+        fig = plt.figure(figsize=(30, 30))
+
+        rp.multiple_distributions(df, fig, (3, 3),
+                                  ['score', 'GRMSD2Target', 'GRMSD2Template',
+                                   'LRMSD2Target', 'LRMSDH2Target', 'LRMSDLH2Target',
+                                   'design_score', 'packstat', 'rmsd_drift'])
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_logo.png')
     def test_logo_plot(self):
         refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \

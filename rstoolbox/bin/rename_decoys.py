@@ -71,7 +71,7 @@ def main( options ):
         data = "".join([_.decode('utf8') for _ in fd.readlines()])
     fd.close()
 
-    for index, row in names.iterrows():
+    for _, row in names.iterrows():
         data = data.replace(row["description"], row["new"])
 
     # Save and write

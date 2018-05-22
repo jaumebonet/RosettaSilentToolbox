@@ -14,8 +14,6 @@ import itertools
 
 # External Libraries
 import pandas as pd
-from pandas.core.index import Index
-from pandas.core.dtypes.common import is_scalar
 import numpy as np
 
 # This Library
@@ -24,6 +22,14 @@ import rstoolbox.analysis as ra
 
 
 __all__ = ["DesignSeries", "DesignFrame"]
+
+
+def _metadata_defaults(name):
+    if name == "_source_files":
+        return set()
+    if name == "_reference":
+        return {}
+    return None
 
 
 class DesignSeries( pd.Series, RSBaseDesign ):
@@ -382,13 +388,6 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         df = self.structure_frequencies(seqID, seqType, cleanExtra, cleanUnused)
         return df.to_bits()
 
-    def _metadata_defaults(self, name):
-        if name == "_source_files":
-            return set()
-        if name == "_reference":
-            return {}
-        return None
-
     #
     # Implement pandas methods
     #
@@ -435,8 +434,8 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         # Keep metadata of the left object.
         elif method == 'merge':
             for name in self._metadata:
-                setattr(self, name, getattr(other.left, name, self._metadata_defaults(name)))
+                setattr(self, name, getattr(other.left, name, _metadata_defaults(name)))
         else:
             for name in self._metadata:
-                setattr(self, name, getattr(other, name, self._metadata_defaults(name)))
+                setattr(self, name, getattr(other, name, _metadata_defaults(name)))
         return self

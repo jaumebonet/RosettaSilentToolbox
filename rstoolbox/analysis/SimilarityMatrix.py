@@ -54,8 +54,8 @@ class SimilarityMatrix(object):
             else:
                 ldata  = deque(line.strip().split())
                 aa = ldata.popleft()
-                for i in range(len(aalist)):
-                    data[aalist[i]][aa] = int(ldata[i])
+                for i, i_ in enumerate(aalist):
+                    data[i_][aa] = int(ldata[i])
 
         fd.close()
         return SimilarityMatrix( data )

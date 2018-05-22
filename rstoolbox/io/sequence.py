@@ -86,7 +86,7 @@ def read_fasta( filename, expand=False, multi=False ):
     """
     files = _gather_file_list( filename, multi )
     data = {"description": [], "sequence_A": []}
-    for file_count, f in enumerate( files ):
+    for _, f in enumerate( files ):
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
             line = line.decode('utf8') if f.endswith(".gz") else line

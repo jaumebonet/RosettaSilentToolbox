@@ -1,14 +1,18 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   27-Feb-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: test_selection.py
-# @Last modified by:   bonet
-# @Last modified time: 07-May-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+"""
+# Standard Libraries
 
+# External Libraries
 import pytest
 import numpy as np
 
+# This Library
 import rstoolbox.components as rc
 
 

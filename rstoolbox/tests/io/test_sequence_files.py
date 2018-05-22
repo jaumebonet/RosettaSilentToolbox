@@ -1,11 +1,11 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   07-Apr-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: test_read_sequence_files.py
-# @Last modified by:   bonet
-# @Last modified time: 09-May-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
-
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+"""
 # Standard Libraries
 import os
 

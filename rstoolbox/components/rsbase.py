@@ -10,7 +10,6 @@
 .. class:: RSBaseFrequency
 """
 # Standard Libraries
-import sys
 
 # External Libraries
 import six

@@ -7,3 +7,5 @@ v0.0.7 (June 2018)
 #. ``DesignFrame`` mutant functions can work with list-type ``key_residue``.
 #. Added ability to read phi/psi angles from Rosetta output and plot Ramachandran.
 #. Added ability to read HMMsearch output.
+#. Descriptions to load silent files can be provided as YAML.
+#. Read json-formated Rosetta score files.

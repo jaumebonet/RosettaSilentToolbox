@@ -81,7 +81,14 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Installing and getting started</a></li>
+<li><a class="reference internal" href="#">Installing and getting started</a><ul>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#mandatory-dependencies">Mandatory dependencies</a></li>
+<li><a class="reference internal" href="#testing">Testing</a></li>
+<li><a class="reference internal" href="#bugs">Bugs</a></li>
+<li><a class="reference internal" href="#known-issues">Known issues</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -113,7 +120,56 @@
       
   <div class="section" id="installing-and-getting-started">
 <span id="installing"></span><h1>Installing and getting started<a class="headerlink" href="#installing-and-getting-started" title="Permalink to this headline">¶</a></h1>
+<p>To install the latest release of <code class="docutils literal notranslate"><span class="pre">rstoolbox</span></code>, you can use pip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">rstoolbox</span>
+</pre></div>
+</div>
+<p>Alternatively, you can use pip to install the development version directly from github:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">jaumebonet</span><span class="o">/</span><span class="n">RosettaSilentToolbox</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Python 2.7 or 3.4+</li>
+</ul>
+</div>
+<div class="section" id="mandatory-dependencies">
+<h2>Mandatory dependencies<a class="headerlink" href="#mandatory-dependencies" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://pyyaml.org/">pyyaml</a></li>
+<li><a class="reference external" href="https://pandas.pydata.org/">pandas</a></li>
+<li><a class="reference external" href="https://seaborn.pydata.org/index.html">seaborn</a></li>
+<li><a class="reference external" href="http://jaumebonet.cat/libconfig/">libconfig</a></li>
+<li><a class="reference external" href="https://pythonhosted.org/six/">six</a></li>
+<li><a class="reference external" href="http://networkx.lanl.gov/">networkx</a></li>
+</ul>
+<p>The pip installation script will attempt to download the mandatory dependencies only if they do not exist at install-time or their version is
+not the supported one.</p>
+<p>There is a hard minimum for <code class="docutils literal notranslate"><span class="pre">pandas</span></code>. Version <code class="docutils literal notranslate"><span class="pre">0.23</span></code> is required for the library to work, as includes new features to ease
+the management of pandas-derived classes, which are key to this library.</p>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>Testing is easier done when adquiring the code as a <a class="reference internal" href="contributing.html#contributing"><span class="std std-ref">developer</span></a>.</p>
+</div>
+<div class="section" id="bugs">
+<h2>Bugs<a class="headerlink" href="#bugs" title="Permalink to this headline">¶</a></h2>
+<p>Please report any bugs you encounter through the <a class="reference external" href="https://github.com/jaumebonet/RosettaSilentToolbox/issues">github issue tracker of the development branch</a>.</p>
+</div>
+<div class="section" id="known-issues">
+<h2>Known issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>Working with virtual-environments on MacOS:</strong></li>
+</ul>
+<p>Due to the differences on how mac manages its graphical interface, <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> can become unlinked from the X manager when
+working in a virtual environment. The easies way to fix this issue is not to allow <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> to guess the backend to use
+but to explicitly tell it. To do that, the file <code class="docutils literal notranslate"><span class="pre">~/.matplotlib/matplotlibrc</span></code> needs to be added with the content:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">backend</span><span class="p">:</span> <span class="n">TkAgg</span>
+</pre></div>
+</div>
 <span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>
@@ -132,7 +188,7 @@
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>

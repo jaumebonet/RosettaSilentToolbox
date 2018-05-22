@@ -26,6 +26,12 @@ import rstoolbox.core as core
 __all__ = ["FragmentFrame"]
 
 
+def _metadata_defaults(name):
+    if name == "_source_file":
+        return None
+    return None
+
+
 class FragmentFrame( pd.DataFrame ):
     """Data container for Fragment data.
 
@@ -372,11 +378,6 @@ class FragmentFrame( pd.DataFrame ):
             consensus.append(qseq[0])
         return "".join(consensus)
 
-    def _metadata_defaults(self, name):
-        if name == "_source_file":
-            return None
-        return None
-
     #
     # Implement pandas methods
     #
@@ -388,9 +389,9 @@ class FragmentFrame( pd.DataFrame ):
 
         if method == 'merge':
             for name in self._metadata:
-                setattr(self, name, getattr(other.left, name, self._metadata_defaults(name)))
+                setattr(self, name, getattr(other.left, name, _metadata_defaults(name)))
         else:
             for name in self._metadata:
-                setattr(self, name, getattr(other, name, self._metadata_defaults(name)))
+                setattr(self, name, getattr(other, name, _metadata_defaults(name)))
 
         return self

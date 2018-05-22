@@ -205,12 +205,12 @@ logic (_x, _y, _z, …).</p>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
 <span class="gh">Out[8]: </span><span class="go"></span>
-<span class="go">     score                                                                                                            sequence_B       ...                                                                                                               blosum62_B_ali  blosum62_B_perc</span>
-<span class="go">0 -214.362  PKPEEAMREAYKLIKKYMLKAQKEAQEEWERMRRTDGTKEEKDMFPEKMIAQALRAIGEIFNAYYWAFLKLQEFKKYPSVRWEEQEEARKRLKIMMKIGAEWAREIAREMKERIKR       ...         .+PEEA...A++L.+..M.K..+E.+.EWE..+R....+EE+DM.PE+MIA.ALRAIGEIFNA.+...L++++.+K.P+...E+.+E.+K....+.......A....++.+E+.++  0.288189       </span>
-<span class="go">1 -203.582  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW       ...         T+PEE....A++....A+++G.EE.+R.+E..K+....+EERDM.PE+MIA.ALRAIGE+FNA..+....M++.RK...+G.++.++..+..+++..+.G.......+....K.R.  0.242520       </span>
-<span class="go">2 -213.779  TKPEEWARWAYKEHLKMAEKHRKEMEIEWEELKRRDGKEEEKDMWPERMIAMALRAIGELFNHHMYAEMRAKEEKKKPEAKTEEARRARREIMKYHHEAGRLIEEAMRRLMERHKK       ...         T+PEE....A++.......K..+E.E.EWE..KR.....EE+DM.PERMIA.ALRAIGE+FN......+..++E+K.P.A..E+.+..++E..K..+..G.+....+++..E+.+K  0.280315       </span>
-<span class="go">3 -213.972  KKWEEMMREAERQGKEYAQKAWKEALLEWKWMRKRPVTEEMKDMAPEWMIAAALRAIGEHFNIYWQQKLEHEKLRKIPNVPEEELEKGKEELKRIEEEAARMAEKYMQELRKKMES       ...         .+.EE....A.R..+...+K.W+E...EW+W.++.....E.+DM.PE.MIAAALRAIGE.FN..WQ.+LE.EK.RK.PN..EE++++.K+E..+I......MA..++++.R+K...  0.327559       </span>
-<span class="go">4 -195.138  PRPEEMARFAKEEMHKHEEKAYREFLLEYELAIRKNPTEEPKDMQPEWAIAAALRAIGEIFNQWMYHLLEIRKENGSSHTRYEEREKYRKLAKRLHEEAAKEIWKFMHEAMRRFES       ...         .RPEE....A.........K.+.E...E+E...R.+...E.+DM.PE..IAAALRAIGEIFN......LE+.KE..+.+...E+.++.+K.A.++..........++.+...+...  0.159055       </span>
+<span class="go">     score                                                                                                            sequence_B  blosum62_B_raw       ...         blosum62_B_negative                                                                                                        blosum62_B_ali  blosum62_B_perc</span>
+<span class="go">0 -214.362  PKPEEAMREAYKLIKKYMLKAQKEAQEEWERMRRTDGTKEEKDMFPEKMIAQALRAIGEIFNAYYWAFLKLQEFKKYPSVRWEEQEEARKRLKIMMKIGAEWAREIAREMKERIKR  183                  ...         48                   .+PEEA...A++L.+..M.K..+E.+.EWE..+R....+EE+DM.PE+MIA.ALRAIGEIFNA.+...L++++.+K.P+...E+.+E.+K....+.......A....++.+E+.++  0.288189       </span>
+<span class="go">1 -203.582  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW  154                  ...         51                   T+PEE....A++....A+++G.EE.+R.+E..K+....+EERDM.PE+MIA.ALRAIGE+FNA..+....M++.RK...+G.++.++..+..+++..+.G.......+....K.R.  0.242520       </span>
+<span class="go">2 -213.779  TKPEEWARWAYKEHLKMAEKHRKEMEIEWEELKRRDGKEEEKDMWPERMIAMALRAIGELFNHHMYAEMRAKEEKKKPEAKTEEARRARREIMKYHHEAGRLIEEAMRRLMERHKK  178                  ...         53                   T+PEE....A++.......K..+E.E.EWE..KR.....EE+DM.PERMIA.ALRAIGE+FN......+..++E+K.P.A..E+.+..++E..K..+..G.+....+++..E+.+K  0.280315       </span>
+<span class="go">3 -213.972  KKWEEMMREAERQGKEYAQKAWKEALLEWKWMRKRPVTEEMKDMAPEWMIAAALRAIGEHFNIYWQQKLEHEKLRKIPNVPEEELEKGKEELKRIEEEAARMAEKYMQELRKKMES  208                  ...         49                   .+.EE....A.R..+...+K.W+E...EW+W.++.....E.+DM.PE.MIAAALRAIGE.FN..WQ.+LE.EK.RK.PN..EE++++.K+E..+I......MA..++++.R+K...  0.327559       </span>
+<span class="go">4 -195.138  PRPEEMARFAKEEMHKHEEKAYREFLLEYELAIRKNPTEEPKDMQPEWAIAAALRAIGEIFNQWMYHLLEIRKENGSSHTRYEEREKYRKLAKRLHEEAAKEIWKFMHEAMRRFES  101                  ...         64                   .RPEE....A.........K.+.E...E+E...R.+...E.+DM.PE..IAAALRAIGEIFN......LE+.KE..+.+...E+.++.+K.A.++..........++.+...+...  0.159055       </span>
 
 <span class="go">[5 rows x 8 columns]</span>
 </pre></div>
@@ -236,7 +236,7 @@ logic (_x, _y, _z, …).</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>

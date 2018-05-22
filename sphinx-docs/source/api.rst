@@ -47,6 +47,7 @@ Helper functions to read/write data generated with `Rosetta <https://www.rosetta
    :toctree: generated/
 
    ~io.parse_rosetta_file
+   ~io.parse_rosetta_json
    ~io.parse_rosetta_contacts
    ~io.parse_rosetta_fragments
    ~io.write_rosetta_fragments

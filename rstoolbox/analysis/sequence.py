@@ -367,7 +367,7 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None,
         seqdata = seqdata.apply(lambda x: pd.Series(list(x)))
         for _, i in enumerate(seqdata.columns.values):
             qseq = "".join(seqdata[i].tolist())
-            raw, idn, pos, neg = _positional_similarity( qseq, ref_seq[_], mat )
+            _, idn, pos, _ = _positional_similarity( qseq, ref_seq[_], mat )
             data["identity_perc"].append(float(idn) / float(len(qseq)))
             data["positive_perc"].append(float(pos) / float(len(qseq)))
 
