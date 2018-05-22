@@ -376,10 +376,14 @@ def parse_rosetta_json( filename ):
            ...: df = parse_rosetta_json("../rstoolbox/tests/data/score.json.gz")
            ...: df.head(2)
     """
-    fd = gzip.open( filename ) if filename.endswith(".gz") else open( filename )
+    is_gz = filename.endswith(".gz")
+    fd = gzip.open( filename ) if is_gz else open( filename )
     data = {}
     for line in fd:
-        dt = json.loads(line.strip())
+        if is_gz:
+            dt = json.loads(line.decode('utf8').strip())
+        else:
+            dt = json.loads(line.strip())
         for k in dt:
             data.setdefault(k, []).append(dt[k])
     df = rc.DesignFrame( data )

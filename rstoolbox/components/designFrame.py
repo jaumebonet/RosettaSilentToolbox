@@ -202,6 +202,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
                ...: df.get_sequence_with('B', [(1, 'T')])
         """
         from .selection import get_selection
+
         def match_residues( value, seqID, confidence ):
             t = 0
             for s in selection:
