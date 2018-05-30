@@ -115,14 +115,14 @@
 <h1>rstoolbox.io.read_fasta<a class="headerlink" href="#rstoolbox-io-read-fasta" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.io.read_fasta">
-<code class="descclassname">rstoolbox.io.</code><code class="descname">read_fasta</code><span class="sig-paren">(</span><em>filename</em>, <em>expand=False</em>, <em>multi=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.read_fasta" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.io.</code><code class="descname">read_fasta</code><span class="sig-paren">(</span><em>filename</em>, <em>expand=False</em>, <em>multi=False</em>, <em>defchain='A'</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.read_fasta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads one or more <strong>FASTA</strong> files and returns the appropiate object
 containing the requested data: the <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</p>
 <p>The default generated <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> will contain two columns:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="23%" />
-<col width="77%" />
+<col width="28%" />
+<col width="72%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Column Name</th>
@@ -133,7 +133,7 @@ containing the requested data: the <a class="reference internal" href="rstoolbox
 <tr class="row-even"><td><strong>description</strong></td>
 <td>Sequence identifier.</td>
 </tr>
-<tr class="row-odd"><td><strong>sequence_A</strong></td>
+<tr class="row-odd"><td><strong>sequence_&lt;chain&gt;</strong></td>
 <td>Sequence content.</td>
 </tr>
 </tbody>
@@ -188,6 +188,7 @@ is lost after that process.</p>
 <li><strong>expand</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Try to better associate sequence ID if format is <strong>PDB FASTA</strong>.</li>
 <li><strong>multi</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, indicates that data is readed from
 multiple files.</li>
+<li><strong>defchain</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Default chain to use. If not provided that is ‘A’.</li>
 </ul>
 </td>
 </tr>

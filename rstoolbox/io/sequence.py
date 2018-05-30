@@ -32,18 +32,18 @@ __all__ = ['read_fasta', 'write_fasta', 'write_clustalw', 'write_mutant_alignmen
            'read_hmmsearch']
 
 
-def read_fasta( filename, expand=False, multi=False ):
+def read_fasta( filename, expand=False, multi=False, defchain='A' ):
     """Reads one or more **FASTA** files and returns the appropiate object
     containing the requested data: the :class:`.DesignFrame`.
 
     The default generated :class:`.DesignFrame` will contain two columns:
 
-    ===============  ===================================================
-    Column Name      Data Content
-    ===============  ===================================================
-    **description**  Sequence identifier.
-    **sequence_A**   Sequence content.
-    ===============  ===================================================
+    ====================  ===================================================
+    Column Name            Data Content
+    ====================  ===================================================
+    **description**        Sequence identifier.
+    **sequence_<chain>**   Sequence content.
+    ====================  ===================================================
 
     The sequence column assigned as ``sequence_A`` is an arbitrary decision that
     has to do compatibility issues with the rest of functions and methods of
@@ -75,6 +75,7 @@ def read_fasta( filename, expand=False, multi=False ):
     :param bool expand: Try to better associate sequence ID if format is **PDB FASTA**.
     :param bool multi: When :data:`True`, indicates that data is readed from
         multiple files.
+    :param str defchain: Default chain to use. If not provided that is 'A'.
 
     :return: :class:`.DesignFrame`.
 
@@ -84,8 +85,9 @@ def read_fasta( filename, expand=False, multi=False ):
     .. seealso::
         :func:`~.write_fasta`
     """
+    seqcol = "sequence_{}".format(defchain)
     files = _gather_file_list( filename, multi )
-    data = {"description": [], "sequence_A": []}
+    data = {"description": [], seqcol: []}
     for _, f in enumerate( files ):
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
@@ -94,17 +96,17 @@ def read_fasta( filename, expand=False, multi=False ):
             if line.startswith(">"):
                 line = line.strip(">")
                 data["description"].append(line)
-                data["sequence_A"].append("")
+                data[seqcol].append("")
             elif len(line) > 0:
-                data["sequence_A"][-1] += line
+                data[seqcol][-1] += line
 
     df = cp.DesignFrame( data )
     if expand and bool(re.search("^\S{4}\:\S{1}", df.iloc[0]["description"])):
         df["description"] = df["description"].apply(lambda col: col.split("|")[0])
         df[['description', 'seq']] = df['description'].str.split(':', expand=True)
         df = df.pivot('description', 'seq',
-                      'sequence_A').add_prefix("sequence_").rename_axis(None,
-                                                                        axis=1).reset_index()
+                      seqcol).add_prefix("sequence_").rename_axis(None,
+                                                                  axis=1).reset_index()
         df = cp.DesignFrame(df)
     df.add_source_files( files )
     return df

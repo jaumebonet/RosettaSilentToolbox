@@ -94,6 +94,7 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.plot_alignment
    ~plot.plot_ramachandran
    ~plot.plot_dssp_vs_psipred
+   ~plot.plot_96wells
 
 Utils: Plot
 -----------
