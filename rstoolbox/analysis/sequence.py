@@ -377,7 +377,7 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None,
 
         for i in df["position"].drop_duplicates().values:
             qseq = "".join(df[df["position"] == i]["aa"].values)
-            raw, idn, pos, neg = _positional_similarity( qseq, ref_seq[i - 1], mat )
+            _, idn, pos, _ = _positional_similarity( qseq, ref_seq[i - 1], mat )
             data["identity_perc"].append(float(idn) / float(len(qseq)))
             data["positive_perc"].append(float(pos) / float(len(qseq)))
 
