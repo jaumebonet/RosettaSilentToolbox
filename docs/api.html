@@ -85,8 +85,10 @@
 <li><a class="reference internal" href="#components">Components</a></li>
 <li><a class="reference internal" href="#io-sequence">IO: Sequence</a></li>
 <li><a class="reference internal" href="#io-rosetta">IO: Rosetta</a></li>
+<li><a class="reference internal" href="#io-experiments">IO: Experiments</a></li>
 <li><a class="reference internal" href="#analysis">Analysis</a></li>
 <li><a class="reference internal" href="#plot">Plot</a></li>
+<li><a class="reference internal" href="#plot-experiments">Plot: Experiments</a></li>
 <li><a class="reference internal" href="#utils-plot">Utils: Plot</a></li>
 <li><a class="reference internal" href="#utils-transforms">Utils: Transforms</a></li>
 <li><a class="reference internal" href="#utils-rosettascript">Utils: RosettaScript</a></li>
@@ -217,6 +219,21 @@
 </tbody>
 </table>
 </div>
+<div class="section" id="io-experiments">
+<h2>IO: Experiments<a class="headerlink" href="#io-experiments" title="Permalink to this headline">¶</a></h2>
+<p>Helper functions to read/write data generated through wedlab experiments. They can be called through <code class="docutils literal notranslate"><span class="pre">rstoolbox.io</span></code>.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.read_SPR.html#rstoolbox.io.read_SPR" title="rstoolbox.io.read_SPR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_SPR</span></code></a>(filename)</td>
+<td>Reads <strong>Surface Plasmon Resonance</strong> data.</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="analysis">
 <h2>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
 <p>Helper functions for sequence analysis. They can be called through <code class="docutils literal notranslate"><span class="pre">rstoolbox.analysis</span></code>.</p>
@@ -302,8 +319,32 @@ plotting library, but some special plotting alternatives are offered through <co
 <tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_dssp_vs_psipred.html#rstoolbox.plot.plot_dssp_vs_psipred" title="rstoolbox.plot.plot_dssp_vs_psipred"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_dssp_vs_psipred</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
 <td>Generates a horizontal heatmap showing differences in psipred predictions to dssp assignments.</td>
 </tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plot-experiments">
+<h2>Plot: Experiments<a class="headerlink" href="#plot-experiments" title="Permalink to this headline">¶</a></h2>
+<p>Plot data obtained from experimental procedures. Accessible through <code class="docutils literal notranslate"><span class="pre">rstoolbox.plot</span></code>.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_96wells.html#rstoolbox.plot.plot_96wells" title="rstoolbox.plot.plot_96wells"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_96wells</span></code></a>([cdata,&nbsp;sdata,&nbsp;bdata,&nbsp;bcolors,&nbsp;…])</td>
 <td>Plot data of a 96 well plate into an equivalent-shaped plot.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_thermal_melt.html#rstoolbox.plot.plot_thermal_melt" title="rstoolbox.plot.plot_thermal_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_thermal_melt</span></code></a>(df,&nbsp;ax[,&nbsp;linecolor,&nbsp;…])</td>
+<td>Plot <strong>Thermal Melt</strong> data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_MALS.html#rstoolbox.plot.plot_MALS" title="rstoolbox.plot.plot_MALS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_MALS</span></code></a>(df,&nbsp;ax[,&nbsp;uvcolor,&nbsp;lscolor,&nbsp;…])</td>
+<td>Plot <strong>Multi-Angle Light Scattering</strong> data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_CD.html#rstoolbox.plot.plot_CD" title="rstoolbox.plot.plot_CD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_CD</span></code></a>(df,&nbsp;ax[,&nbsp;color,&nbsp;wavelengths])</td>
+<td>Plot <strong>Circular Dichroism</strong> data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_SPR.html#rstoolbox.plot.plot_SPR" title="rstoolbox.plot.plot_SPR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_SPR</span></code></a>(df,&nbsp;ax[,&nbsp;datacolor,&nbsp;fitcolor,&nbsp;…])</td>
+<td>Plot <strong>Surface Plasmon Resonance</strong> data.</td>
 </tr>
 </tbody>
 </table>
@@ -393,7 +434,6 @@ plotting library, but some special plotting alternatives are offered through <co
       
   </div>
 </div>
-
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -409,15 +449,5 @@ plotting library, but some special plotting alternatives are offered through <co
     </p>
   </div>
 </footer>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-74877325-2');
-</script>
-
   </body>
 </html>

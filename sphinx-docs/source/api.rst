@@ -55,6 +55,17 @@ Helper functions to read/write data generated with `Rosetta <https://www.rosetta
    ~io.get_sequence_and_structure
    ~io.make_structures
 
+IO: Experiments
+---------------
+
+Helper functions to read/write data generated through wedlab experiments. They can be called through ``rstoolbox.io``.
+
+.. autosummary::
+   :toctree: generated/
+
+   ~io.read_SPR
+
+
 Analysis
 --------
 
@@ -94,7 +105,20 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.plot_alignment
    ~plot.plot_ramachandran
    ~plot.plot_dssp_vs_psipred
+
+Plot: Experiments
+-----------------
+
+Plot data obtained from experimental procedures. Accessible through ``rstoolbox.plot``.
+
+.. autosummary::
+   :toctree: generated/
+
    ~plot.plot_96wells
+   ~plot.plot_thermal_melt
+   ~plot.plot_MALS
+   ~plot.plot_CD
+   ~plot.plot_SPR
 
 Utils: Plot
 -----------

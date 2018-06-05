@@ -7,6 +7,10 @@
     Bruno Correia <bruno.correia@epfl.ch>
 
 .. func:: plot_96well
+.. func:: plot_thermal_melt
+.. func:: plot_MALS
+.. func:: plot_CD
+.. func:: plot_SPR
 """
 # Standard Libraries
 import math
@@ -15,6 +19,7 @@ import string
 # External Libraries
 import numpy as np
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 from matplotlib.lines import Line2D
@@ -22,7 +27,7 @@ from matplotlib.lines import Line2D
 # This Library
 
 
-__all__ = ['plot_96wells']
+__all__ = ['plot_96wells', 'plot_thermal_melt', 'plot_MALS', 'plot_CD', 'plot_SPR']
 
 
 def plot_96wells(cdata=None, sdata=None, bdata=None, bcolors=None, bmeans=None, **kwargs):
@@ -202,3 +207,128 @@ def plot_96wells(cdata=None, sdata=None, bdata=None, bcolors=None, bmeans=None, 
         label.set_fontproperties(ticks_font)
 
     return fig, ax
+
+
+def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  ):
+    """Plot **Thermal Melt** data.
+
+    """
+    if isinstance(linecolor, int):
+        linecolor = sns.color_palette()[linecolor]
+    fit = np.poly1d(np.polyfit(df['Temp'].values, df['MRE'].values, 4))
+    ax.plot(df['Temp'].values, fit(df['Temp'].values), color=linecolor)
+
+    if isinstance(pointcolor, int):
+        pointcolor = sns.color_palette()[pointcolor]
+    ax.plot(df['Temp'].values, df['MRE'].values, marker='s', linestyle='None', color=pointcolor)
+
+    ax.set_ylabel(r'MRE(10 deg$^3$ cm$^2$ dmol$^-1$) (V)')
+    ax.set_xlabel(r'Temperature ($^\circ$C)')
+
+    ax.set_xlim(ax.get_xlim()[0] if min_temperature is None else min_temperature)
+    ax.set_ylim(ymax=0)
+
+
+def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_time=None ):
+    """Plot **Multi-Angle Light Scattering** data.
+
+    """
+    if lscolor is not False:
+        if isinstance(lscolor, int):
+            lscolor = sns.color_palette()[lscolor]
+        df_ = df[np.isfinite(df['LS'])]
+        ax.plot(df_['Time'].values, df_['LS'].values, color=lscolor, label='LS')
+    if uvcolor is not False:
+        if isinstance(uvcolor, int):
+            uvcolor = sns.color_palette()[uvcolor]
+        df_ = df[np.isfinite(df['UV'])]
+        ax.plot(df_['Time'].values, df_['UV'].values, color=uvcolor, label='UV')
+
+    quarter = df['UV'].max()
+    print quarter
+
+    if max_voltage is not None:
+        ax.set_ylim(0, max_voltage)
+    else:
+        ax.set_ylim(0, ax.get_ylim()[1])
+    if max_time is not None:
+        ax.set_xlim(0, max_time)
+    else:
+        ax.set_xlim(0)
+
+    if mwcolor is not False:
+        if isinstance(mwcolor, int):
+            mwcolor = sns.color_palette()[mwcolor]
+        ax2 = ax.twinx()
+        df_ = df[np.isfinite(df['MW'])]
+        ax2.plot(df_['Time'].values, df_['MW'].values, color=mwcolor)
+
+    ax2.set_ylim(0)
+    ax2.get_yaxis().set_visible(False)
+
+    ax.set_ylabel('Detector Voltage (V)')
+    ax.set_xlabel('Time (min)')
+    ax.legend()
+
+
+def plot_CD( df, ax, color=0, wavelengths=None  ):
+    """Plot **Circular Dichroism** data.
+
+    """
+    if isinstance(color, int):
+        color = sns.color_palette()[color]
+    ax.plot(df['Wavelength'].values, df['MRE'].values, color=color)
+    ax.plot(df['Wavelength'].values, [0, ] * len(df['Wavelength'].values),
+            linestyle='dashed', color='grey')
+
+    if isinstance(wavelengths, list) and len(wavelengths) == 2:
+        ax.set_xlim(wavelengths[0], wavelengths[1])
+
+    ax.set_ylabel(r'MRE(10 deg$^3$ cm$^2$ dmol$^-1$) (V)')
+    ax.set_xlabel('Wavelength (nm)')
+
+
+def plot_SPR( df, ax, datacolor=0, fitcolor=0, max_time=None, max_response=None  ):
+    """Plot **Surface Plasmon Resonance** data.
+
+    .. seealso::
+        :func:`.read_SPR`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import read_SPR
+           ...: from rstoolbox.plot import plot_SPR
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = read_SPR("../rstoolbox/tests/data/spr_data.csv.gz")
+           ...: fig = plt.figure(figsize=(10, 6.7))
+           ...: ax = plt.subplot2grid((1, 1), (0, 0))
+           ...: plot_SPR(df, ax, datacolor='black', fitcolor='red')
+
+        @savefig plot_spr_docs.png width=5in
+        In [2]: plt.show()
+
+    """
+    if isinstance(datacolor, int):
+        datacolor = sns.color_palette()[datacolor]
+    if isinstance(fitcolor, int):
+        fitcolor = sns.color_palette()[fitcolor]
+
+    conc = sorted(set(df['fitted'].columns.labels[0]))
+    conc = df['fitted'].columns.levels[0].values[conc]
+
+    raw = df['raw'][conc]
+    fit = df['fitted'][conc]
+
+    for curve in conc:
+        data = raw[curve]
+        ax.plot(data['X'].values, data['Y'].values, color=datacolor)
+        data = fit[curve]
+        ax.plot(data['X'].values, data['Y'].values, color=fitcolor)
+
+    ax.set_ylabel('Response (RU)')
+    ax.set_xlabel('Time (sec)')
+    ax.set_xlim(0, ax.get_xlim()[1] if max_time is None else max_time)
+    ax.set_ylim(0, ax.get_ylim()[1] if max_response is None else max_response)
