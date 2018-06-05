@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 .. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
+.. codeauthor:: Fabian Sesterhenn <sesterhenn.fabian@gmail.com>
 
 .. affiliation::
     Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
     Bruno Correia <bruno.correia@epfl.ch>
 
 .. func:: read_SPR
+.. func:: read_fastq
 """
 # Standard Libraries
 
@@ -15,7 +17,7 @@ import pandas as pd
 
 # This Library
 
-__all__ = ['read_SPR']
+__all__ = ['read_SPR', 'read_fastq']
 
 
 def read_SPR( filename ):
@@ -60,3 +62,22 @@ def read_SPR( filename ):
     df.columns.names = ['data', 'concentration', 'axis']
     df.index = range(0, df.shape[0])
     return df.astype('float64')
+
+
+def read_fastq(filename):
+    """
+    Reads a FASTQ file and stores the ID together with the sequence.
+    :param str filename: FASTQ filename.
+    :return: Array of tuples containing ID and sequence information.
+    """
+    # Empty array to store tuples of ID & sequence information
+    fastq = []
+
+    # Create a file handle for parsing
+    with open(filename, 'rU') as fastq_file:
+        for line in fastq_file:
+        	if '@' in line or '+' in line or any(c.islower() for c in line):
+        		continue
+        	fastq.append(line.strip())
+    return fastq
+
