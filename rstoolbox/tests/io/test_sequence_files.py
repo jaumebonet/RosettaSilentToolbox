@@ -32,7 +32,7 @@ class TestReadSilentFiles( object ):
         plain_id_string = "{}|PDBID|CHAIN|SEQUENCE"
         plain_ids = ["2TEP:A", "2TEP:B", "2TEP:C", "2TEP:D", "3TP2:A", "3TP2:B"]
         plain_ids = [plain_id_string.format(_) for _ in plain_ids]
-        df1 = read_fasta(os.path.join(self.dirpath, "*.fa"), multi=True)
+        df1 = read_fasta(os.path.join(self.dirpath, "*.fa$"), multi=True)
 
         assert sorted(plain_ids) == sorted(list(df1['description'].values))
         assert len(df1['sequence_A'].values[0]) == 236
@@ -42,7 +42,7 @@ class TestReadSilentFiles( object ):
 
         # Test expanded read
         expand_ids = ["2TEP", "3TP2"]
-        df2 = read_fasta(os.path.join(self.dirpath, "*.fa"), expand=True, multi=True)
+        df2 = read_fasta(os.path.join(self.dirpath, "*.fa$"), expand=True, multi=True)
         assert sorted(expand_ids) == sorted(list(df2['description'].values))
         assert df2.shape == (2, 5)
         assert 'sequence_A' in df2

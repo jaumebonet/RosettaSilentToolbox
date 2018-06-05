@@ -90,7 +90,8 @@ def _gather_file_list( filename, multi=False ):
     Provided a file name or pattern, generates a list
     with all the files that are expected to be read.
 
-    :param str filename: file name or pattern (without "*")
+    :param str filename: file name or pattern (without "*"). If filename
+        ends with ``$`` it is assumed that that is the end of the name.
     :param bool multi: Tell if a file name or pattern is provided.
         Default is 'False' (single file name)
 
@@ -105,7 +106,9 @@ def _gather_file_list( filename, multi=False ):
         files.append( filename )
     else:
         if isinstance(filename, six.string_types):
-            if not filename.endswith("*"):
+            if filename.endswith('$'):
+                filename = filename.rstrip('$')
+            elif not filename.endswith("*"):
                 filename = filename + "*"
             files = glob.glob( filename )
         else:

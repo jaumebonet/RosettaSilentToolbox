@@ -54,7 +54,7 @@ def read_fasta( filename, expand=False, multi=False, defchain='A' ):
         In [1]: from rstoolbox.io import read_fasta
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
-           ...: df = read_fasta("../rstoolbox/tests/data/*fa", multi=True)
+           ...: df = read_fasta("../rstoolbox/tests/data/*fa$", multi=True)
            ...: df
 
     If the **FASTA** comes or is formated as **PDB FASTA** (as in the example avobe),
