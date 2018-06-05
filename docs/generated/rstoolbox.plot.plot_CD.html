@@ -116,7 +116,58 @@
 <dl class="function">
 <dt id="rstoolbox.plot.plot_CD">
 <code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_CD</code><span class="sig-paren">(</span><em>df</em>, <em>ax</em>, <em>color=0</em>, <em>wavelengths=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_CD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot <strong>Circular Dichroism</strong> data.</p>
+<dd><p>Plot <a class="reference external" href="https://www.wikiwand.com/en/Circular_dichroism">Circular Dichroism</a> data.</p>
+<p>The provied <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> must contain, at least, the following
+columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column Name</th>
+<th class="head">Data Content</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Wavelength</strong></td>
+<td>Wavelength (nm).</td>
+</tr>
+<tr class="row-odd"><td><strong>MRE</strong></td>
+<td>Value at each wavelength (10 deg^2 cm^2 dmol^-1).</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data container.</li>
+<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Axis in which to plot the data.</li>
+<li><strong>color</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Color for the data. If a number, it takes from the current
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code> palette.</li>
+<li><strong>wavelengths</strong> (<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – List with min and max wavelengths to plot.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.plot</span> <span class="kn">import</span> <span class="n">plot_CD</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/cd.csv&quot;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">plot_CD</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [9]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/plot_cd_docs.png"><img alt="../_images/plot_cd_docs.png" src="../_images/plot_cd_docs.png" style="width: 5in;" /></a>
 </dd></dl>
 
 <span class="target" id="definitions"></span></div>

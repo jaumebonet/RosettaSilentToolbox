@@ -81,7 +81,6 @@ def plot_96wells(cdata=None, sdata=None, bdata=None, bcolors=None, bmeans=None, 
 
         @savefig plot_96wells_docs.png width=5in
         In [2]: plt.show()
-
     """
 
     # Changes in one of this parameters should change others to ensure size fit.
@@ -210,7 +209,48 @@ def plot_96wells(cdata=None, sdata=None, bdata=None, bcolors=None, bmeans=None, 
 
 
 def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  ):
-    """Plot **Thermal Melt** data.
+    """Plot `Thermal Melt <https://www.wikiwand.com/en/Thermal_shift_assay>`_ data.
+
+    Plot thermal melt and generate the fitting curve to the pointsself.
+
+    The provied :class:`~pandas.DataFrame` must contain, at least, the following
+    columns:
+
+    ===============  ===================================================
+    Column Name       Data Content
+    ===============  ===================================================
+    **Temp**         Temperatures (celsius).
+    **MRE**          Value at each temperature (10 deg^2 cm^2 dmol^-1).
+    ===============  ===================================================
+
+    :param df: Data container.
+    :type df: :class:`~pandas.DataFrame`
+    :param ax: Axis in which to plot the data.
+    :type ax: :class:`~matplotlib.axes.Axes`
+    :param linecolor: Color for the fitting line. If a number, it takes from the current
+        :mod:`seaborn` palette.
+    :type linecolor: Union[:class:`int`, :class:`str`]
+    :param pointcolor: Color for the points. If a number, it takes from the current
+        :mod:`seaborn` palette.
+    :type pointcolor: Union[:class:`int`, :class:`str`]
+    :param float min_temperature: If provided, set minimum temperature in the Y axis
+        of the plot.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.plot import plot_thermal_melt
+           ...: import numpy as np
+           ...: import pandas as pd
+           ...: import matplotlib.pyplot as plt
+           ...: df = pd.read_csv("../rstoolbox/tests/data/thermal_melt.csv")
+           ...: fig = plt.figure(figsize=(10, 6.7))
+           ...: ax = plt.subplot2grid((1, 1), (0, 0))
+           ...: plot_thermal_melt(df, ax)
+
+        @savefig plot_tmelt_docs.png width=5in
+        In [2]: plt.show()
 
     """
     if isinstance(linecolor, int):
@@ -230,8 +270,55 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  
 
 
 def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_time=None ):
-    """Plot **Multi-Angle Light Scattering** data.
+    """Plot
+    `Multi-Angle Light Scattering <https://www.wikiwand.com/en/Multiangle_light_scattering>`_
+    data.
 
+    The provied :class:`~pandas.DataFrame` must contain, at least, the following
+    columns:
+
+    ===============  ===================================================
+    Column Name       Data Content
+    ===============  ===================================================
+    **Time**         Time (min).
+    **UV**           UV data (V).
+    **LS**           Light Scattering data (V).
+    **MW**           Molecular Weight (Daltons).
+    ===============  ===================================================
+
+    :param df: Data container.
+    :type df: :class:`~pandas.DataFrame`
+    :param ax: Axis in which to plot the data.
+    :type ax: :class:`~matplotlib.axes.Axes`
+    :param uvcolor: Color for the UV data. If a number, it takes from the current
+        :mod:`seaborn` palette. If :data:`False`, UV data is not plotted.
+    :type uvcolor: Union[:class:`int`, :class:`str`]
+    :param lscolor: Color for the LS data. If a number, it takes from the current
+        :mod:`seaborn` palette. If :data:`False`, LS data is not plotted.
+    :type lscolor: Union[:class:`int`, :class:`str`]
+    :param mwcolor: Color for the MW data. If a number, it takes from the current
+        :mod:`seaborn` palette. If :data:`False`, MW data is not plotted.
+    :type mwcolor: Union[:class:`int`, :class:`str`]
+    :param float max_voltage: If provided, set maximum voltage in the Y axis
+        of the plot.
+    :param float max_time: If provided, set maximum time in the X axis
+        of the plot.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.plot import plot_MALS
+           ...: import numpy as np
+           ...: import pandas as pd
+           ...: import matplotlib.pyplot as plt
+           ...: df = pd.read_csv("../rstoolbox/tests/data/mals.csv")
+           ...: fig = plt.figure(figsize=(10, 6.7))
+           ...: ax = plt.subplot2grid((1, 1), (0, 0))
+           ...: plot_MALS(df, ax)
+
+        @savefig plot_mals_docs.png width=5in
+        In [2]: plt.show()
     """
     if lscolor is not False:
         if isinstance(lscolor, int):
@@ -244,8 +331,7 @@ def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_ti
         df_ = df[np.isfinite(df['UV'])]
         ax.plot(df_['Time'].values, df_['UV'].values, color=uvcolor, label='UV')
 
-    quarter = df['UV'].max()
-    print quarter
+    # quarter = df['UV'].max()
 
     if max_voltage is not None:
         ax.set_ylim(0, max_voltage)
@@ -263,17 +349,54 @@ def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_ti
         df_ = df[np.isfinite(df['MW'])]
         ax2.plot(df_['Time'].values, df_['MW'].values, color=mwcolor)
 
-    ax2.set_ylim(0)
-    ax2.get_yaxis().set_visible(False)
-
     ax.set_ylabel('Detector Voltage (V)')
     ax.set_xlabel('Time (min)')
     ax.legend()
 
+    meanW = sum(df_['MW'].values) / float(len(df_['MW'].values))
+    maxW = (ax.get_ylim()[1] * meanW) / 0.8
+    ax2.set_ylim(0, maxW)
+    ax2.get_yaxis().set_visible(False)
+
 
 def plot_CD( df, ax, color=0, wavelengths=None  ):
-    """Plot **Circular Dichroism** data.
+    """Plot `Circular Dichroism <https://www.wikiwand.com/en/Circular_dichroism>`_ data.
 
+    The provied :class:`~pandas.DataFrame` must contain, at least, the following
+    columns:
+
+    ===============  ===================================================
+    Column Name       Data Content
+    ===============  ===================================================
+    **Wavelength**   Wavelength (nm).
+    **MRE**          Value at each wavelength (10 deg^2 cm^2 dmol^-1).
+    ===============  ===================================================
+
+    :param df: Data container.
+    :type df: :class:`~pandas.DataFrame`
+    :param ax: Axis in which to plot the data.
+    :type ax: :class:`~matplotlib.axes.Axes`
+    :param color: Color for the data. If a number, it takes from the current
+        :mod:`seaborn` palette.
+    :type color: Union[:class:`int`, :class:`str`]
+    :param wavelengths: List with min and max wavelengths to plot.
+    :type wavelengths: :func:`list` of :class:`float`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.plot import plot_CD
+           ...: import numpy as np
+           ...: import pandas as pd
+           ...: import matplotlib.pyplot as plt
+           ...: df = pd.read_csv("../rstoolbox/tests/data/cd.csv")
+           ...: fig = plt.figure(figsize=(10, 6.7))
+           ...: ax = plt.subplot2grid((1, 1), (0, 0))
+           ...: plot_CD(df, ax)
+
+        @savefig plot_cd_docs.png width=5in
+        In [2]: plt.show()
     """
     if isinstance(color, int):
         color = sns.color_palette()[color]
@@ -289,7 +412,26 @@ def plot_CD( df, ax, color=0, wavelengths=None  ):
 
 
 def plot_SPR( df, ax, datacolor=0, fitcolor=0, max_time=None, max_response=None  ):
-    """Plot **Surface Plasmon Resonance** data.
+    """Plot `Surface Plasmon Resonance <https://www.wikiwand.com/en/Surface_plasmon_resonance>`_
+    data.
+
+    Plots **SPR** data as read by :func:`.read_SPR`. Only plots those concentrations for which
+    a corresponding ``fitting curve`` exists.
+
+    :param df: Data container.
+    :type df: :class:`~pandas.DataFrame`
+    :param ax: Axis in which to plot the data.
+    :type ax: :class:`~matplotlib.axes.Axes`
+    :param datacolor: Color for the raw data. If a number, it takes from the current
+        :mod:`seaborn` palette.
+    :type datacolor: Union[:class:`int`, :class:`str`]
+    :param fitcolor: Color for the fitted data. If a number, it takes from the current
+        :mod:`seaborn` palette.
+    :type fitcolor: Union[:class:`int`, :class:`str`]
+    :param float max_time: If provided, set maximum time in the X axis
+        of the plot.
+    :param float max_response: If provided, set maximum RU in the Y axis
+        of the plot.
 
     .. seealso::
         :func:`.read_SPR`

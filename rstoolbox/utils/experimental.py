@@ -16,6 +16,7 @@ import re
 
 # External Libraries
 import pandas as pd
+import numpy as np
 
 # This Library
 
@@ -231,6 +232,8 @@ def sequencing_enrichment( indata, enrichment=None, bounds=None, matches=None, s
 
     .. rubric:: Example
 
+    (We skip printing the sequence column to ease visibility of the differences)
+
     .. ipython::
 
         In [1]: from rstoolbox.io import read_fastq
@@ -245,7 +248,12 @@ def sequencing_enrichment( indata, enrichment=None, bounds=None, matches=None, s
            ...:                      'conc2': '../rstoolbox/tests/data/cdk2_rand_005.fasq.gz',
            ...:                      'conc3': '../rstoolbox/tests/data/cdk2_rand_006.fasq.gz'}}
            ...: df = sequencing_enrichment(indat)
-           ...: df.head()
+           ...: df[[_ for _ in df.columns if _ != 'sequence_A']].head()
+
+        In [1]: enrich = {'binder1': ['conc1', 'conc3'],
+           ...:           'binder2': ['conc1', 'conc3']}
+           ...: df = sequencing_enrichment(indat, enrich)
+           ...: df[[_ for _ in df.columns if _ != 'sequence_A']].head()
 
     """
     from rstoolbox.components import DesignFrame
@@ -284,12 +292,11 @@ def sequencing_enrichment( indata, enrichment=None, bounds=None, matches=None, s
 
     if enrichment is not None:
         for binder in enrichment:
-            # {'5C4': ['10nMFab', '1uM'], 'D25': ['100pM', '10nM']}
             eb = enrichment[binder]
             id1 = '{0}_{1}'.format(binder, eb[0])
             id2 = '{0}_{1}'.format(binder, eb[1])
             df['enrichment_{}'.format(binder)] = df[id1] / df[id2]
-    df.replace({'inf': '-1'}, regex=True)
+    df = df.replace({np.inf: -1, -np.inf: -1}, regex=True).fillna(0)
     designf = DesignFrame(df.rename(columns={'sequence_A': 'sequence_{}'.format(seqID)}))
     designf = designf.reset_index().rename(columns={'index': 'description'})
     return designf

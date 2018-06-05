@@ -115,14 +115,14 @@
 <h1>rstoolbox.utils.sequencing_enrichment<a class="headerlink" href="#rstoolbox-utils-sequencing-enrichment" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.utils.sequencing_enrichment">
-<code class="descclassname">rstoolbox.utils.</code><code class="descname">sequencing_enrichment</code><span class="sig-paren">(</span><em>input</em>, <em>enrichment=None</em>, <em>bounds=None</em>, <em>matches=None</em>, <em>seqID='A'</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.utils.sequencing_enrichment" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.utils.</code><code class="descname">sequencing_enrichment</code><span class="sig-paren">(</span><em>indata</em>, <em>enrichment=None</em>, <em>bounds=None</em>, <em>matches=None</em>, <em>seqID='A'</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.utils.sequencing_enrichment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve data from multiple
 <a class="reference external" href="https://www.wikiwand.com/en/DNA_sequencing#/Next-generation_methods">NGS</a> files.</p>
 <p>Allows to obtain data from multiple files while ataching them to two conditions, a primary one
 (key1) and a secondary one (key2).</p>
 <p>For instance, let’s assume that one has data obtained through selection of sequences by two
-different binders and three different concentration of binder each; we would define a <code class="docutils literal notranslate"><span class="pre">input</span></code>
-dictionary such as:</p>
+different binders and three different concentration of binder each; we would define a
+<code class="docutils literal notranslate"><span class="pre">indata</span></code> dictionary such as:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;binder1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;conc1&#39;</span><span class="p">:</span> <span class="s1">&#39;file1.fastq&#39;</span><span class="p">,</span> <span class="s1">&#39;conc2&#39;</span><span class="p">:</span> <span class="s1">&#39;file2.fastq&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">:</span> <span class="s1">&#39;file3.fastq&#39;</span><span class="p">},</span>
  <span class="s1">&#39;binder2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;conc1&#39;</span><span class="p">:</span> <span class="s1">&#39;file4.fastq&#39;</span><span class="p">,</span> <span class="s1">&#39;conc2&#39;</span><span class="p">:</span> <span class="s1">&#39;file5.fastq&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">:</span> <span class="s1">&#39;file6.fastq&#39;</span><span class="p">}}</span>
 </pre></div>
@@ -138,7 +138,7 @@ concentrations; we can do that by defining a <code class="docutils literal notra
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – First key is binder, second key is concentration, value is fastq file.</li>
+<li><strong>indata</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – First key is binder, second key is concentration, value is fastq file.</li>
 <li><strong>enrichment</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – Key is binder, value is list of two concentrations (min,max)
 to calculate enrichment.</li>
 <li><strong>bounds</strong> (<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – N and C limit of the sequences. Follow the logic of <a class="reference internal" href="rstoolbox.utils.adapt_length.html#rstoolbox.utils.adapt_length" title="rstoolbox.utils.adapt_length"><code class="xref py py-func docutils literal notranslate"><span class="pre">adapt_length()</span></code></a>
@@ -155,27 +155,41 @@ enrichment per binder (if requested).</p>
 </tbody>
 </table>
 <p class="rubric">Example</p>
+<p>(We skip printing the sequence column to ease visibility of the differences)</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">read_fastq</span>
 <span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.utils</span> <span class="kn">import</span> <span class="n">sequencing_enrichment</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="nb">input</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;binder1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;conc1&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_001.fasq.gz&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span><span class="n">indat</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;binder1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;conc1&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_001.fasq.gz&#39;</span><span class="p">,</span>
 <span class="gp">   ...: </span>                     <span class="s1">&#39;conc2&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_002.fasq.gz&#39;</span><span class="p">,</span>
 <span class="gp">   ...: </span>                     <span class="s1">&#39;conc3&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_003.fasq.gz&#39;</span><span class="p">},</span>
 <span class="gp">   ...: </span>         <span class="s1">&#39;binder2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;conc1&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_004.fasq.gz&#39;</span><span class="p">,</span>
 <span class="gp">   ...: </span>                     <span class="s1">&#39;conc2&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_005.fasq.gz&#39;</span><span class="p">,</span>
 <span class="gp">   ...: </span>                     <span class="s1">&#39;conc3&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_006.fasq.gz&#39;</span><span class="p">}}</span>
-<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">sequencing_enrichment</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">sequencing_enrichment</span><span class="p">(</span><span class="n">indat</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="p">[[</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">_</span> <span class="o">!=</span> <span class="s1">&#39;sequence_A&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
 <span class="gh">Out[8]: </span><span class="go"></span>
-<span class="go">   description                                                                                                                                                                                                                                                                                                        sequence_A  binder2_conc1  binder2_conc2  binder2_conc3  binder1_conc1  binder1_conc2  binder1_conc3  len</span>
-<span class="go">0  0            GASKAMLFPGIRFKMAQWLKAWDDEILLTGEVVALKKIRLHYDHVLYAMAHTQIHPHHRMPYSDNFEMVCIKEHWGVDHPKKHAEDPLGWTENMCESGERWRKVYACNEGDTIHCGGILPDNGANRMTAEMRNNNPPCCGIWMQTIKMCKNVVWATWNKAYPVGMHHWPAHGLMPRMMAQDAYHWCRHFESCHTTCWCSPRISFIVIWVMDTFKANDHTFDCADIGSKRICSIQCHDGPGYFGRPMTIVVDTTYLYQKLICMWHNDLEMNNQCRAEMYEYQYRRGWHAVDEASASDDDDAWPGT  4.0            1.0            1.0            0.0            2.0            0.0            304</span>
-<span class="go">1  1            KYCPRARIQCEHYQEAFVCQTIITLTGEVVALKKIRLMFFEQSAEMLKQRMHGHHMGDDRRGWEYVSCWWCYAIHRWIHHSHFHEIRQETVTILGEYIRITCDQYLCKFKFAEVIRDAFVGMECITAKKKSQNKRNGIQYMTTASVALTQWHQVGLFTNVNQLDINQMTDSAREANFTPIYWIKQDCFLKTPYQNYEATVFQTADIWCRHEAECWDHQTWDWPNPLTQFCEEHKPSDVNGLENYRVFYFDWAFHKAILCHVKDMAQPFALRVFDEGCFWRCQVEQDYTLIPESWKCVT        4.0            3.0            2.0            0.0            1.0            2.0            298</span>
-<span class="go">2  2            GASHWTKYITFPELDGSEWPIDCDHRYLTGEVVALKKIRLKADCMLQSASVGYFPTRCYRSPHIRMMKDWVRNCYIRTCMQMNCETKNSMARRHQPLWFFSRFCWGDLWCEQFDGHWIENPEMRLMSWFCRPCNPLVHYLEVNCVWSGQNRRHDINVWGACEWWVQNFGHEAQMHSMYMFDTVYNDIFFESDRIYMPCEWCIRDIVLWTCRVNKDKEWPVDHINGMYGFVNCVRQSDNPPQMTCEPEYIGLKVLVKPKLYMKDVQIEDCLYMLVNIPWVDKGCYGDRIFPWCENDYDLIMGPGT  3.0            0.0            0.0            1.0            0.0            2.0            304</span>
-<span class="go">3  3            GASHKMLFTGDHILRTFIYEHMQDRIWLTGEVVALKKIRLFPSRVIRYSVKPGITPKGNNIPNRAWCQIMISTHTFFLWWFHDLIRPNARTGTNTPDFLCHLEYFPDFGGEQCHCEVIFQPIKKMSDDCMQPFYLRPQCMILKLAESEECCDSMYKMLEYHWSANYQFIDADLLERQCMTDDWLMDHDKWVRWTVWEDPFKITIEYLGFSDELHAMQPTENQGSFVEACVSYMEYRCDMDVWQWPPIMWMFLRMHWAQPDSEDGAKEVDTLQSRFQEKYQIGGDIIHGHRACHLFIWMKAGPGT  3.0            4.0            3.0            0.0            1.0            1.0            304</span>
-<span class="go">4  4            FGLLTHWADSVDQTGRGIWQRDGDLTGEVVALKKIRLFFMKGWHNLQDLVQMDGCAEVHLSTNTRGMCAWHILLPHHLDSDHTALEAWEGPEQHHKFWFIVHWHHCARAFFGLDTKCWTLCDDHGAEDPQDNPFGQPINNQWRHYNRLAYNADKWGFHIGFTLTPLTERTWRWYMHSELPLICLMLGSDFMDMNYHAQAWSMVGGVGGVNHGPQYFVCYRPYHSYDHRGDLKVYWKWLCIHTAYLWLGFQVAFLRHHSPTHQDMFTFQFCVFNSPPIMIMWCYDQFFQLFNDMEQIFA        3.0            0.0            3.0            0.0            1.0            1.0            298</span>
+<span class="go">   description  binder2_conc1  binder2_conc2  binder2_conc3  binder1_conc1  binder1_conc2  binder1_conc3  len</span>
+<span class="go">0  0            4.0            1.0            1.0            0.0            2.0            0.0            304</span>
+<span class="go">1  1            4.0            3.0            2.0            0.0            1.0            2.0            298</span>
+<span class="go">2  2            3.0            0.0            0.0            1.0            0.0            2.0            304</span>
+<span class="go">3  3            3.0            4.0            3.0            0.0            1.0            1.0            304</span>
+<span class="go">4  4            3.0            0.0            3.0            0.0            1.0            1.0            298</span>
+
+<span class="gp">In [9]: </span><span class="n">enrich</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;binder1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;conc1&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">],</span>
+<span class="gp">   ...: </span>          <span class="s1">&#39;binder2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;conc1&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">]}</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">sequencing_enrichment</span><span class="p">(</span><span class="n">indat</span><span class="p">,</span> <span class="n">enrich</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="p">[[</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">_</span> <span class="o">!=</span> <span class="s1">&#39;sequence_A&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[11]: </span><span class="go"></span>
+<span class="go">   description  binder2_conc1  binder2_conc2  binder2_conc3  binder1_conc1  binder1_conc2  binder1_conc3  len  enrichment_binder2  enrichment_binder1</span>
+<span class="go">0  0            4.0            1.0            1.0            0.0            2.0            0.0            304  4.0                 0.0               </span>
+<span class="go">1  1            4.0            3.0            2.0            0.0            1.0            2.0            298  2.0                 0.0               </span>
+<span class="go">2  2            3.0            0.0            0.0            1.0            0.0            2.0            304 -1.0                 0.5               </span>
+<span class="go">3  3            3.0            4.0            3.0            0.0            1.0            1.0            304  1.0                 0.0               </span>
+<span class="go">4  4            3.0            0.0            3.0            0.0            1.0            1.0            298  1.0                 0.0               </span>
 </pre></div>
 </div>
 </dd></dl>
