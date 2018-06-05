@@ -64,7 +64,7 @@ Helper functions to read/write data generated through wedlab experiments. They c
    :toctree: generated/
 
    ~io.read_SPR
-
+   ~io.read_fastq
 
 Analysis
 --------
@@ -154,6 +154,19 @@ Get the **RosettaScripts** that are called by different functions of the library
    :toctree: generated/
 
    ~utils.baseline
+
+Utils: Experiments
+------------------
+
+Special functions to help obtain data from multiple **Next Generation Sequencing** data.Can be loaded through ``rstoolbox.utils``.
+
+.. autosummary::
+   :toctree: generated/
+
+   ~utils.translate_dna_sequence
+   ~utils.translate_3frames
+   ~utils.adapt_length
+   ~utils.sequencing_enrichment
 
 Internals: Functions for Developers
 -----------------------------------

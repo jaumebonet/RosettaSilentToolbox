@@ -12,3 +12,6 @@ v0.0.7 (June 2018)
 #. Select a different ``seqID`` for fasta reading.
 #. Sequence distance can be calculated against a different ``DesignFrame``.
 #. Plot data from a 96-well microplate.
+#. Read and plot **SPR** data.
+#. Formatted plots for **Thermal Melt**, **CD**, and **MALS**.
+#. Read and process **Next Generation Sequencing** data.

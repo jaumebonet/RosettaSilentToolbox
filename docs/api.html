@@ -92,6 +92,7 @@
 <li><a class="reference internal" href="#utils-plot">Utils: Plot</a></li>
 <li><a class="reference internal" href="#utils-transforms">Utils: Transforms</a></li>
 <li><a class="reference internal" href="#utils-rosettascript">Utils: RosettaScript</a></li>
+<li><a class="reference internal" href="#utils-experiments">Utils: Experiments</a></li>
 <li><a class="reference internal" href="#internals-functions-for-developers">Internals: Functions for Developers</a></li>
 </ul>
 </li>
@@ -230,6 +231,9 @@
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.read_SPR.html#rstoolbox.io.read_SPR" title="rstoolbox.io.read_SPR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_SPR</span></code></a>(filename)</td>
 <td>Reads <strong>Surface Plasmon Resonance</strong> data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.read_fastq.html#rstoolbox.io.read_fastq" title="rstoolbox.io.read_fastq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fastq</span></code></a>(filename[,&nbsp;seqID])</td>
+<td>Reads a FASTQ file and stores the ID together with the sequence.</td>
 </tr>
 </tbody>
 </table>
@@ -405,6 +409,30 @@ plotting library, but some special plotting alternatives are offered through <co
 <tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.baseline.html#rstoolbox.utils.baseline" title="rstoolbox.utils.baseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">baseline</span></code></a>()</td>
 <td>RosettaScript to calculate DSSP secondary structure and phi-psi angles.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="utils-experiments">
+<h2>Utils: Experiments<a class="headerlink" href="#utils-experiments" title="Permalink to this headline">¶</a></h2>
+<p>Special functions to help obtain data from multiple <strong>Next Generation Sequencing</strong> data.Can be loaded through <code class="docutils literal notranslate"><span class="pre">rstoolbox.utils</span></code>.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.translate_dna_sequence.html#rstoolbox.utils.translate_dna_sequence" title="rstoolbox.utils.translate_dna_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_dna_sequence</span></code></a>(sequence)</td>
+<td>Translates <strong>DNA</strong> to <strong>protein</strong>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.translate_3frames.html#rstoolbox.utils.translate_3frames" title="rstoolbox.utils.translate_3frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_3frames</span></code></a>(sequence[,&nbsp;matches])</td>
+<td>Translates <strong>DNA</strong> to <strong>protein</strong> trying all possible frames.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.adapt_length.html#rstoolbox.utils.adapt_length" title="rstoolbox.utils.adapt_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adapt_length</span></code></a>(seqlist,&nbsp;start,&nbsp;stop[,&nbsp;inclusive])</td>
+<td>Pick only the sequence between the provided pattern tags.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.sequencing_enrichment.html#rstoolbox.utils.sequencing_enrichment" title="rstoolbox.utils.sequencing_enrichment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequencing_enrichment</span></code></a>(input[,&nbsp;enrichment,&nbsp;…])</td>
+<td>Retrieve data from multiple <a class="reference external" href="https://www.wikiwand.com/en/DNA_sequencing#/Next-generation_methods">NGS</a> files.</td>
 </tr>
 </tbody>
 </table>

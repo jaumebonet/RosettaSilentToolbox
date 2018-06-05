@@ -11,6 +11,7 @@
 .. func:: read_fastq
 """
 # Standard Libraries
+import gzip
 
 # External Libraries
 import pandas as pd
@@ -64,20 +65,47 @@ def read_SPR( filename ):
     return df.astype('float64')
 
 
-def read_fastq(filename):
-    """
-    Reads a FASTQ file and stores the ID together with the sequence.
+def read_fastq( filename, seqID='A'):
+    """Reads a FASTQ file and stores the ID together with the sequence.
+
+    The default generated :class:`.DesignFrame` will contain two columns:
+
+    ====================  ===================================================
+    Column Name            Data Content
+    ====================  ===================================================
+    **description**        Sequence identifier.
+    **sequence_<chain>**   Sequence content.
+    ====================  ===================================================
+
     :param str filename: FASTQ filename.
-    :return: Array of tuples containing ID and sequence information.
+    :param str seqID: |seqID_param|
+
+    :return: :class:`~pandas.DataFrame`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import read_fastq
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = read_fastq("../rstoolbox/tests/data/cdk2_rand_001.fasq.gz")
+           ...: df.head(8)
     """
     # Empty array to store tuples of ID & sequence information
     fastq = []
+    idq = []
 
     # Create a file handle for parsing
-    with open(filename, 'rU') as fastq_file:
-        for line in fastq_file:
-        	if '@' in line or '+' in line or any(c.islower() for c in line):
-        		continue
-        	fastq.append(line.strip())
-    return fastq
-
+    is_gz = filename.endswith('gz')
+    fastq_file = gzip.open(filename) if is_gz else open(filename)
+    for line in fastq_file:
+        line = line.decode('utf8') if is_gz else line
+        if line.startswith('@'):
+            idq.append(str(line.split(':')[0].split(';')[0][1:]))
+        if '@' in line or '+' in line or any(c.islower() for c in line):
+            continue
+        if len(line) == 0:
+            continue
+        fastq.append(str(line.strip()))
+    return pd.DataFrame({'description': idq, 'sequence_{}'.format(seqID): fastq})
