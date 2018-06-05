@@ -186,7 +186,7 @@ def adapt_length( seqlist, start, stop, inclusive=False ):
         expression = '({0}.*{1})'.format(start, stop)
 
     outlist = []
-    for i, seq in enumerate(seqlist):
+    for seq in seqlist:
         m = re.search(expression, seq)
         if m:
             outlist.append(m.group(1))
@@ -197,7 +197,7 @@ def adapt_length( seqlist, start, stop, inclusive=False ):
     return outlist
 
 
-def sequencing_enrichment( input, enrichment=None, bounds=None, matches=None, seqID='A' ):
+def sequencing_enrichment( indata, enrichment=None, bounds=None, matches=None, seqID='A' ):
     """Retrieve data from multiple
     `NGS <https://www.wikiwand.com/en/DNA_sequencing#/Next-generation_methods>`_ files.
 
@@ -205,8 +205,8 @@ def sequencing_enrichment( input, enrichment=None, bounds=None, matches=None, se
     (key1) and a secondary one (key2).
 
     For instance, let's assume that one has data obtained through selection of sequences by two
-    different binders and three different concentration of binder each; we would define a ``input``
-    dictionary such as::
+    different binders and three different concentration of binder each; we would define a
+    ``indata`` dictionary such as::
 
         {'binder1': {'conc1': 'file1.fastq', 'conc2': 'file2.fastq', 'conc3': 'file3.fastq'},
          'binder2': {'conc1': 'file4.fastq', 'conc2': 'file5.fastq', 'conc3': 'file6.fastq'}}
@@ -217,7 +217,7 @@ def sequencing_enrichment( input, enrichment=None, bounds=None, matches=None, se
         {'binder1': ['conc1', 'conc3'],
          'binder2': ['conc1', 'conc3']}
 
-    :param dict input: First key is binder, second key is concentration, value is fastq file.
+    :param dict indata: First key is binder, second key is concentration, value is fastq file.
     :param dict enrichment: Key is binder, value is list of two concentrations (min,max)
         to calculate enrichment.
     :param bounds: N and C limit of the sequences. Follow the logic of :func:`adapt_length`
@@ -238,22 +238,17 @@ def sequencing_enrichment( input, enrichment=None, bounds=None, matches=None, se
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
            ...: pd.set_option('display.max_columns', 20)
-           ...: input = {'binder1': {'conc1': '../rstoolbox/tests/data/cdk2_rand_001.fasq.gz',
+           ...: indat = {'binder1': {'conc1': '../rstoolbox/tests/data/cdk2_rand_001.fasq.gz',
            ...:                      'conc2': '../rstoolbox/tests/data/cdk2_rand_002.fasq.gz',
            ...:                      'conc3': '../rstoolbox/tests/data/cdk2_rand_003.fasq.gz'},
            ...:          'binder2': {'conc1': '../rstoolbox/tests/data/cdk2_rand_004.fasq.gz',
            ...:                      'conc2': '../rstoolbox/tests/data/cdk2_rand_005.fasq.gz',
            ...:                      'conc3': '../rstoolbox/tests/data/cdk2_rand_006.fasq.gz'}}
-           ...: df = sequencing_enrichment(input)
+           ...: df = sequencing_enrichment(indat)
            ...: df.head()
 
     """
     from rstoolbox.components import DesignFrame
-
-    def translate_all(seqlist, bounds, matches):
-        for i, seq in enumerate(seqlist):
-            seqlist[i] = translate_3frames(seq, matches)
-        return seqlist
 
     def condition_reader(jobid, filename, bounds, matches):
         from rstoolbox.io import read_fastq
@@ -280,8 +275,8 @@ def sequencing_enrichment( input, enrichment=None, bounds=None, matches=None, se
         return df
 
     data = []
-    for binder in input:
-        data.append(binder_reader(binder, input[binder], bounds, matches))
+    for binder in indata:
+        data.append(binder_reader(binder, indata[binder], bounds, matches))
     df = reduce(lambda left, right: pd.merge(left, right, on='sequence_A', how='outer'),
                 data).fillna(0)
     df['len'] = df.apply(lambda row: len(row['sequence_A']), axis=1)
