@@ -59,7 +59,7 @@ Be aware that the continuous integration will pass its tests if there is not a m
 Documentation
 -------------
 
-Documentation resides in ``sphinx-docs`` ad depends on `sphinx <http://sphinx-doc.org/>`_. A full list of requirements for the
+Documentation resides in ``sphinx-docs`` and depends on `sphinx <http://sphinx-doc.org/>`_. A full list of requirements for the
 tests can be found in ``rstoolbox/ci/requirements_devel.txt``.
 
 Any new function has to be properly documented in terms of function, inputs and outputs. Ideally, example code can be added to help

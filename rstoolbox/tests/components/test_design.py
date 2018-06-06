@@ -475,7 +475,8 @@ class TestDesign( object ):
         sc_des  = {"scores": ["score"], "sequence": "B"}
 
         new_cols = ["blosum62_B_raw", "blosum62_B_perc", "blosum62_B_identity",
-                    "blosum62_B_positive", "blosum62_B_negative", "blosum62_B_ali"]
+                    "blosum62_B_positive", "blosum62_B_negative", "blosum62_B_ali",
+                    "blosum62_B_per_res"]
 
         # Start test
         df = ri.parse_rosetta_file(self.silent1, sc_des)
@@ -483,7 +484,7 @@ class TestDesign( object ):
 
         # global sequence similarity
         dfss = ra.sequence_similarity( df, "B" )
-        assert len(dfss.columns) == len(df.columns) + 6
+        assert len(dfss.columns) == len(df.columns) + 7
         assert len(set(dfss.columns).difference(set(df.columns))) == len(new_cols)
         assert df.shape[0] == dfss.shape[0]
         assert dfss.blosum62_B_raw.mean() == 41.0

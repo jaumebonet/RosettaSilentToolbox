@@ -89,8 +89,10 @@ def _sequence_similarity( qseq, rseq, matrix ):
         raise ValueError("Comparable sequences have to be the same size.")
     raw, idn, pos, neg = 0, 0, 0, 0
     ali = []
+    pres = []
     for i, qseqi in enumerate(qseq):
         sc = matrix.get_value(qseqi, rseq[i])
+        pres.append(sc)
         raw += sc
         if qseqi == rseq[i]:
             idn += 1
@@ -102,7 +104,7 @@ def _sequence_similarity( qseq, rseq, matrix ):
         else:
             neg += 1
             ali.append(".")
-    return raw, idn, pos, neg, "".join(ali)
+    return raw, idn, pos, neg, "".join(ali), pres
 
 
 def _positional_similarity( qseq, rseq, matrix ):
@@ -227,6 +229,7 @@ def sequence_similarity( df, seqID, key_residues=None, matrix="BLOSUM62" ):
     **<matrix>_<seqID>_positive**    Total positive matches according to ``<matrix>``
     **<matrix>_<seqID>_negative**    Notal negative matches according to ``<matrix>``
     **<matrix>_<seqID>_ali**         Representation of aligned residues
+    **<matrix>_<seqID>_per_res**     Per position score of applying ``<matrix>``
     ===============================  ===================================================
 
     Matrix name in each new column is setup in lowercase.
@@ -283,17 +286,18 @@ def sequence_similarity( df, seqID, key_residues=None, matrix="BLOSUM62" ):
     mat = SM.get_matrix(matrix)
     # Get total score of the reference (depending on the matrix, identities != 1)
     ref_seq = df.get_reference_sequence(seqID, key_residues)
-    ref_raw, _, _, _, _ = _sequence_similarity(ref_seq, ref_seq, mat)
+    ref_raw, _, _, _, _, _ = _sequence_similarity(ref_seq, ref_seq, mat)
     # Get only the key residues and apply similarity analysis
     df2 = df._constructor(df.get_sequence(seqID, key_residues))
     df2 = df2.apply(
         lambda x: pd.Series(_sequence_similarity(x.get_sequence(seqID), ref_seq, mat)), axis=1)
-    df2[5] = df2[0] / ref_raw
+    df2[6] = df2[0] / ref_raw
     df2 = df2.rename(pd.Series(["{0}_{1}_raw".format(matrix.lower(), seqID),
                                 "{0}_{1}_identity".format(matrix.lower(), seqID),
                                 "{0}_{1}_positive".format(matrix.lower(), seqID),
                                 "{0}_{1}_negative".format(matrix.lower(), seqID),
                                 "{0}_{1}_ali".format(matrix.lower(), seqID),
+                                "{0}_{1}_per_res".format(matrix.lower(), seqID),
                                 "{0}_{1}_perc".format(matrix.lower(), seqID)]),
                      axis="columns").rename(pd.Series(df.index.values), axis="rows")
     return pd.concat([df.reset_index(drop=True),

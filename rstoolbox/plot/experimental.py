@@ -262,7 +262,7 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  
         pointcolor = sns.color_palette()[pointcolor]
     ax.plot(df['Temp'].values, df['MRE'].values, marker='s', linestyle='None', color=pointcolor)
 
-    ax.set_ylabel(r'MRE(10 deg$^3$ cm$^2$ dmol$^-1$) (V)')
+    ax.set_ylabel(r'MRE(10 deg$^3$ cm$^2$ dmol$^-1$)')
     ax.set_xlabel(r'Temperature ($^\circ$C)')
 
     ax.set_xlim(ax.get_xlim()[0] if min_temperature is None else min_temperature)
@@ -407,7 +407,7 @@ def plot_CD( df, ax, color=0, wavelengths=None  ):
     if isinstance(wavelengths, list) and len(wavelengths) == 2:
         ax.set_xlim(wavelengths[0], wavelengths[1])
 
-    ax.set_ylabel(r'MRE(10 deg$^3$ cm$^2$ dmol$^-1$) (V)')
+    ax.set_ylabel(r'MRE(10 deg$^3$ cm$^2$ dmol$^-1$)')
     ax.set_xlabel('Wavelength (nm)')
 
 
