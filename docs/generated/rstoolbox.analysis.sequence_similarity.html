@@ -63,7 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rosettascripts.html">RosettaScripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new</a></li>
@@ -150,6 +150,9 @@ identities, also similarities can be evaluated.</p>
 <tr class="row-odd"><td><strong>&lt;matrix&gt;_&lt;seqID&gt;_ali</strong></td>
 <td>Representation of aligned residues</td>
 </tr>
+<tr class="row-even"><td><strong>&lt;matrix&gt;_&lt;seqID&gt;_per_res</strong></td>
+<td>Per position score of applying <code class="docutils literal notranslate"><span class="pre">&lt;matrix&gt;</span></code></td>
+</tr>
 </tbody>
 </table>
 <p>Matrix name in each new column is setup in lowercase.</p>
@@ -205,14 +208,14 @@ logic (_x, _y, _z, …).</p>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
 <span class="gh">Out[8]: </span><span class="go"></span>
-<span class="go">     score                                                                                                            sequence_B       ...                                                                                                               blosum62_B_ali  blosum62_B_perc</span>
-<span class="go">0 -214.362  PKPEEAMREAYKLIKKYMLKAQKEAQEEWERMRRTDGTKEEKDMFPEKMIAQALRAIGEIFNAYYWAFLKLQEFKKYPSVRWEEQEEARKRLKIMMKIGAEWAREIAREMKERIKR       ...         .+PEEA...A++L.+..M.K..+E.+.EWE..+R....+EE+DM.PE+MIA.ALRAIGEIFNA.+...L++++.+K.P+...E+.+E.+K....+.......A....++.+E+.++  0.288189       </span>
-<span class="go">1 -203.582  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW       ...         T+PEE....A++....A+++G.EE.+R.+E..K+....+EERDM.PE+MIA.ALRAIGE+FNA..+....M++.RK...+G.++.++..+..+++..+.G.......+....K.R.  0.242520       </span>
-<span class="go">2 -213.779  TKPEEWARWAYKEHLKMAEKHRKEMEIEWEELKRRDGKEEEKDMWPERMIAMALRAIGELFNHHMYAEMRAKEEKKKPEAKTEEARRARREIMKYHHEAGRLIEEAMRRLMERHKK       ...         T+PEE....A++.......K..+E.E.EWE..KR.....EE+DM.PERMIA.ALRAIGE+FN......+..++E+K.P.A..E+.+..++E..K..+..G.+....+++..E+.+K  0.280315       </span>
-<span class="go">3 -213.972  KKWEEMMREAERQGKEYAQKAWKEALLEWKWMRKRPVTEEMKDMAPEWMIAAALRAIGEHFNIYWQQKLEHEKLRKIPNVPEEELEKGKEELKRIEEEAARMAEKYMQELRKKMES       ...         .+.EE....A.R..+...+K.W+E...EW+W.++.....E.+DM.PE.MIAAALRAIGE.FN..WQ.+LE.EK.RK.PN..EE++++.K+E..+I......MA..++++.R+K...  0.327559       </span>
-<span class="go">4 -195.138  PRPEEMARFAKEEMHKHEEKAYREFLLEYELAIRKNPTEEPKDMQPEWAIAAALRAIGEIFNQWMYHLLEIRKENGSSHTRYEEREKYRKLAKRLHEEAAKEIWKFMHEAMRRFES       ...         .RPEE....A.........K.+.E...E+E...R.+...E.+DM.PE..IAAALRAIGEIFN......LE+.KE..+.+...E+.++.+K.A.++..........++.+...+...  0.159055       </span>
+<span class="go">     score       ...       blosum62_B_perc</span>
+<span class="go">0 -214.362       ...        0.288189      </span>
+<span class="go">1 -203.582       ...        0.242520      </span>
+<span class="go">2 -213.779       ...        0.280315      </span>
+<span class="go">3 -213.972       ...        0.327559      </span>
+<span class="go">4 -195.138       ...        0.159055      </span>
 
-<span class="go">[5 rows x 8 columns]</span>
+<span class="go">[5 rows x 9 columns]</span>
 </pre></div>
 </div>
 </dd></dl>

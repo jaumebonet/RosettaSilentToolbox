@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="rstoolbox.components.Selection" href="generated/rstoolbox.components.Selection.html" />
-    <link rel="prev" title="Reading Rosetta outputs" href="tutorials/readrosetta.html" />
+    <link rel="prev" title="RosettaScripts" href="rosettascripts.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -63,7 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">An introduction to rstoolbox</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installing.html">Installing and getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Available direct executables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rosettascripts.html">RosettaScripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new</a></li>
@@ -305,22 +305,25 @@ plotting library, but some special plotting alternatives are offered through <co
 <tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.positional_sequence_similarity_plot.html#rstoolbox.plot.positional_sequence_similarity_plot" title="rstoolbox.plot.positional_sequence_similarity_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positional_sequence_similarity_plot</span></code></a>(df,&nbsp;ax)</td>
 <td>Generates a plot covering the amount of identities and positives matches from a population of designs to a reference sequence according to a substitution matrix.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.positional_structural_similarity_plot.html#rstoolbox.plot.positional_structural_similarity_plot" title="rstoolbox.plot.positional_structural_similarity_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positional_structural_similarity_plot</span></code></a>(df,&nbsp;ax)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.per_residue_matrix_score_plot.html#rstoolbox.plot.per_residue_matrix_score_plot" title="rstoolbox.plot.per_residue_matrix_score_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">per_residue_matrix_score_plot</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
+<td>Plot a linear representation of the scoring obtained by applying a substitution matrix.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.positional_structural_similarity_plot.html#rstoolbox.plot.positional_structural_similarity_plot" title="rstoolbox.plot.positional_structural_similarity_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positional_structural_similarity_plot</span></code></a>(df,&nbsp;ax)</td>
 <td>Generates a bar plot for positional prevalence of secondary structure elements.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragments.html#rstoolbox.plot.plot_fragments" title="rstoolbox.plot.plot_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragments</span></code></a>(small_frags,&nbsp;large_frags,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragments.html#rstoolbox.plot.plot_fragments" title="rstoolbox.plot.plot_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragments</span></code></a>(small_frags,&nbsp;large_frags,&nbsp;…)</td>
 <td>Plot RMSD quality of a pair of <a class="reference internal" href="generated/rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> in two provided axis.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragment_profiles.html#rstoolbox.plot.plot_fragment_profiles" title="rstoolbox.plot.plot_fragment_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragment_profiles</span></code></a>(fig,&nbsp;small_frags,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragment_profiles.html#rstoolbox.plot.plot_fragment_profiles" title="rstoolbox.plot.plot_fragment_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragment_profiles</span></code></a>(fig,&nbsp;small_frags,&nbsp;…)</td>
 <td>Plots a full summary of the a <a class="reference internal" href="generated/rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> quality with sequence and expected secondary structure match.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_alignment.html#rstoolbox.plot.plot_alignment" title="rstoolbox.plot.plot_alignment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_alignment</span></code></a>(df,&nbsp;seqID,&nbsp;ax[,&nbsp;line_break,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_alignment.html#rstoolbox.plot.plot_alignment" title="rstoolbox.plot.plot_alignment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_alignment</span></code></a>(df,&nbsp;seqID,&nbsp;ax[,&nbsp;line_break,&nbsp;…])</td>
 <td>Make an image representing the alignment of sequences with higlights to mutant positions.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_ramachandran.html#rstoolbox.plot.plot_ramachandran" title="rstoolbox.plot.plot_ramachandran"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ramachandran</span></code></a>(df,&nbsp;seqID,&nbsp;fig)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_ramachandran.html#rstoolbox.plot.plot_ramachandran" title="rstoolbox.plot.plot_ramachandran"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ramachandran</span></code></a>(df,&nbsp;seqID,&nbsp;fig)</td>
 <td>Generates a ramachandran plot in RAMPAGE style.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_dssp_vs_psipred.html#rstoolbox.plot.plot_dssp_vs_psipred" title="rstoolbox.plot.plot_dssp_vs_psipred"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_dssp_vs_psipred</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_dssp_vs_psipred.html#rstoolbox.plot.plot_dssp_vs_psipred" title="rstoolbox.plot.plot_dssp_vs_psipred"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_dssp_vs_psipred</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
 <td>Generates a horizontal heatmap showing differences in psipred predictions to dssp assignments.</td>
 </tr>
 </tbody>

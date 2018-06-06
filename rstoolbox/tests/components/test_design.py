@@ -462,6 +462,23 @@ class TestDesign( object ):
         plt.tight_layout()
         return fig
 
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_per_res_matrix_score.png')
+    def test_per_res_matrix_score(self):
+        sc_des  = {"scores": ["score"], "sequence": "B"}
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+
+        df.add_reference_sequence('B', df.iloc[0]['sequence_B'])
+        df.add_reference_shift('B', 10)
+        seles = [('15-25', 'red'), ('45B-60B', 'green')]
+        fig = plt.figure(figsize=(25, 10))
+        ax0 = plt.subplot2grid((2, 1), (0, 0))
+        rp.per_residue_matrix_score_plot(df.iloc[1], "B", ax0)
+        ax1 = plt.subplot2grid((2, 1), (1, 0))
+        rp.per_residue_matrix_score_plot(df.iloc[1], "B", ax1, selections=seles)
+        plt.tight_layout()
+        return fig
+
     def test_sequence_similarities(self):
         refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
                  "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"

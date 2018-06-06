@@ -15,3 +15,4 @@ v0.0.7 (June 2018)
 #. Read and plot **SPR** data.
 #. Formatted plots for **Thermal Melt**, **CD**, and **MALS**.
 #. Read and process **Next Generation Sequencing** data.
+#. Function to plot per residue score after applying a similarity matrix

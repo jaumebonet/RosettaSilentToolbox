@@ -38,7 +38,7 @@ class DesignSeries( pd.Series, RSBaseDesign ):
     adding some functionalities in order to improve its usability in
     the analysis of a single design decoys.
 
-    It is generated as the *reduced dimensionality version* of the
+    It is generated as the **reduced dimensionality version** of the
     :class:`.DesignFrame`.
 
     .. seealso::
@@ -59,7 +59,9 @@ class DesignSeries( pd.Series, RSBaseDesign ):
 
     @property
     def _constructor_expanddim( self ):
-        return DesignFrame
+        def f(*args, **kwargs):
+            return DesignFrame(*args, **kwargs).__finalize__(self, method='inherit')
+        return f
 
     def __finalize__(self, other, method=None, **kwargs):
         if method == "inherit":
@@ -462,6 +464,11 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         elif method == 'merge':
             for name in self._metadata:
                 setattr(self, name, getattr(other.left, name, _metadata_defaults(name)))
+        # inherit operation:
+        # Keep metadata of the other object.
+        elif method == 'inherit':
+            for name in self._metadata:
+                setattr(self, name, getattr(other, name, _metadata_defaults(name)))
         else:
             for name in self._metadata:
                 setattr(self, name, getattr(other, name, _metadata_defaults(name)))
