@@ -17,6 +17,7 @@ import gzip
 import pandas as pd
 
 # This Library
+import rstoolbox.components as rc
 
 __all__ = ['read_SPR', 'read_fastq']
 
@@ -80,7 +81,7 @@ def read_fastq( filename, seqID='A'):
     :param str filename: FASTQ filename.
     :param str seqID: |seqID_param|
 
-    :return: :class:`~pandas.DataFrame`
+    :return: :class:`.DesignFrame`
 
     .. rubric:: Example
 
@@ -108,4 +109,4 @@ def read_fastq( filename, seqID='A'):
         if len(line) == 0:
             continue
         fastq.append(str(line.strip()))
-    return pd.DataFrame({'description': idq, 'sequence_{}'.format(seqID): fastq})
+    return rc.DesignFrame({'description': idq, 'sequence_{}'.format(seqID): fastq})

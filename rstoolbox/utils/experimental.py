@@ -17,6 +17,7 @@ import re
 # External Libraries
 import pandas as pd
 import numpy as np
+from six.moves import reduce
 
 # This Library
 
@@ -264,9 +265,8 @@ def sequencing_enrichment( indata, enrichment=None, bounds=None, matches=None, s
         df['sequence_A'] = df.apply(lambda row: translate_3frames(row['sequence_A'], matches),
                                     axis=1)
         if bounds is not None:
-            df['sequence_A'] = df.apply(lambda row: adapt_length(row['sequence_A'],
-                                                                 bounds[0], bounds[1]),
-                                        axis=1)
+            df['sequence_A'] = adapt_length(df['sequence_A'].values, bounds[0], bounds[1])
+
         df = df.merge(df.groupby('sequence_A').agg('count').reset_index(),
                       on='sequence_A',
                       how='left').drop_duplicates('sequence_A').reset_index(drop=True)
