@@ -112,7 +112,7 @@ def split_values( df, keys ):
            ...: split_values(df, split2)
     """
     split_columns = [_[0] for _ in keys['split']]
-    if not 'keep' in keys:
+    if 'keep' not in keys:
         keys.setdefault('keep', list(set(df.columns).difference(set(split_columns))))
         keys['keep'].sort(key=lambda x: list(df.columns.values).index(x))
     dataframes = []
@@ -120,15 +120,15 @@ def split_values( df, keys ):
         colIDs = copy.copy(keys["keep"])
         colIDs.append(k[0])
         wdf = df[colIDs]
-        wdf = wdf.assign(temporarykey1=pd.Series([k[1]]*len(wdf[colIDs[0]])).values).copy(True)
+        wdf = wdf.assign(tmpkey1=pd.Series([k[1]] * len(wdf[colIDs[0]])).values).copy(True)
         wdf = wdf.rename(index=str, columns={
             k[0]: keys["names"][0],
-            "temporarykey1": keys["names"][1]
+            "tmpkey1": keys["names"][1]
         })
         if ( len(k) > 2 ):
-            wdf = wdf.assign(temporarykey2=pd.Series([k[2]]*len(wdf[colIDs[0]])).values).copy(True)
+            wdf = wdf.assign(tmpkey2=pd.Series([k[2]] * len(wdf[colIDs[0]])).values).copy(True)
             wdf = wdf.rename(index=str, columns={
-                "temporarykey2": keys["names"][2]
+                "tmpkey2": keys["names"][2]
             })
         dataframes.append(wdf)
     return pd.concat(dataframes)

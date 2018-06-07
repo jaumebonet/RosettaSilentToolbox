@@ -345,7 +345,7 @@ class Selection( object ):
             In [1]: ss = Selection([3, 4, 5, 13, 14, 15, 21, 25])
                ...: sd = ss.map_to_sequences(seq)
                ...: for seqID in sd:
-               ...:     print seqID, sd[seqID]
+               ...:     print(seqID, sd[seqID])
         """
         if self._seqID is not None:
             raise KeyError("The Selection has already an assigned sequence id")
@@ -454,7 +454,7 @@ class Selection( object ):
         :param shift: Expected displacement.
         :type shift: Union[:class:`int`, :func:`list` of :class:`int`]
 
-        :return: New shifted :class:`.Selection`.
+        :return: New unshifted :class:`.Selection`.
 
         .. seealso::
             :meth:`~Selection.shift`

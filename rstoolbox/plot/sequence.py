@@ -11,6 +11,7 @@
 .. func:: logo_plot
 .. func:: positional_sequence_similarity_plot
 .. func:: sequence_frequency_plot
+.. func:: per_residue_matrix_score_plot
 """
 # Standard Libraries
 from distutils.version import LooseVersion
@@ -31,15 +32,17 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.text import TextPath
 
 # This Library
-from rstoolbox.analysis import binary_overlap
+from rstoolbox.analysis import binary_overlap, sequence_similarity
 from rstoolbox.analysis.SimilarityMatrix import SimilarityMatrix
-from rstoolbox.components import DesignFrame, SequenceFrame, get_selection
+from rstoolbox.components import DesignFrame, DesignSeries, SequenceFrame
+from rstoolbox.components import get_selection, Selection
 from rstoolbox.utils.getters import _check_column
 from rstoolbox.utils import discrete_cmap_from_colors, add_column
 from .color_schemes import color_scheme
 
 __all__ = ["plot_sequence_frequency_graph", "plot_alignment", "logo_plot",
-           "positional_sequence_similarity_plot", "sequence_frequency_plot"]
+           "positional_sequence_similarity_plot", "sequence_frequency_plot",
+           "per_residue_matrix_score_plot"]
 
 
 def barcode_plot( df, column_name, ax, color="blue" ):
@@ -239,8 +242,8 @@ def plot_alignment( df, seqID, ax, line_break=None, matrix=None ):
         to split the alignment in that many pieces.
     :type ax: Union[:class:`~matplotlib.axes.Axes`, :func:`list` of
         :class:`~matplotlib.axes.Axes`]
-    :param str matrix: Identifier of the matrix used to evaluate similarity. Default is :data:`None`:
-        highlight differences.
+    :param str matrix: Identifier of the matrix used to evaluate similarity. Default is
+        :data:`None` highlight differences.
 
     :raises:
         :ValueError: if input is not a :class:`~pandas.DataFrame` derived object.
@@ -360,6 +363,98 @@ def positional_sequence_similarity_plot( df, ax, identity_color="green",
 
     ax.set_ylim(0, 1)
     ax.set_xlim(0, len(y) - 1)
+
+
+def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
+                                   selections=None, **kwargs ):
+    """Plot a linear representation of the scoring obtained by applying a
+    substitution matrix.
+
+    Applies to a single decoy against the ``reference_sequence``.
+
+    Parameters to control the properties of the plotted line (``color``,
+    ``linestyle``...) can be provided too.
+
+    :param df: |df_param|
+    :type df: :class:`.DesignSeries`
+    :param str seqID: |seqID_param|
+    :param ax: matplotlib axis to which we will plot.
+    :type ax: :py:class:`~matplotlib.axes.Axes`
+    :param str matrix: |matrix_param|
+    :param selections: List of regions to highlight; each position should be
+        a selector and a color.
+    :type selections: :func:`list` of :class:`tuple` with |keyres_types| and
+        a color (:class:`str` or :class:`int`)
+
+    :raises:
+        :ValueError: If the data container is not :class:`.DesignSeries` or it
+            does not have a ``reference_sequence``.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.plot import per_residue_matrix_score_plot
+           ...: import matplotlib.pyplot as plt
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {"sequence": "B"})
+           ...: df.add_reference_sequence('B', df.iloc[0]['sequence_B'])
+           ...: df.add_reference_shift('B', 10)
+           ...: seles = [('15-25', 'red'), ('45B-60B', 'green')]
+           ...: fig = plt.figure(figsize=(25, 10))
+           ...: ax0 = plt.subplot2grid((2, 1), (0, 0))
+           ...: per_residue_matrix_score_plot(df.iloc[1], "B", ax0)
+           ...: ax1 = plt.subplot2grid((2, 1), (1, 0))
+           ...: per_residue_matrix_score_plot(df.iloc[1], "B", ax1, selections=seles)
+
+        @savefig per_residue_matrix_score_plot_docs.png width=5in
+        In [2]: plt.show()
+
+
+    """
+    if not isinstance(df, DesignSeries) or not df.has_reference_sequence(seqID):
+        raise ValueError("Data must be a DesignSeries with reference for the requested seqID")
+
+    shift = df.get_reference_shift(seqID)
+    refsq = df.get_reference_sequence(seqID)
+
+    column = '{0}_{1}_per_res'.format(matrix.lower(), seqID)
+    if column not in df.index:
+        df = sequence_similarity(df.to_frame().T, seqID, matrix=matrix).iloc[0]
+
+    ax.plot(range(0, len(refsq)), [0, ] * len(refsq), color='grey', linestyle='dashed')
+    ax.plot(range(0, len(refsq)), df[column], **kwargs)
+
+    ax.set_xlim(0, len(refsq) - 1)
+    ax.set_xticks(range(0, len(refsq), 5))
+    if isinstance(shift, int):
+        ax.set_xticklabels([_ + shift for _ in range(0, len(refsq), 5)])
+    else:
+        ax.set_xticklabels(shift[0::5])
+
+    axb = ax.twiny()
+    axb.set_xticks(range(0, len(refsq)))
+    axb.set_xticklabels(list(df['{0}_{1}_ali'.format(matrix.lower(), seqID)].replace('.', ' ')))
+    axb.tick_params('x', top=False, pad=0)
+
+    axlim = ax.get_ylim()
+    if selections is None:
+        selections = []
+    for s in selections:
+        xift = False
+        try:
+            xift = Selection(s[0]).is_shifted()
+        except AttributeError:
+            xift = False
+        s_ = get_selection(s[0], seqID, shift, len(refsq))
+
+        ax.fill([s_[0] - int(xift), s_[-1] - int(xift), s_[-1] - int(xift), s_[0] - int(xift)],
+                [axlim[0] - 1, axlim[0] - 1, axlim[1] + 1, axlim[1] + 1],
+                color=s[1], alpha=0.2, zorder=-100)
+    ax.set_ylim(axlim[0], axlim[1])
+
+    ax.set_ylabel(matrix.upper())
 
 
 def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,

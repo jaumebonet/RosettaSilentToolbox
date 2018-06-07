@@ -1,10 +1,11 @@
-# @Author: Jaume Bonet <bonet>
-# @Date:   01-Mar-2018
-# @Email:  jaume.bonet@gmail.com
-# @Filename: silent_files.py
-# @Last modified by:   bonet
-# @Last modified time: 07-Apr-2018
+# -*- coding: utf-8 -*-
+"""
+.. codeauthor:: Jaume Bonet <jaume.bonet@gmail.com>
 
+.. affiliation::
+    Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
+    Bruno Correia <bruno.correia@epfl.ch>
+"""
 # Standard Libraries
 import os
 
@@ -36,6 +37,8 @@ class TestReadSilentFiles( object ):
         self.silent1 = os.path.join(self.dirpath, 'input_2seq.minisilent.gz')
         self.silent2 = os.path.join(self.dirpath, 'input_sse.minsilent.gz')
         self.silent3 = os.path.join(self.dirpath, 'input_symmetry.minisilent.gz')
+        self.contact = os.path.join(self.dirpath, 'contacts.csv.gz')
+        self.jsonscr = os.path.join(self.dirpath, 'score.json.gz')
         self.defhead = ["score", "fa_atr", "fa_rep", "fa_sol", "fa_intra_rep", "fa_elec",
                         "pro_close", "hbond_sr_bb", "hbond_lr_bb", "hbond_bb_sc", "hbond_sc",
                         "dslf_fa13", "rama", "omega", "fa_dun", "p_aa_pp", "yhh_planarity",
@@ -65,6 +68,10 @@ class TestReadSilentFiles( object ):
         assert df["score"].mean() == pytest.approx(-207.9, 0.2)
         assert df["packstat"].mean() == pytest.approx(0.59, 0.02)
 
+    def test_read_json( self ):
+        df = ri.parse_rosetta_json(self.jsonscr)
+        assert df.shape == (88, 39)
+
     def test_select_scores( self ):
         """
         Select only some scores of interest.
@@ -87,10 +94,11 @@ class TestReadSilentFiles( object ):
         # ignore point columns
         defhead = self.defhead[:]
         sc_des = {"scores_ignore": ["dslf_fa13", "rama", "omega", "fa_dun"]}
+        fl_des = os.path.join(self.dirpath, 'description_ignore.yaml')
         for x in sc_des["scores_ignore"]:
             defhead.remove(x)
 
-        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        df = ri.parse_rosetta_file(self.silent1, fl_des)
         assert list(df.columns.values) == defhead
         assert df["packstat"].mean() == pytest.approx(0.59, 0.02)
         with pytest.raises(KeyError):
@@ -108,7 +116,7 @@ class TestReadSilentFiles( object ):
         """
         Rename scores into something different.
         """
-        sc_des = {"scores_rename": {"packstat": "inscore", "rama": "dingong"}}
+        sc_des = os.path.join(self.dirpath, 'description_rename.json')
         defhead = self.defhead[:]
         defhead[defhead.index("packstat")] = "inscore"
         defhead[defhead.index("rama")] = "dingong"
@@ -210,3 +218,11 @@ class TestReadSilentFiles( object ):
 
         assert set(df.columns.values) == set(self.symhead + ["sequence_A", "sequence_B"])
         assert df.iloc[0]["sequence_A"] == df.iloc[0]["sequence_B"]
+
+    def test_contacts( self ):
+        """
+        Check reading contact files.
+        """
+        df, irow, icol = ri.parse_rosetta_contacts(self.contact)
+        assert df.shape[0] == df.shape[1]
+        assert irow == icol

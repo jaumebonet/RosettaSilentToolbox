@@ -80,7 +80,11 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Contributing</a></li>
+<li><a class="reference internal" href="#">Contributing</a><ul>
+<li><a class="reference internal" href="#tests">Tests</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -112,14 +116,79 @@
       
   <div class="section" id="contributing">
 <span id="id1"></span><h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">rstoolbox</span></code> is open source and, thus, <strong>contributions are more than welcomed</strong>.</p>
+<p>If you feel there is a feature that might improve the library here are the steps you need do:</p>
+<ol class="arabic">
+<li><p class="first">Add a new <a class="reference external" href="https://github.com/jaumebonet/RosettaSilentToolbox/issues">issue</a> commenting on the feature.
+Try to explain exactly what you expect the library to do. <em>Examples and example data always help</em>. Features
+that are most welcomed are:</p>
+<ul class="simple">
+<li>Input/output to new widely used file formats. This extends to different design or alignments tools or
+sequence analysis tools.</li>
+<li>New analysis methods.</li>
+<li>New data view (predefined plot types).</li>
+</ul>
+</li>
+<li><p class="first">If nobody offers and you feel confident enough to do it, take the initiative and <a class="reference external" href="https://help.github.com/articles/fork-a-repo/">fork the repo into your own
+github user</a>.</p>
+</li>
+<li><p class="first">Ideally, you’ll want to work on a <a class="reference external" href="https://virtualenvwrapper.readthedocs.io/en/latest/">virtual environment</a>; once
+you have one set up, you can clone your repo into your machine:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">YOUR</span><span class="o">-</span><span class="n">USERNAME</span><span class="o">/</span><span class="n">RosettaSilentToolbox</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Start coding, committing and pushing your code. Make sure to add the appropriate <a class="reference internal" href="#tests"><span class="std std-ref">Tests</span></a> and <a class="reference internal" href="#documentation"><span class="std std-ref">Documentation</span></a> to your new
+code.</p>
+</li>
+<li><p class="first">Whenever you thing your code is working, <a class="reference external" href="https://help.github.com/articles/creating-a-pull-request/">create a pull request</a>
+over the original repo. This will trigger the continuous integration test to run and assess your contribution.</p>
+</li>
+<li><p class="first">When the tests are positive and a reviewer has accepted your pull request, merge the data to the master branch. We do thank
+you for your time and your improvements to the code.</p>
+</li>
+</ol>
+<div class="section" id="tests">
+<span id="id2"></span><h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
+<p>Tests reside in <code class="docutils literal notranslate"><span class="pre">rstoolbox/tests</span></code> and depend on <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a>. A full list of requirements for the
+tests can be found in <code class="docutils literal notranslate"><span class="pre">rstoolbox/ci/requirements_devel.txt</span></code>.</p>
+<p>The easiest way to execute them is through <a class="reference external" href="https://tox.readthedocs.io/">tox</a>; for which three different environments are set up:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tox</span> <span class="o">-</span><span class="n">e</span> <span class="n">py27</span>
+<span class="n">tox</span> <span class="o">-</span><span class="n">e</span> <span class="n">py35</span>
+<span class="n">tox</span> <span class="o">-</span><span class="n">e</span> <span class="n">py36</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">tox</span></code> works with virtual environments, this might produce some unexpected behaviours in MacOS due to the behaviour of <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>.
+See <a class="reference internal" href="installing.html#installing"><span class="std std-ref">the known issues of the getting started section</span></a> to see how to fix that.</p>
+<p>New data to read can be added to the <code class="docutils literal notranslate"><span class="pre">rstoolbox/tests/data</span></code> folder, but try to be sparse with it and add it only when necessary.</p>
+<p>Be aware that the continuous integration will pass its tests if there is not a minimum of the new added code covered by new tests.</p>
+</div>
+<div class="section" id="documentation">
+<span id="id3"></span><h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Documentation resides in <code class="docutils literal notranslate"><span class="pre">sphinx-docs</span></code> and depends on <a class="reference external" href="http://sphinx-doc.org/">sphinx</a>. A full list of requirements for the
+tests can be found in <code class="docutils literal notranslate"><span class="pre">rstoolbox/ci/requirements_devel.txt</span></code>.</p>
+<p>Any new function has to be properly documented in terms of function, inputs and outputs. Ideally, example code can be added to help
+comprehend the effects of the function. Use other functions as guidelines on how to generate documentation.</p>
+<p>Be aware that functions are not automatically listed in their appropriate place in the docs, they need to be manually added to the
+<a class="reference internal" href="api.html#api-ref"><span class="std std-ref">API</span></a> or corresponding object file.</p>
+<p>Once the documentation is done, get into <code class="docutils literal notranslate"><span class="pre">sphinx-docs</span></code> and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">clean</span>
+<span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>to obtain your docs. You can check them locally opening a server with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">SimpleHTTPServer</span>
+</pre></div>
+</div>
+<p>Lastly, list your new improvements into: <code class="docutils literal notranslate"><span class="pre">sphinx-docs/releases/Vxxx.txt</span></code> where <code class="docutils literal notranslate"><span class="pre">xxx</span></code> represents the higher version listed.</p>
 <span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>
       
   </div>
 </div>
-
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -131,19 +200,9 @@
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-74877325-2');
-</script>
-
   </body>
 </html>

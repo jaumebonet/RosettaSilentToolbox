@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="rstoolbox.components.Selection" href="generated/rstoolbox.components.Selection.html" />
-    <link rel="prev" title="Reading Rosetta outputs" href="tutorials/readrosetta.html" />
+    <link rel="prev" title="RosettaScripts" href="rosettascripts.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -63,7 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">An introduction to rstoolbox</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installing.html">Installing and getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Available direct executables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rosettascripts.html">RosettaScripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s new</a></li>
@@ -85,11 +85,14 @@
 <li><a class="reference internal" href="#components">Components</a></li>
 <li><a class="reference internal" href="#io-sequence">IO: Sequence</a></li>
 <li><a class="reference internal" href="#io-rosetta">IO: Rosetta</a></li>
+<li><a class="reference internal" href="#io-experiments">IO: Experiments</a></li>
 <li><a class="reference internal" href="#analysis">Analysis</a></li>
 <li><a class="reference internal" href="#plot">Plot</a></li>
+<li><a class="reference internal" href="#plot-experiments">Plot: Experiments</a></li>
 <li><a class="reference internal" href="#utils-plot">Utils: Plot</a></li>
 <li><a class="reference internal" href="#utils-transforms">Utils: Transforms</a></li>
 <li><a class="reference internal" href="#utils-rosettascript">Utils: RosettaScript</a></li>
+<li><a class="reference internal" href="#utils-experiments">Utils: Experiments</a></li>
 <li><a class="reference internal" href="#internals-functions-for-developers">Internals: Functions for Developers</a></li>
 </ul>
 </li>
@@ -163,7 +166,7 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.read_fasta.html#rstoolbox.io.read_fasta" title="rstoolbox.io.read_fasta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fasta</span></code></a>(filename[,&nbsp;expand,&nbsp;multi])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.read_fasta.html#rstoolbox.io.read_fasta" title="rstoolbox.io.read_fasta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fasta</span></code></a>(filename[,&nbsp;expand,&nbsp;multi,&nbsp;defchain])</td>
 <td>Reads one or more <strong>FASTA</strong> files and returns the appropiate object containing the requested data: the <a class="reference internal" href="generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.write_fasta.html#rstoolbox.io.write_fasta" title="rstoolbox.io.write_fasta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_fasta</span></code></a>(df,&nbsp;seqID[,&nbsp;separator,&nbsp;…])</td>
@@ -176,7 +179,7 @@
 <td>Writes a text file containing only the positions changed with respect to the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code>.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.read_hmmsearch.html#rstoolbox.io.read_hmmsearch" title="rstoolbox.io.read_hmmsearch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hmmsearch</span></code></a>(filename)</td>
-<td>Read output from <code class="docutils literal notranslate"><span class="pre">hmmsearch</span></code>.</td>
+<td>Read output from <code class="docutils literal notranslate"><span class="pre">hmmsearch</span></code> or <code class="docutils literal notranslate"><span class="pre">hmmscan</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -193,23 +196,44 @@
 <tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.parse_rosetta_file.html#rstoolbox.io.parse_rosetta_file" title="rstoolbox.io.parse_rosetta_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_rosetta_file</span></code></a>(filename[,&nbsp;description,&nbsp;…])</td>
 <td>Read a Rosetta score or silent file and returns the design population in a <a class="reference internal" href="generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.parse_rosetta_contacts.html#rstoolbox.io.parse_rosetta_contacts" title="rstoolbox.io.parse_rosetta_contacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_rosetta_contacts</span></code></a>(filename)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.parse_rosetta_json.html#rstoolbox.io.parse_rosetta_json" title="rstoolbox.io.parse_rosetta_json"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_rosetta_json</span></code></a>(filename)</td>
+<td>Read a json formated rosetta score file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.parse_rosetta_contacts.html#rstoolbox.io.parse_rosetta_contacts" title="rstoolbox.io.parse_rosetta_contacts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_rosetta_contacts</span></code></a>(filename)</td>
 <td>Read a residue contact file as generated by <strong>ContactMapMover</strong>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.parse_rosetta_fragments.html#rstoolbox.io.parse_rosetta_fragments" title="rstoolbox.io.parse_rosetta_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_rosetta_fragments</span></code></a>(filename)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.parse_rosetta_fragments.html#rstoolbox.io.parse_rosetta_fragments" title="rstoolbox.io.parse_rosetta_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_rosetta_fragments</span></code></a>(filename)</td>
 <td>Read a Rosetta fragment-file and return the appropiate <a class="reference internal" href="generated/rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.write_rosetta_fragments.html#rstoolbox.io.write_rosetta_fragments" title="rstoolbox.io.write_rosetta_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_rosetta_fragments</span></code></a>(df,&nbsp;frag_size[,&nbsp;n_frags])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.write_rosetta_fragments.html#rstoolbox.io.write_rosetta_fragments" title="rstoolbox.io.write_rosetta_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_rosetta_fragments</span></code></a>(df,&nbsp;frag_size[,&nbsp;n_frags])</td>
 <td>Writes a Rosetta fragment-file (new format) from an appropiate <a class="reference internal" href="generated/rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.write_fragment_sequence_profiles.html#rstoolbox.io.write_fragment_sequence_profiles" title="rstoolbox.io.write_fragment_sequence_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_fragment_sequence_profiles</span></code></a>(df[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.write_fragment_sequence_profiles.html#rstoolbox.io.write_fragment_sequence_profiles" title="rstoolbox.io.write_fragment_sequence_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_fragment_sequence_profiles</span></code></a>(df[,&nbsp;…])</td>
 <td>Write a sequence profile from <a class="reference internal" href="generated/rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> to load into Rosetta’s <strong>SeqprofConsensus</strong>.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequence_and_structure</span></code></a>(pdbfile)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sequence_and_structure</span></code></a>(pdbfile)</td>
 <td>Provided a PDB file, it will run a small <strong>RosettaScript</strong> to capture its sequence and structure, i.e.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.make_structures.html#rstoolbox.io.make_structures" title="rstoolbox.io.make_structures"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_structures</span></code></a>(df[,&nbsp;outdir,&nbsp;tagsfilename,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.make_structures.html#rstoolbox.io.make_structures" title="rstoolbox.io.make_structures"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_structures</span></code></a>(df[,&nbsp;outdir,&nbsp;tagsfilename,&nbsp;…])</td>
 <td>Extract the selected decoys (if any).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="io-experiments">
+<h2>IO: Experiments<a class="headerlink" href="#io-experiments" title="Permalink to this headline">¶</a></h2>
+<p>Helper functions to read/write data generated through wedlab experiments. They can be called through <code class="docutils literal notranslate"><span class="pre">rstoolbox.io</span></code>.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.io.read_SPR.html#rstoolbox.io.read_SPR" title="rstoolbox.io.read_SPR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_SPR</span></code></a>(filename)</td>
+<td>Reads <strong>Surface Plasmon Resonance</strong> data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.io.read_fastq.html#rstoolbox.io.read_fastq" title="rstoolbox.io.read_fastq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fastq</span></code></a>(filename[,&nbsp;seqID])</td>
+<td>Reads a FASTQ file and stores the ID together with the sequence.</td>
 </tr>
 </tbody>
 </table>
@@ -281,23 +305,53 @@ plotting library, but some special plotting alternatives are offered through <co
 <tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.positional_sequence_similarity_plot.html#rstoolbox.plot.positional_sequence_similarity_plot" title="rstoolbox.plot.positional_sequence_similarity_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positional_sequence_similarity_plot</span></code></a>(df,&nbsp;ax)</td>
 <td>Generates a plot covering the amount of identities and positives matches from a population of designs to a reference sequence according to a substitution matrix.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.positional_structural_similarity_plot.html#rstoolbox.plot.positional_structural_similarity_plot" title="rstoolbox.plot.positional_structural_similarity_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positional_structural_similarity_plot</span></code></a>(df,&nbsp;ax)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.per_residue_matrix_score_plot.html#rstoolbox.plot.per_residue_matrix_score_plot" title="rstoolbox.plot.per_residue_matrix_score_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">per_residue_matrix_score_plot</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
+<td>Plot a linear representation of the scoring obtained by applying a substitution matrix.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.positional_structural_similarity_plot.html#rstoolbox.plot.positional_structural_similarity_plot" title="rstoolbox.plot.positional_structural_similarity_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positional_structural_similarity_plot</span></code></a>(df,&nbsp;ax)</td>
 <td>Generates a bar plot for positional prevalence of secondary structure elements.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragments.html#rstoolbox.plot.plot_fragments" title="rstoolbox.plot.plot_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragments</span></code></a>(small_frags,&nbsp;large_frags,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragments.html#rstoolbox.plot.plot_fragments" title="rstoolbox.plot.plot_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragments</span></code></a>(small_frags,&nbsp;large_frags,&nbsp;…)</td>
 <td>Plot RMSD quality of a pair of <a class="reference internal" href="generated/rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> in two provided axis.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragment_profiles.html#rstoolbox.plot.plot_fragment_profiles" title="rstoolbox.plot.plot_fragment_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragment_profiles</span></code></a>(fig,&nbsp;small_frags,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragment_profiles.html#rstoolbox.plot.plot_fragment_profiles" title="rstoolbox.plot.plot_fragment_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragment_profiles</span></code></a>(fig,&nbsp;small_frags,&nbsp;…)</td>
 <td>Plots a full summary of the a <a class="reference internal" href="generated/rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> quality with sequence and expected secondary structure match.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_alignment.html#rstoolbox.plot.plot_alignment" title="rstoolbox.plot.plot_alignment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_alignment</span></code></a>(df,&nbsp;seqID,&nbsp;ax[,&nbsp;line_break,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_alignment.html#rstoolbox.plot.plot_alignment" title="rstoolbox.plot.plot_alignment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_alignment</span></code></a>(df,&nbsp;seqID,&nbsp;ax[,&nbsp;line_break,&nbsp;…])</td>
 <td>Make an image representing the alignment of sequences with higlights to mutant positions.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_ramachandran.html#rstoolbox.plot.plot_ramachandran" title="rstoolbox.plot.plot_ramachandran"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ramachandran</span></code></a>(df,&nbsp;seqID,&nbsp;fig)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_ramachandran.html#rstoolbox.plot.plot_ramachandran" title="rstoolbox.plot.plot_ramachandran"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ramachandran</span></code></a>(df,&nbsp;seqID,&nbsp;fig)</td>
 <td>Generates a ramachandran plot in RAMPAGE style.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_dssp_vs_psipred.html#rstoolbox.plot.plot_dssp_vs_psipred" title="rstoolbox.plot.plot_dssp_vs_psipred"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_dssp_vs_psipred</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_dssp_vs_psipred.html#rstoolbox.plot.plot_dssp_vs_psipred" title="rstoolbox.plot.plot_dssp_vs_psipred"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_dssp_vs_psipred</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
 <td>Generates a horizontal heatmap showing differences in psipred predictions to dssp assignments.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plot-experiments">
+<h2>Plot: Experiments<a class="headerlink" href="#plot-experiments" title="Permalink to this headline">¶</a></h2>
+<p>Plot data obtained from experimental procedures. Accessible through <code class="docutils literal notranslate"><span class="pre">rstoolbox.plot</span></code>.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_96wells.html#rstoolbox.plot.plot_96wells" title="rstoolbox.plot.plot_96wells"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_96wells</span></code></a>([cdata,&nbsp;sdata,&nbsp;bdata,&nbsp;bcolors,&nbsp;…])</td>
+<td>Plot data of a 96 well plate into an equivalent-shaped plot.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_thermal_melt.html#rstoolbox.plot.plot_thermal_melt" title="rstoolbox.plot.plot_thermal_melt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_thermal_melt</span></code></a>(df,&nbsp;ax[,&nbsp;linecolor,&nbsp;…])</td>
+<td>Plot <a class="reference external" href="https://www.wikiwand.com/en/Thermal_shift_assay">Thermal Melt</a> data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_MALS.html#rstoolbox.plot.plot_MALS" title="rstoolbox.plot.plot_MALS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_MALS</span></code></a>(df,&nbsp;ax[,&nbsp;uvcolor,&nbsp;lscolor,&nbsp;…])</td>
+<td>Plot <a class="reference external" href="https://www.wikiwand.com/en/Multiangle_light_scattering">Multi-Angle Light Scattering</a> data.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_CD.html#rstoolbox.plot.plot_CD" title="rstoolbox.plot.plot_CD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_CD</span></code></a>(df,&nbsp;ax[,&nbsp;color,&nbsp;wavelengths])</td>
+<td>Plot <a class="reference external" href="https://www.wikiwand.com/en/Circular_dichroism">Circular Dichroism</a> data.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_SPR.html#rstoolbox.plot.plot_SPR" title="rstoolbox.plot.plot_SPR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_SPR</span></code></a>(df,&nbsp;ax[,&nbsp;datacolor,&nbsp;fitcolor,&nbsp;…])</td>
+<td>Plot <a class="reference external" href="https://www.wikiwand.com/en/Surface_plasmon_resonance">Surface Plasmon Resonance</a> data.</td>
 </tr>
 </tbody>
 </table>
@@ -362,6 +416,30 @@ plotting library, but some special plotting alternatives are offered through <co
 </tbody>
 </table>
 </div>
+<div class="section" id="utils-experiments">
+<h2>Utils: Experiments<a class="headerlink" href="#utils-experiments" title="Permalink to this headline">¶</a></h2>
+<p>Special functions to help obtain data from multiple <strong>Next Generation Sequencing</strong> data.Can be loaded through <code class="docutils literal notranslate"><span class="pre">rstoolbox.utils</span></code>.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.translate_dna_sequence.html#rstoolbox.utils.translate_dna_sequence" title="rstoolbox.utils.translate_dna_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_dna_sequence</span></code></a>(sequence)</td>
+<td>Translates <strong>DNA</strong> to <strong>protein</strong>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.translate_3frames.html#rstoolbox.utils.translate_3frames" title="rstoolbox.utils.translate_3frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate_3frames</span></code></a>(sequence[,&nbsp;matches])</td>
+<td>Translates <strong>DNA</strong> to <strong>protein</strong> trying all possible frames.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.adapt_length.html#rstoolbox.utils.adapt_length" title="rstoolbox.utils.adapt_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adapt_length</span></code></a>(seqlist,&nbsp;start,&nbsp;stop[,&nbsp;inclusive])</td>
+<td>Pick only the sequence between the provided pattern tags.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.sequencing_enrichment.html#rstoolbox.utils.sequencing_enrichment" title="rstoolbox.utils.sequencing_enrichment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sequencing_enrichment</span></code></a>(indata[,&nbsp;enrichment,&nbsp;…])</td>
+<td>Retrieve data from multiple <a class="reference external" href="https://www.wikiwand.com/en/DNA_sequencing#/Next-generation_methods">NGS</a> files.</td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="internals-functions-for-developers">
 <h2>Internals: Functions for Developers<a class="headerlink" href="#internals-functions-for-developers" title="Permalink to this headline">¶</a></h2>
 <p>This functions are only of interest if you plan on writing new functionalities in <code class="docutils literal notranslate"><span class="pre">rstoolbox</span></code>.</p>
@@ -387,7 +465,6 @@ plotting library, but some special plotting alternatives are offered through <co
       
   </div>
 </div>
-
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -399,19 +476,9 @@ plotting library, but some special plotting alternatives are offered through <co
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-74877325-2');
-</script>
-
   </body>
 </html>

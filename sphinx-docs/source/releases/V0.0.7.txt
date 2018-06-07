@@ -7,3 +7,12 @@ v0.0.7 (June 2018)
 #. ``DesignFrame`` mutant functions can work with list-type ``key_residue``.
 #. Added ability to read phi/psi angles from Rosetta output and plot Ramachandran.
 #. Added ability to read HMMsearch output.
+#. Descriptions to load silent files can be provided as YAML.
+#. Read json-formated Rosetta score files.
+#. Select a different ``seqID`` for fasta reading.
+#. Sequence distance can be calculated against a different ``DesignFrame``.
+#. Plot data from a 96-well microplate.
+#. Read and plot **SPR** data.
+#. Formatted plots for **Thermal Melt**, **CD**, and **MALS**.
+#. Read and process **Next Generation Sequencing** data.
+#. Function to plot per residue score after applying a similarity matrix

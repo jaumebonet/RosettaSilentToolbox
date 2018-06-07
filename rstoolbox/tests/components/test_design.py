@@ -21,6 +21,7 @@ import rstoolbox.io as ri
 import rstoolbox.components as rc
 import rstoolbox.plot as rp
 import rstoolbox.analysis as ra
+import rstoolbox.utils as ru
 from rstoolbox.tests.helper import random_frequency_matrix
 
 
@@ -232,6 +233,47 @@ class TestDesign( object ):
         assert df.shape[0] == 6
         df.get_sequence_with('B', [(1, 'T')]).shape[0] == 3
 
+    def test_split_values(self):
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1)
+
+        split1 = {'split': [('GRMSD2Target', 'grmsdTr'), ('GRMSD2Template', 'grmsdTp'),
+                            ('LRMSD2Target', 'lrmsdTp'), ('LRMSDH2Target', 'lrmsdh2'),
+                            ('LRMSDLH2Target', 'lrmsdlh2')],
+                  'names': ['rmsd', 'rmsd_type']}
+        dfs1 = ru.split_values(df, split1)
+
+        split2 = {'split': [('GRMSD2Target', 'global', 'target'),
+                            ('GRMSD2Template', 'global', 'template'),
+                            ('LRMSD2Target', 'local', 'target'),
+                            ('LRMSDH2Target', 'local', 'helix2'),
+                            ('LRMSDLH2Target', 'local', 'lhelix2')],
+                  'names': ['rmsd', 'rmsd_type', 'rmsd_target']}
+        dfs2 = ru.split_values(df, split2)
+
+        assert df.shape[0] == 6
+        assert dfs1.shape[0] == 6 * 5
+        assert dfs1.shape[0] == dfs2.shape[0]
+        assert dfs1.shape[1] == dfs2.shape[1] - 1
+        assert 'rmsd' in dfs1.columns
+        assert 'rmsd' in dfs2.columns
+        assert 'rmsd_type' in dfs1.columns
+        assert 'rmsd_type' in dfs2.columns
+        assert 'rmsd_target' not in dfs1.columns
+        assert 'rmsd_target' in dfs2.columns
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_global_preview.png')
+    def test_global_preview(self):
+
+        df = ri.parse_rosetta_file(self.silent1)
+        values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
+                  "cav_vol", "design_score", "packstat", "rmsd_drift"]
+        fig = plt.figure(figsize=(25, 10))
+        rp.multiple_distributions(df, fig, (2, 4), values)
+        plt.tight_layout()
+        return fig
+
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_mutants_alignment.png')
     def test_mutants(self):
@@ -349,6 +391,20 @@ class TestDesign( object ):
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_summary.png')
+    def test_summary_plot(self):
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1)
+        fig = plt.figure(figsize=(30, 30))
+
+        rp.multiple_distributions(df, fig, (3, 3),
+                                  ['score', 'GRMSD2Target', 'GRMSD2Template',
+                                   'LRMSD2Target', 'LRMSDH2Target', 'LRMSDLH2Target',
+                                   'design_score', 'packstat', 'rmsd_drift'])
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_logo.png')
     def test_logo_plot(self):
         refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
@@ -367,9 +423,6 @@ class TestDesign( object ):
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_logo_noref.png')
     def test_logo_plot_noref(self):
-        refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
-                 "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"
-
         sc_des  = {"sequence": "B"}
 
         # Start test
@@ -399,9 +452,6 @@ class TestDesign( object ):
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_logo_bits_noref.png')
     def test_logo_plot_bits_noref(self):
-        refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
-                 "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"
-
         sc_des  = {"sequence": "B"}
 
         # Start test
@@ -409,6 +459,23 @@ class TestDesign( object ):
         df = df.sequence_bits('B')
 
         fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50 )
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_per_res_matrix_score.png')
+    def test_per_res_matrix_score(self):
+        sc_des  = {"scores": ["score"], "sequence": "B"}
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+
+        df.add_reference_sequence('B', df.iloc[0]['sequence_B'])
+        df.add_reference_shift('B', 10)
+        seles = [('15-25', 'red'), ('45B-60B', 'green')]
+        fig = plt.figure(figsize=(25, 10))
+        ax0 = plt.subplot2grid((2, 1), (0, 0))
+        rp.per_residue_matrix_score_plot(df.iloc[1], "B", ax0)
+        ax1 = plt.subplot2grid((2, 1), (1, 0))
+        rp.per_residue_matrix_score_plot(df.iloc[1], "B", ax1, selections=seles)
         plt.tight_layout()
         return fig
 
@@ -425,7 +492,8 @@ class TestDesign( object ):
         sc_des  = {"scores": ["score"], "sequence": "B"}
 
         new_cols = ["blosum62_B_raw", "blosum62_B_perc", "blosum62_B_identity",
-                    "blosum62_B_positive", "blosum62_B_negative", "blosum62_B_ali"]
+                    "blosum62_B_positive", "blosum62_B_negative", "blosum62_B_ali",
+                    "blosum62_B_per_res"]
 
         # Start test
         df = ri.parse_rosetta_file(self.silent1, sc_des)
@@ -433,7 +501,7 @@ class TestDesign( object ):
 
         # global sequence similarity
         dfss = ra.sequence_similarity( df, "B" )
-        assert len(dfss.columns) == len(df.columns) + 6
+        assert len(dfss.columns) == len(df.columns) + 7
         assert len(set(dfss.columns).difference(set(df.columns))) == len(new_cols)
         assert df.shape[0] == dfss.shape[0]
         assert dfss.blosum62_B_raw.mean() == 41.0

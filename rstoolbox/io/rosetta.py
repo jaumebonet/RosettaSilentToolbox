@@ -8,6 +8,7 @@
 
 .. func:: open_rosetta_file
 .. func:: parse_rosetta_file
+.. func:: parse_rosetta_json
 .. func:: parse_rosetta_contacts
 .. func:: parse_rosetta_fragments
 .. func:: write_rosetta_fragments
@@ -29,6 +30,7 @@ from collections import OrderedDict
 # External Libraries
 import six
 import pandas as pd
+import yaml
 
 # This Library
 import rstoolbox.core as core
@@ -38,7 +40,7 @@ from rstoolbox.utils import baseline
 __all__ = ['open_rosetta_file', 'parse_rosetta_file', 'parse_rosetta_contacts',
            'parse_rosetta_fragments', 'write_rosetta_fragments',
            'write_fragment_sequence_profiles', 'get_sequence_and_structure',
-           'make_structures']
+           'make_structures', 'parse_rosetta_json']
 
 _headers = ["SCORE", "REMARK", "RES_NUM", "FOLD_TREE", "RT",
             "ANNOTATED_SEQUENCE", "NONCANONICAL_CONNECTION",
@@ -54,9 +56,14 @@ def _file_vs_json( data ):
     if isinstance( data, str ):
         if not os.path.isfile( data ):
             raise IOError("{0}: file not found.".format(data))
-        fd = gzip.open( data ) if data.endswith(".gz") else open( data )
-        text = "".join([x.strip() for x in fd])
-        data = json.loads(text)
+        try:
+            fd = gzip.open( data ) if data.endswith(".gz") else open( data )
+            text = "".join([x.strip() for x in fd])
+            data = json.loads(text)
+        except ValueError:
+            fd = gzip.open( data ) if data.endswith(".gz") else open( data )
+            data = yaml.safe_load(fd.read())
+        fd.close()
     return data
 
 
@@ -83,7 +90,8 @@ def _gather_file_list( filename, multi=False ):
     Provided a file name or pattern, generates a list
     with all the files that are expected to be read.
 
-    :param str filename: file name or pattern (without "*")
+    :param str filename: file name or pattern (without "*"). If filename
+        ends with ``$`` it is assumed that that is the end of the name.
     :param bool multi: Tell if a file name or pattern is provided.
         Default is 'False' (single file name)
 
@@ -98,7 +106,9 @@ def _gather_file_list( filename, multi=False ):
         files.append( filename )
     else:
         if isinstance(filename, six.string_types):
-            if not filename.endswith("*"):
+            if filename.endswith('$'):
+                filename = filename.rstrip('$')
+            elif not filename.endswith("*"):
                 filename = filename + "*"
             files = glob.glob( filename )
         else:
@@ -254,7 +264,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
     header  = []
     data    = OrderedDict()
 
-    for line, is_header, count, symm in open_rosetta_file( filename, multi ):
+    for line, is_header, _, symm in open_rosetta_file( filename, multi ):
         if is_header:
             header = line.strip().split()[1:]
             continue
@@ -340,6 +350,48 @@ def parse_rosetta_file( filename, description=None, multi=False ):
 
     df = rc.DesignFrame( data )
     df.add_source_files( _gather_file_list( filename, multi ) )
+    return df
+
+
+def parse_rosetta_json( filename ):
+    """Read a json formated rosetta score file.
+
+    Only reads back scores, as those are the only content present in a ``JSON`` file.
+
+    :param str filename: File containing the Rosetta score file.
+
+    :return: :class:`.DesignFrame`.
+
+    .. note::
+        To be coherent with the silent files, the decoy id column name ``decoy`` is
+        changed to ``description``.
+
+    :raises:
+        :IOError: if ``filename`` cannot be found.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_json
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_json("../rstoolbox/tests/data/score.json.gz")
+           ...: df.head(2)
+    """
+    is_gz = filename.endswith(".gz")
+    fd = gzip.open( filename ) if is_gz else open( filename )
+    data = {}
+    for line in fd:
+        if is_gz:
+            dt = json.loads(line.decode('utf8').strip())
+        else:
+            dt = json.loads(line.strip())
+        for k in dt:
+            data.setdefault(k, []).append(dt[k])
+    df = rc.DesignFrame( data )
+    df.rename(columns={'decoy': 'description'})
+    df.add_source_file( filename )
     return df
 
 
@@ -512,7 +564,7 @@ def write_fragment_sequence_profiles( df, filename=None, consensus=None ):
     :raises:
         :IOError: if ``filename`` exists and :ref:`system.overwrite <options>` is
             :data:`False`.
-        :AssertionError: if ``consensus`` lenth differs from the expected by the
+        :ValueError: if ``consensus`` lenth differs from the expected by the
             given fragments.
     """
     def format_row(row, aa, row0):
@@ -528,7 +580,8 @@ def write_fragment_sequence_profiles( df, filename=None, consensus=None ):
         matrix = df.copy()
     if consensus is None:
         consensus = df.quick_consensus_sequence()
-    assert len(consensus) == matrix.shape[0]
+    if len(consensus) != matrix.shape[0]:
+        raise ValueError('Sequence need to be the same length.')
     matrix2 = matrix.copy()
     matrix2[:] = 0
     data = list(matrix.apply(lambda row: format_row(row, consensus[row.name],
@@ -617,7 +670,7 @@ def get_sequence_and_structure( pdbfile ):
         if os.path.isfile(str(os.getpid()) + "_"):
             sys.stdout.write("Execution has finished\n")
             fd = open( minisilent, "w" )
-            for line, is_header, count, symm in open_rosetta_file( str(os.getpid()) + "_" ):
+            for line, _, _, _ in open_rosetta_file( str(os.getpid()) + "_" ):
                 fd.write( line )
             fd.close()
             os.unlink(str(os.getpid()) + "_")

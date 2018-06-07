@@ -63,7 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">An introduction to rstoolbox</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing and getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Available direct executables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../rosettascripts.html">RosettaScripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../whatsnew.html">What’s new</a></li>
@@ -115,16 +115,22 @@
 <h1>rstoolbox.components.DesignFrame.sequence_distance<a class="headerlink" href="#rstoolbox-components-designframe-sequence-distance" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="rstoolbox.components.DesignFrame.sequence_distance">
-<code class="descclassname">DesignFrame.</code><code class="descname">sequence_distance</code><span class="sig-paren">(</span><em>seqID</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.sequence_distance" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">DesignFrame.</code><code class="descname">sequence_distance</code><span class="sig-paren">(</span><em>seqID</em>, <em>other=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.sequence_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make identity sequence distance between the selected decoys.</p>
 <p>Generate a matrix counting the distance between each pair of sequences in the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">designFrame</span></code>. This is a time-consuming operation; better to execute it over a
+<a class="reference internal" href="../rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>. This is a time-consuming operation; better to execute it over a
 specific set of selected decoys that over all your designs.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">other</span></code> is provided as a second <a class="reference internal" href="../rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, distances are calculated between
+the sequences of the current <a class="reference internal" href="../rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> against the sequence of the other.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>other</strong> (<a class="reference internal" href="../rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>) – Secondary data container. Optional.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -140,6 +146,10 @@ specific set of selected decoys that over all your designs.</p>
 <tr class="field-odd field"><th class="field-name">KeyError:</th><td class="field-body">if there is no sequence information for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">if <code class="docutils literal notranslate"><span class="pre">description</span></code> column cannot be found.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">ValueError:</th><td class="field-body">if sequence of <code class="docutils literal notranslate"><span class="pre">self</span></code> and <code class="docutils literal notranslate"><span class="pre">other</span></code> are of different length.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ValueError:</th><td class="field-body">if data container only has one sequence and no <code class="docutils literal notranslate"><span class="pre">other</span></code> is provided.</td>
 </tr>
 </tbody>
 </table>
@@ -174,7 +184,6 @@ specific set of selected decoys that over all your designs.</p>
       
   </div>
 </div>
-
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -186,19 +195,9 @@ specific set of selected decoys that over all your designs.</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-74877325-2');
-</script>
-
   </body>
 </html>

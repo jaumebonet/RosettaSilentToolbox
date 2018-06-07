@@ -63,7 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rosettascripts.html">RosettaScripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new</a></li>
@@ -116,7 +116,7 @@
 <dl class="function">
 <dt id="rstoolbox.io.read_hmmsearch">
 <code class="descclassname">rstoolbox.io.</code><code class="descname">read_hmmsearch</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.read_hmmsearch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read output from <code class="docutils literal notranslate"><span class="pre">hmmsearch</span></code>.</p>
+<dd><p>Read output from <code class="docutils literal notranslate"><span class="pre">hmmsearch</span></code> or <code class="docutils literal notranslate"><span class="pre">hmmscan</span></code>.</p>
 <p>Processess the output of Hidden Markov Models search over a set
 of sequences with <a class="reference external" href="http://hmmer.org/">hmmsearch</a>.</p>
 <p>Will return a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> with the following columns:</p>
@@ -132,7 +132,13 @@ of sequences with <a class="reference external" href="http://hmmer.org/">hmmsear
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><strong>description</strong></td>
-<td>Sequence identifier.</td>
+<td>In <code class="docutils literal notranslate"><span class="pre">hmmseach</span></code> only. Sequence identifier.</td>
+</tr>
+<tr class="row-odd"><td><strong>domain</strong></td>
+<td>In <code class="docutils literal notranslate"><span class="pre">hmmscan</span></code> only.  Domain identifier.</td>
+</tr>
+<tr class="row-even"><td><strong>definition</strong></td>
+<td>In <code class="docutils literal notranslate"><span class="pre">hmmscan</span></code> only. Definition of the domain name.</td>
 </tr>
 <tr class="row-odd"><td><strong>full-e-value</strong></td>
 <td>E-value for full sequence match.</td>
@@ -160,6 +166,7 @@ of sequences with <a class="reference external" href="http://hmmer.org/">hmmsear
 </tr>
 </tbody>
 </table>
+<p>It will include more columns related with the alignment data itself.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -207,7 +214,6 @@ of sequences with <a class="reference external" href="http://hmmer.org/">hmmsear
       
   </div>
 </div>
-
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -219,19 +225,9 @@ of sequences with <a class="reference external" href="http://hmmer.org/">hmmsear
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-74877325-2');
-</script>
-
   </body>
 </html>

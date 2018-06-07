@@ -47,12 +47,24 @@ Helper functions to read/write data generated with `Rosetta <https://www.rosetta
    :toctree: generated/
 
    ~io.parse_rosetta_file
+   ~io.parse_rosetta_json
    ~io.parse_rosetta_contacts
    ~io.parse_rosetta_fragments
    ~io.write_rosetta_fragments
    ~io.write_fragment_sequence_profiles
    ~io.get_sequence_and_structure
    ~io.make_structures
+
+IO: Experiments
+---------------
+
+Helper functions to read/write data generated through wedlab experiments. They can be called through ``rstoolbox.io``.
+
+.. autosummary::
+   :toctree: generated/
+
+   ~io.read_SPR
+   ~io.read_fastq
 
 Analysis
 --------
@@ -87,12 +99,27 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.sequence_frequency_plot
    ~plot.logo_plot
    ~plot.positional_sequence_similarity_plot
+   ~plot.per_residue_matrix_score_plot
    ~plot.positional_structural_similarity_plot
    ~plot.plot_fragments
    ~plot.plot_fragment_profiles
    ~plot.plot_alignment
    ~plot.plot_ramachandran
    ~plot.plot_dssp_vs_psipred
+
+Plot: Experiments
+-----------------
+
+Plot data obtained from experimental procedures. Accessible through ``rstoolbox.plot``.
+
+.. autosummary::
+   :toctree: generated/
+
+   ~plot.plot_96wells
+   ~plot.plot_thermal_melt
+   ~plot.plot_MALS
+   ~plot.plot_CD
+   ~plot.plot_SPR
 
 Utils: Plot
 -----------
@@ -128,6 +155,19 @@ Get the **RosettaScripts** that are called by different functions of the library
    :toctree: generated/
 
    ~utils.baseline
+
+Utils: Experiments
+------------------
+
+Special functions to help obtain data from multiple **Next Generation Sequencing** data.Can be loaded through ``rstoolbox.utils``.
+
+.. autosummary::
+   :toctree: generated/
+
+   ~utils.translate_dna_sequence
+   ~utils.translate_3frames
+   ~utils.adapt_length
+   ~utils.sequencing_enrichment
 
 Internals: Functions for Developers
 -----------------------------------

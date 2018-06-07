@@ -63,7 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">An introduction to rstoolbox</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing and getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Available direct executables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../rosettascripts.html">RosettaScripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../whatsnew.html">What’s new</a></li>
@@ -172,10 +172,10 @@ selected, an empty <a class="reference internal" href="../rstoolbox.components.S
 <span class="gp">In [4]: </span><span class="n">ss</span> <span class="o">=</span> <span class="n">Selection</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">25</span><span class="p">])</span>
 <span class="gp">   ...: </span><span class="n">sd</span> <span class="o">=</span> <span class="n">ss</span><span class="o">.</span><span class="n">map_to_sequences</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="k">for</span> <span class="n">seqID</span> <span class="ow">in</span> <span class="n">sd</span><span class="p">:</span>
-<span class="gp">   ...: </span>    <span class="k">print</span> <span class="n">seqID</span><span class="p">,</span> <span class="n">sd</span><span class="p">[</span><span class="n">seqID</span><span class="p">]</span>
+<span class="gp">   ...: </span>    <span class="k">print</span><span class="p">(</span><span class="n">seqID</span><span class="p">,</span> <span class="n">sd</span><span class="p">[</span><span class="n">seqID</span><span class="p">])</span>
 <span class="gp">   ...: </span>
-<span class="go">A 3-5,13-14</span>
-<span class="go">B 1,7,11</span>
+<span class="go">(&#39;A&#39;, 3-5,13-14)</span>
+<span class="go">(&#39;B&#39;, 1,7,11)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -187,7 +187,6 @@ selected, an empty <a class="reference internal" href="../rstoolbox.components.S
       
   </div>
 </div>
-
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -199,19 +198,9 @@ selected, an empty <a class="reference internal" href="../rstoolbox.components.S
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-74877325-2');
-</script>
-
   </body>
 </html>

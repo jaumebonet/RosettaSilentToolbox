@@ -63,7 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../rosettascripts.html">RosettaScripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new</a></li>
@@ -115,14 +115,14 @@
 <h1>rstoolbox.io.read_fasta<a class="headerlink" href="#rstoolbox-io-read-fasta" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.io.read_fasta">
-<code class="descclassname">rstoolbox.io.</code><code class="descname">read_fasta</code><span class="sig-paren">(</span><em>filename</em>, <em>expand=False</em>, <em>multi=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.read_fasta" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.io.</code><code class="descname">read_fasta</code><span class="sig-paren">(</span><em>filename</em>, <em>expand=False</em>, <em>multi=False</em>, <em>defchain='A'</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.read_fasta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads one or more <strong>FASTA</strong> files and returns the appropiate object
 containing the requested data: the <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</p>
 <p>The default generated <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> will contain two columns:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="23%" />
-<col width="77%" />
+<col width="28%" />
+<col width="72%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Column Name</th>
@@ -133,7 +133,7 @@ containing the requested data: the <a class="reference internal" href="rstoolbox
 <tr class="row-even"><td><strong>description</strong></td>
 <td>Sequence identifier.</td>
 </tr>
-<tr class="row-odd"><td><strong>sequence_A</strong></td>
+<tr class="row-odd"><td><strong>sequence_&lt;chain&gt;</strong></td>
 <td>Sequence content.</td>
 </tr>
 </tbody>
@@ -144,7 +144,7 @@ has to do compatibility issues with the rest of functions and methods of
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">read_fasta</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">read_fasta</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/*fa&quot;</span><span class="p">,</span> <span class="n">multi</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">read_fasta</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/*fa$&quot;</span><span class="p">,</span> <span class="n">multi</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span>
 <span class="gp">   ...: </span>
 <span class="gh">Out[5]: </span><span class="go"></span>
@@ -188,6 +188,7 @@ is lost after that process.</p>
 <li><strong>expand</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Try to better associate sequence ID if format is <strong>PDB FASTA</strong>.</li>
 <li><strong>multi</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, indicates that data is readed from
 multiple files.</li>
+<li><strong>defchain</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Default chain to use. If not provided that is ‘A’.</li>
 </ul>
 </td>
 </tr>
@@ -219,7 +220,6 @@ multiple files.</li>
       
   </div>
 </div>
-
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -231,19 +231,9 @@ multiple files.</li>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
     </p>
   </div>
 </footer>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-74877325-2');
-</script>
-
   </body>
 </html>

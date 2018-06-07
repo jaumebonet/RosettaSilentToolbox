@@ -14,8 +14,6 @@ import itertools
 
 # External Libraries
 import pandas as pd
-from pandas.core.index import Index
-from pandas.core.dtypes.common import is_scalar
 import numpy as np
 
 # This Library
@@ -26,13 +24,21 @@ import rstoolbox.analysis as ra
 __all__ = ["DesignSeries", "DesignFrame"]
 
 
+def _metadata_defaults(name):
+    if name == "_source_files":
+        return set()
+    if name == "_reference":
+        return {}
+    return None
+
+
 class DesignSeries( pd.Series, RSBaseDesign ):
     """
     The :class:`.DesignSeries` extends the :class:`~pandas.Series`
     adding some functionalities in order to improve its usability in
     the analysis of a single design decoys.
 
-    It is generated as the *reduced dimensionality version* of the
+    It is generated as the **reduced dimensionality version** of the
     :class:`.DesignFrame`.
 
     .. seealso::
@@ -53,7 +59,9 @@ class DesignSeries( pd.Series, RSBaseDesign ):
 
     @property
     def _constructor_expanddim( self ):
-        return DesignFrame
+        def f(*args, **kwargs):
+            return DesignFrame(*args, **kwargs).__finalize__(self, method='inherit')
+        return f
 
     def __finalize__(self, other, method=None, **kwargs):
         if method == "inherit":
@@ -196,6 +204,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
                ...: df.get_sequence_with('B', [(1, 'T')])
         """
         from .selection import get_selection
+
         def match_residues( value, seqID, confidence ):
             t = 0
             for s in selection:
@@ -208,20 +217,27 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
             axis=1
         )]
 
-    def sequence_distance( self, seqID ):
+    def sequence_distance( self, seqID, other=None ):
         """Make identity sequence distance between the selected decoys.
 
         Generate a matrix counting the distance between each pair of sequences in the
-        :class:`.designFrame`. This is a time-consuming operation; better to execute it over a
+        :class:`.DesignFrame`. This is a time-consuming operation; better to execute it over a
         specific set of selected decoys that over all your designs.
 
+        If ``other`` is provided as a second :class:`.DesignFrame`, distances are calculated between
+        the sequences of the current :class:`.DesignFrame` against the sequence of the other.
+
         :param str seqID: |seqID_param|.
+        :param other: Secondary data container. Optional.
+        :type other: :class:`.DesignFrame`
 
         return: :class:`~pandas.DataFrame` - table with the sequence distances.
 
         :raises:
             :KeyError: |seqID_error|.
             :KeyError: if ``description`` column cannot be found.
+            :ValueError: if sequence of ``self`` and ``other`` are of different length.
+            :ValueError: if data container only has one sequence and no ``other`` is provided.
 
         .. rubric:: Example
 
@@ -235,19 +251,38 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
                ...: df.sequence_distance('B')
         """
         # https://stackoverflow.com/questions/49235538/pandas-series-compare-values-all-vs-all
-        a = np.array(list(map(list, self.get_sequence(seqID).values)))
-        ids = self.get_id().values
+        def own_distance( self, seqID ):
+            if self.shape[0] == 1:
+                raise ValueError("More than one sequence is needed to compare.")
+            a = np.array(list(map(list, self.get_sequence(seqID).values)))
+            ids = self.get_id().values
+            n = len(a)
+            d = {(i, j): np.sum(a[i] != a[j]) for i in range(n) for j in range(n) if j > i}
+            res = np.zeros((n, n))
+            keys = list(zip(*d.keys()))
+            res[keys[0], keys[1]] = list(d.values())
+            res += res.T
+            return pd.DataFrame(res, columns=ids, index=ids, dtype=int)
 
-        n = len(a)
-        d = {(i, j): np.sum(a[i] != a[j]) for i in range(n) for j in range(n) if j > i}
+        def vs_distance( self, seqID, other ):
+            a = np.array(list(map(list, self.get_sequence(seqID).values)))
+            b = np.array(list(map(list, other.get_sequence(seqID).values)))
+            aids = self.get_id().values
+            bids = other.get_id().values
+            na = len(a)
+            nb = len(b)
+            if len(a[0]) != len(b[0]):
+                raise ValueError('Comparable sequence have to be of the same size')
+            d = {(i, j): np.sum(a[i] != b[j]) for i in range(na) for j in range(nb)}
+            res = np.zeros((na, nb))
+            keys = list(zip(*d.keys()))
+            res[keys[0], keys[1]] = list(d.values())
+            return pd.DataFrame(res, columns=bids, index=aids, dtype=int)
 
-        res = np.zeros((n, n))
-        keys = list(zip(*d.keys()))
-
-        res[keys[0], keys[1]] = list(d.values())
-        res += res.T
-
-        return pd.DataFrame(res, columns=ids, index=ids, dtype=int)
+        if other is None:
+            return own_distance(self, seqID)
+        else:
+            return vs_distance(self, seqID, other)
 
     def sequence_frequencies( self, seqID, seqType="protein", cleanExtra=True, cleanUnused=-1 ):
         """Create a frequency-based :class:`.SequenceFrame`.
@@ -382,13 +417,6 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         df = self.structure_frequencies(seqID, seqType, cleanExtra, cleanUnused)
         return df.to_bits()
 
-    def _metadata_defaults(self, name):
-        if name == "_source_files":
-            return set()
-        if name == "_reference":
-            return {}
-        return None
-
     #
     # Implement pandas methods
     #
@@ -435,8 +463,13 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         # Keep metadata of the left object.
         elif method == 'merge':
             for name in self._metadata:
-                setattr(self, name, getattr(other.left, name, self._metadata_defaults(name)))
+                setattr(self, name, getattr(other.left, name, _metadata_defaults(name)))
+        # inherit operation:
+        # Keep metadata of the other object.
+        elif method == 'inherit':
+            for name in self._metadata:
+                setattr(self, name, getattr(other, name, _metadata_defaults(name)))
         else:
             for name in self._metadata:
-                setattr(self, name, getattr(other, name, self._metadata_defaults(name)))
+                setattr(self, name, getattr(other, name, _metadata_defaults(name)))
         return self

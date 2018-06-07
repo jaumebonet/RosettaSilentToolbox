@@ -32,18 +32,18 @@ __all__ = ['read_fasta', 'write_fasta', 'write_clustalw', 'write_mutant_alignmen
            'read_hmmsearch']
 
 
-def read_fasta( filename, expand=False, multi=False ):
+def read_fasta( filename, expand=False, multi=False, defchain='A' ):
     """Reads one or more **FASTA** files and returns the appropiate object
     containing the requested data: the :class:`.DesignFrame`.
 
     The default generated :class:`.DesignFrame` will contain two columns:
 
-    ===============  ===================================================
-    Column Name      Data Content
-    ===============  ===================================================
-    **description**  Sequence identifier.
-    **sequence_A**   Sequence content.
-    ===============  ===================================================
+    ====================  ===================================================
+    Column Name            Data Content
+    ====================  ===================================================
+    **description**        Sequence identifier.
+    **sequence_<chain>**   Sequence content.
+    ====================  ===================================================
 
     The sequence column assigned as ``sequence_A`` is an arbitrary decision that
     has to do compatibility issues with the rest of functions and methods of
@@ -54,7 +54,7 @@ def read_fasta( filename, expand=False, multi=False ):
         In [1]: from rstoolbox.io import read_fasta
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
-           ...: df = read_fasta("../rstoolbox/tests/data/*fa", multi=True)
+           ...: df = read_fasta("../rstoolbox/tests/data/*fa$", multi=True)
            ...: df
 
     If the **FASTA** comes or is formated as **PDB FASTA** (as in the example avobe),
@@ -75,6 +75,7 @@ def read_fasta( filename, expand=False, multi=False ):
     :param bool expand: Try to better associate sequence ID if format is **PDB FASTA**.
     :param bool multi: When :data:`True`, indicates that data is readed from
         multiple files.
+    :param str defchain: Default chain to use. If not provided that is 'A'.
 
     :return: :class:`.DesignFrame`.
 
@@ -84,9 +85,10 @@ def read_fasta( filename, expand=False, multi=False ):
     .. seealso::
         :func:`~.write_fasta`
     """
+    seqcol = "sequence_{}".format(defchain)
     files = _gather_file_list( filename, multi )
-    data = {"description": [], "sequence_A": []}
-    for file_count, f in enumerate( files ):
+    data = {"description": [], seqcol: []}
+    for _, f in enumerate( files ):
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
             line = line.decode('utf8') if f.endswith(".gz") else line
@@ -94,17 +96,17 @@ def read_fasta( filename, expand=False, multi=False ):
             if line.startswith(">"):
                 line = line.strip(">")
                 data["description"].append(line)
-                data["sequence_A"].append("")
+                data[seqcol].append("")
             elif len(line) > 0:
-                data["sequence_A"][-1] += line
+                data[seqcol][-1] += line
 
     df = cp.DesignFrame( data )
     if expand and bool(re.search("^\S{4}\:\S{1}", df.iloc[0]["description"])):
         df["description"] = df["description"].apply(lambda col: col.split("|")[0])
         df[['description', 'seq']] = df['description'].str.split(':', expand=True)
         df = df.pivot('description', 'seq',
-                      'sequence_A').add_prefix("sequence_").rename_axis(None,
-                                                                        axis=1).reset_index()
+                      seqcol).add_prefix("sequence_").rename_axis(None,
+                                                                  axis=1).reset_index()
         df = cp.DesignFrame(df)
     df.add_source_files( files )
     return df
@@ -301,7 +303,7 @@ def write_mutant_alignments( df, seqID, filename=None ):
 
 
 def read_hmmsearch( filename ):
-    """Read output from ``hmmsearch``.
+    """Read output from ``hmmsearch`` or ``hmmscan``.
 
     Processess the output of Hidden Markov Models search over a set
     of sequences with `hmmsearch <http://hmmer.org/>`_.
@@ -311,7 +313,9 @@ def read_hmmsearch( filename ):
     ====================  ===================================================
     Column Name           Data Content
     ====================  ===================================================
-    **description**       Sequence identifier.
+    **description**       In ``hmmseach`` only. Sequence identifier.
+    **domain**            In ``hmmscan`` only.  Domain identifier.
+    **definition**        In ``hmmscan`` only. Definition of the domain name.
     **full-e-value**      E-value for full sequence match.
     **full-score**        Score for full sequence match.
     **full-bias**         Bias for full sequence.
@@ -321,6 +325,8 @@ def read_hmmsearch( filename ):
     **dom-exp**           Expected number of domains.
     **dom-N**             Actual number of domains.
     ====================  ===================================================
+
+    It will include more columns related with the alignment data itself.
 
     :param str filename: Name of the ``hmmsearch`` output file.
 
@@ -344,24 +350,43 @@ def read_hmmsearch( filename ):
 
     data = {'full-e-value': [], 'full-score': [], 'full-bias': [],
             'dom-e-value': [], 'dom-score': [], 'dom-bias': [],
-            'dom-exp': [], 'dom-N': [], 'description': []}
-    dat2 = {'description': [], 'score': [], 'bias': [], 'c-Evalue': [],
+            'dom-exp': [], 'dom-N': []}
+    dat2 = {'score': [], 'bias': [], 'c-Evalue': [],
             'i-Evalue': [], 'hmmfrom': [], 'hmmto': [], 'alifrom': [],
             'alito': [], 'envfrom': [], 'envto': [], 'acc': []}
     nam2 = ''
     read = 0
     ali = re.compile('\d+\s[\!\?][\s\S]*')
     fd = open(filename)if not filename.endswith("gz") else gzip.open(filename)
+    mode = ''
     for line in fd:
         line = line.decode('utf8') if filename.endswith(".gz") else line
+        if line.startswith('#'):
+            if 'hmmsearch' in line:
+                mode = 'hmmsearch'
+            if 'hmmscan' in line:
+                mode = 'hmmscan'
+            continue
         if len(line.strip()) == 0:
             continue
         if line.strip().startswith('------') and read != 2:
             read = 1
             continue
         if line.startswith('Domain annotation for each sequence:'):
+            # hmmsearch
             read = 2
             continue
+        if line.startswith('Domain annotation for each model (and alignments):'):
+            # hmmscan
+            read = 2
+            continue
+        if "[No hits detected that satisfy reporting thresholds]" in line:
+            # hmmscan - No hits, empty DataFrame
+            cols = data
+            cols.update(dat2)
+            cols.setdefault('domain', [])
+            cols.setdefault('definition', [])
+            return pd.DataFrame(cols)
         if read == 1:
             line = line.strip().split()
             data['full-e-value'].append(float(line[0]))
@@ -372,13 +397,20 @@ def read_hmmsearch( filename ):
             data['dom-bias'].append(float(line[5]))
             data['dom-exp'].append(float(line[6]))
             data['dom-N'].append(float(line[7]))
-            data['description'].append(line[8])
+            if mode == 'hmmsearch':
+                data.setdefault('description', []).append(line[8])
+            if mode == 'hmmscan':
+                data.setdefault('domain', []).append(line[8])
+                data.setdefault('definition', []).append(" ".join(line[9:]))
         if read == 2:
             if line.startswith('>>'):
                 nam2 = line.split()[1].strip()
                 continue
             if re.match(ali, line.strip()):
-                dat2['description'].append(nam2)
+                if mode == 'hmmsearch':
+                    dat2.setdefault('description', []).append(nam2)
+                if mode == 'hmmscan':
+                    dat2.setdefault('domain', []).append(nam2)
                 lnp = line.strip().split()
                 dat2['score'].append(float(lnp[2]))
                 dat2['bias'].append(float(lnp[3]))
@@ -393,8 +425,11 @@ def read_hmmsearch( filename ):
                 dat2['acc'].append(float(lnp[15]))
                 continue
     fd.close()
+    onid = 'description'
+    if mode == 'hmmscan':
+        onid = 'domain'
     return pd.merge(pd.DataFrame(data), pd.DataFrame(dat2),
-                    on='description', how='outer').fillna(0)
+                    on=onid, how='outer').fillna(0)
 
 
 def mlcs(strings):
