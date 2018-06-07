@@ -303,7 +303,7 @@ def write_mutant_alignments( df, seqID, filename=None ):
 
 
 def read_hmmsearch( filename ):
-    """Read output from ``hmmsearch``.
+    """Read output from ``hmmsearch`` or ``hmmscan``.
 
     Processess the output of Hidden Markov Models search over a set
     of sequences with `hmmsearch <http://hmmer.org/>`_.
@@ -313,7 +313,9 @@ def read_hmmsearch( filename ):
     ====================  ===================================================
     Column Name           Data Content
     ====================  ===================================================
-    **description**       Sequence identifier.
+    **description**       In ``hmmseach`` only. Sequence identifier.
+    **domain**            In ``hmmscan`` only.  Domain identifier.
+    **definition**        In ``hmmscan`` only. Definition of the domain name.
     **full-e-value**      E-value for full sequence match.
     **full-score**        Score for full sequence match.
     **full-bias**         Bias for full sequence.
@@ -323,6 +325,8 @@ def read_hmmsearch( filename ):
     **dom-exp**           Expected number of domains.
     **dom-N**             Actual number of domains.
     ====================  ===================================================
+
+    It will include more columns related with the alignment data itself.
 
     :param str filename: Name of the ``hmmsearch`` output file.
 
@@ -346,24 +350,43 @@ def read_hmmsearch( filename ):
 
     data = {'full-e-value': [], 'full-score': [], 'full-bias': [],
             'dom-e-value': [], 'dom-score': [], 'dom-bias': [],
-            'dom-exp': [], 'dom-N': [], 'description': []}
-    dat2 = {'description': [], 'score': [], 'bias': [], 'c-Evalue': [],
+            'dom-exp': [], 'dom-N': []}
+    dat2 = {'score': [], 'bias': [], 'c-Evalue': [],
             'i-Evalue': [], 'hmmfrom': [], 'hmmto': [], 'alifrom': [],
             'alito': [], 'envfrom': [], 'envto': [], 'acc': []}
     nam2 = ''
     read = 0
     ali = re.compile('\d+\s[\!\?][\s\S]*')
     fd = open(filename)if not filename.endswith("gz") else gzip.open(filename)
+    mode = ''
     for line in fd:
         line = line.decode('utf8') if filename.endswith(".gz") else line
+        if line.startswith('#'):
+            if 'hmmsearch' in line:
+                mode = 'hmmsearch'
+            if 'hmmscan' in line:
+                mode = 'hmmscan'
+            continue
         if len(line.strip()) == 0:
             continue
         if line.strip().startswith('------') and read != 2:
             read = 1
             continue
         if line.startswith('Domain annotation for each sequence:'):
+            # hmmsearch
             read = 2
             continue
+        if line.startswith('Domain annotation for each model (and alignments):'):
+            # hmmscan
+            read = 2
+            continue
+        if "[No hits detected that satisfy reporting thresholds]" in line:
+            # hmmscan - No hits, empty DataFrame
+            cols = data
+            cols.update(dat2)
+            cols.setdefault('domain', [])
+            cols.setdefault('definition', [])
+            return pd.DataFrame(cols)
         if read == 1:
             line = line.strip().split()
             data['full-e-value'].append(float(line[0]))
@@ -374,13 +397,20 @@ def read_hmmsearch( filename ):
             data['dom-bias'].append(float(line[5]))
             data['dom-exp'].append(float(line[6]))
             data['dom-N'].append(float(line[7]))
-            data['description'].append(line[8])
+            if mode == 'hmmsearch':
+                data.setdefault('description', []).append(line[8])
+            if mode == 'hmmscan':
+                data.setdefault('domain', []).append(line[8])
+                data.setdefault('definition', []).append(" ".join(line[9:]))
         if read == 2:
             if line.startswith('>>'):
                 nam2 = line.split()[1].strip()
                 continue
             if re.match(ali, line.strip()):
-                dat2['description'].append(nam2)
+                if mode == 'hmmsearch':
+                    dat2.setdefault('description', []).append(nam2)
+                if mode == 'hmmscan':
+                    dat2.setdefault('domain', []).append(nam2)
                 lnp = line.strip().split()
                 dat2['score'].append(float(lnp[2]))
                 dat2['bias'].append(float(lnp[3]))
@@ -395,8 +425,11 @@ def read_hmmsearch( filename ):
                 dat2['acc'].append(float(lnp[15]))
                 continue
     fd.close()
+    onid = 'description'
+    if mode == 'hmmscan':
+        onid = 'domain'
     return pd.merge(pd.DataFrame(data), pd.DataFrame(dat2),
-                    on='description', how='outer').fillna(0)
+                    on=onid, how='outer').fillna(0)
 
 
 def mlcs(strings):
