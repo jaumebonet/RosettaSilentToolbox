@@ -313,6 +313,7 @@ def read_hmmsearch( filename ):
     ====================  ===================================================
     Column Name           Data Content
     ====================  ===================================================
+    **query**             Query identifier.
     **description**       In ``hmmseach`` only. Sequence identifier.
     **domain**            In ``hmmscan`` only.  Domain identifier.
     **definition**        In ``hmmscan`` only. Definition of the domain name.
@@ -348,89 +349,112 @@ def read_hmmsearch( filename ):
     if not os.path.isfile(filename):
         raise IOError('{} cannot be found'.format(filename))
 
-    data = {'full-e-value': [], 'full-score': [], 'full-bias': [],
-            'dom-e-value': [], 'dom-score': [], 'dom-bias': [],
-            'dom-exp': [], 'dom-N': []}
-    dat2 = {'score': [], 'bias': [], 'c-Evalue': [],
-            'i-Evalue': [], 'hmmfrom': [], 'hmmto': [], 'alifrom': [],
-            'alito': [], 'envfrom': [], 'envto': [], 'acc': []}
-    nam2 = ''
-    read = 0
     ali = re.compile('\d+\s[\!\?][\s\S]*')
     fd = open(filename)if not filename.endswith("gz") else gzip.open(filename)
-    mode = ''
-    for line in fd:
-        line = line.decode('utf8') if filename.endswith(".gz") else line
-        if line.startswith('#'):
-            if 'hmmsearch' in line:
-                mode = 'hmmsearch'
-            if 'hmmscan' in line:
-                mode = 'hmmscan'
-            continue
-        if len(line.strip()) == 0:
-            continue
-        if line.strip().startswith('------') and read != 2:
-            read = 1
-            continue
-        if line.startswith('Domain annotation for each sequence:'):
-            # hmmsearch
-            read = 2
-            continue
-        if line.startswith('Domain annotation for each model (and alignments):'):
-            # hmmscan
-            read = 2
-            continue
-        if "[No hits detected that satisfy reporting thresholds]" in line:
-            # hmmscan - No hits, empty DataFrame
-            cols = data
-            cols.update(dat2)
-            cols.setdefault('domain', [])
-            cols.setdefault('definition', [])
-            return pd.DataFrame(cols)
-        if read == 1:
-            line = line.strip().split()
-            data['full-e-value'].append(float(line[0]))
-            data['full-score'].append(float(line[1]))
-            data['full-bias'].append(float(line[2]))
-            data['dom-e-value'].append(float(line[3]))
-            data['dom-score'].append(float(line[4]))
-            data['dom-bias'].append(float(line[5]))
-            data['dom-exp'].append(float(line[6]))
-            data['dom-N'].append(float(line[7]))
-            if mode == 'hmmsearch':
-                data.setdefault('description', []).append(line[8])
-            if mode == 'hmmscan':
-                data.setdefault('domain', []).append(line[8])
-                data.setdefault('definition', []).append(" ".join(line[9:]))
-        if read == 2:
-            if line.startswith('>>'):
-                nam2 = line.split()[1].strip()
-                continue
-            if re.match(ali, line.strip()):
-                if mode == 'hmmsearch':
-                    dat2.setdefault('description', []).append(nam2)
-                if mode == 'hmmscan':
-                    dat2.setdefault('domain', []).append(nam2)
-                lnp = line.strip().split()
-                dat2['score'].append(float(lnp[2]))
-                dat2['bias'].append(float(lnp[3]))
-                dat2['c-Evalue'].append(float(lnp[4]))
-                dat2['i-Evalue'].append(float(lnp[5]))
-                dat2['hmmfrom'].append(int(lnp[6]))
-                dat2['hmmto'].append(int(lnp[7]))
-                dat2['alifrom'].append(int(lnp[9]))
-                dat2['alito'].append(int(lnp[10]))
-                dat2['envfrom'].append(int(lnp[12]))
-                dat2['envto'].append(int(lnp[13]))
-                dat2['acc'].append(float(lnp[15]))
-                continue
+    searches = fd.read().split("\n//")
     fd.close()
-    onid = 'description'
-    if mode == 'hmmscan':
-        onid = 'domain'
-    return pd.merge(pd.DataFrame(data), pd.DataFrame(dat2),
-                    on=onid, how='outer').fillna(0)
 
+    dfs = []
+    mode = ''
+    for i, search in enumerate(searches):
+        data = {'full-e-value': [], 'full-score': [], 'full-bias': [],
+                'dom-e-value': [], 'dom-score': [], 'dom-bias': [],
+                'dom-exp': [], 'dom-N': []}
+        dat2 = {'score': [], 'bias': [], 'c-Evalue': [],
+                'i-Evalue': [], 'hmmfrom': [], 'hmmto': [], 'alifrom': [],
+                'alito': [], 'envfrom': [], 'envto': [], 'acc': []}
+        nam2 = ''
+        read = 0
+        nohits = None
+        for line in search.split('\n'):
+            line = line.decode('utf8') if filename.endswith(".gz") else line
+            if line.startswith('#'):
+                if 'hmmsearch' in line:
+                    mode = 'hmmsearch'
+                if 'hmmscan' in line:
+                    mode = 'hmmscan'
+                continue
+            if len(line.strip()) == 0:
+                continue
+            if line.startswith('Query:'):
+                query = [s for s in line.split(" ") if s != ''][1]
+                continue
+            if line.strip().startswith('------') and read != 2:
+                read = 1
+                continue
+            if line.startswith('Domain annotation for each sequence'):
+                # hmmsearch
+                read = 2
+                continue
+            if line.startswith('Domain annotation for each model (and alignments):'):
+                # hmmscan
+                read = 2
+                continue
+            if "[No hits detected that satisfy reporting thresholds]" in line:
+                # hmmscan - No hits, empty DataFrame
+                nohits = True
+                data.setdefault('query', []).append(query)
+                cols = data
+                cols.update(dat2)
+                cols.setdefault('domain', [])
+                cols.setdefault('definition', [])
+                for col in cols:
+                    if col == "query":
+                        continue
+                    else:
+                        data[col].append('-')
+                continue
+            if read == 1:
+                line = line.strip().split()
+                data['full-e-value'].append(float(line[0]))
+                data['full-score'].append(float(line[1]))
+                data['full-bias'].append(float(line[2]))
+                data['dom-e-value'].append(float(line[3]))
+                data['dom-score'].append(float(line[4]))
+                data['dom-bias'].append(float(line[5]))
+                data['dom-exp'].append(float(line[6]))
+                data['dom-N'].append(float(line[7]))
+                data.setdefault('query', []).append(query)
+
+                if mode == 'hmmsearch':
+                    data.setdefault('description', []).append(line[8])
+                if mode == 'hmmscan':
+                    data.setdefault('domain', []).append(line[8])
+                    data.setdefault('definition', []).append(" ".join(line[9:]))
+            if read == 2:
+                if line.startswith('>>'):
+                    nam2 = line.split()[1].strip()
+                    continue
+                if re.match(ali, line.strip()):
+                    if mode == 'hmmsearch':
+                        dat2.setdefault('description', []).append(nam2)
+                    if mode == 'hmmscan':
+                        dat2.setdefault('domain', []).append(nam2)
+                    lnp = line.strip().split()
+                    dat2['score'].append(float(lnp[2]))
+                    dat2['bias'].append(float(lnp[3]))
+                    dat2['c-Evalue'].append(float(lnp[4]))
+                    dat2['i-Evalue'].append(float(lnp[5]))
+                    dat2['hmmfrom'].append(int(lnp[6]))
+                    dat2['hmmto'].append(int(lnp[7]))
+                    dat2['alifrom'].append(int(lnp[9]))
+                    dat2['alito'].append(int(lnp[10]))
+                    dat2['envfrom'].append(int(lnp[12]))
+                    dat2['envto'].append(int(lnp[13]))
+                    dat2['acc'].append(float(lnp[15]))
+                    continue
+        if nohits == True:
+            df = pd.DataFrame(cols)
+        else:
+            onid = 'description'
+            if mode == 'hmmscan':
+                onid = 'domain'
+            if pd.DataFrame(dat2).empty or pd.DataFrame(data).empty:
+                continue
+            df = pd.merge(pd.DataFrame(data), pd.DataFrame(dat2),
+                            on=onid, how='outer').fillna(0)
+        dfs.append(df)
+    return pd.concat(dfs, sort=True)
 
 def mlcs(strings):
     """Return a long common subsequence of the strings.
