@@ -154,13 +154,14 @@ into account availability of sequence, structure and psipred data.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">,</span>
 <span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MOTIF&#39;</span><span class="p">,</span> <span class="s1">&#39;CONTACT&#39;</span><span class="p">,</span> <span class="s1">&#39;CONTEXT&#39;</span><span class="p">],</span>
 <span class="gp">   ...: </span>                         <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">})</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="s1">&#39;CONTACT&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="s1">&#39;CONTACT&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="gh">Out[6]: </span><span class="go"></span>
 <span class="go">0    (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)                                                                 </span>
 <span class="go">1    (24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56)</span>
 <span class="go">2    ()                                                                                                                                  </span>
@@ -168,7 +169,7 @@ into account availability of sequence, structure and psipred data.</p>
 <span class="go">4    ()                                                                                                                                  </span>
 <span class="go">5    ()                                                                                                                                  </span>
 <span class="go">Name: lbl_CONTACT, dtype: object</span>
-<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="gh">Out[7]: </span><span class="go"></span>
 <span class="go">0    (9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 28, 29, 31, 32, 35, 37, 38, 39, 40, 67, 68, 70, 71, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116)</span>
 <span class="go">1    (9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 28, 29, 31, 32, 35, 37, 38, 39, 40, 67, 68, 70, 89, 91, 92, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115)                 </span>
 <span class="go">2    (6, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 32, 35, 37, 38, 39, 40, 67, 68, 70, 89, 92, 93, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115)          </span>

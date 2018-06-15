@@ -146,13 +146,14 @@ main keys:</p>
 <span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.utils</span> <span class="kn">import</span> <span class="n">split_values</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">ifile</span> <span class="o">=</span> <span class="s1">&#39;../rstoolbox/tests/data/input_2seq.minisilent.gz&#39;</span>
 <span class="gp">   ...: </span><span class="n">scorel</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;GRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;GRMSD2Template&#39;</span><span class="p">,</span> <span class="s1">&#39;LRMSD2Target&#39;</span><span class="p">,</span>
 <span class="gp">   ...: </span>          <span class="s1">&#39;LRMSDH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;LRMSDLH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">]</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="n">scorel</span><span class="p">})</span>
 <span class="gp">   ...: </span><span class="n">df</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[8]: </span><span class="go"></span>
+<span class="gh">Out[9]: </span><span class="go"></span>
 <span class="go">     score  GRMSD2Target  GRMSD2Template  LRMSD2Target  LRMSDH2Target  LRMSDLH2Target                     description</span>
 <span class="go">0 -206.678  1.976         1.927           4.404         4.055          2.490           test_3lhp_binder_labeled_00001</span>
 <span class="go">1 -214.362  2.659         2.417           4.469         4.124          2.730           test_3lhp_binder_labeled_00002</span>
@@ -161,13 +162,13 @@ main keys:</p>
 <span class="go">4 -213.972  2.245         1.907           3.787         3.258          2.692           test_3lhp_binder_labeled_00005</span>
 <span class="go">5 -195.138  2.581         2.453           5.021         4.127          2.473           test_3lhp_binder_labeled_00006</span>
 
-<span class="gp">In [9]: </span><span class="n">split1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;split&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;GRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;grmsdTr&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;GRMSD2Template&#39;</span><span class="p">,</span> <span class="s1">&#39;grmsdTp&#39;</span><span class="p">),</span>
-<span class="gp">   ...: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;lrmsdTp&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;LRMSDH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;lrmsdh2&#39;</span><span class="p">),</span>
-<span class="gp">   ...: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSDLH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;lrmsdlh2&#39;</span><span class="p">)],</span>
-<span class="gp">   ...: </span><span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rmsd&#39;</span><span class="p">,</span> <span class="s1">&#39;rmsd_type&#39;</span><span class="p">]}</span>
-<span class="gp">   ...: </span><span class="n">split_values</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">split1</span><span class="p">)</span>
-<span class="gp">   ...: </span>
-<span class="gh">Out[10]: </span><span class="go"></span>
+<span class="gp">In [10]: </span><span class="n">split1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;split&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;GRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;grmsdTr&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;GRMSD2Template&#39;</span><span class="p">,</span> <span class="s1">&#39;grmsdTp&#39;</span><span class="p">),</span>
+<span class="gp">   ....: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;lrmsdTp&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;LRMSDH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;lrmsdh2&#39;</span><span class="p">),</span>
+<span class="gp">   ....: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSDLH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;lrmsdlh2&#39;</span><span class="p">)],</span>
+<span class="gp">   ....: </span><span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rmsd&#39;</span><span class="p">,</span> <span class="s1">&#39;rmsd_type&#39;</span><span class="p">]}</span>
+<span class="gp">   ....: </span><span class="n">split_values</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">split1</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[11]: </span><span class="go"></span>
 <span class="go">     score                     description   rmsd rmsd_type</span>
 <span class="go">0 -206.678  test_3lhp_binder_labeled_00001  1.976  grmsdTr </span>
 <span class="go">1 -214.362  test_3lhp_binder_labeled_00002  2.659  grmsdTr </span>
@@ -200,7 +201,7 @@ main keys:</p>
 <span class="go">4 -213.972  test_3lhp_binder_labeled_00005  2.692  lrmsdlh2</span>
 <span class="go">5 -195.138  test_3lhp_binder_labeled_00006  2.473  lrmsdlh2</span>
 
-<span class="gp">In [11]: </span><span class="n">split2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;split&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;GRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;global&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">),</span>
+<span class="gp">In [12]: </span><span class="n">split2</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;split&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;GRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;global&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">),</span>
 <span class="gp">   ....: </span>                    <span class="p">(</span><span class="s1">&#39;GRMSD2Template&#39;</span><span class="p">,</span> <span class="s1">&#39;global&#39;</span><span class="p">,</span> <span class="s1">&#39;template&#39;</span><span class="p">),</span>
 <span class="gp">   ....: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">),</span>
 <span class="gp">   ....: </span>                    <span class="p">(</span><span class="s1">&#39;LRMSDH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="s1">&#39;helix2&#39;</span><span class="p">),</span>
@@ -208,7 +209,7 @@ main keys:</p>
 <span class="gp">   ....: </span><span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rmsd&#39;</span><span class="p">,</span> <span class="s1">&#39;rmsd_type&#39;</span><span class="p">,</span> <span class="s1">&#39;rmsd_target&#39;</span><span class="p">]}</span>
 <span class="gp">   ....: </span><span class="n">split_values</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">split2</span><span class="p">)</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[12]: </span><span class="go"></span>
+<span class="gh">Out[13]: </span><span class="go"></span>
 <span class="go">     score                     description   rmsd rmsd_type rmsd_target</span>
 <span class="go">0 -206.678  test_3lhp_binder_labeled_00001  1.976  global    target    </span>
 <span class="go">1 -214.362  test_3lhp_binder_labeled_00002  2.659  global    target    </span>

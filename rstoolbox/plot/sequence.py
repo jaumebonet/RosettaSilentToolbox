@@ -35,7 +35,7 @@ from matplotlib.text import TextPath
 from rstoolbox.analysis import binary_overlap, sequence_similarity
 from rstoolbox.analysis.SimilarityMatrix import SimilarityMatrix
 from rstoolbox.components import DesignFrame, DesignSeries, SequenceFrame
-from rstoolbox.components import get_selection, Selection
+from rstoolbox.components import get_selection
 from rstoolbox.utils.getters import _check_column
 from rstoolbox.utils import discrete_cmap_from_colors, add_column
 from .color_schemes import color_scheme
@@ -442,14 +442,9 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
     if selections is None:
         selections = []
     for s in selections:
-        xift = False
-        try:
-            xift = Selection(s[0]).is_shifted()
-        except AttributeError:
-            xift = False
         s_ = get_selection(s[0], seqID, shift, len(refsq))
-
-        ax.fill([s_[0] - int(xift), s_[-1] - int(xift), s_[-1] - int(xift), s_[0] - int(xift)],
+        # plot starts in 0
+        ax.fill([s_[0] - 1, s_[-1] - 1, s_[-1] - 1, s_[0] - 1],
                 [axlim[0] - 1, axlim[0] - 1, axlim[1] + 1, axlim[1] + 1],
                 color=s[1], alpha=0.2, zorder=-100)
     ax.set_ylim(axlim[0], axlim[1])

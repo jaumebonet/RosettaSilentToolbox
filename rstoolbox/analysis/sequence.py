@@ -159,6 +159,7 @@ def sequential_frequencies( df, seqID, query="sequence", seqType="protein",
            ...: from rstoolbox.analysis import sequential_frequencies
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'AB'})
            ...: df = sequential_frequencies(df, 'B')
@@ -265,6 +266,7 @@ def sequence_similarity( df, seqID, key_residues=None, matrix="BLOSUM62" ):
            ...: from rstoolbox.analysis import sequence_similarity
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -345,6 +347,7 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None,
            ...: from rstoolbox.analysis import positional_sequence_similarity
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -439,6 +442,7 @@ def binary_similarity( df, seqID, key_residues=None, matrix="IDENTITY"):
            ...: from rstoolbox.analysis import binary_similarity
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -483,6 +487,7 @@ def binary_overlap( df, seqID, key_residues=None, matrix="IDENTITY" ):
            ...: from rstoolbox.analysis import binary_overlap
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -539,6 +544,7 @@ def selector_percentage( df, seqID, key_residues, selection_name='selection' ):
            ...: from rstoolbox.analysis import selector_percentage
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'C'})
            ...: df = selector_percentage(df, 'C', '1-15')
@@ -595,6 +601,7 @@ def label_percentage( df, seqID, label ):
            ...: from rstoolbox.analysis import label_percentage
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': '*',
            ...:                          'labels': ['MOTIF']})

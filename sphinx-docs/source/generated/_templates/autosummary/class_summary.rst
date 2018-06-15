@@ -1,8 +1,8 @@
 {{ fullname | underline }}
 
-.. currentmodule:: {{ module }}
+.. currentmodule:: {{module}}
 
-.. autoclass:: {{ objname }}
+.. autoclass:: {{objname}}
 
    {% block methods %}
 

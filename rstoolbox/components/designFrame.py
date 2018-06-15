@@ -10,6 +10,7 @@
 .. class:: DesignFrame
 """
 # Standard Libraries
+from distutils.version import LooseVersion
 import itertools
 
 # External Libraries
@@ -22,6 +23,15 @@ import rstoolbox.analysis as ra
 
 
 __all__ = ["DesignSeries", "DesignFrame"]
+
+
+if LooseVersion(pd.__version__) < LooseVersion("0.23"):
+    raise ImportError(
+        'pandas>=0.23 is required!\nSeems that the library '
+        'was not force-updated by setup. Execute: \n'
+        '   pip install -U pandas\n'
+        'to obtain the latest version.'
+    )
 
 
 def _metadata_defaults(name):
@@ -199,6 +209,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
             In [1]: from rstoolbox.io import parse_rosetta_file
                ...: import pandas as pd
                ...: pd.set_option('display.width', 1000)
+               ...: pd.set_option('display.max_columns', 500)
                ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
                ...:                         {'scores': ['score'], 'sequence': 'B'})
                ...: df.get_sequence_with('B', [(1, 'T')])
@@ -246,6 +257,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
             In [1]: from rstoolbox.io import parse_rosetta_file
                ...: import pandas as pd
                ...: pd.set_option('display.width', 1000)
+               ...: pd.set_option('display.max_columns', 500)
                ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
                ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
                ...: df.sequence_distance('B')

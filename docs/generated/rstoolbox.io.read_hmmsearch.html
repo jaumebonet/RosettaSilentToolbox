@@ -193,10 +193,11 @@ of sequences with <a class="reference external" href="http://hmmer.org/">hmmsear
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">read_hmmsearch</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">read_hmmsearch</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/search.hmm.gz&quot;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="gh">Out[6]: </span><span class="go"></span>
 <span class="go">                         description  dom-N  dom-bias  dom-e-value  dom-exp  dom-score  full-bias  full-e-value  full-score   acc  alifrom  alito  bias  c-Evalue  envfrom  envto  hmmfrom  hmmto  i-Evalue  score</span>
 <span class="go">0  nubinitio_auto_55313_1mw7A_0256:A  1.0    0.0       0.000002     1.1      26.7       0.0        0.000002      26.7        0.83  15.0     74.0   0.0   0.000001  5.0      75.0   12.0     69.0   0.000002  26.7 </span>
 <span class="go">1  nubinitio_auto_68083_1mw7A_0296:A  1.0    0.1       0.000003     1.0      26.1       0.1        0.000003      26.2        0.86  4.0      67.0   0.1   0.000002  2.0      73.0   4.0      62.0   0.000003  26.1 </span>

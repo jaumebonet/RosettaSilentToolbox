@@ -51,6 +51,7 @@ def read_SPR( filename ):
         In [1]: from rstoolbox.io import read_SPR
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = read_SPR("../rstoolbox/tests/data/spr_data.csv.gz")
            ...: df.head(2)
     """
@@ -90,6 +91,7 @@ def read_fastq( filename, seqID='A'):
         In [1]: from rstoolbox.io import read_fastq
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = read_fastq("../rstoolbox/tests/data/cdk2_rand_001.fasq.gz")
            ...: df.head(8)
     """

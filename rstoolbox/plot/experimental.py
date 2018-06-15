@@ -208,7 +208,8 @@ def plot_96wells(cdata=None, sdata=None, bdata=None, bcolors=None, bmeans=None, 
     return fig, ax
 
 
-def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  ):
+def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None,
+                       fusion_temperature=False, temp_marker=False ):
     """Plot `Thermal Melt <https://www.wikiwand.com/en/Thermal_shift_assay>`_ data.
 
     Plot thermal melt and generate the fitting curve to the pointsself.
@@ -223,6 +224,10 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  
     **MRE**          Value at each temperature (10 deg^2 cm^2 dmol^-1).
     ===============  ===================================================
 
+    .. warning::
+        Some of the advanced attributes in this function require :mod:`scipy` to be
+        installed.
+
     :param df: Data container.
     :type df: :class:`~pandas.DataFrame`
     :param ax: Axis in which to plot the data.
@@ -235,6 +240,10 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  
     :type pointcolor: Union[:class:`int`, :class:`str`]
     :param float min_temperature: If provided, set minimum temperature in the Y axis
         of the plot.
+    :param bool fusion_temperature: When :data:`True`, calculates the fusion temperature.
+        **requires ``scipy`` library**.
+    :param bool temp_marker: When :data:`True`, approximate and annotate the expected melting
+        point. **requires ``scipy`` library**.
 
     .. rubric:: Example
 
@@ -247,23 +256,69 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  
            ...: df = pd.read_csv("../rstoolbox/tests/data/thermal_melt.csv")
            ...: fig = plt.figure(figsize=(10, 6.7))
            ...: ax = plt.subplot2grid((1, 1), (0, 0))
-           ...: plot_thermal_melt(df, ax)
+           ...: plot_thermal_melt(df, ax, fusion_temperature=True, temp_marker=True)
 
         @savefig plot_tmelt_docs.png width=5in
         In [2]: plt.show()
 
     """
+    if fusion_temperature:
+        try:
+            from scipy.optimize import curve_fit
+        except ImportError:
+            raise ImportError("scipy library is necessary to calculate fusion temperature")
+
+    def TmFunc(T, Io, Ie, Tm, beta):
+        return Io + 0.5 * (Ie - Io) * (1 + np.tanh(beta * (T - Tm)))
+
+    def fit(df, Tm=60.0, beta=0.1, Io=None, Ie=None):
+        # set-up initial fit values
+        Io = df['MRE'].values[0] if Io is None else Io
+        Ie = df['MRE'].values[-1] if Ie is None else Ie
+
+        try:
+            popt, pcov = curve_fit(TmFunc, df['Temp'].values,
+                                   df['MRE'].values, p0=[Io, Ie, Tm, beta] )
+        except RuntimeError:
+            return None
+        else:
+            perr = 2 * np.sqrt(np.diag(pcov))
+            results = {
+                'Io': popt[0], 'Ie': popt[1],
+                'Tm': popt[2], 'beta': popt[3],
+                'Tm_errorbar': perr[2], 'beta_error': perr[3]
+            }
+            return results
+
+    R = fit(df) if fusion_temperature else None
     if isinstance(linecolor, int):
-        linecolor = sns.color_palette()[linecolor]
-    fit = np.poly1d(np.polyfit(df['Temp'].values, df['MRE'].values, 4))
-    ax.plot(df['Temp'].values, fit(df['Temp'].values), color=linecolor)
+            linecolor = sns.color_palette()[linecolor]
+    if not fusion_temperature or R is None:
+        fit = np.poly1d(np.polyfit(df['Temp'].values, df['MRE'].values, 4))
+        ax.plot(df['Temp'].values, fit(df['Temp'].values), color=linecolor)
+    else:
+        ax.plot(df['Temp'].values,
+                TmFunc(df['Temp'].values, R["Io"], R["Ie"], R["Tm"], R["beta"]),
+                color=linecolor)
+        if temp_marker:
+            mn = R["Io"] if R["Io"] < R["Ie"] else R["Ie"]
+            mx = R["Io"] if R["Io"] > R["Ie"] else R["Ie"]
+            if R["Tm"] < 100.0 and R["Tm"] > 0.0:
+                ax.plot([R["Tm"], R["Tm"]], [mn, mx], 'k:')
+        txtTM = '{0:.1f}C +/- {1:.2f}'.format(R["Tm"], R["Tm_errorbar"])
+        ptTM = [R["Tm"], TmFunc(R["Tm"], R["Io"], R["Ie"], R["Tm"], R["beta"])]
+
+        if temp_marker:
+            ax.annotate(txtTM, xy=ptTM, xytext=(R["Tm"] + 3, min(df['MRE'].values)))
+        else:
+            ax.annotate(txtTM, xy=ptTM, xytext=(0.85, 0.1), textcoords='figure fraction',)
 
     if isinstance(pointcolor, int):
         pointcolor = sns.color_palette()[pointcolor]
     ax.plot(df['Temp'].values, df['MRE'].values, marker='s', linestyle='None', color=pointcolor)
 
     ax.set_ylabel(r'MRE(10 deg$^3$ cm$^2$ dmol$^-1$)')
-    ax.set_xlabel(r'Temperature ($^\circ$C)')
+    ax.set_xlabel('Temperature (C)')
 
     ax.set_xlim(ax.get_xlim()[0] if min_temperature is None else min_temperature)
     ax.set_ylim(ymax=0)
@@ -444,6 +499,7 @@ def plot_SPR( df, ax, datacolor=0, fitcolor=0, max_time=None, max_response=None 
            ...: from rstoolbox.plot import plot_SPR
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = read_SPR("../rstoolbox/tests/data/spr_data.csv.gz")
            ...: fig = plt.figure(figsize=(10, 6.7))
            ...: ax = plt.subplot2grid((1, 1), (0, 0))

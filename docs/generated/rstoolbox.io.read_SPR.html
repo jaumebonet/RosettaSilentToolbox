@@ -145,17 +145,16 @@
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">read_SPR</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">read_SPR</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/spr_data.csv.gz&quot;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">data                 raw                                                                                                                                              ...                                                          fitted                                                                     </span>
-<span class="go">concentration     0.0585                0.117             0.234375              0.46875               0.9375              1.875               3.75                7.5 ...         15         30                   60                 3.75             7.5              15              30              60     </span>
-<span class="go">axis                   X         Y          X         Y          X         Y          X         Y          X       Y          X       Y          X       Y          X ...          Y          X         Y          X         Y          X    Y          X    Y          X    Y          X    Y          X    Y</span>
-<span class="go">0             -37.400002 -0.011209 -37.300003  0.284098 -37.300003  0.190698 -37.200001  0.159199 -37.100002  0.3337 -37.000000  0.2639 -37.000000  0.2056 -36.900002 ...   0.330999 -36.900002  0.119499 -36.900002  0.218399 -37.000000  0.0 -36.900002  0.0 -36.900002  0.0 -36.900002  0.0 -36.900002  0.0</span>
-<span class="go">1             -37.299999 -0.117500 -37.200001  0.073299 -37.200001 -0.034101 -37.099998  0.013600 -37.000000 -0.0063 -36.899998  0.0813 -36.899998  0.1044 -36.799999 ...   0.090100 -36.799999 -0.051800 -36.799999  0.146300 -36.950001  0.0 -36.850002  0.0 -36.850002  0.0 -36.850002  0.0 -36.850002  0.0</span>
-
-<span class="go">[2 rows x 32 columns]</span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">data                 raw                                                                                                                                                                                                                           fitted                                                                     </span>
+<span class="go">concentration     0.0585                0.117             0.234375              0.46875               0.9375              1.875               3.75                7.5                   15                   30                   60                 3.75             7.5              15              30              60     </span>
+<span class="go">axis                   X         Y          X         Y          X         Y          X         Y          X       Y          X       Y          X       Y          X         Y          X         Y          X         Y          X         Y          X    Y          X    Y          X    Y          X    Y          X    Y</span>
+<span class="go">0             -37.400002 -0.011209 -37.300003  0.284098 -37.300003  0.190698 -37.200001  0.159199 -37.100002  0.3337 -37.000000  0.2639 -37.000000  0.2056 -36.900002  0.176199 -36.900002  0.330999 -36.900002  0.119499 -36.900002  0.218399 -37.000000  0.0 -36.900002  0.0 -36.900002  0.0 -36.900002  0.0 -36.900002  0.0</span>
+<span class="go">1             -37.299999 -0.117500 -37.200001  0.073299 -37.200001 -0.034101 -37.099998  0.013600 -37.000000 -0.0063 -36.899998  0.0813 -36.899998  0.1044 -36.799999  0.013100 -36.799999  0.090100 -36.799999 -0.051800 -36.799999  0.146300 -36.950001  0.0 -36.850002  0.0 -36.850002  0.0 -36.850002  0.0 -36.850002  0.0</span>
 </pre></div>
 </div>
 </dd></dl>

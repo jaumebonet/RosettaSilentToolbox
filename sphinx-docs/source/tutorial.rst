@@ -17,3 +17,13 @@ Basics
 
 Pipeline Examples
 -----------------
+
+.. toctree::
+   :maxdepth: 3
+
+   tutorials/sequence_analysis
+   tutorials/structure_analysis
+   tutorials/working_with_fragments
+   tutorials/population_comparison
+   tutorials/new_mutants
+   tutorials/experimental

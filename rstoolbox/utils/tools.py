@@ -91,6 +91,7 @@ def split_values( df, keys ):
            ...: from rstoolbox.utils import split_values
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: ifile = '../rstoolbox/tests/data/input_2seq.minisilent.gz'
            ...: scorel = ['score', 'GRMSD2Target', 'GRMSD2Template', 'LRMSD2Target',
            ...:           'LRMSDH2Target', 'LRMSDLH2Target', 'description']

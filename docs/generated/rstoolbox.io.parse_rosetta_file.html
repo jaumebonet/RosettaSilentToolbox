@@ -176,15 +176,14 @@ dictionary definition is explained in <a class="reference internal" href="../tut
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">     score    fa_atr   fa_rep   fa_sol  fa_intra_rep  fa_elec  pro_close  hbond_sr_bb  hbond_lr_bb  hbond_bb_sc  hbond_sc               ...                GRMSD2Target  GRMSD2Template  LRMSD2Target  LRMSDH2Target  LRMSDLH2Target  cav_vol  design_score  packstat  rmsd_drift    time                     description</span>
-<span class="go">0 -206.678 -1510.021  268.657  853.020  2.921        -145.015  5.825     -150.177     -2.452       -13.326      -36.936                 ...                1.976         1.927           4.404         4.055          2.49            387.371 -255.445       0.633     1.677       3194.0  test_3lhp_binder_labeled_00001</span>
-<span class="go">1 -214.362 -1490.968  267.328  824.258  3.019        -133.421  6.018     -151.609     -2.452       -12.584      -33.021                 ...                2.659         2.417           4.469         4.124          2.73            332.657 -264.239       0.577     2.240       3210.0  test_3lhp_binder_labeled_00002</span>
-
-<span class="go">[2 rows x 34 columns]</span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">     score    fa_atr   fa_rep   fa_sol  fa_intra_rep  fa_elec  pro_close  hbond_sr_bb  hbond_lr_bb  hbond_bb_sc  hbond_sc  dslf_fa13    rama   omega   fa_dun  p_aa_pp  yhh_planarity     ref  BUNS  B_ni_mtcontacts  B_ni_rmsd  B_ni_rmsd_threshold  B_ni_trials  GRMSD2Target  GRMSD2Template  LRMSD2Target  LRMSDH2Target  LRMSDLH2Target  cav_vol  design_score  packstat  rmsd_drift    time                     description</span>
+<span class="go">0 -206.678 -1510.021  268.657  853.020  2.921        -145.015  5.825     -150.177     -2.452       -13.326      -36.936    0.0       -28.499  42.312  551.509 -23.219   0.000         -21.277  22.0  57.0             0.568      5.0                  1.0          1.976         1.927           4.404         4.055          2.49            387.371 -255.445       0.633     1.677       3194.0  test_3lhp_binder_labeled_00001</span>
+<span class="go">1 -214.362 -1490.968  267.328  824.258  3.019        -133.421  6.018     -151.609     -2.452       -12.584      -33.021    0.0       -29.998  38.315  545.056 -23.612   0.003         -20.693  14.0  54.0             0.333      5.0                  1.0          2.659         2.417           4.469         4.124          2.73            332.657 -264.239       0.577     2.240       3210.0  test_3lhp_binder_labeled_00002</span>
 </pre></div>
 </div>
 </dd></dl>

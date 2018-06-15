@@ -151,6 +151,7 @@ def identify_mutants( self, seqID ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -231,6 +232,7 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -346,6 +348,7 @@ def generate_mutants_from_matrix( self, seqID, matrix, count,
            ...: from rstoolbox.tests.helper import random_frequency_matrix
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -442,6 +445,7 @@ def generate_wt_reversions( self, seqID, key_residues=None ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])

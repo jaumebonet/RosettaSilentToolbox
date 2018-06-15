@@ -256,6 +256,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz")
            ...: df.head(2)
     """
@@ -376,6 +377,7 @@ def parse_rosetta_json( filename ):
         In [1]: from rstoolbox.io import parse_rosetta_json
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_json("../rstoolbox/tests/data/score.json.gz")
            ...: df.head(2)
     """
@@ -660,7 +662,9 @@ def get_sequence_and_structure( pdbfile ):
     exe = os.path.join(path, "rosetta_scripts.{0}".format(comp))
     if not os.path.isfile(exe):
         raise IOError("The expected Rosetta executable {0} is not found".format(exe))
-    command = "{0} -parser:protocol {1} -s {2} -out:file:silent {3} -ignore_unrecognized_res"
+    command = ['{0}', '-parser:protocol {1}', '-s {2}', '-out:file:silent {3}',
+               '-ignore_unrecognized_res', '-ignore_zero_occupancy off']
+    command = ' '.join(command)
     command = command.format( exe, "dssp.xml", pdbfile, str(os.getpid()) + "_" )
     sys.stdout.write("Running Rosetta\n")
     sys.stdout.write(command + "\n")

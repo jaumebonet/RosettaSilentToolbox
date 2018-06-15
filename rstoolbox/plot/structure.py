@@ -75,6 +75,7 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
            ...: from rstoolbox.plot import positional_structural_similarity_plot
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'scores': ['score'], 'structure': 'C'})
            ...: df.add_reference_structure('C', df.get_structure('C').values[0])
@@ -167,7 +168,7 @@ def plot_ramachandran( df, seqID, fig):
         In [2]: plt.show()
     """
     # Data type management.
-    if not isinstance(df, pd.Series):
+    if not isinstance(df, (pd.Series, DesignSeries)):
         raise ValueError("Input data must be in a Series or DesignSeries")
     if not isinstance(df, DesignSeries):
         df = DesignSeries(df)
@@ -355,6 +356,7 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     # get dssp and psipred
     dssp    = df.get_structure(seqID)
     psipred = df.get_structure_prediction(seqID)
+    shift   = df.get_reference_shift(seqID)
 
     # Compute scores
     dssp_scores = []
@@ -385,3 +387,8 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
                 alpha=0.5,
                 fmt="",
                 ax=ax)
+
+    if isinstance(shift, list):
+        ax.set_xticklabels(shift)
+    else:
+        ax.set_xticklabels(range(shift, len(dssp) + shift))

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Sequence Analysis &#8212; rstoolbox 0.0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/functions.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Structural Analysis" href="structure_analysis.html" />
+    <link rel="prev" title="rstoolbox.components.get_selection" href="../generated/rstoolbox.components.get_selection.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          rstoolbox</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.6</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../scripts.html">Scripts</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rosettascripts.html">RosettaScripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Sequence Analysis</a><ul>
+<li><a class="reference internal" href="#loading-a-reference">Loading a Reference</a></li>
+<li><a class="reference internal" href="#loading-the-design-data">Loading the Design Data</a></li>
+<li><a class="reference internal" href="#population-overview">Population Overview</a></li>
+<li><a class="reference internal" href="#sorting-and-selecting">Sorting and Selecting</a></li>
+<li><a class="reference internal" href="#identification-of-mutants">Identification of Mutants</a></li>
+<li><a class="reference internal" href="#visual-analysis-of-mutations">Visual Analysis of Mutations</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="sequence-analysis">
+<span id="id1"></span><h1>Sequence Analysis<a class="headerlink" href="#sequence-analysis" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="loading-a-reference">
+<h2>Loading a Reference<a class="headerlink" href="#loading-a-reference" title="Permalink to this headline">¶</a></h2>
+<p>When analysing the outcome of a protein design set, it can be useful to retrieve the data from the source structure (template)
+in order to assess on a sequence level which changes have happened.</p>
+<p>For the purpose of this example, we will use a domain from a <a class="reference external" href="https://www.rcsb.org/structure/2pw9">Putative formate dehydrogenase accessory protein</a>.
+To load the data, we will use <a class="reference internal" href="../generated/rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sequence_and_structure()</span></code></a>. To this function we are going to provide the PDB file <code class="docutils literal notranslate"><span class="pre">2pw9C.pdb</span></code> and
+it will generate a file named <code class="docutils literal notranslate"><span class="pre">2pw9C.dssp.minisilent</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Through all the process several times the <code class="docutils literal notranslate"><span class="pre">chainID</span></code> of the decoy of interest will be called. This is due to the fact that the library can manipulate
+decoys with multiple chains (designed or not), and, thus, analysis must be called upon the sequences of interest.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">To generate this file, the function <strong>will run Rosetta</strong>. If Rosetta is not locally installed, the documentation of <a class="reference internal" href="../generated/rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sequence_and_structure()</span></code></a>
+provides the RosettaScript that it will run. One can run it in a different computer/cluster and put it back in the same directory. As long as the naming
+schema for the file is maintained, if the function finds the file it will <strong>skip the Rosetta execution</strong>.</p>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">rstoolbox</span> <span class="kn">as</span> <span class="nn">rs</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_seq_items&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">baseline</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">get_sequence_and_structure</span><span class="p">(</span><span class="s1">&#39;../rstoolbox/tests/data/2pw9C.pdb&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">baseline</span><span class="o">.</span><span class="n">get_sequence</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[7]: </span><span class="go"></span>
+<span class="go">0    ETPYAIALNDRVIGSSMVLPVDLEEFGAGFLFGQGYIKKAEEIREILVCPQGRISVYA</span>
+<span class="go">Name: sequence_C, dtype: object</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="loading-the-design-data">
+<h2>Loading the Design Data<a class="headerlink" href="#loading-the-design-data" title="Permalink to this headline">¶</a></h2>
+<p>The next step would be to load the data that we have obtained from designing in Rosetta. In this case, it is a single file with 567 decoys. A part from the usual
+scores that normally can be found in a Rosetta output, some residues of interest were labeled through the use of the
+<a class="reference external" href="https://www.rosettacommons.org/docs/latest/scripting_documentation/RosettaScripts/xsd/mover_DisplayPoseLabelsMover_type">DisplayPoseLabelsMover</a>, we will pick
+some of those residues for further analysis.</p>
+<p>As we aim to acquire some extra information, we will need to <strong>expand</strong> the behaviour of <a class="reference internal" href="../generated/rstoolbox.io.parse_rosetta_file.html#rstoolbox.io.parse_rosetta_file" title="rstoolbox.io.parse_rosetta_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse_rosetta_file()</span></code></a> through a <a class="reference internal" href="readrosetta.html#readrosetta"><span class="std std-ref">description</span></a>.
+Additionally, to facilitate reading, we are going to add to the description a list of score terms that we will <em>ignore</em> for the purposes of this demonstration.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>After loading the data, we will add the previously loaded sequence as a <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> for the <a class="reference internal" href="../generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>. As we are working with a previously
+trimmed structure, we will also add a <code class="docutils literal notranslate"><span class="pre">shift</span></code>, this being the number of the first residue of the structure (i.e. by default the <code class="docutils literal notranslate"><span class="pre">shift==1</span></code> as that would be
+the first position). Adding this <code class="docutils literal notranslate"><span class="pre">shift</span></code> helps down the line in keeping the analysis and plotting numbered to the starting structure.</p>
+<p class="last">Both <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> and <code class="docutils literal notranslate"><span class="pre">reference_shift</span></code> need to be attached to the appropriate chain identifier.</p>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">rules</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scores_ignore&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;fa_*&#39;</span><span class="p">,</span> <span class="s1">&#39;niccd_*&#39;</span><span class="p">,</span> <span class="s1">&#39;hbond_*&#39;</span><span class="p">,</span> <span class="s1">&#39;lk_ball_wtd&#39;</span><span class="p">,</span> <span class="s1">&#39;pro_close&#39;</span><span class="p">,</span> <span class="s1">&#39;dslf_fa13&#39;</span><span class="p">,</span> <span class="s1">&#39;C_ni_rmsd_threshold&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                           <span class="s1">&#39;omega&#39;</span><span class="p">,</span> <span class="s1">&#39;p_aa_pp&#39;</span><span class="p">,</span> <span class="s1">&#39;yhh_planarity&#39;</span><span class="p">,</span> <span class="s1">&#39;ref&#39;</span><span class="p">,</span> <span class="s1">&#39;rama_prepro&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">],</span>
+<span class="gp">   ...: </span>         <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>         <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MOTIF&#39;</span><span class="p">,</span> <span class="s1">&#39;SSE03&#39;</span><span class="p">,</span> <span class="s1">&#39;SSE05&#39;</span><span class="p">]}</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s1">&#39;../rstoolbox/tests/data/input_ssebig.minisilent.gz&#39;</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_sequence</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">baseline</span><span class="o">.</span><span class="n">get_sequence</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_shift</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[12]: </span><span class="go"></span>
+<span class="go">    score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD  cav_vol  driftRMSD  finalRMSD  packstat C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C</span>
+<span class="go">0 -64.070  0.608      12.0  7.585      4.0              3.301      1.0          0.957      66.602   0.083      3.323      0.544     no_motif       nubinitio_wauto_18326_2pw9C_0001_0001  [C]       [C]       [C]       TTWIKFFAGGTLVEEFEYSSVNWEEIEKRAWKKLGRWKKAEEGDLMIVYPDGKVVSWA</span>
+<span class="go">1 -70.981  0.639      12.0  2.410      8.0              1.423      1.0          0.737      0.000    0.094      1.395      0.552     no_motif       nubinitio_wauto_18326_2pw9C_0002_0001  [C]       [C]       [C]       NTWSTNILNGHPKITLLVEERGAEEIHLEWLKKQGLRKKAEENVYTTKLPNGAVKVYG</span>
+<span class="go">2 -43.863  0.480      8.0   4.279      6.0              2.110      1.0          0.819      93.641   0.110      2.106      0.575     no_motif       nubinitio_wauto_18326_2pw9C_0003_0001  [C]       [C]       [C]       PRWFIAMGDGVIWEIVLGSEQNLEEIAKKGLKRRGLYKKAEESIYTIIYPDGIAHTFG</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Notice that <code class="docutils literal notranslate"><span class="pre">scores_ignore</span></code> accepts wildcard definitions.</p>
+</div>
+</div>
+<div class="section" id="population-overview">
+<h2>Population Overview<a class="headerlink" href="#population-overview" title="Permalink to this headline">¶</a></h2>
+<p>Before starting analyzing the sequences, one can and should take a look at the score terms of interest in order to properly sort/select the decoys that look more
+interesting.</p>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">rstoolbox</span></code> does not bring functions to generate basic plots. As a derived class from <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>, <a class="reference internal" href="../generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> is already compatible
+with most of the popular plotting solutions in python, such as <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> or <code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code>. Still, it adds some quick solutions to simple plots.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">There are two main type of plotting functions in <code class="docutils literal notranslate"><span class="pre">rstoolbox</span></code> either they require a <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> as they will plot multiple axes on it, or they
+require an <a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a> as they only plot one figure. In the first case, the function will always return the <a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a> objects that
+it has generated inside the <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>. This way, one can always personalise all aspects of the plots.</p>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;svg.fonttype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span> <span class="c1"># When plt.savefig to &#39;svg&#39;, text is still text object</span>
+<span class="gp">   ....: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">grid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="gp">   ....: </span><span class="n">axes</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">multiple_distributions</span><span class="p">(</span> <span class="n">df</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">grid</span> <span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [19]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_seq_plt1.png"><img alt="../_images/tutorial_seq_plt1.png" src="../_images/tutorial_seq_plt1.png" style="width: 10in;" /></a>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">For <a class="reference internal" href="../generated/rstoolbox.plot.multiple_distributions.html#rstoolbox.plot.multiple_distributions" title="rstoolbox.plot.multiple_distributions"><code class="xref py py-func docutils literal notranslate"><span class="pre">multiple_distributions()</span></code></a>, the grid has to define enough positions for all the scores expected to be plotted. In this case, there are 12 numerical columns and
+thus, that is the minimum number of cells necessary to plot.</p>
+</div>
+<p>The structure of the <a class="reference internal" href="../generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> is such that all one vs. one scores can directly be seen just be providing it to <code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code> (let’s just select
+some scores to minimize the final image):</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [20]: </span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+<span class="gp">   ....: </span><span class="n">grid</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;packstat&#39;</span><span class="p">,</span> <span class="s1">&#39;cav_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;finalRMSD&#39;</span><span class="p">]])</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [22]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_seq_plt2.png"><img alt="../_images/tutorial_seq_plt2.png" src="../_images/tutorial_seq_plt2.png" style="width: 10in;" /></a>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As a general rule, anything that a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> can do, a <a class="reference internal" href="../generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> also can.</p>
+</div>
+</div>
+<div class="section" id="sorting-and-selecting">
+<h2>Sorting and Selecting<a class="headerlink" href="#sorting-and-selecting" title="Permalink to this headline">¶</a></h2>
+<p>One key part of the analysis of protein design datasets is the correct preselection of those designs potentially interesting. A <a class="reference internal" href="../generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> can operate with all the
+same functions for sorting/selection that a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> can.</p>
+<p>Let’s make two populations: <code class="docutils literal notranslate"><span class="pre">df_cr</span></code> representing the <code class="docutils literal notranslate"><span class="pre">top</span> <span class="pre">10</span> <span class="pre">scored</span></code> decoys with a <code class="docutils literal notranslate"><span class="pre">cav_vol</span> <span class="pre">&lt;=</span> <span class="pre">10</span></code> and a <code class="docutils literal notranslate"><span class="pre">finalRMSD</span> <span class="pre">&lt;=</span> <span class="pre">1.5</span></code> and
+<code class="docutils literal notranslate"><span class="pre">df_sr</span></code> with the <code class="docutils literal notranslate"><span class="pre">top</span> <span class="pre">10</span> <span class="pre">scored</span></code> decoys with a <code class="docutils literal notranslate"><span class="pre">packstat</span> <span class="pre">&gt;=</span> <span class="pre">0.6</span></code> and a <code class="docutils literal notranslate"><span class="pre">finalRMSD</span> <span class="pre">&lt;=</span> <span class="pre">1.5</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="n">df_cr</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;cav_vol&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;finalRMSD&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.5</span><span class="p">)]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">df_sr</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;packstat&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.6</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;finalRMSD&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.5</span><span class="p">)]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">df_cr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[25]: </span><span class="go">10</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="identification-of-mutants">
+<h2>Identification of Mutants<a class="headerlink" href="#identification-of-mutants" title="Permalink to this headline">¶</a></h2>
+<p>Identifying the mutations present in a population can be key to understand the sequence signatures behind the designs. It might be also a good starting point for new sets of designs
+as is explained in <a class="reference internal" href="new_mutants.html#new-mutants"><span class="std std-ref">Generation of New Variants</span></a>. Data referring to the identity and similarity with a <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> is can easily be obtained by simple request:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [26]: </span><span class="n">df_sr</span> <span class="o">=</span> <span class="n">df_sr</span><span class="o">.</span><span class="n">identify_mutants</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[27]: </span><span class="go"></span>
+<span class="go">      score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD  cav_vol  driftRMSD  finalRMSD  packstat C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C                                                                                                                                                                                                  mutants_C                                                                                                     mutant_positions_C  mutant_count_C</span>
+<span class="go">298 -98.585  0.569      7.0   1.995      8.0              1.206      2.0          1.606      25.485   0.078      1.272      0.567     no_motif       nubinitio_wauto_18326_2pw9C_0303_0001  [C]       [C]       [C]       NTWLVVMFNGVPIIVVLSNKPGEKEYAKELLKKQGVLKKAEEGKKIIVFPKGYILIAA  E1N,P3W,Y4L,A5V,I6V,A7M,L8F,D10G,R11V,V12P,G14I,S15V,S16V,M17L,V18S,L19N,P20K,V21P,D22G,L23E,E24K,F26Y,G27A,A28K,G29E,F30L,F32K,G33K,Y36V,I37L,I43G,R44K,E45K,L47I,C49F,Q51K,R53Y,S55L,V56I,Y57A           1,3,4,5,6,7,8,10,11,12,14,15,16,17,18,19,20,21,22,23,24,26,27,28,29,30,32,33,36,37,43,44,45,47,49,51,53,55,56,57       40            </span>
+<span class="go">94  -96.711  0.596      10.0  2.643      7.0              1.445      1.0          0.979      62.254   0.090      1.447      0.554     no_motif       nubinitio_wauto_18326_2pw9C_0096_0001  [C]       [C]       [C]       KQWFYVVLRGVLITVLLLTGDNELERGKAMLKKLGLLKKAEEDIYIMYLPNGWIIIYG  E1K,T2Q,P3W,Y4F,A5Y,I6V,A7V,N9R,D10G,R11V,V12L,G14T,S15V,S16L,M17L,V18L,L19T,P20G,V21D,D22N,L23E,E24L,F26R,A28K,G29A,F30M,F32K,G33K,Q34L,Y36L,I37L,I43D,R44I,E45Y,L47M,V48Y,C49L,Q51N,R53W,S55I,V56I,A58G  1,2,3,4,5,6,7,9,10,11,12,14,15,16,17,18,19,20,21,22,23,24,26,28,29,30,32,33,34,36,37,43,44,45,47,48,49,51,53,55,56,58  42            </span>
+</pre></div>
+</div>
+<p>Thanks to this quick identification, it is easy to select decoys with a particular sequence signature of interest through <a class="reference internal" href="../generated/DesignFrame/rstoolbox.components.DesignFrame.get_sequence_with.html#rstoolbox.components.DesignFrame.get_sequence_with" title="rstoolbox.components.DesignFrame.get_sequence_with"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.get_sequence_with()</span></code></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [28]: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">get_sequence_with</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">)))</span>
+<span class="gh">Out[28]: </span><span class="go"></span>
+<span class="go">     score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD  cav_vol  driftRMSD  finalRMSD  packstat C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C                                                                                                                                                                                                  mutants_C                                                                                                     mutant_positions_C  mutant_count_C</span>
+<span class="go">94 -96.711  0.596      10.0  2.643      7.0              1.445      1.0          0.979      62.254   0.09       1.447      0.554     no_motif       nubinitio_wauto_18326_2pw9C_0096_0001  [C]       [C]       [C]       KQWFYVVLRGVLITVLLLTGDNELERGKAMLKKLGLLKKAEEDIYIMYLPNGWIIIYG  E1K,T2Q,P3W,Y4F,A5Y,I6V,A7V,N9R,D10G,R11V,V12L,G14T,S15V,S16L,M17L,V18L,L19T,P20G,V21D,D22N,L23E,E24L,F26R,A28K,G29A,F30M,F32K,G33K,Q34L,Y36L,I37L,I43D,R44I,E45Y,L47M,V48Y,C49L,Q51N,R53W,S55I,V56I,A58G  1,2,3,4,5,6,7,9,10,11,12,14,15,16,17,18,19,20,21,22,23,24,26,28,29,30,32,33,34,36,37,43,44,45,47,48,49,51,53,55,56,58  42            </span>
+</pre></div>
+</div>
+<p>One important issue when selecting which decoys will move to the next round or be selected for experimental validation is the sequence distance between them,
+to avoid (unless wanted) to try too similar designs, or even to compare the sequences between two different selection criterias:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [29]: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">sequence_distance</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gh">Out[29]: </span><span class="go"></span>
+<span class="go">                                       nubinitio_wauto_18326_2pw9C_0303_0001  nubinitio_wauto_18326_2pw9C_0096_0001  nubinitio_wauto_18326_2pw9C_0448_0001  nubinitio_wauto_18326_2pw9C_0516_0001  nubinitio_wauto_18326_2pw9C_0501_0001  nubinitio_wauto_18326_2pw9C_0198_0001  nubinitio_wauto_18326_2pw9C_0563_0001  nubinitio_wauto_18326_2pw9C_0298_0001  nubinitio_wauto_18326_2pw9C_0521_0001  nubinitio_wauto_18326_2pw9C_0437_0001</span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0303_0001  0                                      33                                     37                                     34                                     35                                     29                                     41                                     40                                     35                                     40                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0096_0001  33                                     0                                      35                                     38                                     44                                     38                                     42                                     42                                     39                                     37                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0448_0001  37                                     35                                     0                                      38                                     36                                     37                                     33                                     37                                     38                                     37                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0516_0001  34                                     38                                     38                                     0                                      38                                     35                                     34                                     35                                     33                                     34                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0501_0001  35                                     44                                     36                                     38                                     0                                      31                                     28                                     31                                     37                                     35                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0198_0001  29                                     38                                     37                                     35                                     31                                     0                                      32                                     34                                     35                                     35                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0563_0001  41                                     42                                     33                                     34                                     28                                     32                                     0                                      31                                     34                                     34                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0298_0001  40                                     42                                     37                                     35                                     31                                     34                                     31                                     0                                      33                                     34                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0521_0001  35                                     39                                     38                                     33                                     37                                     35                                     34                                     33                                     0                                      35                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0437_0001  40                                     37                                     37                                     34                                     35                                     35                                     34                                     34                                     35                                     0                                    </span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [30]: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">sequence_distance</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">df_cr</span><span class="p">)</span>
+<span class="gh">Out[30]: </span><span class="go"></span>
+<span class="go">                                       nubinitio_wauto_18326_2pw9C_0147_0001  nubinitio_wauto_18326_2pw9C_0387_0001  nubinitio_wauto_18326_2pw9C_0191_0001  nubinitio_wauto_18326_2pw9C_0136_0001  nubinitio_wauto_18326_2pw9C_0134_0001  nubinitio_wauto_18326_2pw9C_0499_0001  nubinitio_wauto_18326_2pw9C_0372_0001  nubinitio_wauto_18326_2pw9C_0206_0001  nubinitio_wauto_18326_2pw9C_0067_0001  nubinitio_wauto_18326_2pw9C_0441_0001</span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0303_0001  36                                     35                                     41                                     36                                     41                                     40                                     41                                     39                                     38                                     40                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0096_0001  39                                     45                                     40                                     39                                     35                                     37                                     38                                     39                                     42                                     45                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0448_0001  36                                     40                                     35                                     40                                     39                                     37                                     39                                     38                                     41                                     43                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0516_0001  34                                     32                                     39                                     34                                     39                                     33                                     41                                     37                                     34                                     39                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0501_0001  26                                     33                                     30                                     39                                     41                                     34                                     42                                     40                                     36                                     37                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0198_0001  31                                     35                                     35                                     37                                     40                                     32                                     36                                     37                                     35                                     40                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0563_0001  31                                     32                                     24                                     38                                     43                                     28                                     41                                     38                                     36                                     43                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0298_0001  32                                     34                                     30                                     39                                     46                                     34                                     43                                     39                                     36                                     40                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0521_0001  36                                     32                                     37                                     30                                     40                                     27                                     39                                     40                                     30                                     32                                   </span>
+<span class="go">nubinitio_wauto_18326_2pw9C_0437_0001  36                                     34                                     36                                     39                                     36                                     28                                     39                                     38                                     39                                     41                                   </span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="visual-analysis-of-mutations">
+<h2>Visual Analysis of Mutations<a class="headerlink" href="#visual-analysis-of-mutations" title="Permalink to this headline">¶</a></h2>
+<p>Amino acid variation over all the decoys can be visualised in a variety of ways, always with the ability to select only regions of interest:</p>
+<ul class="simple">
+<li>Through a <a class="reference internal" href="../generated/rstoolbox.plot.sequence_frequency_plot.html#rstoolbox.plot.sequence_frequency_plot" title="rstoolbox.plot.sequence_frequency_plot"><code class="xref py py-func docutils literal notranslate"><span class="pre">sequence_frequency_plot()</span></code></a>:</li>
+</ul>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [31]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">sequence_frequency_plot</span><span class="p">(</span><span class="n">df_cr</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [34]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_seq_plt3.png"><img alt="../_images/tutorial_seq_plt3.png" src="../_images/tutorial_seq_plt3.png" style="width: 10in;" /></a>
+<ul class="simple">
+<li>As a <a class="reference internal" href="../generated/rstoolbox.plot.logo_plot.html#rstoolbox.plot.logo_plot" title="rstoolbox.plot.logo_plot"><code class="xref py py-func docutils literal notranslate"><span class="pre">logo_plot()</span></code></a> (let’s see here only for the labeled region <code class="docutils literal notranslate"><span class="pre">SSE03</span></code>):</li>
+</ul>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [35]: </span><span class="n">sse03</span> <span class="o">=</span> <span class="n">df_cr</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="s1">&#39;SSE03&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ....: </span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">logo_plot</span><span class="p">(</span><span class="n">df_cr</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">key_residues</span><span class="o">=</span><span class="n">sse03</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [37]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_seq_plt4.png"><img alt="../_images/tutorial_seq_plt4.png" src="../_images/tutorial_seq_plt4.png" style="width: 10in;" /></a>
+<ul class="simple">
+<li>As a <a class="reference internal" href="../generated/rstoolbox.analysis.positional_sequence_similarity.html#rstoolbox.analysis.positional_sequence_similarity" title="rstoolbox.analysis.positional_sequence_similarity"><code class="xref py py-func docutils literal notranslate"><span class="pre">positional_sequence_similarity()</span></code></a> (defaults to <code class="docutils literal notranslate"><span class="pre">BLOSUM62</span></code> similarity matrix):</li>
+</ul>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [38]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">seqsim</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">positional_sequence_similarity</span><span class="p">(</span><span class="n">df_cr</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">positional_sequence_similarity_plot</span><span class="p">(</span><span class="n">seqsim</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [42]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_seq_plt5.png"><img alt="../_images/tutorial_seq_plt5.png" src="../_images/tutorial_seq_plt5.png" style="width: 10in;" /></a>
+<ul class="simple">
+<li>And, finally, as an alignment with <a class="reference internal" href="../generated/rstoolbox.plot.plot_alignment.html#rstoolbox.plot.plot_alignment" title="rstoolbox.plot.plot_alignment"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_alignment()</span></code></a>:</li>
+</ul>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [43]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_alignment</span><span class="p">(</span><span class="n">df_cr</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [46]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_seq_plt6.png"><img alt="../_images/tutorial_seq_plt6.png" src="../_images/tutorial_seq_plt6.png" style="width: 10in;" /></a>
+<p>Finally, a single selected decoy can be plotted individually with <a class="reference internal" href="../generated/rstoolbox.plot.per_residue_matrix_score_plot.html#rstoolbox.plot.per_residue_matrix_score_plot" title="rstoolbox.plot.per_residue_matrix_score_plot"><code class="xref py py-func docutils literal notranslate"><span class="pre">per_residue_matrix_score_plot()</span></code></a>;
+in this case we will highlight the MOTIF <code class="docutils literal notranslate"><span class="pre">region</span></code> of interest and <code class="docutils literal notranslate"><span class="pre">SSE05</span></code>:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [47]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">motif</span> <span class="o">=</span> <span class="n">df_cr</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="s1">&#39;MOTIF&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ....: </span><span class="n">sse05</span> <span class="o">=</span> <span class="n">df_cr</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="s1">&#39;SSE05&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ....: </span><span class="n">seles</span> <span class="o">=</span> <span class="p">[(</span><span class="n">motif</span><span class="p">,</span> <span class="s1">&#39;red&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">sse05</span><span class="p">,</span> <span class="s1">&#39;blue&#39;</span><span class="p">)]</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">per_residue_matrix_score_plot</span><span class="p">(</span><span class="n">df_cr</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">selections</span><span class="o">=</span><span class="n">seles</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [53]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_seq_plt7.png"><img alt="../_images/tutorial_seq_plt7.png" src="../_images/tutorial_seq_plt7.png" style="width: 10in;" /></a>
+<span class="target" id="definitions"></span></div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, Jaume Bonet.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

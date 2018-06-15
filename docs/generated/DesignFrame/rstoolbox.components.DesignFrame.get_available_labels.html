@@ -140,12 +140,13 @@
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">,</span>
 <span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MOTIF&#39;</span><span class="p">,</span> <span class="s1">&#39;CONTACT&#39;</span><span class="p">,</span> <span class="s1">&#39;CONTEXT&#39;</span><span class="p">],</span>
 <span class="gp">   ...: </span>                         <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">})</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">get_available_labels</span><span class="p">()</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[5]: </span><span class="go">[&#39;MOTIF&#39;, &#39;CONTACT&#39;, &#39;CONTEXT&#39;]</span>
+<span class="gh">Out[6]: </span><span class="go">[&#39;MOTIF&#39;, &#39;CONTACT&#39;, &#39;CONTEXT&#39;]</span>
 </pre></div>
 </div>
 </dd></dl>
