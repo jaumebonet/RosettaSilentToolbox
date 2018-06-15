@@ -471,7 +471,8 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     :param int line_break: Force a line-change in the plot after n residues are plotted.
     :param float font_size: Expected size of the axis font.
     :param colors: Colors to assign; it can be the name of a available color set or
-        a dictionary with a color for each type.
+        a dictionary with a color for each type. Available color schemes are: Weblogo
+        (default), Hydrophobicity, Chemistry, and Charge.
     :type colors: Union[:class:`str`, :class:`dict`]
 
     :return: :class:`~matplotlib.figure.Figure` and
@@ -532,8 +533,15 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     globscale = 1.22
     letters_shift = -0.5
     LETTERS = {}
-    for aa in color_scheme(colors):
-        LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
+    if isinstance(colors, dict):
+        for aa in colors:
+            LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
+    elif isinstance(colors, str):
+        for aa in color_scheme(colors):
+            LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
+    else:
+        raise ValueError("Colors need to either be a string representing the name of a available color set or a "
+                         "dictionary with a color for each type.")
 
     # Data type management.
     if not isinstance(data, pd.DataFrame):
@@ -601,7 +609,10 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         for scores in wdata:
             y = 0
             for base, score in scores:
-                _letterAt(base, x, y, score, ax, globscale, LETTERS, color_scheme(colors))
+                if isinstance(colors, dict):
+                    _letterAt(base, x, y, score, ax, globscale, LETTERS, colors)
+                else:
+                    _letterAt(base, x, y, score, ax, globscale, LETTERS, color_scheme(colors))
                 y += score
             x += 1
             maxi = max(maxi, y)
