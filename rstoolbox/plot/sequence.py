@@ -540,8 +540,8 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         for aa in color_scheme(colors):
             LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
     else:
-        raise ValueError("Colors need to either be a string representing the name of a available color set or a "
-                         "dictionary with a color for each type.")
+        raise ValueError("Colors need to either be a string representing the name of a available "
+                         "color set or a dictionary with a color for each type.")
 
     # Data type management.
     if not isinstance(data, pd.DataFrame):
