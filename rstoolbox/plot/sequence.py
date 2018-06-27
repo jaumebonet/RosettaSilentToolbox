@@ -521,6 +521,8 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
              "Q", "R", "H", "K", "D", "E", "C", "G", "P"]
     data = copy.deepcopy(df)
+    if data.empty:
+        raise ValueError("Provided data container is empty. Nothing to plot.")
 
     mpl.rcParams['svg.fonttype'] = 'none'
     # Graphical Properties of resizable letters
