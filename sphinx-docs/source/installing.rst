@@ -43,7 +43,7 @@ the management of pandas-derived classes, which are key to this library.
 Testing
 -------
 
-Testing is easier done when adquiring the code as a :ref:`developer <contributing>`.
+Testing is easier when acquiring the code as a :ref:`developer <contributing>`.
 
 Bugs
 ----

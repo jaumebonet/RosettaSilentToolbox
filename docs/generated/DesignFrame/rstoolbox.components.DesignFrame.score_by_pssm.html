@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="rstoolbox.components.DesignFrame.view_mutants_alignment" href="rstoolbox.components.DesignFrame.view_mutants_alignment.html" />
-    <link rel="prev" title="rstoolbox.components.DesignFrame.make_resfile" href="rstoolbox.components.DesignFrame.make_resfile.html" />
+    <link rel="prev" title="rstoolbox.components.DesignFrame.apply_resfile" href="rstoolbox.components.DesignFrame.apply_resfile.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -61,7 +61,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API reference</a></li>
@@ -141,7 +141,7 @@ of the requested sequences:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
-<li><strong>matrix</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Positional frequency matrix. <strong>column:</strong> residue type; <strong>index:</strong>
+<li><strong>matrix</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Positional frequency matrix. <strong>column:</strong> residue type; <strong>index:</strong>
 sequence position.</li>
 </ul>
 </td>
@@ -155,7 +155,7 @@ sequence position.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">NotImplementedError:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">if the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">if the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">ValueError:</th><td class="field-body">if matrix rows do not match sequence length.</td>
 </tr>

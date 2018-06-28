@@ -20,7 +20,7 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="rstoolbox.components.DesignSeries.score_by_pssm" href="rstoolbox.components.DesignSeries.score_by_pssm.html" />
+    <link rel="next" title="rstoolbox.components.DesignSeries.apply_resfile" href="rstoolbox.components.DesignSeries.apply_resfile.html" />
     <link rel="prev" title="rstoolbox.components.DesignSeries.generate_wt_reversions" href="rstoolbox.components.DesignSeries.generate_wt_reversions.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -61,7 +61,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../api.html">API reference</a></li>
@@ -115,7 +115,7 @@
 <h1>rstoolbox.components.DesignSeries.make_resfile<a class="headerlink" href="#rstoolbox-components-designseries-make-resfile" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="rstoolbox.components.DesignSeries.make_resfile">
-<code class="descclassname">DesignSeries.</code><code class="descname">make_resfile</code><span class="sig-paren">(</span><em>seqID</em>, <em>header</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignSeries.make_resfile" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">DesignSeries.</code><code class="descname">make_resfile</code><span class="sig-paren">(</span><em>seqID</em>, <em>header</em>, <em>filename</em>, <em>write=True</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignSeries.make_resfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a Rosetta <a class="reference external" href="https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles">resfile</a>
 to match the design’s sequence assuming the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> as the starting
 point.</p>
@@ -150,6 +150,8 @@ in order to keep track of the filename assignation:</p>
 <li><strong>header</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Header content for the resfile; defines default behaviour.</li>
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the resfile. Will be altered with a numerical
 suffix if the data container holds more thant one sequence.</li>
+<li><strong>write</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – <strong>Testing attribute</strong>. When <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>, resfiles are not
+actually created</li>
 </ul>
 </td>
 </tr>
@@ -162,7 +164,7 @@ suffix if the data container holds more thant one sequence.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">NotImplementedError:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">if the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">if the data container is not <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> or <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">if there is no <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys</td>
 </tr>
@@ -178,6 +180,28 @@ suffix if the data container holds more thant one sequence.</li>
 <p class="first admonition-title">Note</p>
 <p class="last">Depends on <a class="reference internal" href="../../tutorials/options.html#options"><span class="std std-ref">system.overwrite</span></a> and
 <a class="reference internal" href="../../tutorials/options.html#options"><span class="std std-ref">system.output</span></a>.</p>
+</div>
+<p>. rubric:: Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">],</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_sequence</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">get_sequence</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">dfwt</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">generate_mutant_variants</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;TGP&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;ERG&quot;</span><span class="p">),</span>
+<span class="gp">   ...: </span>                                                 <span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="s2">&quot;MAT&quot;</span><span class="p">)])</span>
+<span class="gp">   ...: </span><span class="c1"># Call in test-mode</span>
+<span class="gp">   ...: </span><span class="n">dfwt</span> <span class="o">=</span> <span class="n">dfwt</span><span class="o">.</span><span class="n">make_resfile</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;NATAA&quot;</span><span class="p">,</span> <span class="s2">&quot;mutants.resfile&quot;</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="bp">False</span> <span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">dfwt</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[9]: </span><span class="go"></span>
+<span class="go">                            description                                                                                                            sequence_B mutants_B mutant_positions_B  mutant_count_B             resfile_B</span>
+<span class="go">0  test_3lhp_binder_labeled_00001        TRPEEARERAWRLAEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK                               0               mutants_0000.resfile</span>
+<span class="go">1  test_3lhp_binder_labeled_00001_v0001  TRPEEERERAWRLMEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  A6E,A14M  6,14               2               mutants_0001.resfile</span>
+<span class="go">2  test_3lhp_binder_labeled_00001_v0002  TRPEEERERAWRLAEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  A6E       6                  1               mutants_0002.resfile</span>
+<span class="go">3  test_3lhp_binder_labeled_00001_v0003  TRPEEERERAWRLTEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  A6E,A14T  6,14               2               mutants_0003.resfile</span>
+<span class="go">4  test_3lhp_binder_labeled_00001_v0004  TRPEERRERAWRLMEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  A6R,A14M  6,14               2               mutants_0004.resfile</span>
+</pre></div>
 </div>
 </dd></dl>
 

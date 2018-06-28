@@ -155,6 +155,7 @@ Get the **RosettaScripts** that are called by different functions of the library
    :toctree: generated/
 
    ~utils.baseline
+   ~utils.mutations
 
 Utils: Experiments
 ------------------

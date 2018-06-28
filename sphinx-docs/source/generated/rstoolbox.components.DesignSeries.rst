@@ -41,6 +41,15 @@ rstoolbox.components.DesignSeries
       ~DesignSeries.transfer_reference
       ~DesignSeries.delete_reference
 
+  .. rubric:: Source Files
+  .. autosummary::
+     :toctree: DesignSeries
+
+      ~DesignSeries.add_source_file
+      ~DesignSeries.add_source_files
+      ~DesignSeries.get_source_files
+      ~DesignSeries.has_source_files
+      ~DesignSeries.replace_source_files
 
   .. rubric:: Mutation Methods
   .. autosummary::
@@ -55,5 +64,6 @@ rstoolbox.components.DesignSeries
       ~DesignSeries.generate_mutants_from_matrix
       ~DesignSeries.generate_wt_reversions
       ~DesignSeries.make_resfile
+      ~DesignSeries.apply_resfile
       ~DesignSeries.score_by_pssm
       ~DesignSeries.view_mutants_alignment

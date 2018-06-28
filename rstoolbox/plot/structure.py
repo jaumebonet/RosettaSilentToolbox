@@ -389,6 +389,8 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
                 ax=ax)
 
     if isinstance(shift, list):
-        ax.set_xticklabels(shift)
+        ax.set_xticks(np.arange(0.5, len(shift), 5))
+        ax.set_xticklabels(shift[::5])
     else:
-        ax.set_xticklabels(range(shift, len(dssp) + shift))
+        ax.set_xticks(np.arange(0.5, len(dssp), 5))
+        ax.set_xticklabels(range(shift, len(dssp) + shift, 5))

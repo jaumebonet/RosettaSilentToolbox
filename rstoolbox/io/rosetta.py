@@ -614,7 +614,7 @@ def get_sequence_and_structure( pdbfile ):
 
     .. note::
         Depends on :ref:`rosetta.path <options>` and :ref:`rosetta.compilation <options>`,
-        if the quality file is not provided.
+        if the corresponding silent file does not exist.
 
     .. attention::
         This function **REQUIRES** a local installation of **Rosetta**.
