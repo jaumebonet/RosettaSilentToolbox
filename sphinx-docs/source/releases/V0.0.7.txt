@@ -1,4 +1,4 @@
-v0.0.7 (June 2018)
+v0.0.7 (July 2018)
 -------------------
 
 #. Command line scripts attached to the distribution.
@@ -16,3 +16,4 @@ v0.0.7 (June 2018)
 #. Formatted plots for **Thermal Melt**, **CD**, and **MALS**.
 #. Read and process **Next Generation Sequencing** data.
 #. Function to plot per residue score after applying a similarity matrix
+#. Adding logo plot color schemes.
