@@ -242,6 +242,8 @@ def plot_alignment( df, seqID, ax, line_break=None, matrix=None ):
         to split the alignment in that many pieces.
     :type ax: Union[:class:`~matplotlib.axes.Axes`, :func:`list` of
         :class:`~matplotlib.axes.Axes`]
+    :param int line_break: Set a line break after x residues. To execute that,
+        multiple axes must be provided.
     :param str matrix: Identifier of the matrix used to evaluate similarity. Default is
         :data:`None` highlight differences.
 

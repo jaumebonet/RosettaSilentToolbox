@@ -25,6 +25,7 @@ import gzip
 import json
 import string
 import subprocess
+import shutil
 from collections import OrderedDict
 
 # External Libraries
@@ -608,7 +609,7 @@ def write_fragment_sequence_profiles( df, filename=None, consensus=None ):
         return data
 
 
-def get_sequence_and_structure( pdbfile ):
+def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized_res=True ):
     """Provided a PDB file, it will run a small **RosettaScript** to capture its sequence and
     structure, i.e. dssp and phi-psi dihedrals.
 
@@ -624,6 +625,9 @@ def get_sequence_and_structure( pdbfile ):
     ``<pdbfile>.dssp.minisilent.gz`` will also work.
 
     :param str pdbfile: Name of the input structure.
+    :param bool mk_minisilent: If :data:`True`, transeform output into ``minisilent`` format.
+    :param bool ignore_unrecognized_res: If :data:`True`, **Rosetta** ignores non-recognizable
+        residues.
 
     :return: :class:`.DesignFrame`.
 
@@ -645,13 +649,19 @@ def get_sequence_and_structure( pdbfile ):
     """
     if not os.path.isfile( pdbfile ):
         raise IOError("Structure {} cannot be found".format(pdbfile))
-    minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.minisilent"
+    if mk_minisilent:
+        minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.minisilent"
+    else:
+        minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.silent"
+
     if os.path.isfile(minisilent):
         return parse_rosetta_file(minisilent,
                                   {"sequence": "*", "structure": "*", "dihedrals": "*"})
     elif os.path.isfile(minisilent + ".gz"):
         return parse_rosetta_file(minisilent + ".gz",
                                   {"sequence": "*", "structure": "*", "dihedrals": "*"})
+
+    sys.stdout.write("Generating file {}\n".format(minisilent))
 
     with open("dssp.xml", "w") as fd:
         fd.write(baseline())
@@ -663,7 +673,9 @@ def get_sequence_and_structure( pdbfile ):
     if not os.path.isfile(exe):
         raise IOError("The expected Rosetta executable {0} is not found".format(exe))
     command = ['{0}', '-parser:protocol {1}', '-s {2}', '-out:file:silent {3}',
-               '-ignore_unrecognized_res', '-ignore_zero_occupancy off']
+               '-ignore_zero_occupancy off']
+    if ignore_unrecognized_res:
+        command.append('-ignore_unrecognized_res')
     command = ' '.join(command)
     command = command.format( exe, "dssp.xml", pdbfile, str(os.getpid()) + "_" )
     sys.stdout.write("Running Rosetta\n")
@@ -673,12 +685,17 @@ def get_sequence_and_structure( pdbfile ):
     if not bool(error):
         if os.path.isfile(str(os.getpid()) + "_"):
             sys.stdout.write("Execution has finished\n")
-            fd = open( minisilent, "w" )
-            for line, _, _, _ in open_rosetta_file( str(os.getpid()) + "_" ):
-                fd.write( line )
-            fd.close()
+            if mk_minisilent:
+                sys.stdout.write("Making minisilent\n")
+                fd = open( minisilent, "w" )
+                for line, _, _, _ in open_rosetta_file( str(os.getpid()) + "_" ):
+                    fd.write( line )
+                fd.close()
+            else:
+                sys.stdout.write("Keeping original silent output\n")
+                shutil.copy( str(os.getpid()) + "_", minisilent)
             os.unlink(str(os.getpid()) + "_")
-            return get_sequence_and_structure( pdbfile )
+            return get_sequence_and_structure( pdbfile, mk_minisilent )
         else:
             raise ValueError("Execution has failed\n")
     else:

@@ -87,6 +87,7 @@
 <li><a class="reference internal" href="#minimal-mutant">Minimal Mutant</a></li>
 <li><a class="reference internal" href="#point-mutations-of-interest">Point Mutations of Interest</a></li>
 <li><a class="reference internal" href="#learning-from-amino-acids-frequency">Learning from Amino Acids Frequency</a></li>
+<li><a class="reference internal" href="#creating-the-new-mutants">Creating the New Mutants</a></li>
 </ul>
 </li>
 </ul>
@@ -230,27 +231,27 @@ actually follow the statistical rules of that set with <a class="reference inter
 <span class="gp">   ....: </span>
 <span class="gh">Out[22]: </span><span class="go"></span>
 <span class="go">[                                   description                                                  sequence_C  pssm_score_C</span>
-<span class="go"> 0  nubinitio_wauto_18326_2pw9C_0260_0001_v0001  PTYVILELNGVPIIRQLTNGTNLLELAYQYLRKMGVWKKAEEGTYVEISPKGEAVIRG  24.733333   </span>
-<span class="go"> 1  nubinitio_wauto_18326_2pw9C_0260_0001_v0002  PFPVLFVSNGVPIIMVLTEEDNIEEEAKQILRRKGLAKKAEEGTKVFYSPSGIILFFD  23.800000   </span>
-<span class="go"> 2  nubinitio_wauto_18326_2pw9C_0260_0001_v0003  LRVVVFRFNGVLIKRVLVTDPNQEEAAYQMLKELNYLKKAEEGTKVRELPSGSVLHYA  23.400000   </span>
-<span class="go"> 3  nubinitio_wauto_18326_2pw9C_0260_0001_v0004  PKLVYVVTNGVLIFVILLEDRKLEELAKAFLKKQGLAKKAEEGKTIIFLPNGSIRYTA  24.600000   </span>
-<span class="go"> 4  nubinitio_wauto_18326_2pw9C_0260_0001_v0005  NTWVEFMYNGVPVKVLLTNGSNEEEYARRIYKRQGLMKKAEEDTKSEFLSDGYILITA  24.733333   </span>
-<span class="go"> 5  nubinitio_wauto_18326_2pw9C_0260_0001_v0006  GRLIEFEFNGVPIIVMYINGINEEEIAKQILRRKGLWKKAEEGIYIVESSDGIVIHSA  23.200000   </span>
-<span class="go"> 6  nubinitio_wauto_18326_2pw9C_0260_0001_v0007  SKWVVVVTNGVPIIMLDTKPTNIEEIAKEILKKLGVLKKAEEDKYVRLFPNGVIETAD  25.333333   </span>
-<span class="go"> 7  nubinitio_wauto_18326_2pw9C_0260_0001_v0008  PVLLEFRLNGVPKTIQLTVDRNLEEAARQELKKQGLWKKAEENTYAFIYPDGRVISSA  26.066667   </span>
-<span class="go"> 8  nubinitio_wauto_18326_2pw9C_0260_0001_v0009  PKEFEVRVNGEPIKRVISNDRNIEEIALREKKKMGYLKKAEEHQKIEILPNGEARTYP  23.133333   </span>
-<span class="go"> 9  nubinitio_wauto_18326_2pw9C_0260_0001_v0010  TQVFVLRFNGELTFRILVLNENLEEIAREILKRMGLAKKAEEDKYVYFYPKGSIIFSG  24.800000   ,</span>
+<span class="go"> 0  nubinitio_wauto_18326_2pw9C_0260_0001_v0001  ITWVEFIVNGVPIGVILTNGRGQEERAREYLKKKGLGKKAEEGTKVIIYPNGSVLSVA  27.266667   </span>
+<span class="go"> 1  nubinitio_wauto_18326_2pw9C_0260_0001_v0002  LIWLEFEFNGVPIMQLKVHNKNLEEAAKEILKKLGLWKKAEEGTYVYFYSKGIVYFWG  25.533333   </span>
+<span class="go"> 2  nubinitio_wauto_18326_2pw9C_0260_0001_v0003  IRWVEVKFNGVPIKRIAVLPTRQEEEALQMLRKLGLGKKAEEDKFIIIYPKGIVIIAG  24.333333   </span>
+<span class="go"> 3  nubinitio_wauto_18326_2pw9C_0260_0001_v0004  SQWVVIMSNGVLKSVLAIVETNEEEIAKEEYKKLGLWKKAEESKYVWYLPIGYIRVTP  24.000000   </span>
+<span class="go"> 4  nubinitio_wauto_18326_2pw9C_0260_0001_v0005  KFVLVLRLNGELISVILVTDINQEEAAWEILKKKGLWKKAEEDQKVWFFPKGVVYSWD  24.600000   </span>
+<span class="go"> 5  nubinitio_wauto_18326_2pw9C_0260_0001_v0006  STWVEVRFNGVPIFVSKRLGRNLLELMRRYLLEQNVMKKAEENKKARFLPNGRVYIRG  22.266667   </span>
+<span class="go"> 6  nubinitio_wauto_18326_2pw9C_0260_0001_v0007  LTPFVFKLNGEIKIRSLTEGPNEEEAARREFKKQGVLKKAEENKETIIFPDGVVIVSG  24.733333   </span>
+<span class="go"> 7  nubinitio_wauto_18326_2pw9C_0260_0001_v0008  GTWFKFRFNGEPIKRLLVNNPKPEEIMKRIKKKLGLAKKAEEGKYAWEKPNGVVLFFA  25.066667   </span>
+<span class="go"> 8  nubinitio_wauto_18326_2pw9C_0260_0001_v0009  TTPIVVITNGVPKKQLLTENINEEELLRRLLKKLGVMKKAEEGKYGYIFPKGIIYHYE  24.933333   </span>
+<span class="go"> 9  nubinitio_wauto_18326_2pw9C_0260_0001_v0010  KTEFVFRSNGVPTKMSDVEPINLEERAKELLKKKGLGKKAEEGKTIIYKSNGEILSWG  24.800000   ,</span>
 <span class="go">                                    description                                                  sequence_C  pssm_score_C</span>
-<span class="go"> 0  nubinitio_wauto_18326_2pw9C_0278_0001_v0001  LKLFEFIFGGEPKKMILTKNSNELERAYRILKKKGQGKKAEEDKTGYLYPDGYILVRA  22.733333   </span>
-<span class="go"> 1  nubinitio_wauto_18326_2pw9C_0278_0001_v0002  KQWLIFVYRGVPKIQILSLKSNEEERAKEELKKKGLWKKAEEDKKSWLYPNGIVLVAA  24.800000   </span>
-<span class="go"> 2  nubinitio_wauto_18326_2pw9C_0278_0001_v0003  KRWVKFRFNGEPTIVILTTKTGIEEEAWEYMKKLGVAKKAEEGKYVIIRSDGYIYHSA  24.866667   </span>
-<span class="go"> 3  nubinitio_wauto_18326_2pw9C_0278_0001_v0004  KRWLVVRLNGVPKSMSLTLLRNQEEIGLEEQRELGLWKKAEEGKYIRILSKGVAVIYA  23.866667   </span>
-<span class="go"> 4  nubinitio_wauto_18326_2pw9C_0278_0001_v0005  KFWVEFKVNGEPIIVLLVEPINEEEIGYELKKKLGQAKKAEESKTIIIYPNGYIYVFG  25.466667   </span>
-<span class="go"> 5  nubinitio_wauto_18326_2pw9C_0278_0001_v0006  GQPVVFRYNGVAKSITLIEPPGIEEIAKEMLKKQGVLKKAEESTYSIIFPDGVVEITG  24.533333   </span>
-<span class="go"> 6  nubinitio_wauto_18326_2pw9C_0278_0001_v0007  PWPFKFRFNGVPKKIILLDPSGELEEAKEYLKKQGYWKKAEEGIYVEVESKGIVIVYG  23.533333   </span>
-<span class="go"> 7  nubinitio_wauto_18326_2pw9C_0278_0001_v0008  PFWLEFMFNGVAVTRSYLNPTNEEEEMKKFYLKQGLAKKAEEGQEVIIYSDGEVVHSG  22.600000   </span>
-<span class="go"> 8  nubinitio_wauto_18326_2pw9C_0278_0001_v0009  IFWLVVKLNGVPIIVILVNGINLEERGYEILKKLGLGKKAEEGTEVEVYPKGEIVSYP  25.866667   </span>
-<span class="go"> 9  nubinitio_wauto_18326_2pw9C_0278_0001_v0010  TFYIIVIQNGEPIKVLDIHDTGPEEIMLRILRKKGVMKKAEESTYSYILPNGVVVIYG  21.866667   ]</span>
+<span class="go"> 0  nubinitio_wauto_18326_2pw9C_0278_0001_v0001  STWLEFFFNGVAIIMIYVVNINLEEIAEREMRKKGKAKKAEEGQYTEYYPDGVIRTTG  24.066667   </span>
+<span class="go"> 1  nubinitio_wauto_18326_2pw9C_0278_0001_v0002  PQPVLLMTNGVPKKVSAINNRNQEEIALQMQRRKGLGKKAEEGQYVYVKPNGSVRFHA  22.733333   </span>
+<span class="go"> 2  nubinitio_wauto_18326_2pw9C_0278_0001_v0003  PTPVVIRFNGEPKKIILTTPIGQEELARQEMKKQGLLKKAEEGTFVMILPIGELLVRE  24.933333   </span>
+<span class="go"> 3  nubinitio_wauto_18326_2pw9C_0278_0001_v0004  TFPVYIVVGGVPKKRQLTEGENEEEIAREIMRKLGLWKKAEEGEYGMFFPDGIVEIHE  24.266667   </span>
+<span class="go"> 4  nubinitio_wauto_18326_2pw9C_0278_0001_v0005  GTWVEVRFNGVPIKVVIVEGPGQEEAAEEELKKQGVLKKAEEGKEVYYLPIGEIVTYP  25.733333   </span>
+<span class="go"> 5  nubinitio_wauto_18326_2pw9C_0278_0001_v0006  ITYLEVVQNGVLIQRILTKGINEEEIAREMFLKKGQLKKAEEHKYIVFFPDGIVESFA  24.133333   </span>
+<span class="go"> 6  nubinitio_wauto_18326_2pw9C_0278_0001_v0007  IKWVEVRLRGVPITVVYTVKPNQLELMREIMRKMGLMKKAEEGKFVIILPDGVIRIHG  24.600000   </span>
+<span class="go"> 7  nubinitio_wauto_18326_2pw9C_0278_0001_v0008  PRWVVVRLNGVPIIVQKRVGTGLEEEARAELKKKNKWKKAEEGKYVIIYPDGEVIFRD  25.466667   </span>
+<span class="go"> 8  nubinitio_wauto_18326_2pw9C_0278_0001_v0009  PTWFEFMSNGVLKKRILVVPTNIEELARELQKKQGLWKKAEEGQYGYVRPKGIIRIYE  25.200000   </span>
+<span class="go"> 9  nubinitio_wauto_18326_2pw9C_0278_0001_v0010  RFWFEFVLRGELKTVIYTEKKNLEERAREELKKMGKLKKAEEGKEVYYLPNGVAISSG  24.733333   ]</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -259,6 +260,33 @@ actually follow the statistical rules of that set with <a class="reference inter
 the way a frequency matrix is applied in this scenario is that the frequency corrects a randomised selection per position. Statistically, this will make
 most sequences obtained on the <em>upper side</em> of the matrix score.</p>
 </div>
+</div>
+<div class="section" id="creating-the-new-mutants">
+<h2>Creating the New Mutants<a class="headerlink" href="#creating-the-new-mutants" title="Permalink to this headline">¶</a></h2>
+<p>After generating new variations, those can be run in <strong>Rosetta</strong> to obtain their corresponding scores with :class::<cite>.DesignFrame.apply_resfile</cite>. By default, this function will run
+<em>fixed backbone</em> design with a script such as:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="k">print</span><span class="p">(</span><span class="n">rs</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">mutations</span><span class="p">())</span>
+<span class="go">&lt;ROSETTASCRIPTS&gt;</span>
+<span class="go">    &lt;TASKOPERATIONS&gt;</span>
+<span class="go">        &lt;ReadResfile name=&quot;targets&quot; filename=&quot;%%resfile%%&quot;/&gt;</span>
+<span class="go">    &lt;/TASKOPERATIONS&gt;</span>
+<span class="go">    &lt;MOVERS&gt;</span>
+<span class="go">        &lt;PackRotamersMover name=&quot;packrot&quot; task_operations=&quot;targets&quot; /&gt;</span>
+<span class="go">        &lt;AddJobPairData name=&quot;annotate&quot; value_type=&quot;string&quot;</span>
+<span class="go">                        key=&quot;resfile_A&quot; value=&quot;%%resfile%%&quot; /&gt;</span>
+<span class="go">    &lt;/MOVERS&gt;</span>
+<span class="go">    &lt;PROTOCOLS&gt;</span>
+<span class="go">        &lt;Add mover=&quot;packrot&quot; /&gt;</span>
+<span class="go">        &lt;Add mover=&quot;annotate&quot; /&gt;</span>
+<span class="go">    &lt;/PROTOCOLS&gt;</span>
+<span class="go">&lt;/ROSETTASCRIPTS&gt;</span>
+</pre></div>
+</div>
+<p>But the user can provide more complex <strong>RosettaScripts</strong> to execute, as long as they follow the same restrictions as this one:</p>
+<ol class="arabic simple">
+<li>They contain the <a class="reference external" href="https://www.rosettacommons.org/docs/latest/scripting_documentation/RosettaScripts/Movers/movers_pages/AddJobPairDataMover">AddJobPairData Mover</a>.</li>
+<li>They target the <strong>resfile</strong> with the <code class="docutils literal notranslate"><span class="pre">script_var</span></code> <code class="docutils literal notranslate"><span class="pre">%%resfile%%</span></code>.</li>
+</ol>
 <span class="target" id="definitions"></span></div>
 </div>
 

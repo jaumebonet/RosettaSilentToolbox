@@ -64,6 +64,8 @@ Helper functions to read/write data generated through wedlab experiments. They c
    :toctree: generated/
 
    ~io.read_SPR
+   ~io.read_CD
+   ~io.read_MALS
    ~io.read_fastq
 
 Analysis

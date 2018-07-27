@@ -102,3 +102,19 @@ actually follow the statistical rules of that set with :meth:`.DesignFrame.gener
   While the generation of **the best scored sequence** according to a matrix is quite straight forward, the generation of the N best is not. Thus,
   the way a frequency matrix is applied in this scenario is that the frequency corrects a randomised selection per position. Statistically, this will make
   most sequences obtained on the *upper side* of the matrix score.
+
+Creating the New Mutants
+------------------------
+
+After generating new variations, those can be run in **Rosetta** to obtain their corresponding scores with :class:`.DesignFrame.apply_resfile`. By default, this function will run
+*fixed backbone* design with a script such as:
+
+.. ipython::
+
+  In [8]: print(rs.utils.mutations())
+
+But the user can provide more complex **RosettaScripts** to execute, as long as they follow the same restrictions as this one:
+
+#. They contain the `AddJobPairData Mover <https://www.rosettacommons.org/docs/latest/scripting_documentation/RosettaScripts/Movers/movers_pages/AddJobPairDataMover>`_.
+#. They target the **resfile** with the ``script_var`` ``%%resfile%%``.
+

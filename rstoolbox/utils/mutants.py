@@ -203,10 +203,16 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
 
         mutants = [(20, "AIV"), (31, "EDQR")]
 
+    Lastly, when multiple changes are provided for a position, this will translate into an
+    **insertion**.
+
     .. tip::
         The number of positions and mutations for position produce an exponential increment
         of the generated sequences. Thus, the previous example will generate ``3 * 4`` new
         sequences. Depending on the input this can explode pretty fast, be aware.
+
+    .. tip::
+        ``*`` will call all 20 regular amino acids for a given position.
 
     Alters the names of the designs in **description** by adding a ``_v<number>`` suffix.
 
@@ -247,10 +253,10 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
         seqNM = _check_column(row, "sequence", seqID)
         idNM = "description"
         seq   = list(row[seqNM])
-        for p in muts:
+        for p in reversed(muts):
             # -1 because we are going to access string positions.
             shift = get_selection(p[0], seqID, row.get_reference_shift(seqID))[0] - 1
-            seq[shift] = p[1]
+            seq[shift] = p[1] if p[1] != "*" else "ARNDCQEGHILKMFPSTWYV"
         data = {seqNM: ["".join(x) for x in itertools.product(*seq)]}
         data[seqNM].insert(0, row[seqNM])
         name = row.get_id()
@@ -270,6 +276,7 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
         df = row._constructor_expanddim(data)
         return df
 
+    mutations.sort(key=lambda tup: tup[0])
     if isinstance(self, pd.DataFrame):
         designs = []
         for _, row in self.iterrows():
