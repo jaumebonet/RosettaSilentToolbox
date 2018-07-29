@@ -1,5 +1,4 @@
 v0.0.7 (August 2018)
--------------------
 
 #. Command line scripts attached to the distribution.
 #. ``check_mutants`` script adapts itself to the number of sequences.
@@ -20,3 +19,5 @@ v0.0.7 (August 2018)
 #. Ability to execute the mutant variants to obtain scores for the new suggested mutations with ``apply_resfile``.
 #. ``generate_mutant_variants`` allows to explore all residue types for a position with '*'.
 #. Keep silent file instead of minisilent after running ``get_sequence_and_structure`` allows better integration with ``apply_resfile``.
+#. Function to plot per residue score after applying a similarity matrix
+#. Adding logo plot color schemes.
