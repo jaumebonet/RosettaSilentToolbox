@@ -81,7 +81,13 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Experimental Data</a></li>
+<li><a class="reference internal" href="#">Experimental Data</a><ul>
+<li><a class="reference internal" href="#circular-dichroism">Circular Dichroism</a></li>
+<li><a class="reference internal" href="#thermal-melt">Thermal Melt</a></li>
+<li><a class="reference internal" href="#multi-angle-light-scattering">Multi-Angle Light Scattering</a></li>
+<li><a class="reference internal" href="#surface-plasmon-resonance">Surface Plasmon Resonance</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -113,7 +119,24 @@
       
   <div class="section" id="experimental-data">
 <span id="experimental"></span><h1>Experimental Data<a class="headerlink" href="#experimental-data" title="Permalink to this headline">¶</a></h1>
+<p>Experimental data derived from the analysis of the design decoys can be added and processed through the library. For some experiments, like
+<strong>Circular Dichroism</strong> or <strong>Surface Plasmon Resonance</strong>, very specific formats exist. In those cases, the proper parser (<a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> or
+<a class="reference internal" href="../generated/rstoolbox.io.read_SPR.html#rstoolbox.io.read_SPR" title="rstoolbox.io.read_SPR"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_SPR()</span></code></a>) exists. Other cases provide different +*CSV* files. This can be imported to python with :func:<a href="#id1"><span class="problematic" id="id2">`</span></a>~pandas.read_csv, but might
+need to be post-processed to work with them.</p>
+<p>Each plotting function shows in its documentation the exact naming of the column that it expects.</p>
+<div class="section" id="circular-dichroism">
+<h2>Circular Dichroism<a class="headerlink" href="#circular-dichroism" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="thermal-melt">
+<h2>Thermal Melt<a class="headerlink" href="#thermal-melt" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="multi-angle-light-scattering">
+<h2>Multi-Angle Light Scattering<a class="headerlink" href="#multi-angle-light-scattering" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="surface-plasmon-resonance">
+<h2>Surface Plasmon Resonance<a class="headerlink" href="#surface-plasmon-resonance" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>

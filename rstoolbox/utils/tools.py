@@ -9,18 +9,24 @@
 .. func:: format_Ipython
 .. func:: add_column
 .. func:: split_values
+.. func:: make_rosetta_app_path
+.. func:: execute_process
 """
 # Standard Libraries
+import os
 import copy
 import textwrap
+import subprocess
 
 # External Libraries
 import pandas as pd
+from six import string_types
 
 # This Library
 
 
-__all__ = ['format_Ipython', 'add_column', 'split_values']
+__all__ = ['format_Ipython', 'add_column', 'split_values', 'make_rosetta_app_path',
+           'execute_process']
 
 
 def format_Ipython():
@@ -83,6 +89,8 @@ def split_values( df, keys ):
     :type df: :class:`~pandas.DataFrame`
     :param dict keys: Selection of the columns to keep and split.
 
+    :return: Altered Data container.
+
     .. rubric:: Example
 
     .. ipython::
@@ -133,3 +141,46 @@ def split_values( df, keys ):
             })
         dataframes.append(wdf)
     return pd.concat(dataframes)
+
+
+def make_rosetta_app_path( application ):
+    """Provided the expected Rosetta application, add path and suffix.
+
+    .. note::
+        Depends on :ref:`rosetta.path <options>` and :ref:`rosetta.compilation <options>`,
+        if the ``filename`` does not exist.
+
+    :param str application: Name of the application to call.
+
+    :return: :class:`str`
+
+    :raise:
+        :IOError: If the final path created does not exist.
+    """
+    import rstoolbox.core as core
+
+    path    = core.get_option("rosetta", "path")
+    comp    = core.get_option("rosetta", "compilation")
+    exe     = os.path.join(path, "{0}.{1}".format(application, comp))
+    if not os.path.isfile(exe):
+        raise IOError("The expected Rosetta executable {0} is not found".format(exe))
+    return exe
+
+
+def execute_process( command, subp=False ):
+    """Execute the provided command.
+
+    :param str command: Command to be executed.
+    :param bool subp: When :data:`True` execute ``subprocess`` instead of ``os.system``.
+
+    :return: Output info of the execution
+
+    :raise:
+        :AttributeError: If command is not a provided as a single string
+    """
+    if not isinstance(command, string_types):
+        raise AttributeError('Wrong input type')
+    if not subprocess:
+        return os.system( command )
+    else:
+        return subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)

@@ -118,7 +118,7 @@
 <code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_thermal_melt</code><span class="sig-paren">(</span><em>df</em>, <em>ax</em>, <em>linecolor=0</em>, <em>pointcolor=0</em>, <em>min_temperature=None</em>, <em>fusion_temperature=False</em>, <em>temp_marker=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_thermal_melt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot <a class="reference external" href="https://www.wikiwand.com/en/Thermal_shift_assay">Thermal Melt</a> data.</p>
 <p>Plot thermal melt and generate the fitting curve to the pointsself.</p>
-<p>The provied <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> must contain, at least, the following
+<p>The provied <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> must contain, at least, the following
 columns:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -149,7 +149,7 @@ installed.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data container.</li>
+<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data container.</li>
 <li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Axis in which to plot the data.</li>
 <li><strong>linecolor</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Color for the fitting line. If a number, it takes from the current
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code> palette.</li>
@@ -157,8 +157,8 @@ installed.</p>
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code> palette.</li>
 <li><strong>min_temperature</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – If provided, set minimum temperature in the Y axis
 of the plot.</li>
-<li><strong>fusion_temperature</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, calculates the fusion temperature.
-<strong>requires ``scipy`` library</strong>.</li>
+<li><strong>fusion_temperature</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, calculates the fusion temperature
+when possible. <strong>Requires ``scipy`` library</strong>.</li>
 <li><strong>temp_marker</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, approximate and annotate the expected melting
 point. <strong>requires ``scipy`` library</strong>.</li>
 </ul>

@@ -125,7 +125,7 @@ values).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>values</strong> (Union[<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – List of values to analyze.</li>
+<li><strong>values</strong> (Union[<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – List of values to analyze.</li>
 <li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of bins in which to split the data (~resolution).</li>
 <li><strong>max_count</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Maximum number of counts expected. If nothing is provided,
 defaults to the length of values. This helps to set the values between 0 and 1.</li>
@@ -171,13 +171,13 @@ and <strong>3)</strong> bin positions. 2 and 3 would correspond to the y, x valu
 <span class="gp">   ...: </span><span class="n">ax11</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;raw data&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[12]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x10d6c0c10&gt;]</span>
+<span class="gh">Out[12]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x115999f50&gt;]</span>
 <span class="gh">Out[13]: </span><span class="go">Text(0.5,1,u&#39;cumulative&#39;)</span>
-<span class="gh">Out[15]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x10ea397d0&gt;]</span>
+<span class="gh">Out[15]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x115705c90&gt;]</span>
 <span class="gh">Out[16]: </span><span class="go">Text(0.5,1,u&#39;non-cumulative&#39;)</span>
-<span class="gh">Out[18]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x10e5bd410&gt;]</span>
+<span class="gh">Out[18]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x115a256d0&gt;]</span>
 <span class="gh">Out[19]: </span><span class="go">Text(0.5,1,u&#39;reverse-cumulative&#39;)</span>
-<span class="gh">Out[21]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x10e5bde90&gt;]</span>
+<span class="gh">Out[21]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x115b0d150&gt;]</span>
 <span class="gh">Out[22]: </span><span class="go">Text(0.5,1,u&#39;raw data&#39;)</span>
 
 <span class="gp">In [24]: </span><span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>

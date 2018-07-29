@@ -126,11 +126,17 @@ string with all the desired residue types. Multiple positions can be provided in
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mutants</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;AIV&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="s2">&quot;EDQR&quot;</span><span class="p">)]</span>
 </pre></div>
 </div>
+<p>Lastly, when multiple changes are provided for a position, this will translate into an
+<strong>insertion</strong>.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p class="last">The number of positions and mutations for position produce an exponential increment
 of the generated sequences. Thus, the previous example will generate <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">*</span> <span class="pre">4</span></code> new
 sequences. Depending on the input this can explode pretty fast, be aware.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">*</span></code> will call all 20 regular amino acids for a given position.</p>
 </div>
 <p>Alters the names of the designs in <strong>description</strong> by adding a <code class="docutils literal notranslate"><span class="pre">_v&lt;number&gt;</span></code> suffix.</p>
 <p>By providing multiple input decoys, sequence can be repeated. Thus, repeated sequences

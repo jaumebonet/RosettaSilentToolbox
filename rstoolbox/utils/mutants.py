@@ -32,6 +32,7 @@ import numpy as np
 # This Library
 from .getters import _check_type, _get_available, _check_column
 import rstoolbox.core as core
+from rstoolbox.utils import make_rosetta_app_path, execute_process
 
 
 def get_identified_mutants( self ):
@@ -741,12 +742,8 @@ def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False 
 
     resfile = 'resfile_{}'.format(seqID)
     if not os.path.isfile(filename):
-        wdir    = tempfile.mkdtemp()
-        path    = core.get_option("rosetta", "path")
-        comp    = core.get_option("rosetta", "compilation")
-        exe     = os.path.join(path, "rosetta_scripts.{0}".format(comp))
-        if not os.path.isfile(exe):
-            raise IOError("The expected Rosetta executable {0} is not found".format(exe))
+        wdir = tempfile.mkdtemp()
+        exe = make_rosetta_app_path('rosetta_scripts')
         if resfile not in self.columns:
             raise AttributeError("Resfiles are needed to execute this function.")
         if rscript is None:
@@ -774,19 +771,19 @@ def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False 
             cmd = command.format(exe, rscript, " ".join(self.get_source_files()),
                                  origin, outfiles[-1], row[resfile])
             sys.stdout.write(cmd + "\n")
-            error = os.system(cmd)
+            error = execute_process( command )
             if bool(error):
                 errors += 1
                 sys.stdout.write("Execution for variant {} has failed\n".format(row['description']))
 
         if errors < self.shape[0]:
-            exe = os.path.join(path, "combine_silent.{0}".format(comp))
+            exe = make_rosetta_app_path('combine_silent')
             command = ['{0}', '-in:file:silent {1}', '-out:file:silent {2}']
             command = ' '.join(command)
             cmd = command.format(exe, " ".join(outfiles), filename)
             sys.stdout.write("Merging all silent files\n")
             sys.stdout.write(cmd + "\n")
-            error = os.system(cmd)
+            error = execute_process( command )
             if bool(error):
                 raise SystemError("A file with the new variants could not be created.")
         else:

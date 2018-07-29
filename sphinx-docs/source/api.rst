@@ -182,3 +182,4 @@ This functions are only of interest if you plan on writing new functionalities i
 
    io.open_rosetta_file
    components.get_selection
+   utils.make_rosetta_app_path

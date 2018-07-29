@@ -14,11 +14,11 @@
 # Standard Libraries
 import gzip
 import os
-import StringIO
 
 # External Libraries
 import pandas as pd
 import numpy as np
+from six import StringIO
 
 # This Library
 import rstoolbox.components as rc
@@ -43,7 +43,7 @@ class SPRFrame( pd.DataFrame ):
         return SPRFrame
 
 
-def read_CD( dirname, prefix=None, invert_temp=False, format='J-815'):
+def read_CD( dirname, prefix=None, invert_temp=False, model='J-815'):
     """Read `Circular Dichroism <https://www.wikiwand.com/en/Circular_dichroism>`_ data
     for multiple temperatures.
 
@@ -58,19 +58,20 @@ def read_CD( dirname, prefix=None, invert_temp=False, format='J-815'):
     :param str prefix: Prefix of the files inside the folder.
     :param bool invert_temp: Temperature assignation might be inverted. Switch it with this
         option.
-    :param str format: Format of the data. Available formats are: ``['J-815']``
+    :param str model: Format of the data. Available models are: ``['J-815']``
 
     :return:  :class:`~pandas.DataFrame`.
 
     :raise:
         :IOError: If ``dirname`` is not a directory.
         :ValueError: If there are inconsistencies between the files (title or temperatures).
+        :AttributeError: Unknown ``model`` provided.
 
     .. seealso::
         :func:`.plot_CD`
 
     """
-    if format == 'J-815':
+    if model == 'J-815':
         return CDFrame(_read_CD_J815(dirname, prefix, invert_temp))
     else:
         raise AttributeError('Unknown CD format')
@@ -85,7 +86,7 @@ def _read_CD_J815( dirname, prefix, invert_temp):
     df = []
     if not os.path.isdir(dirname):
         raise IOError('Directory {} not found'.format(dirname))
-    for root, dirs, files in os.walk(dirname):
+    for root, _, files in os.walk(dirname):
         temp = [-100, -100]
         title = None
         counter = 0
@@ -117,7 +118,7 @@ def _read_CD_J815( dirname, prefix, invert_temp):
                                 else:
                                     if tl != title:
                                         raise ValueError('Experiment titles do not match')
-                df.append(pd.read_csv(StringIO.StringIO("".join(data)), header=None,
+                df.append(pd.read_csv(StringIO("".join(data)), header=None,
                                       names=['Wavelength', 'MRE', 'voltage'], sep='\t'))
 
                 df[-1] = ru.add_column(df=df[-1], name='title', value=title)

@@ -115,7 +115,7 @@
 <h1>rstoolbox.io.get_sequence_and_structure<a class="headerlink" href="#rstoolbox-io-get-sequence-and-structure" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.io.get_sequence_and_structure">
-<code class="descclassname">rstoolbox.io.</code><code class="descname">get_sequence_and_structure</code><span class="sig-paren">(</span><em>pdbfile</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.get_sequence_and_structure" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.io.</code><code class="descname">get_sequence_and_structure</code><span class="sig-paren">(</span><em>pdbfile</em>, <em>mk_minisilent=True</em>, <em>ignore_unrecognized_res=True</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.get_sequence_and_structure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provided a PDB file, it will run a small <strong>RosettaScript</strong> to capture its sequence and
 structure, i.e. dssp and phi-psi dihedrals.</p>
 <div class="admonition note">
@@ -134,7 +134,12 @@ already exists, it will be directly read. You can choose to compress it;
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>pdbfile</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Name of the input structure.</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pdbfile</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Name of the input structure.</li>
+<li><strong>mk_minisilent</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, transeform output into <code class="docutils literal notranslate"><span class="pre">minisilent</span></code> format.</li>
+<li><strong>ignore_unrecognized_res</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, <strong>Rosetta</strong> ignores non-recognizable
+residues.</li>
+</ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.</p>

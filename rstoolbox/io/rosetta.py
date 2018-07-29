@@ -24,7 +24,6 @@ import glob
 import gzip
 import json
 import string
-import subprocess
 import shutil
 from collections import OrderedDict
 
@@ -36,7 +35,7 @@ import yaml
 # This Library
 import rstoolbox.core as core
 import rstoolbox.components as rc
-from rstoolbox.utils import baseline
+from rstoolbox.utils import baseline, make_rosetta_app_path, execute_process
 
 __all__ = ['open_rosetta_file', 'parse_rosetta_file', 'parse_rosetta_contacts',
            'parse_rosetta_fragments', 'write_rosetta_fragments',
@@ -196,7 +195,7 @@ def open_rosetta_file( filename, multi=False, check_symmetry=True ):
     for file_count, f in enumerate( files ):
         if check_symmetry:
             cmd = "zgrep SYMMETRY_INFO {} |wc" if f.endswith(".gz") else "grep SYMMETRY_INFO {} |wc"
-            process = subprocess.Popen(cmd.format(f), stdout=subprocess.PIPE, shell=True)
+            process = execute_process(cmd.format(f), subp=True)
             symm = int(process.communicate()[0].strip().split()[0]) > 0
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
@@ -667,11 +666,7 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
         fd.write(baseline())
 
     # Check rosetta executable & run
-    path = core.get_option("rosetta", "path")
-    comp = core.get_option("rosetta", "compilation")
-    exe = os.path.join(path, "rosetta_scripts.{0}".format(comp))
-    if not os.path.isfile(exe):
-        raise IOError("The expected Rosetta executable {0} is not found".format(exe))
+    exe = make_rosetta_app_path('rosetta_scripts')
     command = ['{0}', '-parser:protocol {1}', '-s {2}', '-out:file:silent {3}',
                '-ignore_zero_occupancy off']
     if ignore_unrecognized_res:
@@ -680,7 +675,7 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
     command = command.format( exe, "dssp.xml", pdbfile, str(os.getpid()) + "_" )
     sys.stdout.write("Running Rosetta\n")
     sys.stdout.write(command + "\n")
-    error = os.system( command )
+    error = execute_process( command )
     os.unlink("dssp.xml")
     if not bool(error):
         if os.path.isfile(str(os.getpid()) + "_"):
@@ -784,11 +779,7 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
         outdir = os.path.join(outdir, prefix)
 
     # Check rosetta executable
-    path = core.get_option("rosetta", "path")
-    comp = core.get_option("rosetta", "compilation")
-    exe = os.path.join( path, "extract_pdbs.{0}".format(comp))
-    if not os.path.isfile(exe):
-        raise IOError("The expected Rosetta executable {0} is not found".format(exe))
+    exe = make_rosetta_app_path('extract_pdbs')
 
     # Print the tag file
     df[[column]].to_csv( tagsfilename, index=False, header=False)
@@ -802,7 +793,7 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
     sys.stdout.write("Executing Rosetta's extract_pdbs app\n")
     sys.stdout.write("(depending on the total number of decoys and how many have "
                      "been requested this might take a while...)\n")
-    error = os.system( command )
+    error = execute_process( command )
     if not bool(error):
         sys.stdout.write("Execution has finished\n")
     else:
