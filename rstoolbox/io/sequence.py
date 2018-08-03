@@ -427,11 +427,6 @@ def read_hmmsearch( filename ):
                 if line.startswith('>>'):
                     nam2 = line.split()[1].strip()
                     continue
-                if line.startswith('  =='):
-                    if seq != '':
-                        dat2['sequence'].append(seq)
-                        seq = ''
-                    continue
                 if re.match(ali, line.strip()):
                     if mode == 'hmmsearch':
                         dat2.setdefault('description', []).append(nam2)
@@ -450,11 +445,21 @@ def read_hmmsearch( filename ):
                     dat2['envto'].append(int(lnp[13]))
                     dat2['acc'].append(float(lnp[15]))
                     continue
-                if nam2 in line.strip():
-                    seq += line.strip().split()[2]
+                if line.startswith('  == domain '):
+                    if seq != '':
+                        dat2['sequence'].append(seq)
+                        seq = ''
                     continue
+                if mode == 'hmmsearch':
+                    if nam2 in line.strip() and nam2 != '':
+                        seq += line.strip().split()[2]
+                        continue
+                if mode == 'hmmscan':
+                    if query in line.strip() and query != '':
+                        seq += line.strip().split()[2]
+                        continue
 
-        if seq != '':
+        if seq != '' and nohits == None:
             dat2['sequence'].append(seq)
         if nohits == True:
             df = pd.DataFrame(cols)
