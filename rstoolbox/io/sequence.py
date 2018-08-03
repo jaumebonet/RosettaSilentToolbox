@@ -362,8 +362,9 @@ def read_hmmsearch( filename ):
                 'dom-exp': [], 'dom-N': []}
         dat2 = {'score': [], 'bias': [], 'c-Evalue': [],
                 'i-Evalue': [], 'hmmfrom': [], 'hmmto': [], 'alifrom': [],
-                'alito': [], 'envfrom': [], 'envto': [], 'acc': []}
+                'alito': [], 'envfrom': [], 'envto': [], 'acc': [], 'sequence': []}
         nam2 = ''
+        seq = ''
         read = 0
         nohits = None
         for line in search.split('\n'):
@@ -424,6 +425,9 @@ def read_hmmsearch( filename ):
             if read == 2:
                 if line.startswith('>>'):
                     nam2 = line.split()[1].strip()
+                    if seq != '':
+                        dat2['sequence'].append(seq)
+                        seq = ''
                     continue
                 if re.match(ali, line.strip()):
                     if mode == 'hmmsearch':
@@ -443,6 +447,12 @@ def read_hmmsearch( filename ):
                     dat2['envto'].append(int(lnp[13]))
                     dat2['acc'].append(float(lnp[15]))
                     continue
+                if nam2 in line.strip():
+                    seq += line.strip().split()[2]
+                    continue
+
+        if seq != '':
+            dat2['sequence'].append(seq)
         if nohits == True:
             df = pd.DataFrame(cols)
         else:
