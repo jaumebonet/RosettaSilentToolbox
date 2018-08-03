@@ -425,6 +425,8 @@ def read_hmmsearch( filename ):
             if read == 2:
                 if line.startswith('>>'):
                     nam2 = line.split()[1].strip()
+                    continue
+                if line.startswith('  =='):
                     if seq != '':
                         dat2['sequence'].append(seq)
                         seq = ''
