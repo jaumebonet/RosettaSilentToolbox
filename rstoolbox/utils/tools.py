@@ -17,6 +17,7 @@ import os
 import copy
 import textwrap
 import subprocess
+import shlex
 
 # External Libraries
 import pandas as pd
@@ -167,20 +168,19 @@ def make_rosetta_app_path( application ):
     return exe
 
 
-def execute_process( command, subp=False ):
+def execute_process( command ):
     """Execute the provided command.
 
-    :param str command: Command to be executed.
-    :param bool subp: When :data:`True` execute ``subprocess`` instead of ``os.system``.
+    :param command: Command to be executed.
+    :type command: Union(:class:`str`, :func:`list`)
+    :param bool subp: When :data:`True` return ``subprocess`` otherwise return
+        the execution status as 0 (OK) or another number if failed.
 
     :return: Output info of the execution
-
-    :raise:
-        :AttributeError: If command is not a provided as a single string
     """
-    if not isinstance(command, string_types):
-        raise AttributeError('Wrong input type')
-    if not subprocess:
-        return os.system( command )
-    else:
-        return subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    if isinstance(command, string_types):
+        command = shlex.split(command)
+    try:
+        return subprocess.call( command )
+    except OSError:
+        return 1

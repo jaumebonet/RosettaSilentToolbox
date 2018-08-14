@@ -194,9 +194,9 @@ def open_rosetta_file( filename, multi=False, check_symmetry=True ):
     files = _gather_file_list( filename, multi )
     for file_count, f in enumerate( files ):
         if check_symmetry:
-            cmd = "zgrep SYMMETRY_INFO {} |wc" if f.endswith(".gz") else "grep SYMMETRY_INFO {} |wc"
-            process = execute_process(cmd.format(f), subp=True)
-            symm = int(process.communicate()[0].strip().split()[0]) > 0
+            cmd = "zgrep SYMMETRY_INFO {}" if f.endswith(".gz") else "grep SYMMETRY_INFO {}"
+            process = execute_process(cmd.format(f))
+            symm = (process == 0)
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
             line = line.decode('utf8') if f.endswith(".gz") else line
