@@ -479,6 +479,16 @@ class TestDesign( object ):
         plt.tight_layout()
         return fig
 
+    def test_sequence_distances( self ):
+        sc_des  = {"sequence": "AB"}
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        dif1 = df.sequence_distance('A')
+        assert (dif1.max() == 0).all()
+        dif2 = df.sequence_distance('B')
+        dif3 = df.sequence_distance('B', df)
+        assert dif2.equals(dif3)
+        assert dif2.max().max() == 81
+
     def test_sequence_similarities(self):
         refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
                  "FNAYRDANDKAAALGKDKEINWFDISQSLWDVQKLTDAAIKKIEAALADMEAWLTQ"

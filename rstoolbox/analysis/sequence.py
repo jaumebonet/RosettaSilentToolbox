@@ -74,7 +74,7 @@ def _get_sequential_table( seqType ):
             table.setdefault( 'U', [])
             table.pop('T', None)
         extra = ['X', '*', 'B', 'D', 'H', 'K', 'M', 'N', 'R', 'S', 'V', 'W', 'Y']
-    elif seqType.lower == "protein_sse":
+    elif seqType.lower() == "protein_sse":
         table = {
             'H': [], 'E': [], 'L': [], '*': [], 'G': []
         }

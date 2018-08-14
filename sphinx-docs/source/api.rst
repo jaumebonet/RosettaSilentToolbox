@@ -37,6 +37,7 @@ Helper functions to read/write direct sequence information. They can be called t
    ~io.write_clustalw
    ~io.write_mutant_alignments
    ~io.read_hmmsearch
+   ~io.pymol_mutant_selector
 
 IO: Rosetta
 -----------

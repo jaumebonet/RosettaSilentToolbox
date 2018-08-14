@@ -112,7 +112,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     :param float clean_unused: Remove amino acids from the plot when they never get represented
         over the given frequency. Residues present in the reference sequence are not taken
         into account.
-    :param rbool efseq: if :data:`True` (default), mark the original residues according to
+    :param rbool refseq: if :data:`True` (default), mark the original residues according to
         the reference sequence.
     :param key_residues: |keyres_param|.
     :type key_residue: |keyres_types|

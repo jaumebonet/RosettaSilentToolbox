@@ -98,9 +98,28 @@ class TestPlotUtils( object ):
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_cd2.png')
+    def test_cd_read( self ):
+        df = ri.read_CD(os.path.join(self.dirpath, 'CD'), prefix='kx8', model='J-815')
+        fig = plt.figure(figsize=(10, 6.7))
+        ax = plt.subplot2grid((1, 1), (0, 0))
+        rp.plot_CD(df, ax, sample=5)
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_mals.png')
     def test_mals( self ):
         df = pd.read_csv(os.path.join(self.dirpath, 'mals.csv'))
+        fig = plt.figure(figsize=(10, 6.7))
+        ax = plt.subplot2grid((1, 1), (0, 0))
+        rp.plot_MALS(df, ax)
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_mals2.png')
+    def test_mals_read( self ):
+        df = ri.read_MALS(filename=os.path.join(self.dirpath, 'mota_1kx8_d2.csv'),
+                          mmfile=os.path.join(self.dirpath, 'mota_1kx8_d2_mm.csv'))
         fig = plt.figure(figsize=(10, 6.7))
         ax = plt.subplot2grid((1, 1), (0, 0))
         rp.plot_MALS(df, ax)
@@ -136,7 +155,7 @@ class TestPlotUtils( object ):
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_color_hydrophobicity.png')
-    def test_color_scheme_hydrophobicity(self):
+    def test_color_scheme_hydrophobicity( self ):
         df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
                                         header=None).rename(columns={0: 'sequence_A'}))
         fig, axs = rp.logo_plot(df, "A", refseq=False, line_break=50, font_size=10,
@@ -145,7 +164,7 @@ class TestPlotUtils( object ):
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_color_chemistry.png')
-    def test_color_scheme_chemistry(self):
+    def test_color_scheme_chemistry( self ):
         df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
                                         header=None).rename(columns={0: 'sequence_A'}))
         fig, axs = rp.logo_plot(df, "A", refseq=False, line_break=50, font_size=10,
@@ -154,7 +173,7 @@ class TestPlotUtils( object ):
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_color_charge.png')
-    def test_color_scheme_charge(self):
+    def test_color_scheme_charge( self ):
         df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
                                         header=None).rename(columns={0: 'sequence_A'}))
         fig, axs = rp.logo_plot(df, "A", refseq=False, line_break=50, font_size=10,
@@ -163,7 +182,7 @@ class TestPlotUtils( object ):
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_color_custom.png')
-    def test_color_scheme_custom(self):
+    def test_color_scheme_custom( self ):
         custom = {
             'A': '#e6194b', 'C': '#3cb44b', 'D': '#ffe119', 'E': '#ffe119',
             'F': '#f58231', 'G': '#911eb4', 'H': '#46f0f0', 'I': '#f032e6',
@@ -174,5 +193,18 @@ class TestPlotUtils( object ):
         df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
                                         header=None).rename(columns={0: 'sequence_A'}))
         fig, axs = rp.logo_plot(df, "A", refseq=False, line_break=50, font_size=10,
+                                colors=custom)
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_logo_sse.png')
+    def test_sse_logo(self):
+        custom = {
+            'E': '#0000FF', 'H': '#00FF00', 'L': '#FF0000'
+        }
+        ff = os.path.join(self.dirpath, 'input_3ssepred.minisilent.gz')
+        df = ri.parse_rosetta_file(ff, {'structure': 'A'})
+        fs = df.structure_bits('A')
+        fig, axs = rp.logo_plot(fs, "A", refseq=False, line_break=50, font_size=10,
                                 colors=custom)
         return fig
