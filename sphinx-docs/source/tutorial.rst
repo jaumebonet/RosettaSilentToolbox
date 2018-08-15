@@ -26,4 +26,4 @@ Pipeline Examples
    tutorials/working_with_fragments
    tutorials/population_comparison
    tutorials/new_mutants
-   tutorials/experimental
+   tutorials/experimental_analysis

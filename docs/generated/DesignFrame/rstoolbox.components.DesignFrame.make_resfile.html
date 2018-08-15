@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
-    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
@@ -61,7 +61,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../introduction.html#highlighted-works">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../highlights.html">Highlighted works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../tutorial.html">Tutorials</a></li>
@@ -195,18 +195,18 @@ actually created</li>
 <span class="gp">   ...: </span><span class="n">dfwt</span> <span class="o">=</span> <span class="n">dfwt</span><span class="o">.</span><span class="n">make_resfile</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;NATAA&quot;</span><span class="p">,</span> <span class="s2">&quot;mutants.resfile&quot;</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="bp">False</span> <span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">dfwt</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[9]: </span><span class="go"></span>
-<span class="go">                            description                                                                                                            sequence_B mutants_B mutant_positions_B  mutant_count_B             resfile_B</span>
-<span class="go">0  test_3lhp_binder_labeled_00001        TRPEEARERAWRLAEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK                               0               mutants_0000.resfile</span>
-<span class="go">1  test_3lhp_binder_labeled_00001_v0001  TRPEEERERAWRLMEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  A6E,A14M  6,14               2               mutants_0001.resfile</span>
-<span class="go">2  test_3lhp_binder_labeled_00001_v0002  TRPEEERERAWRLAEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  A6E       6                  1               mutants_0002.resfile</span>
-<span class="go">3  test_3lhp_binder_labeled_00001_v0003  TRPEEERERAWRLTEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  A6E,A14T  6,14               2               mutants_0003.resfile</span>
-<span class="go">4  test_3lhp_binder_labeled_00001_v0004  TRPEERRERAWRLMEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  A6R,A14M  6,14               2               mutants_0004.resfile</span>
+<span class="gh">Out[4]: </span><span class="go"></span>
+<span class="go">                                                                                                             sequence_B                           description mutants_B mutant_positions_B  mutant_count_B             resfile_B</span>
+<span class="go">0  TRPEEARERAWRLAEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  test_3lhp_binder_labeled_00001                                     0               mutants_0000.resfile</span>
+<span class="go">1  TRPEEERERAWRLMEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  test_3lhp_binder_labeled_00001_v0001  A6E,A14M  6,14               2               mutants_0001.resfile</span>
+<span class="go">2  TRPEEERERAWRLAEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  test_3lhp_binder_labeled_00001_v0002  A6E       6                  1               mutants_0002.resfile</span>
+<span class="go">3  TRPEEERERAWRLTEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  test_3lhp_binder_labeled_00001_v0003  A6E,A14T  6,14               2               mutants_0003.resfile</span>
+<span class="go">4  TRPEERRERAWRLMEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  test_3lhp_binder_labeled_00001_v0004  A6R,A14M  6,14               2               mutants_0004.resfile</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>
@@ -224,7 +224,7 @@ actually created</li>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

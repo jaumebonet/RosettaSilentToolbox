@@ -56,6 +56,7 @@ def multiple_distributions( df, fig, grid, values="*", titles=None, labels=None,
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.plot import multiple_distributions
@@ -69,6 +70,8 @@ def multiple_distributions( df, fig, grid, values="*", titles=None, labels=None,
 
         @savefig multiple_distributions_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
     if values == "*":
         values = df.select_dtypes(include=[np.number]).columns.tolist()

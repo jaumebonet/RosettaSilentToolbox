@@ -125,3 +125,5 @@ For this, we are going to load a different dataset in which this data is present
 
   @savefig tutorial_str_plt4.png width=5in
   In [9]: plt.show()
+
+  In [1]: plt.close('all')

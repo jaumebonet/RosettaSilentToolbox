@@ -130,6 +130,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.plot import sequence_frequency_plot
@@ -142,6 +143,8 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
 
         @savefig sequence_frequency_plot_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
 
     order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
@@ -395,6 +398,7 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.plot import per_residue_matrix_score_plot
@@ -413,7 +417,7 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
         @savefig per_residue_matrix_score_plot_docs.png width=5in
         In [2]: plt.show()
 
-
+        In [3]: plt.close()
     """
     if not isinstance(df, DesignSeries) or not df.has_reference_sequence(seqID):
         raise ValueError("Data must be a DesignSeries with reference for the requested seqID")
@@ -478,6 +482,7 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.plot import logo_plot
@@ -490,6 +495,8 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
 
         @savefig sequence_logo_plot_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
     def _letterAt( letter, x, y, yscale=1, ax=None, globscale=1.35,
                    LETTERS=None, COLOR_SCHEME=None ):

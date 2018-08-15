@@ -76,7 +76,7 @@ class DesignSeries( pd.Series, RSBaseDesign ):
     def __finalize__(self, other, method=None, **kwargs):
         if method == "inherit":
             # Avoid columns from DesignFrame to become DesignSeries
-            if not isinstance(self.name, int):
+            if not isinstance(self.name, (int, np.int64)):
                 return pd.Series(self)
 
         for name in self._metadata:

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -61,7 +61,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction.html#highlighted-works">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
@@ -178,7 +178,7 @@ the first position). Adding this <code class="docutils literal notranslate"><spa
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_shift</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[12]: </span><span class="go"></span>
+<span class="gh">Out[8]: </span><span class="go"></span>
 <span class="go">    score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD  cav_vol  driftRMSD  finalRMSD  packstat C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C</span>
 <span class="go">0 -64.070  0.608      12.0  7.585      4.0              3.301      1.0          0.957      66.602   0.083      3.323      0.544     no_motif       nubinitio_wauto_18326_2pw9C_0001_0001  [C]       [C]       [C]       TTWIKFFAGGTLVEEFEYSSVNWEEIEKRAWKKLGRWKKAEEGDLMIVYPDGKVVSWA</span>
 <span class="go">1 -70.981  0.639      12.0  2.410      8.0              1.423      1.0          0.737      0.000    0.094      1.395      0.552     no_motif       nubinitio_wauto_18326_2pw9C_0002_0001  [C]       [C]       [C]       NTWSTNILNGHPKITLLVEERGAEEIHLEWLKKQGLRKKAEENVYTTKLPNGAVKVYG</span>
@@ -202,15 +202,15 @@ with most of the popular plotting solutions in python, such as <code class="xref
 require an <a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a> as they only plot one figure. In the first case, the function will always return the <a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a> objects that
 it has generated inside the <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>. This way, one can always personalise all aspects of the plots.</p>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;svg.fonttype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span> <span class="c1"># When plt.savefig to &#39;svg&#39;, text is still text object</span>
-<span class="gp">   ....: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="gp">   ....: </span><span class="n">grid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
-<span class="gp">   ....: </span><span class="n">axes</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">multiple_distributions</span><span class="p">(</span> <span class="n">df</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">grid</span> <span class="p">)</span>
-<span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="gp">   ....: </span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;svg.fonttype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span> <span class="c1"># When plt.savefig to &#39;svg&#39;, text is still text object</span>
+<span class="gp">   ...: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">grid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="gp">   ...: </span><span class="n">axes</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">multiple_distributions</span><span class="p">(</span> <span class="n">df</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">grid</span> <span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">   ...: </span>
 
-<span class="gp">In [19]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [15]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_seq_plt1.png"><img alt="../_images/tutorial_seq_plt1.png" src="../_images/tutorial_seq_plt1.png" style="width: 10in;" /></a>
@@ -221,11 +221,11 @@ thus, that is the minimum number of cells necessary to plot.</p>
 </div>
 <p>The structure of the <a class="reference internal" href="../generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> is such that all one vs. one scores can directly be seen just be providing it to <code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code> (let’s just select
 some scores to minimize the final image):</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [20]: </span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
 <span class="gp">   ....: </span><span class="n">grid</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;packstat&#39;</span><span class="p">,</span> <span class="s1">&#39;cav_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;finalRMSD&#39;</span><span class="p">]])</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [22]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [18]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_seq_plt2.png"><img alt="../_images/tutorial_seq_plt2.png" src="../_images/tutorial_seq_plt2.png" style="width: 10in;" /></a>
@@ -240,11 +240,11 @@ some scores to minimize the final image):</p>
 same functions for sorting/selection that a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> can.</p>
 <p>Let’s make two populations: <code class="docutils literal notranslate"><span class="pre">df_cr</span></code> representing the <code class="docutils literal notranslate"><span class="pre">top</span> <span class="pre">10</span> <span class="pre">scored</span></code> decoys with a <code class="docutils literal notranslate"><span class="pre">cav_vol</span> <span class="pre">&lt;=</span> <span class="pre">10</span></code> and a <code class="docutils literal notranslate"><span class="pre">finalRMSD</span> <span class="pre">&lt;=</span> <span class="pre">1.5</span></code> and
 <code class="docutils literal notranslate"><span class="pre">df_sr</span></code> with the <code class="docutils literal notranslate"><span class="pre">top</span> <span class="pre">10</span> <span class="pre">scored</span></code> decoys with a <code class="docutils literal notranslate"><span class="pre">packstat</span> <span class="pre">&gt;=</span> <span class="pre">0.6</span></code> and a <code class="docutils literal notranslate"><span class="pre">finalRMSD</span> <span class="pre">&lt;=</span> <span class="pre">1.5</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="n">df_cr</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;cav_vol&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;finalRMSD&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.5</span><span class="p">)]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [19]: </span><span class="n">df_cr</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;cav_vol&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;finalRMSD&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.5</span><span class="p">)]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">   ....: </span><span class="n">df_sr</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;packstat&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.6</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;finalRMSD&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.5</span><span class="p">)]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">   ....: </span><span class="n">df_cr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[25]: </span><span class="go">10</span>
+<span class="gh">Out[21]: </span><span class="go">10</span>
 </pre></div>
 </div>
 </div>
@@ -252,26 +252,26 @@ same functions for sorting/selection that a <a class="reference external" href="
 <h2>Identification of Mutants<a class="headerlink" href="#identification-of-mutants" title="Permalink to this headline">¶</a></h2>
 <p>Identifying the mutations present in a population can be key to understand the sequence signatures behind the designs. It might be also a good starting point for new sets of designs
 as is explained in <a class="reference internal" href="new_mutants.html#new-mutants"><span class="std std-ref">Generation of New Variants</span></a>. Data referring to the identity and similarity with a <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> is can easily be obtained by simple request:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [26]: </span><span class="n">df_sr</span> <span class="o">=</span> <span class="n">df_sr</span><span class="o">.</span><span class="n">identify_mutants</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [22]: </span><span class="n">df_sr</span> <span class="o">=</span> <span class="n">df_sr</span><span class="o">.</span><span class="n">identify_mutants</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[27]: </span><span class="go"></span>
+<span class="gh">Out[23]: </span><span class="go"></span>
 <span class="go">      score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD  cav_vol  driftRMSD  finalRMSD  packstat C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C                                                                                                                                                                                                  mutants_C                                                                                                     mutant_positions_C  mutant_count_C</span>
 <span class="go">298 -98.585  0.569      7.0   1.995      8.0              1.206      2.0          1.606      25.485   0.078      1.272      0.567     no_motif       nubinitio_wauto_18326_2pw9C_0303_0001  [C]       [C]       [C]       NTWLVVMFNGVPIIVVLSNKPGEKEYAKELLKKQGVLKKAEEGKKIIVFPKGYILIAA  E1N,P3W,Y4L,A5V,I6V,A7M,L8F,D10G,R11V,V12P,G14I,S15V,S16V,M17L,V18S,L19N,P20K,V21P,D22G,L23E,E24K,F26Y,G27A,A28K,G29E,F30L,F32K,G33K,Y36V,I37L,I43G,R44K,E45K,L47I,C49F,Q51K,R53Y,S55L,V56I,Y57A           1,3,4,5,6,7,8,10,11,12,14,15,16,17,18,19,20,21,22,23,24,26,27,28,29,30,32,33,36,37,43,44,45,47,49,51,53,55,56,57       40            </span>
 <span class="go">94  -96.711  0.596      10.0  2.643      7.0              1.445      1.0          0.979      62.254   0.090      1.447      0.554     no_motif       nubinitio_wauto_18326_2pw9C_0096_0001  [C]       [C]       [C]       KQWFYVVLRGVLITVLLLTGDNELERGKAMLKKLGLLKKAEEDIYIMYLPNGWIIIYG  E1K,T2Q,P3W,Y4F,A5Y,I6V,A7V,N9R,D10G,R11V,V12L,G14T,S15V,S16L,M17L,V18L,L19T,P20G,V21D,D22N,L23E,E24L,F26R,A28K,G29A,F30M,F32K,G33K,Q34L,Y36L,I37L,I43D,R44I,E45Y,L47M,V48Y,C49L,Q51N,R53W,S55I,V56I,A58G  1,2,3,4,5,6,7,9,10,11,12,14,15,16,17,18,19,20,21,22,23,24,26,28,29,30,32,33,34,36,37,43,44,45,47,48,49,51,53,55,56,58  42            </span>
 </pre></div>
 </div>
 <p>Thanks to this quick identification, it is easy to select decoys with a particular sequence signature of interest through <a class="reference internal" href="../generated/DesignFrame/rstoolbox.components.DesignFrame.get_sequence_with.html#rstoolbox.components.DesignFrame.get_sequence_with" title="rstoolbox.components.DesignFrame.get_sequence_with"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DesignFrame.get_sequence_with()</span></code></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [28]: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">get_sequence_with</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">)))</span>
-<span class="gh">Out[28]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [24]: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">get_sequence_with</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">)))</span>
+<span class="gh">Out[24]: </span><span class="go"></span>
 <span class="go">     score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD  cav_vol  driftRMSD  finalRMSD  packstat C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C                                                                                                                                                                                                  mutants_C                                                                                                     mutant_positions_C  mutant_count_C</span>
 <span class="go">94 -96.711  0.596      10.0  2.643      7.0              1.445      1.0          0.979      62.254   0.09       1.447      0.554     no_motif       nubinitio_wauto_18326_2pw9C_0096_0001  [C]       [C]       [C]       KQWFYVVLRGVLITVLLLTGDNELERGKAMLKKLGLLKKAEEDIYIMYLPNGWIIIYG  E1K,T2Q,P3W,Y4F,A5Y,I6V,A7V,N9R,D10G,R11V,V12L,G14T,S15V,S16L,M17L,V18L,L19T,P20G,V21D,D22N,L23E,E24L,F26R,A28K,G29A,F30M,F32K,G33K,Q34L,Y36L,I37L,I43D,R44I,E45Y,L47M,V48Y,C49L,Q51N,R53W,S55I,V56I,A58G  1,2,3,4,5,6,7,9,10,11,12,14,15,16,17,18,19,20,21,22,23,24,26,28,29,30,32,33,34,36,37,43,44,45,47,48,49,51,53,55,56,58  42            </span>
 </pre></div>
 </div>
 <p>One important issue when selecting which decoys will move to the next round or be selected for experimental validation is the sequence distance between them,
 to avoid (unless wanted) to try too similar designs, or even to compare the sequences between two different selection criterias:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [29]: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">sequence_distance</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
-<span class="gh">Out[29]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [25]: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">sequence_distance</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gh">Out[25]: </span><span class="go"></span>
 <span class="go">                                       nubinitio_wauto_18326_2pw9C_0303_0001  nubinitio_wauto_18326_2pw9C_0096_0001  nubinitio_wauto_18326_2pw9C_0448_0001  nubinitio_wauto_18326_2pw9C_0516_0001  nubinitio_wauto_18326_2pw9C_0501_0001  nubinitio_wauto_18326_2pw9C_0198_0001  nubinitio_wauto_18326_2pw9C_0563_0001  nubinitio_wauto_18326_2pw9C_0298_0001  nubinitio_wauto_18326_2pw9C_0521_0001  nubinitio_wauto_18326_2pw9C_0437_0001</span>
 <span class="go">nubinitio_wauto_18326_2pw9C_0303_0001  0                                      33                                     37                                     34                                     35                                     29                                     41                                     40                                     35                                     40                                   </span>
 <span class="go">nubinitio_wauto_18326_2pw9C_0096_0001  33                                     0                                      35                                     38                                     44                                     38                                     42                                     42                                     39                                     37                                   </span>
@@ -285,8 +285,8 @@ to avoid (unless wanted) to try too similar designs, or even to compare the sequ
 <span class="go">nubinitio_wauto_18326_2pw9C_0437_0001  40                                     37                                     37                                     34                                     35                                     35                                     34                                     34                                     35                                     0                                    </span>
 </pre></div>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [30]: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">sequence_distance</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">df_cr</span><span class="p">)</span>
-<span class="gh">Out[30]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [26]: </span><span class="n">df_sr</span><span class="o">.</span><span class="n">sequence_distance</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">df_cr</span><span class="p">)</span>
+<span class="gh">Out[26]: </span><span class="go"></span>
 <span class="go">                                       nubinitio_wauto_18326_2pw9C_0147_0001  nubinitio_wauto_18326_2pw9C_0387_0001  nubinitio_wauto_18326_2pw9C_0191_0001  nubinitio_wauto_18326_2pw9C_0136_0001  nubinitio_wauto_18326_2pw9C_0134_0001  nubinitio_wauto_18326_2pw9C_0499_0001  nubinitio_wauto_18326_2pw9C_0372_0001  nubinitio_wauto_18326_2pw9C_0206_0001  nubinitio_wauto_18326_2pw9C_0067_0001  nubinitio_wauto_18326_2pw9C_0441_0001</span>
 <span class="go">nubinitio_wauto_18326_2pw9C_0303_0001  36                                     35                                     41                                     36                                     41                                     40                                     41                                     39                                     38                                     40                                   </span>
 <span class="go">nubinitio_wauto_18326_2pw9C_0096_0001  39                                     45                                     40                                     39                                     35                                     37                                     38                                     39                                     42                                     45                                   </span>
@@ -307,48 +307,48 @@ to avoid (unless wanted) to try too similar designs, or even to compare the sequ
 <ul class="simple">
 <li>Through a <a class="reference internal" href="../generated/rstoolbox.plot.sequence_frequency_plot.html#rstoolbox.plot.sequence_frequency_plot" title="rstoolbox.plot.sequence_frequency_plot"><code class="xref py py-func docutils literal notranslate"><span class="pre">sequence_frequency_plot()</span></code></a>:</li>
 </ul>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [31]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [27]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">sequence_frequency_plot</span><span class="p">(</span><span class="n">df_cr</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [34]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [30]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_seq_plt3.png"><img alt="../_images/tutorial_seq_plt3.png" src="../_images/tutorial_seq_plt3.png" style="width: 10in;" /></a>
 <ul class="simple">
 <li>As a <a class="reference internal" href="../generated/rstoolbox.plot.logo_plot.html#rstoolbox.plot.logo_plot" title="rstoolbox.plot.logo_plot"><code class="xref py py-func docutils literal notranslate"><span class="pre">logo_plot()</span></code></a> (let’s see here only for the labeled region <code class="docutils literal notranslate"><span class="pre">SSE03</span></code>):</li>
 </ul>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [35]: </span><span class="n">sse03</span> <span class="o">=</span> <span class="n">df_cr</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="s1">&#39;SSE03&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [31]: </span><span class="n">sse03</span> <span class="o">=</span> <span class="n">df_cr</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="s1">&#39;SSE03&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">   ....: </span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">logo_plot</span><span class="p">(</span><span class="n">df_cr</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">key_residues</span><span class="o">=</span><span class="n">sse03</span><span class="p">)</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [37]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [33]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_seq_plt4.png"><img alt="../_images/tutorial_seq_plt4.png" src="../_images/tutorial_seq_plt4.png" style="width: 10in;" /></a>
 <ul class="simple">
 <li>As a <a class="reference internal" href="../generated/rstoolbox.analysis.positional_sequence_similarity.html#rstoolbox.analysis.positional_sequence_similarity" title="rstoolbox.analysis.positional_sequence_similarity"><code class="xref py py-func docutils literal notranslate"><span class="pre">positional_sequence_similarity()</span></code></a> (defaults to <code class="docutils literal notranslate"><span class="pre">BLOSUM62</span></code> similarity matrix):</li>
 </ul>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [38]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [34]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">seqsim</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">positional_sequence_similarity</span><span class="p">(</span><span class="n">df_cr</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">positional_sequence_similarity_plot</span><span class="p">(</span><span class="n">seqsim</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [42]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [38]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_seq_plt5.png"><img alt="../_images/tutorial_seq_plt5.png" src="../_images/tutorial_seq_plt5.png" style="width: 10in;" /></a>
 <ul class="simple">
 <li>And, finally, as an alignment with <a class="reference internal" href="../generated/rstoolbox.plot.plot_alignment.html#rstoolbox.plot.plot_alignment" title="rstoolbox.plot.plot_alignment"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_alignment()</span></code></a>:</li>
 </ul>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [43]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [39]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_alignment</span><span class="p">(</span><span class="n">df_cr</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [46]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [42]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_seq_plt6.png"><img alt="../_images/tutorial_seq_plt6.png" src="../_images/tutorial_seq_plt6.png" style="width: 10in;" /></a>
@@ -363,10 +363,12 @@ in this case we will highlight the MOTIF <code class="docutils literal notransla
 <span class="gp">   ...: </span>
 
 <span class="gp">In [7]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="gp">In [8]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_seq_plt7.png"><img alt="../_images/tutorial_seq_plt7.png" src="../_images/tutorial_seq_plt7.png" style="width: 10in;" /></a>
-<span class="target" id="definitions"></span></div>
+</div>
 </div>
 
 
@@ -385,7 +387,7 @@ in this case we will highlight the MOTIF <code class="docutils literal notransla
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

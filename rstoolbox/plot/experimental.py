@@ -70,6 +70,7 @@ def plot_96wells(cdata=None, sdata=None, bdata=None, bcolors=None, bmeans=None, 
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.plot import plot_96wells
            ...: import numpy as np
@@ -82,6 +83,8 @@ def plot_96wells(cdata=None, sdata=None, bdata=None, bcolors=None, bmeans=None, 
 
         @savefig plot_96wells_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
 
     # Changes in one of this parameters should change others to ensure size fit.
@@ -249,6 +252,7 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None,
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.plot import plot_thermal_melt
            ...: import numpy as np
@@ -262,6 +266,7 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None,
         @savefig plot_tmelt_docs.png width=5in
         In [2]: plt.show()
 
+        In [3]: plt.close()
     """
     if fusion_temperature:
         try:
@@ -363,6 +368,7 @@ def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_ti
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.plot import plot_MALS
            ...: import numpy as np
@@ -375,6 +381,8 @@ def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_ti
 
         @savefig plot_mals_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
     if lscolor is not False:
         if isinstance(lscolor, int):
@@ -455,6 +463,7 @@ def plot_CD( df, ax, color=None, wavelengths=None, sample=None  ):
     .. rubric:: Example - Single Tabulated Data File
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.plot import plot_CD
            ...: import numpy as np
@@ -483,6 +492,8 @@ def plot_CD( df, ax, color=None, wavelengths=None, sample=None  ):
 
         @savefig plot_cd2_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close('all')
     """
     from rstoolbox.io.experimental import CDFrame
 
@@ -561,6 +572,7 @@ def plot_SPR( df, ax, datacolor=0, fitcolor=0, max_time=None, max_response=None 
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import read_SPR
            ...: from rstoolbox.plot import plot_SPR
@@ -575,6 +587,7 @@ def plot_SPR( df, ax, datacolor=0, fitcolor=0, max_time=None, max_response=None 
         @savefig plot_spr_docs.png width=5in
         In [2]: plt.show()
 
+        In [3]: plt.close()
     """
     if isinstance(datacolor, int):
         datacolor = sns.color_palette()[datacolor]

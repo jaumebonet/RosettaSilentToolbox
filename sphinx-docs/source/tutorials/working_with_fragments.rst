@@ -38,8 +38,8 @@ and it will generate a file named similarly to the original fragments file name.
 
 .. ipython::
 
-   In [2]: df3 = df3.add_quality_measure(None)
-      ...: df9 = df9.add_quality_measure(None)
+  In [2]: df3 = df3.add_quality_measure(None)
+     ...: df9 = df9.add_quality_measure(None)
 
 Plotting Fragments
 ------------------
@@ -49,12 +49,14 @@ with this data, one can :func:`.plot_fragment_profiles`
 
 .. ipython::
 
-   In [3]: import matplotlib.pyplot as plt
-      ...: fig = plt.figure(figsize=(25, 10))
-      ...: seq = "ETPYAIALNDRVIGSSMVLPVDLEEFGAGFLFGQGYIKKAEEIREILVCPQGRISVYA"
-      ...: sse = "LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL"
-      ...: axs = rs.plot.plot_fragment_profiles(fig, df3, df9, seq, sse)
-      ...: plt.tight_layout()
+  In [3]: import matplotlib.pyplot as plt
+     ...: fig = plt.figure(figsize=(25, 10))
+     ...: seq = "ETPYAIALNDRVIGSSMVLPVDLEEFGAGFLFGQGYIKKAEEIREILVCPQGRISVYA"
+     ...: sse = "LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL"
+     ...: axs = rs.plot.plot_fragment_profiles(fig, df3, df9, seq, sse)
+     ...: plt.tight_layout()
 
-   @savefig tutorial_frag_plt1.png width=5in
-   In [4]: plt.show()
+  @savefig tutorial_frag_plt1.png width=5in
+  In [4]: plt.show()
+
+  In [5]: plt.close('all')

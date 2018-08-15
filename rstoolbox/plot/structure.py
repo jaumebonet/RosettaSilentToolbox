@@ -68,6 +68,7 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.analysis import positional_structural_count
@@ -88,6 +89,8 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
 
         @savefig plot_positional_structural_similarity.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
 
     # Color management
@@ -145,6 +148,7 @@ def plot_ramachandran( df, seqID, fig):
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: import rstoolbox as rb
            ...: import pandas as pd
@@ -166,6 +170,8 @@ def plot_ramachandran( df, seqID, fig):
 
         @savefig plot_ramachandran.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
     # Data type management.
     if not isinstance(df, (pd.Series, DesignSeries)):
@@ -293,6 +299,7 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     .. rubric:: Example1
 
     .. ipython::
+        :okwarning:
 
         In [1]: import rstoolbox as rb
            ...: import pandas as pd
@@ -319,6 +326,7 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     .. rubric:: Example2
 
     .. ipython::
+        :okwarning:
 
         In [3]: import rstoolbox as rb
            ...: import pandas as pd
@@ -342,6 +350,8 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
 
         @savefig plot_dssp_vs_psipred_multi.png width=5in
         In [4]: plt.show()
+
+        In [3]: plt.close('all')
     """
     # Data type management.
     if not isinstance(df, pd.Series):

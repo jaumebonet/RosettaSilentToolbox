@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -61,7 +61,7 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../introduction.html#highlighted-works">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
@@ -159,7 +159,7 @@ decoys with multiple chains (designed or not), and, thus, analysis must be calle
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_shift</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[12]: </span><span class="go"></span>
+<span class="gh">Out[8]: </span><span class="go"></span>
 <span class="go">    score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD  cav_vol  driftRMSD  finalRMSD  packstat C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C                                                 structure_C                           phi_C                             psi_C</span>
 <span class="go">0 -64.070  0.608      12.0  7.585      4.0              3.301      1.0          0.957      66.602   0.083      3.323      0.544     no_motif       nubinitio_wauto_18326_2pw9C_0001_0001  [C]       [C]       [C]       TTWIKFFAGGTLVEEFEYSSVNWEEIEKRAWKKLGRWKKAEEGDLMIVYPDGKVVSWA  LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL  [0.0, -143.01, -92.3838, ...]   [163.023, 142.263, 136.923, ...]</span>
 <span class="go">1 -70.981  0.639      12.0  2.410      8.0              1.423      1.0          0.737      0.000    0.094      1.395      0.552     no_motif       nubinitio_wauto_18326_2pw9C_0002_0001  [C]       [C]       [C]       NTWSTNILNGHPKITLLVEERGAEEIHLEWLKKQGLRKKAEENVYTTKLPNGAVKVYG  LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHLLLLLLLLLLLEEEELLLLLEEEEL  [0.0, -144.628, -82.9913, ...]  [109.954, 146.837, 129.948, ...]</span>
@@ -171,12 +171,12 @@ decoys with multiple chains (designed or not), and, thus, analysis must be calle
 <h2>Select by Structural Properties<a class="headerlink" href="#select-by-structural-properties" title="Permalink to this headline">¶</a></h2>
 <p>One of the most obvious assessments is the calculation of percentages of secondary structure. We can even use that to pre-select decoys. For example,
 let’s assume that we want to make sure that strand 5 (<code class="docutils literal notranslate"><span class="pre">SSE05</span></code>) from the selected labels is mostly still a strand after our design protocol:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="n">sse05</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="s1">&#39;SSE05&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">   ....: </span><span class="n">df</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">secondary_structure_percentage</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">sse05</span><span class="p">)</span>
-<span class="gp">   ....: </span><span class="n">dfsse</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;structure_C_E&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">]</span>
-<span class="gp">   ....: </span><span class="n">dfsse</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="gp">   ....: </span>
-<span class="gh">Out[16]: </span><span class="go"></span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">sse05</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="s1">&#39;SSE05&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">secondary_structure_percentage</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">sse05</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">dfsse</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;structure_C_E&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">]</span>
+<span class="gp">   ...: </span><span class="n">dfsse</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[12]: </span><span class="go"></span>
 <span class="go">    score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD  cav_vol  driftRMSD  finalRMSD  packstat C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C                                                 structure_C                           phi_C                             psi_C  structure_C_H  structure_C_E  structure_C_L</span>
 <span class="go">2 -43.863  0.480      8.0   4.279      6.0              2.110      1.0          0.819      93.641   0.110      2.106      0.575     no_motif       nubinitio_wauto_18326_2pw9C_0003_0001  [C]       [C]       [C]       PRWFIAMGDGVIWEIVLGSEQNLEEIAKKGLKRRGLYKKAEESIYTIIYPDGIAHTFG  LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL  [0.0, -143.373, -78.9875, ...]  [141.285, 139.737, 129.8, ...]    0.0            0.833333       0.166667     </span>
 <span class="go">3 -75.847  0.454      7.0   3.112      8.0              1.746      1.0          1.629      39.232   0.083      1.734      0.644     no_motif       nubinitio_wauto_18326_2pw9C_0004_0001  [C]       [C]       [C]       PYEWVFIINGVPQTTWNHPPTKMEELEKFARKKGGSSKKAEEGKFAIIIWKGYFIVSD  LLLEEEEELLEEEEEELLLLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL  [0.0, -130.948, -160.432, ...]  [141.392, 174.651, 115.305, ...]  0.0            0.833333       0.166667     </span>
@@ -185,13 +185,13 @@ let’s assume that we want to make sure that strand 5 (<code class="docutils li
 </div>
 <p>Or that we want to check if there is a correlation between the final score of our decoys and the level of conservation of strand 5
 (which does not seem to be the case):</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;svg.fonttype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span> <span class="c1"># When plt.savefig to &#39;svg&#39;, text is still text object</span>
 <span class="gp">   ....: </span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
 <span class="gp">   ....: </span><span class="n">grid</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;structure_C_E&#39;</span><span class="p">]])</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [21]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [17]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_str_plt1.png"><img alt="../_images/tutorial_str_plt1.png" src="../_images/tutorial_str_plt1.png" style="width: 7in;" /></a>
@@ -200,14 +200,14 @@ let’s assume that we want to make sure that strand 5 (<code class="docutils li
 <h2>Visualise Structural Data<a class="headerlink" href="#visualise-structural-data" title="Permalink to this headline">¶</a></h2>
 <p>The most global view, would be to see for all the population how often the expected secondary structure is retrieved with
 <a class="reference internal" href="../generated/rstoolbox.plot.positional_structural_similarity_plot.html#rstoolbox.plot.positional_structural_similarity_plot" title="rstoolbox.plot.positional_structural_similarity_plot"><code class="xref py py-func docutils literal notranslate"><span class="pre">positional_structural_similarity_plot()</span></code></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [22]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [18]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">sseid1</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">positional_structural_count</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span><span class="n">sseid2</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">positional_structural_identity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">positional_structural_similarity_plot</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">sseid1</span><span class="p">,</span> <span class="n">sseid2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [27]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [23]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_str_plt2.png"><img alt="../_images/tutorial_str_plt2.png" src="../_images/tutorial_str_plt2.png" style="width: 10in;" /></a>
@@ -219,18 +219,18 @@ scored decoy under the <a class="reference internal" href="../generated/rstoolbo
 <p class="last">Dihedral angles are also obtained through <a class="reference external" href="https://www.rosettacommons.org/docs/latest/scripting_documentation/RosettaScripts/xsd/mover_WriteSSEMover_type">WriteSSEMover</a>,
 but they can easily be added by parsing them into a list and adding them to the <a class="reference internal" href="../generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> with the column name <code class="docutils literal notranslate"><span class="pre">psi_&lt;seqID&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">phi_&lt;seqID&gt;</span></code>.</p>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [28]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [24]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_ramachandran</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">fig</span><span class="p">)</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [30]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [26]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_str_plt3.png"><img alt="../_images/tutorial_str_plt3.png" src="../_images/tutorial_str_plt3.png" style="width: 10in;" /></a>
 <p>Finally, one can compare the actual DSSP assignation against PSIPRED’s sequence-based secondary structure prediction. This can give an idea of the feasibility of the sequence to actually
 fold in the expected conformation.</p>
 <p>For this, we are going to load a different dataset in which this data is present.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [31]: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [27]: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="gp">   ....: </span><span class="n">rules</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;scores&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">],</span> <span class="s2">&quot;psipred&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;structure&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;dihedrals&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span> <span class="p">}</span>
 <span class="gp">   ....: </span><span class="n">df2</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_3ssepred.minisilent.gz&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
 <span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -239,11 +239,13 @@ fold in the expected conformation.</p>
 <span class="gp">   ....: </span><span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
 <span class="gp">   ....: </span>
 
-<span class="gp">In [38]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [34]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="gp">In [35]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_str_plt4.png"><img alt="../_images/tutorial_str_plt4.png" src="../_images/tutorial_str_plt4.png" style="width: 5in;" /></a>
-<span class="target" id="definitions"></span></div>
+</div>
 </div>
 
 
@@ -262,7 +264,7 @@ fold in the expected conformation.</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

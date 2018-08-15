@@ -216,3 +216,5 @@ in this case we will highlight the MOTIF ``region`` of interest and ``SSE05``:
 
    @savefig tutorial_seq_plt7.png width=10in
    In [8]: plt.show()
+
+   In [9]: plt.close('all')
