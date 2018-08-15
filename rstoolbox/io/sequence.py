@@ -459,7 +459,7 @@ def read_hmmsearch( filename ):
                         seq += line.strip().split()[2]
                         continue
 
-        if seq != '' and nohits == None:
+        if seq != '' and nohits is None:
             dat2['sequence'].append(seq)
         if nohits == True:
             df = pd.DataFrame(cols)
@@ -470,9 +470,10 @@ def read_hmmsearch( filename ):
             if pd.DataFrame(dat2).empty or pd.DataFrame(data).empty:
                 continue
             df = pd.merge(pd.DataFrame(data), pd.DataFrame(dat2),
-                            on=onid, how='outer').fillna(0)
+                          on=onid, how='outer').fillna(0)
         dfs.append(df)
     return pd.concat(dfs, sort=True)
+
 
 def mlcs(strings):
     """Return a long common subsequence of the strings.
