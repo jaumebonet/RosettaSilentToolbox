@@ -325,7 +325,7 @@ def read_hmmsearch( filename ):
     **dom-bias**          Bias for best scored domain.
     **dom-exp**           Expected number of domains.
     **dom-N**             Actual number of domains.
-    **sequence**          Part of the sequence aligned.
+    **sequence**          Part of the sequence aligned on its own.
     ====================  ===================================================
 
     It will include more columns related with the alignment data itself.
