@@ -82,7 +82,16 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Compare Decoy Populations</a></li>
+<li><a class="reference internal" href="#">Compare Decoy Populations</a><ul>
+<li><a class="reference internal" href="#merging-populations">Merging Populations</a><ul>
+<li><a class="reference internal" href="#the-two-populations-should-share-column-names">The two populations should share column names</a></li>
+<li><a class="reference internal" href="#there-must-be-a-column-to-identify-to-which-population-each-decoy-belongs">There must be a column to identify to which population each decoy belongs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#comparing-basic-scores">Comparing Basic Scores</a></li>
+<li><a class="reference internal" href="#sequence-distances">Sequence Distances</a></li>
+</ul>
+</li>
 </ul>
 </ul>
 </li>
@@ -114,6 +123,207 @@
       
   <div class="section" id="compare-decoy-populations">
 <span id="population-comparison"></span><h1>Compare Decoy Populations<a class="headerlink" href="#compare-decoy-populations" title="Permalink to this headline">¶</a></h1>
+<p>Comparing features between populations is one of the best ways to benchmark different conditions in an experiment.</p>
+<p>This example works over two populations designed in the same manner, with the only difference that one was performed in the presence of a binder while the other
+was design alone.</p>
+<blockquote>
+<div>We are ignoring some scores to facilitate general reading, but this particularity is not mentioned any more during the tutorial. Similarly, we are using only a sample of the 20K
+available sequences on each decoy population.</div></blockquote>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">rstoolbox</span> <span class="kn">as</span> <span class="nn">rs</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_seq_items&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">binder</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s1">&#39;../rstoolbox/tests/data/compare/binder.mini.gz&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;scores_ignore&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;fa_*&#39;</span><span class="p">,</span> <span class="s1">&#39;dslf_fa13&#39;</span><span class="p">,</span> <span class="s1">&#39;yhh_planarity&#39;</span><span class="p">,</span> <span class="s1">&#39;pro_close&#39;</span><span class="p">]})</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">binder</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[8]: </span><span class="go"></span>
+<span class="go">array([&#39;score&#39;, &#39;hbond_sr_bb&#39;, &#39;hbond_lr_bb&#39;, &#39;hbond_bb_sc&#39;, &#39;hbond_sc&#39;,</span>
+<span class="go">       &#39;rama&#39;, &#39;omega&#39;, &#39;p_aa_pp&#39;, &#39;ref&#39;, &#39;BUNS&#39;, &#39;B_ni_mtcontacts&#39;,</span>
+<span class="go">       &#39;B_ni_rmsd&#39;, &#39;B_ni_rmsd_threshold&#39;, &#39;B_ni_trials&#39;, &#39;GRMSD2Target&#39;,</span>
+<span class="go">       &#39;GRMSD2Template&#39;, &#39;LRMSD2Target&#39;, &#39;LRMSDH2Target&#39;,</span>
+<span class="go">       &#39;LRMSDLH2Target&#39;, &#39;cav_vol&#39;, &#39;design_score&#39;, &#39;packstat&#39;,</span>
+<span class="go">       &#39;rmsd_drift&#39;, &#39;description&#39;, &#39;sequence_B&#39;], dtype=object)</span>
+
+<span class="gp">In [9]: </span><span class="n">nobinder</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s1">&#39;../rstoolbox/tests/data/compare/nobinder.mini.gz&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;scores_ignore&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;fa_*&#39;</span><span class="p">,</span> <span class="s1">&#39;dslf_fa13&#39;</span><span class="p">,</span> <span class="s1">&#39;yhh_planarity&#39;</span><span class="p">,</span> <span class="s1">&#39;pro_close&#39;</span><span class="p">]})</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">nobinder</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span>
+<span class="gp">   ...: </span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                            Out[10]: </span>
+<span class="go">array([&#39;score&#39;, &#39;hbond_sr_bb&#39;, &#39;hbond_lr_bb&#39;, &#39;hbond_bb_sc&#39;, &#39;hbond_sc&#39;,</span>
+<span class="go">       &#39;rama&#39;, &#39;omega&#39;, &#39;p_aa_pp&#39;, &#39;ref&#39;, &#39;BUNS&#39;, &#39;B_ni_mtcontacts&#39;,</span>
+<span class="go">       &#39;B_ni_rmsd&#39;, &#39;B_ni_rmsd_threshold&#39;, &#39;B_ni_trials&#39;, &#39;GRMSD2Target&#39;,</span>
+<span class="go">       &#39;GRMSD2Template&#39;, &#39;LRMSD2Target&#39;, &#39;LRMSDH2Target&#39;,</span>
+<span class="go">       &#39;LRMSDLH2Target&#39;, &#39;cav_vol&#39;, &#39;design_score&#39;, &#39;packstat&#39;,</span>
+<span class="go">       &#39;rmsd_drift&#39;, &#39;description&#39;, &#39;sequence_B&#39;], dtype=object)</span>
+</pre></div>
+</div>
+<div class="section" id="merging-populations">
+<h2>Merging Populations<a class="headerlink" href="#merging-populations" title="Permalink to this headline">¶</a></h2>
+<p>Merging populations is a very useful way to a take advantage of the plotting and analysis tools compatible with <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> derived objects. In order
+for it to be useful and possible, two conditions must meet:</p>
+<div class="section" id="the-two-populations-should-share-column-names">
+<h3>The two populations should share column names<a class="headerlink" href="#the-two-populations-should-share-column-names" title="Permalink to this headline">¶</a></h3>
+<p>Not all, but sure for those that are expected to be analysed comparatively. When they all come from a same experiment, that is relatively easy to obtain in the setup. otherwise, one can use the rename option to fix that.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [11]: </span><span class="n">binder</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;score&#39;</span><span class="p">:</span> <span class="s1">&#39;renamed_score&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span>
+<span class="gh">Out[11]: </span><span class="go"></span>
+<span class="go">array([&#39;renamed_score&#39;, &#39;hbond_sr_bb&#39;, &#39;hbond_lr_bb&#39;, &#39;hbond_bb_sc&#39;,</span>
+<span class="go">       &#39;hbond_sc&#39;, &#39;rama&#39;, &#39;omega&#39;, &#39;p_aa_pp&#39;, &#39;ref&#39;, &#39;BUNS&#39;,</span>
+<span class="go">       &#39;B_ni_mtcontacts&#39;, &#39;B_ni_rmsd&#39;, &#39;B_ni_rmsd_threshold&#39;,</span>
+<span class="go">       &#39;B_ni_trials&#39;, &#39;GRMSD2Target&#39;, &#39;GRMSD2Template&#39;, &#39;LRMSD2Target&#39;,</span>
+<span class="go">       &#39;LRMSDH2Target&#39;, &#39;LRMSDLH2Target&#39;, &#39;cav_vol&#39;, &#39;design_score&#39;,</span>
+<span class="go">       &#39;packstat&#39;, &#39;rmsd_drift&#39;, &#39;description&#39;, &#39;sequence_B&#39;],</span>
+<span class="go">      dtype=object)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="there-must-be-a-column-to-identify-to-which-population-each-decoy-belongs">
+<h3>There must be a column to identify to which population each decoy belongs<a class="headerlink" href="#there-must-be-a-column-to-identify-to-which-population-each-decoy-belongs" title="Permalink to this headline">¶</a></h3>
+<p>In this example, none exist. But if we take a look at the naming of the decoys:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [12]: </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;{0} &lt;-&gt; {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">binder</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">],</span> <span class="n">nobinder</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">]))</span>
+<span class="go">classicFFL_FFL_binder_motif_DesignRelax_noaa_pack_61240_3lhp_0215 &lt;-&gt; classicFFL_FFL_nobinder_motif_DesignRelax_noaa_40077_3lhp_0406</span>
+</pre></div>
+</div>
+<p>We could see that, by loading the data not with the <a class="reference internal" href="readrosetta.html#readrosetta"><span class="std std-ref">definition</span></a> <code class="docutils literal notranslate"><span class="pre">{'sequence':</span> <span class="pre">'B'}</span></code> but with <code class="docutils literal notranslate"><span class="pre">{'sequence':</span> <span class="pre">'B',</span> <span class="pre">'naming':</span> <span class="pre">['',</span> <span class="pre">'',</span> <span class="pre">'condition']}</span></code> we would
+have automatically obtained a column <code class="docutils literal notranslate"><span class="pre">condition</span></code> defining the binder presence.
+As we did not do that, or in case that would not be possible, we will just add an extra column.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="n">binder</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">binder</span><span class="p">,</span> <span class="s1">&#39;condition&#39;</span><span class="p">,</span> <span class="s1">&#39;binder&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">binder</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[14]: </span><span class="go"></span>
+<span class="go">array([&#39;score&#39;, &#39;hbond_sr_bb&#39;, &#39;hbond_lr_bb&#39;, &#39;hbond_bb_sc&#39;, &#39;hbond_sc&#39;,</span>
+<span class="go">       &#39;rama&#39;, &#39;omega&#39;, &#39;p_aa_pp&#39;, &#39;ref&#39;, &#39;BUNS&#39;, &#39;B_ni_mtcontacts&#39;,</span>
+<span class="go">       &#39;B_ni_rmsd&#39;, &#39;B_ni_rmsd_threshold&#39;, &#39;B_ni_trials&#39;, &#39;GRMSD2Target&#39;,</span>
+<span class="go">       &#39;GRMSD2Template&#39;, &#39;LRMSD2Target&#39;, &#39;LRMSDH2Target&#39;,</span>
+<span class="go">       &#39;LRMSDLH2Target&#39;, &#39;cav_vol&#39;, &#39;design_score&#39;, &#39;packstat&#39;,</span>
+<span class="go">       &#39;rmsd_drift&#39;, &#39;description&#39;, &#39;sequence_B&#39;, &#39;condition&#39;],</span>
+<span class="go">      dtype=object)</span>
+
+<span class="gp">In [15]: </span><span class="n">nobinder</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="n">nobinder</span><span class="p">,</span> <span class="s1">&#39;condition&#39;</span><span class="p">,</span> <span class="s1">&#39;nobinder&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">nobinder</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span>
+<span class="gp">   ....: </span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                Out[16]: </span>
+<span class="go">array([&#39;score&#39;, &#39;hbond_sr_bb&#39;, &#39;hbond_lr_bb&#39;, &#39;hbond_bb_sc&#39;, &#39;hbond_sc&#39;,</span>
+<span class="go">       &#39;rama&#39;, &#39;omega&#39;, &#39;p_aa_pp&#39;, &#39;ref&#39;, &#39;BUNS&#39;, &#39;B_ni_mtcontacts&#39;,</span>
+<span class="go">       &#39;B_ni_rmsd&#39;, &#39;B_ni_rmsd_threshold&#39;, &#39;B_ni_trials&#39;, &#39;GRMSD2Target&#39;,</span>
+<span class="go">       &#39;GRMSD2Template&#39;, &#39;LRMSD2Target&#39;, &#39;LRMSDH2Target&#39;,</span>
+<span class="go">       &#39;LRMSDLH2Target&#39;, &#39;cav_vol&#39;, &#39;design_score&#39;, &#39;packstat&#39;,</span>
+<span class="go">       &#39;rmsd_drift&#39;, &#39;description&#39;, &#39;sequence_B&#39;, &#39;condition&#39;],</span>
+<span class="go">      dtype=object)</span>
+</pre></div>
+</div>
+<p>Once all conditions are met, the populations can be merged:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">binder</span><span class="p">,</span> <span class="n">nobinder</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="comparing-basic-scores">
+<h2>Comparing Basic Scores<a class="headerlink" href="#comparing-basic-scores" title="Permalink to this headline">¶</a></h2>
+<p>The first and most straight forward analysis between populations is the comparison between their different scores distributions. For that,
+<a class="reference internal" href="../generated/rstoolbox.plot.multiple_distributions.html#rstoolbox.plot.multiple_distributions" title="rstoolbox.plot.multiple_distributions"><code class="xref py py-func docutils literal notranslate"><span class="pre">multiple_distributions()</span></code></a> accepts any attribute of <a class="reference external" href="https://seaborn.pydata.org/generated/seaborn.boxplot.html#seaborn.boxplot" title="(in seaborn v0.9.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">boxplot()</span></code></a>, so that data can be properly separated.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [18]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="gp">   ....: </span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+<span class="gp">   ....: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">35</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">grid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="gp">   ....: </span><span class="n">axes</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">multiple_distributions</span><span class="p">(</span> <span class="n">df</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;condition&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;condition&#39;</span><span class="p">,</span> <span class="n">showfliers</span><span class="o">=</span><span class="bp">False</span> <span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">nones</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">legend_</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">]</span>
+<span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [25]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_duo_plt1.png"><img alt="../_images/tutorial_duo_plt1.png" src="../_images/tutorial_duo_plt1.png" style="width: 10in;" /></a>
+<p>The data can even be directly used on <code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code> functions:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [26]: </span><span class="n">_</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;design_score&#39;</span><span class="p">,</span> <span class="s1">&#39;GRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;GRMSD2Template&#39;</span><span class="p">,</span> <span class="s1">&#39;LRMSD2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;LRMSDH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;LRMSDLH2Target&#39;</span><span class="p">,</span> <span class="s1">&#39;condition&#39;</span><span class="p">]],</span>
+<span class="gp">   ....: </span>                 <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;condition&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [27]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_duo_plt2.png"><img alt="../_images/tutorial_duo_plt2.png" src="../_images/tutorial_duo_plt2.png" style="width: 10in;" /></a>
+<p>More specific comparisons can be performed depending on the actual aim of the project.</p>
+</div>
+<div class="section" id="sequence-distances">
+<h2>Sequence Distances<a class="headerlink" href="#sequence-distances" title="Permalink to this headline">¶</a></h2>
+<p>Let’s assume that one wants to evaluate the spread of the two populations and how well they recover a given target reference sequence. For that,
+we will need to provide a reference sequence.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [28]: </span><span class="n">reference</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">get_sequence_and_structure</span><span class="p">(</span><span class="s1">&#39;../rstoolbox/tests/data/compare/4oyd.pdb&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">})</span>
+<span class="gp">   ....: </span><span class="n">_</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">add_reference_sequence</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_sequence</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">   ....: </span>
+</pre></div>
+</div>
+<p>A tutorial for <a class="reference internal" href="sequence_analysis.html#sequence-analysis"><span class="std std-ref">population sequence analysis</span></a> is also available, but there are options that can be used when comparing two populations.</p>
+<p>For instance, one can evaluate the internal sequence inside each decoy population and then compare it between the two:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [30]: </span><span class="n">disbinder</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;binder&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sequence_distance</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">disbinder</span> <span class="o">=</span> <span class="n">disbinder</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">disbinder</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)))</span> <span class="c1"># mask diagonal and upper diagonal values</span>
+<span class="gp">   ....: </span><span class="n">disbinder</span> <span class="o">=</span> <span class="n">disbinder</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="c1"># to array</span>
+<span class="gp">   ....: </span><span class="n">disbinder</span> <span class="o">=</span> <span class="n">disbinder</span><span class="p">[[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">disbinder</span><span class="p">)]]</span> <span class="c1"># clean NaN</span>
+<span class="gp">   ....: </span>
+<span class="gp">   ....: </span><span class="n">disnobinder</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;nobinder&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sequence_distance</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">disnobinder</span> <span class="o">=</span> <span class="n">disnobinder</span><span class="o">.</span><span class="n">mask</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">disnobinder</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)))</span> <span class="c1"># mask diagonal and upper diagonal values</span>
+<span class="gp">   ....: </span><span class="n">disnobinder</span> <span class="o">=</span> <span class="n">disnobinder</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="c1"># to array</span>
+<span class="gp">   ....: </span><span class="n">disnobinder</span> <span class="o">=</span> <span class="n">disnobinder</span><span class="p">[[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">disnobinder</span><span class="p">)]]</span> <span class="c1"># clean NaN</span>
+<span class="gp">   ....: </span>
+</pre></div>
+</div>
+<p>Or evaluate the distance between the two sequence populations:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [38]: </span><span class="n">discomp</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;binder&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sequence_distance</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;nobinder&#39;</span><span class="p">])</span>
+<span class="gp">   ....: </span><span class="n">discomp</span> <span class="o">=</span> <span class="n">discomp</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="c1"># to array</span>
+<span class="gp">   ....: </span><span class="n">discomp</span> <span class="o">=</span> <span class="n">discomp</span><span class="p">[[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">discomp</span><span class="p">)]]</span> <span class="c1"># clean NaN</span>
+<span class="gp">   ....: </span>
+</pre></div>
+</div>
+<p>Or the distance of each group to the reference sequence:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [41]: </span><span class="n">disbinderref</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">sequence_similarity</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;binder&#39;</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="s1">&#39;IDENTITY&#39;</span><span class="p">)[</span><span class="s1">&#39;identity_B_negative&#39;</span><span class="p">]</span>
+<span class="gp">   ....: </span><span class="n">disnobinderref</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">sequence_similarity</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;nobinder&#39;</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="s1">&#39;IDENTITY&#39;</span><span class="p">)[</span><span class="s1">&#39;identity_B_negative&#39;</span><span class="p">]</span>
+<span class="gp">   ....: </span>
+</pre></div>
+</div>
+<p>We can show all this together as:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [43]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">grid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">   ....: </span><span class="n">ax00</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">_</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span> <span class="n">disbinder</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;skyblue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;binder&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax00</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">_</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span> <span class="n">disnobinder</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;nobinder&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax00</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">add_top_title</span><span class="p">(</span><span class="n">ax00</span><span class="p">,</span> <span class="s1">&#39;internal distance&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">ax01</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">_</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span> <span class="n">discomp</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;binder vs. nobinder&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax01</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">add_top_title</span><span class="p">(</span><span class="n">ax01</span><span class="p">,</span> <span class="s1">&#39;comparative distance&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">ax02</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">_</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span> <span class="n">disbinderref</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;skyblue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;binder&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax02</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">_</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">distplot</span><span class="p">(</span> <span class="n">disnobinderref</span> <span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;nobinder&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax02</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">add_top_title</span><span class="p">(</span><span class="n">ax02</span><span class="p">,</span> <span class="s1">&#39;distance to reference&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [57]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_duo_plt3.png"><img alt="../_images/tutorial_duo_plt3.png" src="../_images/tutorial_duo_plt3.png" style="width: 10in;" /></a>
+<p>To fully asses the difference between the two populations, we can evaluate the enrichment of different residue types in different positions. In
+this scenario, we will measure the enrichment of variants in the binder-designed population against the other. This entails that high values
+represent residue types more present in the binder-design population per position.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [58]: </span><span class="n">result</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">positional_enrichment</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;binder&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;nobinder&#39;</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When a position is represented in the first population but not in the second, the enrichment is <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/constants.html#numpy.inf" title="(in NumPy v1.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">inf</span></code></a>. To visualize it,
+one would need to transform it into a numerical value. In this case, we transform it into a value such as <code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">+</span> <span class="pre">(max/2)</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">maxval</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="gp">   ...: </span><span class="n">maxval</span> <span class="o">+=</span> <span class="p">(</span><span class="n">maxval</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">maxval</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">sequence_frequency_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">xrotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [7]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_duo_plt4.png"><img alt="../_images/tutorial_duo_plt4.png" src="../_images/tutorial_duo_plt4.png" style="width: 10in;" /></a>
+</div>
 </div>
 
 

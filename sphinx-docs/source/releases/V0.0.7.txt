@@ -21,3 +21,4 @@ v0.0.7 (August 2018)
 #. Keep silent file instead of minisilent after running ``get_sequence_and_structure`` allows better integration with ``apply_resfile``.
 #. Function to plot per residue score after applying a similarity matrix
 #. Adding logo plot color schemes.
+#. Added population and positional enrichment for comparison between two sequence populations.

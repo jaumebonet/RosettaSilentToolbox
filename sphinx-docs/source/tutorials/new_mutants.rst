@@ -1,5 +1,7 @@
 .. _new_mutants:
 
+.. currentmodule:: rstoolbox
+
 Generation of New Variants
 ==========================
 
