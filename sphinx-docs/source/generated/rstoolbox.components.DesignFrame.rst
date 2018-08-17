@@ -77,5 +77,6 @@ rstoolbox.components.DesignFrame
       ~DesignFrame.generate_mutants_from_matrix
       ~DesignFrame.generate_wt_reversions
       ~DesignFrame.make_resfile
+      ~DesignFrame.apply_resfile
       ~DesignFrame.score_by_pssm
       ~DesignFrame.view_mutants_alignment

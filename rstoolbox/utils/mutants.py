@@ -20,8 +20,10 @@
 """
 # Standard Libraries
 import os
+import sys
 import itertools
 import re
+import tempfile
 
 # External Libraries
 import pandas as pd
@@ -30,6 +32,7 @@ import numpy as np
 # This Library
 from .getters import _check_type, _get_available, _check_column
 import rstoolbox.core as core
+from rstoolbox.utils import make_rosetta_app_path, execute_process
 
 
 def get_identified_mutants( self ):
@@ -151,6 +154,7 @@ def identify_mutants( self, seqID ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -200,10 +204,16 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
 
         mutants = [(20, "AIV"), (31, "EDQR")]
 
+    Lastly, when multiple changes are provided for a position, this will translate into an
+    **insertion**.
+
     .. tip::
         The number of positions and mutations for position produce an exponential increment
         of the generated sequences. Thus, the previous example will generate ``3 * 4`` new
         sequences. Depending on the input this can explode pretty fast, be aware.
+
+    .. tip::
+        ``*`` will call all 20 regular amino acids for a given position.
 
     Alters the names of the designs in **description** by adding a ``_v<number>`` suffix.
 
@@ -231,6 +241,7 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -243,10 +254,10 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
         seqNM = _check_column(row, "sequence", seqID)
         idNM = "description"
         seq   = list(row[seqNM])
-        for p in muts:
+        for p in reversed(muts):
             # -1 because we are going to access string positions.
             shift = get_selection(p[0], seqID, row.get_reference_shift(seqID))[0] - 1
-            seq[shift] = p[1]
+            seq[shift] = p[1] if p[1] != "*" else "ARNDCQEGHILKMFPSTWYV"
         data = {seqNM: ["".join(x) for x in itertools.product(*seq)]}
         data[seqNM].insert(0, row[seqNM])
         name = row.get_id()
@@ -266,6 +277,7 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
         df = row._constructor_expanddim(data)
         return df
 
+    mutations.sort(key=lambda tup: tup[0])
     if isinstance(self, pd.DataFrame):
         designs = []
         for _, row in self.iterrows():
@@ -346,6 +358,7 @@ def generate_mutants_from_matrix( self, seqID, matrix, count,
            ...: from rstoolbox.tests.helper import random_frequency_matrix
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -442,10 +455,11 @@ def generate_wt_reversions( self, seqID, key_residues=None ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
-           ...: key_res = [3,5,8,12,15,19,25,27]
+           ...: key_res = [3, 5, 8, 12, 15, 19, 25, 27]
            ...: df.iloc[1].generate_wt_reversions('B', key_res).identify_mutants('B')
     """
     from rstoolbox.components import get_selection
@@ -552,9 +566,8 @@ def score_by_pssm( self, seqID, matrix ):
     return self
 
 
-def make_resfile( self, seqID, header, filename ):
-    """
-    Generate a Rosetta `resfile
+def make_resfile( self, seqID, header, filename, write=True ):
+    """Generate a Rosetta `resfile
     <https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles>`_
     to match the design's sequence assuming the ``reference_sequence`` as the starting
     point.
@@ -577,6 +590,8 @@ def make_resfile( self, seqID, header, filename ):
     :param str header: Header content for the resfile; defines default behaviour.
     :param str filename: Identifier of the resfile. Will be altered with a numerical
         suffix if the data container holds more thant one sequence.
+    :param bool write: **Testing attribute**. When :data:`False`, resfiles are not
+        actually created
 
     :return: Union[:class:`.DesignSeries`, :class:`.DesignFrame`]
         - Itself with the new column.
@@ -589,6 +604,22 @@ def make_resfile( self, seqID, header, filename ):
     .. note::
         Depends on :ref:`system.overwrite <options>` and
         :ref:`system.output <options>`.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
+           ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
+           ...: dfwt = df.iloc[0].generate_mutant_variants('B', [(1, "TGP"), (6, "ERG"),
+           ...:                                                  (14, "MAT")])
+           ...: # Call in test-mode
+           ...: dfwt = dfwt.make_resfile("B", "NATAA", "mutants.resfile", write=False )
+           ...: dfwt.head()
     """
     if not self.has_reference_sequence(seqID):
         raise KeyError("A reference sequence for {} is needed.".format(seqID))
@@ -617,8 +648,9 @@ def make_resfile( self, seqID, header, filename ):
             for mutation in df.get_mutations(seqID).split(","):
                 data.append(str(" ".join([mutation[1:-1], seqID, "PIKAA", mutation[-1]])))
 
-        with open(filename, 'w') as fd:
-            fd.write("\n".join(data))
+        if write:
+            with open(filename, 'w') as fd:
+                fd.write("\n".join(data))
         return filename
 
     outcol = "resfile_{}".format(seqID)
@@ -632,10 +664,139 @@ def make_resfile( self, seqID, header, filename ):
     return self
 
 
+def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False ):
+    """Apply a generated Rosetta `resfile
+    <https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles>`_
+    to the decoy.
+
+    This function needs to be created after the appropiate mutant variants have been created
+    and their corresponding **resfiles** have been written.
+
+    .. note::
+        Depends on :ref:`rosetta.path <options>` and :ref:`rosetta.compilation <options>`,
+        if the ``filename`` does not exist.
+
+    .. attention::
+        This function **REQUIRES** a local installation of **Rosetta**.
+
+    To execute this function it is important that the ``source_file`` assigned to the
+    :class:`.DesignFrame` is an original silent file and **not a minisilent**, as the
+    original structure of the decoy needs to be used in order to generate the variants.
+    If that is not the case, use :class:`.DesignFrame.replace_source_files`.
+
+    :param str seqID: |seqID_param|
+    :param str filename: Name of the final silent file that will contain all the variant's data.
+        If the file exists, it is assumed that the data was already created and data will be
+        directly loaded from that file.
+    :param str rscript: By default, the script executed will be the one generated by
+        :func:`.mutations`. One can provide its own script (either as the file name of the
+        script or as a string of the content itself) **as long as it fulfills two conditions**:
+        (1) It must contain the **AddJobPairData Mover** and (2) it should accept the script
+        variable ``resfile``. An example on how to use these two conditions can be extrapolated
+        from :func:`.mutations`.
+    :param bool keep_input_scores: When :data:`True` (default :data:`False`), it will keep the
+        score terms present in the source decoy (as they appear in the original silent file)
+        for the variants.
+
+    :return: :class:`.DesignFrame` with the scores for the mutants.
+
+    :raise:
+        :SystemError: If all variants faile to be generated or if they cannot be merged.
+        :IOError: If Rosetta path cannot be found.
+        :AttributeError: If the resfiles for the variants were not previously created.
+
+    .. seealso:
+        :meth:`.DesignFrame.generate_mutant_variants`
+        :meth:`.DesignFrame.generate_mutants_from_matrix`
+        :meth:`.DesignFrame.generate_wt_reversions`
+        :meth:`.DesignFrame.make_resfile`
+        :meth:`.DesignSeries.generate_mutant_variants`
+        :meth:`.DesignSeries.generate_mutants_from_matrix`
+        :meth:`.DesignSeries.generate_wt_reversions`
+        :meth:`.DesignSeries.make_resfile`
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
+           ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
+           ...: dfwt = df.iloc[0].generate_mutant_variants('B', [(1, "TGP"), (6, "ERG"),
+           ...:                                                  (14, "MAT")])
+           ...: # Call in test-mode
+           ...: dfwt = dfwt.make_resfile("B", "NATAA", "mutants.resfile", write=False )
+           ...: dfwt2 = dfwt.iloc[:3].apply_resfile("B",
+           ...:                                     "../rstoolbox/tests/data/variants.silent.gz")
+           ...: dfwt2
+    """
+    from rstoolbox.components import DesignSeries, DesignFrame
+    from rstoolbox.io import parse_rosetta_file
+    from rstoolbox.utils import mutations
+
+    if isinstance(self, DesignSeries):
+        self = DesignFrame(self).T
+
+    resfile = 'resfile_{}'.format(seqID)
+    if not os.path.isfile(filename):
+        wdir = tempfile.mkdtemp()
+        exe = make_rosetta_app_path('rosetta_scripts')
+        if resfile not in self.columns:
+            raise AttributeError("Resfiles are needed to execute this function.")
+        if rscript is None:
+            rscript = mutations(seqID)
+        if not os.path.isfile(rscript):
+            fd = open(os.path.join(wdir, 'script.xml'), 'w')
+            fd.write(rscript)
+            fd.close()
+            rscript = os.path.join(wdir, 'script.xml')
+
+        command = ['{0}', '-parser:protocol {1}', '-in:file:silent {2}', '-in:file:tags {3}',
+                   '-out:file:silent {4}', '-parser:script_vars resfile={5}']
+        if not keep_input_scores:
+            command.append('-keep_input_scores false')
+        command = ' '.join(command)
+        outfiles = []
+        errors = 0
+        sys.stdout.write("Running Rosetta\n")
+        for _, row in self.iterrows():
+            if re.search('_v\d{4}$', row['description']):
+                origin = "_".join(row['description'].split('_')[:-1])
+            else:
+                origin = row['description']
+            outfiles.append(os.path.join(wdir, row['description'] + '.silent'))
+            cmd = command.format(exe, rscript, " ".join(self.get_source_files()),
+                                 origin, outfiles[-1], row[resfile])
+            sys.stdout.write(cmd + "\n")
+            error = execute_process( command )
+            if bool(error):
+                errors += 1
+                sys.stdout.write("Execution for variant {} has failed\n".format(row['description']))
+
+        if errors < self.shape[0]:
+            exe = make_rosetta_app_path('combine_silent')
+            command = ['{0}', '-in:file:silent {1}', '-out:file:silent {2}']
+            command = ' '.join(command)
+            cmd = command.format(exe, " ".join(outfiles), filename)
+            sys.stdout.write("Merging all silent files\n")
+            sys.stdout.write(cmd + "\n")
+            error = execute_process( command )
+            if bool(error):
+                raise SystemError("A file with the new variants could not be created.")
+        else:
+            raise SystemError("All variants failed to be generated.")
+
+    df = parse_rosetta_file(filename)
+    df = df.drop(columns=['description'])
+    return self.merge(df, on=resfile, how='left')
+
+
 def view_mutants_alignment( self, seqID, mutants_bg_color="IndianRed", mutants_text_color="white",
                             identities_bg_color="YellowGreen", identities_text_color="black"):
-    """
-    Generates a pretty representation alignment of the mutations in **Jupyter Notebooks**.
+    """Generates a pretty representation alignment of the mutations in **Jupyter Notebooks**.
 
     :param str seqID: |seqID_param|.
     :param str mutants_bg_color: Color to apply to the background of mutants.

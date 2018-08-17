@@ -10,7 +10,7 @@
 .. func:: random_fastq
 """
 # Standard Libraries
-from random import randint
+from random import randint, choice
 
 # External Libraries
 import pandas as pd
@@ -19,7 +19,7 @@ import numpy as np
 # This Library
 from rstoolbox.components import DesignFrame, Selection
 
-__all__ = ['random_frequency_matrix', 'random_fastq']
+__all__ = ['random_frequency_matrix', 'random_fastq', 'random_proteins']
 
 
 def random_frequency_matrix(size, seed=None):
@@ -37,6 +37,25 @@ def random_frequency_matrix(size, seed=None):
     for _ in range(size):
         data.append(np.random.dirichlet(np.ones(20), size=1)[0])
     return pd.DataFrame(data, columns=alphabet)
+
+
+def random_proteins(size, count):
+    """Generate random protein sequences.
+
+    :param int size: Length of the sequences.
+    :param int count: Number of sequences.
+
+    :return: :class:`.DesignFrame`
+    """
+    from rstoolbox.components import DesignFrame
+
+    def make_sequence(size):
+        alphabet = list("ARNDCQEGHILKMFPSTWYV")
+        return ''.join(choice(alphabet) for _ in range(size))
+
+    df = DesignFrame({'description': ['decoy_{:04d}'.format(x + 1) for x in range(count)]})
+    df['sequence_A'] = df.apply(lambda row: make_sequence(size), axis=1)
+    return df
 
 
 def random_fastq(sequence, description, selection, btags, num_seqs, min_repeat,
@@ -71,8 +90,8 @@ def random_fastq(sequence, description, selection, btags, num_seqs, min_repeat,
         'GGA': 'G', 'GGC': 'G', 'GGG': 'G', 'GGT': 'G',
         'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S',
         'TTC': 'F', 'TTT': 'F', 'TTA': 'L', 'TTG': 'L',
-        'TAC': 'Y', 'TAT': 'Y', 'TAA': '_', 'TAG': '_',
-        'TGC': 'C', 'TGT': 'C', 'TGA': '_', 'TGG': 'W'}
+        'TAC': 'Y', 'TAT': 'Y', 'TAA': '*', 'TAG': '*',
+        'TGC': 'C', 'TGT': 'C', 'TGA': '*', 'TGG': 'W'}
     revtable = {}
     for c in codontable:
         revtable.setdefault(codontable[c], []).append(c)

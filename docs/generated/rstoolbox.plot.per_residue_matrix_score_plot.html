@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -61,7 +61,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
@@ -128,7 +129,7 @@ substitution matrix.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>df</strong> (<a class="reference internal" href="rstoolbox.components.DesignSeries.html#rstoolbox.components.DesignSeries" title="rstoolbox.components.DesignSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignSeries</span></code></a>) – Data container</li>
 <li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest</li>
-<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – matplotlib axis to which we will plot.</li>
+<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – matplotlib axis to which we will plot.</li>
 <li><strong>matrix</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the matrix used to evaluate similarity</li>
 <li><strong>selections</strong> (<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code> with Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="rstoolbox.components.Selection.html#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a>] and
 a color (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>)) – List of regions to highlight; each position should be
@@ -165,13 +166,15 @@ does not have a <code class="docutils literal notranslate"><span class="pre">ref
 <span class="gp">   ...: </span><span class="n">per_residue_matrix_score_plot</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">ax1</span><span class="p">,</span> <span class="n">selections</span><span class="o">=</span><span class="n">seles</span><span class="p">)</span>
 <span class="gp">   ...: </span>
 
-<span class="gp">In [13]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [5]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="gp">In [6]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/per_residue_matrix_score_plot_docs.png"><img alt="../_images/per_residue_matrix_score_plot_docs.png" src="../_images/per_residue_matrix_score_plot_docs.png" style="width: 5in;" /></a>
 </dd></dl>
 
-<span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>
@@ -189,7 +192,7 @@ does not have a <code class="docutils literal notranslate"><span class="pre">ref
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

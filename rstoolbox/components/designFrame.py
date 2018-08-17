@@ -10,6 +10,7 @@
 .. class:: DesignFrame
 """
 # Standard Libraries
+from distutils.version import LooseVersion
 import itertools
 
 # External Libraries
@@ -22,6 +23,15 @@ import rstoolbox.analysis as ra
 
 
 __all__ = ["DesignSeries", "DesignFrame"]
+
+
+if LooseVersion(pd.__version__) < LooseVersion("0.23"):
+    raise ImportError(
+        'pandas>=0.23 is required!\nSeems that the library '
+        'was not force-updated by setup. Execute: \n'
+        '   pip install -U pandas\n'
+        'to obtain the latest version.'
+    )
 
 
 def _metadata_defaults(name):
@@ -45,7 +55,7 @@ class DesignSeries( pd.Series, RSBaseDesign ):
         :class:`.DesignFrame`
     """
 
-    _metadata = ['_reference']
+    _metadata = ['_reference', '_source_files']
     _subtyp = 'design_series'
 
     def __init__( self, *args, **kwargs ):
@@ -66,11 +76,11 @@ class DesignSeries( pd.Series, RSBaseDesign ):
     def __finalize__(self, other, method=None, **kwargs):
         if method == "inherit":
             # Avoid columns from DesignFrame to become DesignSeries
-            if not isinstance(self.name, int):
+            if not isinstance(self.name, (int, np.int64)):
                 return pd.Series(self)
 
         for name in self._metadata:
-            setattr(self, name, getattr(other, name, {}))
+            setattr(self, name, getattr(other, name, _metadata_defaults(name)))
         return self
 
 
@@ -128,54 +138,18 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
     _subtyp = 'design_frame'
 
     def __init__(self, *args, **kwargs):
+
+        if len(args) > 0 or 'data' in kwargs:
+            d = args[0] if 'data' not in kwargs else kwargs['data']
+            if isinstance(d, (DesignSeries, DesignFrame)):
+                kwargs.setdefault('reference', d._reference)
+                kwargs.setdefault('source', d._source_files)
+
         reference = kwargs.pop('reference', {})
         source    = kwargs.pop('source', set())
         super(DesignFrame, self).__init__(*args, **kwargs)
         self._reference = reference
         self._source_files = source
-
-    def add_source_file( self, file ):
-        """Adds a ``source_file`` to the :class:`.DesignFrame`.
-
-        This can be used to know where to extract the structure from if needed.
-
-        :param str file: Name of the file to add.
-        """
-        self._source_files.add( file )
-
-    def replace_source_files( self, files ):
-        """Replaces ``source_file`` of the :class:`.DesignFrame`.
-
-        These can be used to know where to extract the structure from if needed.
-
-        :param files: List of names of the files to add.
-        :type files: :func:`list` of :class:`str`
-        """
-        self._source_files = set( files )
-
-    def add_source_files( self, files ):
-        """Adds ``source_file`` to the :class:`.DesignFrame`.
-
-        These can be used to know where to extract the structure from if needed.
-
-        :param files: List of names of the files to add.
-        :type files: :func:`list` of :class:`str`
-        """
-        self._source_files = self._source_files.union( files )
-
-    def get_source_files( self ):
-        """Get ``source_file`` stored in the data container.
-
-        :return: func:`list` of :class:`str` - Set of files.
-        """
-        return self._source_files
-
-    def has_source_files( self ):
-        """Checks if there are source files added.
-
-        :return: bool
-        """
-        return bool(self._source_files)
 
     def get_sequence_with( self, seqID, selection, confidence=1 ):
         """Selects those decoys with a particular set of residue matches.
@@ -199,6 +173,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
             In [1]: from rstoolbox.io import parse_rosetta_file
                ...: import pandas as pd
                ...: pd.set_option('display.width', 1000)
+               ...: pd.set_option('display.max_columns', 500)
                ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
                ...:                         {'scores': ['score'], 'sequence': 'B'})
                ...: df.get_sequence_with('B', [(1, 'T')])
@@ -246,6 +221,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
             In [1]: from rstoolbox.io import parse_rosetta_file
                ...: import pandas as pd
                ...: pd.set_option('display.width', 1000)
+               ...: pd.set_option('display.max_columns', 500)
                ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
                ...:                         {'scores': ['score', 'description'], 'sequence': 'B'})
                ...: df.sequence_distance('B')

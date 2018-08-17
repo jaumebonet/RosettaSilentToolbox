@@ -46,6 +46,7 @@ def cumulative( values, bins=100, max_count=None, upper_limit=None, cumulative=1
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.analysis import cumulative
            ...: import numpy as np
@@ -73,6 +74,8 @@ def cumulative( values, bins=100, max_count=None, upper_limit=None, cumulative=1
 
         @savefig plot_cumulative_versions.png width=5in
         In [2]: fig.show()
+
+        In [3]: plt.close()
     """
     if not isinstance( values, np.ndarray ):
         values = np.array( values )

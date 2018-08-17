@@ -99,6 +99,7 @@ def get_id( self ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz")
            ...: df.get_id()
     """
@@ -123,6 +124,7 @@ def get_available_sequences( self ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'sequence': 'AB'})
            ...: df.get_available_sequences()
@@ -151,6 +153,7 @@ def get_sequence( self, seqID, key_residues=None ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'sequence': 'AB'})
            ...: df.get_sequence('B')
@@ -182,6 +185,7 @@ def get_phi( self, seqID, key_residues=None ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_3ssepred.minisilent.gz",
            ...:                         {'dihedrals': '*'})
            ...: df.get_phi('A')
@@ -213,6 +217,7 @@ def get_psi( self, seqID, key_residues=None ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_3ssepred.minisilent.gz",
            ...:                         {'dihedrals': '*'})
            ...: df.get_psi('A')
@@ -251,6 +256,7 @@ def get_dihedrals( self, seqID, key_residues=None ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_3ssepred.minisilent.gz",
            ...:                         {'dihedrals': '*'})
            ...: df.get_dihedrals('A')
@@ -288,6 +294,7 @@ def get_available_structures( self ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'structure': 'C'})
            ...: df.get_available_structures()
@@ -316,6 +323,7 @@ def get_structure( self, seqID, key_residues=None ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'structure': 'C'})
            ...: df.get_structure('C').iloc[:5]
@@ -389,6 +397,7 @@ def get_sequential_data( self, query, seqID ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'sequence': 'C', 'structure': 'C'})
            ...: df.get_sequential_data('sequence', 'C').iloc[:5]
@@ -422,6 +431,7 @@ def get_available_labels( self ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'labels': ['MOTIF', 'CONTACT', 'CONTEXT'],
            ...:                          'sequence': 'A'})
@@ -456,6 +466,7 @@ def get_label( self, label, seqID=None ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'labels': ['MOTIF', 'CONTACT', 'CONTEXT'],
            ...:                          'sequence': 'A'})

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Structural Analysis &#8212; rstoolbox 0.0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/functions.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Working with Fragments" href="working_with_fragments.html" />
+    <link rel="prev" title="Sequence Analysis" href="sequence_analysis.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          rstoolbox</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.6</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../scripts.html">Scripts</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rosettascripts.html">RosettaScripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Structural Analysis</a><ul>
+<li><a class="reference internal" href="#loading-a-reference">Loading a Reference</a></li>
+<li><a class="reference internal" href="#loading-the-design-data">Loading the Design Data</a></li>
+<li><a class="reference internal" href="#select-by-structural-properties">Select by Structural Properties</a></li>
+<li><a class="reference internal" href="#visualise-structural-data">Visualise Structural Data</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="structural-analysis">
+<span id="structure-analysis"></span><h1>Structural Analysis<a class="headerlink" href="#structural-analysis" title="Permalink to this headline">¶</a></h1>
+<p>Structural data can be obtained in multiple ways, and it should be relatively easy to implement a  <a class="reference external" href="https://swift.cmbi.umcn.nl/gv/dssp/index.html">DSSP</a>
+or <a class="reference external" href="http://bioinf.cs.ucl.ac.uk/psipred/">PSIPRED</a> parser to include that data into the decoy population.</p>
+<p>In line of a Rosetta pipeline, the easiest way is to include the
+<a class="reference external" href="https://www.rosettacommons.org/docs/latest/scripting_documentation/RosettaScripts/xsd/mover_WriteSSEMover_type">WriteSSEMover</a> into a RosettaScript. This could
+even be called from inside the library as explained in <a class="reference internal" href="sequence_analysis.html#sequence-analysis"><span class="std std-ref">Sequence Analysis</span></a>.</p>
+<div class="section" id="loading-a-reference">
+<h2>Loading a Reference<a class="headerlink" href="#loading-a-reference" title="Permalink to this headline">¶</a></h2>
+<p>As in <a class="reference internal" href="sequence_analysis.html#sequence-analysis"><span class="std std-ref">Sequence Analysis</span></a>, we will need to load a reference with <a class="reference internal" href="../generated/rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sequence_and_structure()</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Through all the process several times the <code class="docutils literal notranslate"><span class="pre">chainID</span></code> of the decoy of interest will be called. This is due to the fact that the library can manipulate
+decoys with multiple chains (designed or not), and, thus, analysis must be called upon the sequences of interest.</p>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">rstoolbox</span> <span class="kn">as</span> <span class="nn">rs</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_seq_items&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">baseline</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">get_sequence_and_structure</span><span class="p">(</span><span class="s1">&#39;../rstoolbox/tests/data/2pw9C.pdb&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">baseline</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[7]: </span><span class="go"></span>
+<span class="go">0    LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL</span>
+<span class="go">Name: structure_C, dtype: object</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="loading-the-design-data">
+<h2>Loading the Design Data<a class="headerlink" href="#loading-the-design-data" title="Permalink to this headline">¶</a></h2>
+<p>Again, we are mimicking <a class="reference internal" href="sequence_analysis.html#sequence-analysis"><span class="std std-ref">Sequence Analysis</span></a>, but in this case we load the structural data of the designs along with their dihedrals.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">rules</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scores_ignore&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;fa_*&#39;</span><span class="p">,</span> <span class="s1">&#39;niccd_*&#39;</span><span class="p">,</span> <span class="s1">&#39;hbond_*&#39;</span><span class="p">,</span> <span class="s1">&#39;lk_ball_wtd&#39;</span><span class="p">,</span> <span class="s1">&#39;pro_close&#39;</span><span class="p">,</span> <span class="s1">&#39;dslf_fa13&#39;</span><span class="p">,</span> <span class="s1">&#39;C_ni_rmsd_threshold&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                           <span class="s1">&#39;omega&#39;</span><span class="p">,</span> <span class="s1">&#39;p_aa_pp&#39;</span><span class="p">,</span> <span class="s1">&#39;yhh_planarity&#39;</span><span class="p">,</span> <span class="s1">&#39;ref&#39;</span><span class="p">,</span> <span class="s1">&#39;rama_prepro&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">],</span>
+<span class="gp">   ...: </span>         <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;structure&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;dihedrals&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>         <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MOTIF&#39;</span><span class="p">,</span> <span class="s1">&#39;SSE03&#39;</span><span class="p">,</span> <span class="s1">&#39;SSE05&#39;</span><span class="p">]}</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s1">&#39;../rstoolbox/tests/data/input_ssebig.minisilent.gz&#39;</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_structure</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">baseline</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">add_reference_shift</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[8]: </span><span class="go"></span>
+<span class="go">    score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD  cav_vol  driftRMSD  finalRMSD  packstat C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C                                                 structure_C                           phi_C                             psi_C</span>
+<span class="go">0 -64.070  0.608      12.0  7.585      4.0              3.301      1.0          0.957      66.602   0.083      3.323      0.544     no_motif       nubinitio_wauto_18326_2pw9C_0001_0001  [C]       [C]       [C]       TTWIKFFAGGTLVEEFEYSSVNWEEIEKRAWKKLGRWKKAEEGDLMIVYPDGKVVSWA  LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL  [0.0, -143.01, -92.3838, ...]   [163.023, 142.263, 136.923, ...]</span>
+<span class="go">1 -70.981  0.639      12.0  2.410      8.0              1.423      1.0          0.737      0.000    0.094      1.395      0.552     no_motif       nubinitio_wauto_18326_2pw9C_0002_0001  [C]       [C]       [C]       NTWSTNILNGHPKITLLVEERGAEEIHLEWLKKQGLRKKAEENVYTTKLPNGAVKVYG  LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHLLLLLLLLLLLEEEELLLLLEEEEL  [0.0, -144.628, -82.9913, ...]  [109.954, 146.837, 129.948, ...]</span>
+<span class="go">2 -43.863  0.480      8.0   4.279      6.0              2.110      1.0          0.819      93.641   0.110      2.106      0.575     no_motif       nubinitio_wauto_18326_2pw9C_0003_0001  [C]       [C]       [C]       PRWFIAMGDGVIWEIVLGSEQNLEEIAKKGLKRRGLYKKAEESIYTIIYPDGIAHTFG  LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL  [0.0, -143.373, -78.9875, ...]  [141.285, 139.737, 129.8, ...]  </span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="select-by-structural-properties">
+<h2>Select by Structural Properties<a class="headerlink" href="#select-by-structural-properties" title="Permalink to this headline">¶</a></h2>
+<p>One of the most obvious assessments is the calculation of percentages of secondary structure. We can even use that to pre-select decoys. For example,
+let’s assume that we want to make sure that strand 5 (<code class="docutils literal notranslate"><span class="pre">SSE05</span></code>) from the selected labels is mostly still a strand after our design protocol:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">sse05</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">get_label</span><span class="p">(</span><span class="s1">&#39;SSE05&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">secondary_structure_percentage</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">sse05</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">dfsse</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;structure_C_E&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">]</span>
+<span class="gp">   ...: </span><span class="n">dfsse</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[12]: </span><span class="go"></span>
+<span class="go">    score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD  cav_vol  driftRMSD  finalRMSD  packstat C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C                                                 structure_C                           phi_C                             psi_C  structure_C_H  structure_C_E  structure_C_L</span>
+<span class="go">2 -43.863  0.480      8.0   4.279      6.0              2.110      1.0          0.819      93.641   0.110      2.106      0.575     no_motif       nubinitio_wauto_18326_2pw9C_0003_0001  [C]       [C]       [C]       PRWFIAMGDGVIWEIVLGSEQNLEEIAKKGLKRRGLYKKAEESIYTIIYPDGIAHTFG  LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL  [0.0, -143.373, -78.9875, ...]  [141.285, 139.737, 129.8, ...]    0.0            0.833333       0.166667     </span>
+<span class="go">3 -75.847  0.454      7.0   3.112      8.0              1.746      1.0          1.629      39.232   0.083      1.734      0.644     no_motif       nubinitio_wauto_18326_2pw9C_0004_0001  [C]       [C]       [C]       PYEWVFIINGVPQTTWNHPPTKMEELEKFARKKGGSSKKAEEGKFAIIIWKGYFIVSD  LLLEEEEELLEEEEEELLLLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL  [0.0, -130.948, -160.432, ...]  [141.392, 174.651, 115.305, ...]  0.0            0.833333       0.166667     </span>
+<span class="go">6 -47.169  0.430      6.0   3.313      6.0              2.050      1.0          0.641      0.000    0.112      1.975      0.551     no_motif       nubinitio_wauto_18326_2pw9C_0007_0001  [C]       [C]       [C]       PREWEGRYNGVPRGREWALPTNLEELMKEMRKRAGGYKKAEEGIYATIFPNGVILVRG  LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLEEEEELLLEEEEEL  [0.0, -133.286, -93.7573, ...]  [142.271, 153.259, 120.778, ...]  0.0            0.833333       0.166667     </span>
+</pre></div>
+</div>
+<p>Or that we want to check if there is a correlation between the final score of our decoys and the level of conservation of strand 5
+(which does not seem to be the case):</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;svg.fonttype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span> <span class="c1"># When plt.savefig to &#39;svg&#39;, text is still text object</span>
+<span class="gp">   ....: </span><span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+<span class="gp">   ....: </span><span class="n">grid</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;structure_C_E&#39;</span><span class="p">]])</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [17]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_str_plt1.png"><img alt="../_images/tutorial_str_plt1.png" src="../_images/tutorial_str_plt1.png" style="width: 7in;" /></a>
+</div>
+<div class="section" id="visualise-structural-data">
+<h2>Visualise Structural Data<a class="headerlink" href="#visualise-structural-data" title="Permalink to this headline">¶</a></h2>
+<p>The most global view, would be to see for all the population how often the expected secondary structure is retrieved with
+<a class="reference internal" href="../generated/rstoolbox.plot.positional_structural_similarity_plot.html#rstoolbox.plot.positional_structural_similarity_plot" title="rstoolbox.plot.positional_structural_similarity_plot"><code class="xref py py-func docutils literal notranslate"><span class="pre">positional_structural_similarity_plot()</span></code></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [18]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">sseid1</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">positional_structural_count</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">sseid2</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">positional_structural_identity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">positional_structural_similarity_plot</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">sseid1</span><span class="p">,</span> <span class="n">sseid2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">ax</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [23]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_str_plt2.png"><img alt="../_images/tutorial_str_plt2.png" src="../_images/tutorial_str_plt2.png" style="width: 10in;" /></a>
+<p>In case of a single decoy, and thanks to our request for <code class="docutils literal notranslate"><span class="pre">dihedrals</span></code> in the <a class="reference internal" href="readrosetta.html#readrosetta"><span class="std std-ref">parsing rules</span></a>, we can check whether or not
+a the decoy’s <a class="reference external" href="https://www.wikiwand.com/en/Ramachandran_plot">Ramachandran Plot</a> makes sense. We can observe it, for example, for the best
+scored decoy under the <a class="reference internal" href="../generated/rstoolbox.plot.plot_ramachandran.html#rstoolbox.plot.plot_ramachandran" title="rstoolbox.plot.plot_ramachandran"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_ramachandran()</span></code></a> function.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Dihedral angles are also obtained through <a class="reference external" href="https://www.rosettacommons.org/docs/latest/scripting_documentation/RosettaScripts/xsd/mover_WriteSSEMover_type">WriteSSEMover</a>,
+but they can easily be added by parsing them into a list and adding them to the <a class="reference internal" href="../generated/rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a> with the column name <code class="docutils literal notranslate"><span class="pre">psi_&lt;seqID&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">phi_&lt;seqID&gt;</span></code>.</p>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [24]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_ramachandran</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">fig</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [26]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_str_plt3.png"><img alt="../_images/tutorial_str_plt3.png" src="../_images/tutorial_str_plt3.png" style="width: 10in;" /></a>
+<p>Finally, one can compare the actual DSSP assignation against PSIPRED’s sequence-based secondary structure prediction. This can give an idea of the feasibility of the sequence to actually
+fold in the expected conformation.</p>
+<p>For this, we are going to load a different dataset in which this data is present.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [27]: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">rules</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;scores&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">],</span> <span class="s2">&quot;psipred&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;structure&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;dihedrals&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span> <span class="p">}</span>
+<span class="gp">   ....: </span><span class="n">df2</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_3ssepred.minisilent.gz&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_dssp_vs_psipred</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">   ....: </span><span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [34]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="gp">In [35]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_str_plt4.png"><img alt="../_images/tutorial_str_plt4.png" src="../_images/tutorial_str_plt4.png" style="width: 5in;" /></a>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, Jaume Bonet.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

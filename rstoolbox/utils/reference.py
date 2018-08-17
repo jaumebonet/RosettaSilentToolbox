@@ -101,6 +101,7 @@ def has_reference_sequence( self, seqID ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'sequence': 'AB'})
            ...: df.add_reference_sequence('A', df.iloc[0].get_sequence('A'))
@@ -130,6 +131,7 @@ def add_reference_sequence( self, seqID, sequence ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'sequence': 'AB'})
            ...: df.add_reference_sequence('A', df.iloc[0].get_sequence('A'))
@@ -139,7 +141,10 @@ def add_reference_sequence( self, seqID, sequence ):
     if self._subtyp != "sequence_frame" and seqID not in self.get_available_sequences():
         raise KeyError("Data container does not have data for sequence {}".format(seqID))
     if not isinstance(sequence, six.string_types):
-        raise ValueError("Reference sequence must be a string.")
+        if isinstance(sequence, pd.Series) and sequence.size == 1:
+            sequence = sequence.values[0]
+        else:
+            raise ValueError("Reference sequence must be a string.")
 
     if seqID in self._reference:
         seq = len(self._reference[seqID]["str"])
@@ -168,6 +173,7 @@ def get_reference_sequence( self, seqID, key_residues=None ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'sequence': 'AB'})
            ...: df.add_reference_sequence('A', df.iloc[0].get_sequence('A'))
@@ -196,6 +202,7 @@ def has_reference_structure( self, seqID ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'sequence': 'C', 'structure': 'C'})
            ...: df.add_reference_structure('C', df.iloc[0].get_structure('C'))
@@ -224,6 +231,7 @@ def add_reference_structure( self, seqID, structure ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'sequence': 'C', 'structure': 'C'})
            ...: df.add_reference_structure('C', df.iloc[0].get_structure('C'))
@@ -233,7 +241,10 @@ def add_reference_structure( self, seqID, structure ):
     if self._subtyp != "sequence_frame" and seqID not in self.get_available_structures():
         raise KeyError("Data container does not have data for structure {}".format(seqID))
     if not isinstance(structure, six.string_types):
-        raise ValueError("Reference structure must be a string.")
+        if isinstance(structure, pd.Series) and structure.size == 1:
+            structure = structure.values[0]
+        else:
+            raise ValueError("Reference structure must be a string.")
 
     if seqID in self._reference:
         seq = len(self._reference[seqID]["seq"])
@@ -262,6 +273,7 @@ def get_reference_structure( self, seqID, key_residues=None ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'sequence': 'C', 'structure': 'C'})
            ...: df.add_reference_structure('C', df.iloc[0].get_structure('C'))
@@ -310,6 +322,7 @@ def add_reference_shift( self, seqID, shift, shift_labels=False ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'sequence': 'C', 'structure': 'C'})
            ...: df.add_reference_structure('C', df.iloc[0].get_structure('C'))
@@ -367,6 +380,7 @@ def get_reference_shift( self, seqID ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'sequence': 'C', 'structure': 'C'})
            ...: df.add_reference_structure('C', df.iloc[0].get_structure('C'))

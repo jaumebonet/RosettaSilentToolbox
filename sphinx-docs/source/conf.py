@@ -105,7 +105,7 @@ intersphinx_mapping = {'python': ('http://docs.python.org/2', None),
                        'libconfig': ('http://jaumebonet.cat/libconfig/', None)}
 
 
-rst_epilog = "".join(open(os.path.join(os.path.dirname(__file__), 'definitions.rst')).readlines())
+rst_epilog = "".join(open(os.path.join(os.path.dirname(__file__), 'definitions.txt')).readlines())
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -212,3 +212,4 @@ texinfo_documents = [
 def setup(app):
     app.add_javascript('functions.js')
     app.add_stylesheet('style.css')
+    app.add_directive('affiliation', None)

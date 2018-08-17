@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -61,7 +61,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API reference</a></li>
@@ -121,7 +122,7 @@
 <h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/options.html">Global configuration options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials/readrosetta.html">Reading Rosetta outputs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rosettascripts.html">RosettaScripts</a></li>
@@ -131,7 +132,60 @@
 </div>
 <div class="section" id="pipeline-examples">
 <h2>Pipeline Examples<a class="headerlink" href="#pipeline-examples" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="definitions"></span></div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/sequence_analysis.html">Sequence Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/sequence_analysis.html#loading-a-reference">Loading a Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/sequence_analysis.html#loading-the-design-data">Loading the Design Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/sequence_analysis.html#population-overview">Population Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/sequence_analysis.html#sorting-and-selecting">Sorting and Selecting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/sequence_analysis.html#identification-of-mutants">Identification of Mutants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/sequence_analysis.html#visual-analysis-of-mutations">Visual Analysis of Mutations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/structure_analysis.html">Structural Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/structure_analysis.html#loading-a-reference">Loading a Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/structure_analysis.html#loading-the-design-data">Loading the Design Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/structure_analysis.html#select-by-structural-properties">Select by Structural Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/structure_analysis.html#visualise-structural-data">Visualise Structural Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/working_with_fragments.html">Working with Fragments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/working_with_fragments.html#loading-fragments">Loading Fragments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/working_with_fragments.html#fragments-quality-measure">Fragments Quality Measure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/working_with_fragments.html#plotting-fragments">Plotting Fragments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/population_comparison.html">Compare Decoy Populations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/population_comparison.html#merging-populations">Merging Populations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/population_comparison.html#the-two-populations-should-share-column-names">The two populations should share column names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/population_comparison.html#there-must-be-a-column-to-identify-to-which-population-each-decoy-belongs">There must be a column to identify to which population each decoy belongs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/population_comparison.html#comparing-basic-scores">Comparing Basic Scores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/population_comparison.html#sequence-distances">Sequence Distances</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/new_mutants.html">Generation of New Variants</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/new_mutants.html#loading-a-reference">Loading a Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/new_mutants.html#loading-the-design-data">Loading the Design Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/new_mutants.html#minimal-mutant">Minimal Mutant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/new_mutants.html#point-mutations-of-interest">Point Mutations of Interest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/new_mutants.html#learning-from-amino-acids-frequency">Learning from Amino Acids Frequency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/new_mutants.html#creating-the-new-mutants">Creating the New Mutants</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/experimental_analysis.html">Experimental Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/experimental_analysis.html#circular-dichroism">Circular Dichroism</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/experimental_analysis.html#thermal-melt">Thermal Melt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/experimental_analysis.html#multi-angle-light-scattering">Multi-Angle Light Scattering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/experimental_analysis.html#surface-plasmon-resonance">Surface Plasmon Resonance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/experimental_analysis.html#deep-sequence-analysis-and-population-enrichment">Deep Sequence Analysis and Population Enrichment</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 </div>
 
 
@@ -150,7 +204,7 @@
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

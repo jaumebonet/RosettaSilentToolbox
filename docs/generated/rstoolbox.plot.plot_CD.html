@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -61,7 +61,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
@@ -115,9 +116,9 @@
 <h1>rstoolbox.plot.plot_CD<a class="headerlink" href="#rstoolbox-plot-plot-cd" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.plot.plot_CD">
-<code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_CD</code><span class="sig-paren">(</span><em>df</em>, <em>ax</em>, <em>color=0</em>, <em>wavelengths=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_CD" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_CD</code><span class="sig-paren">(</span><em>df</em>, <em>ax</em>, <em>color=None</em>, <em>wavelengths=None</em>, <em>sample=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_CD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot <a class="reference external" href="https://www.wikiwand.com/en/Circular_dichroism">Circular Dichroism</a> data.</p>
-<p>The provied <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> must contain, at least, the following
+<p>The provied <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> must contain, at least, the following
 columns:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -138,22 +139,42 @@ columns:</p>
 </tr>
 </tbody>
 </table>
+<p>If the input data is of the class <strong>CDFrame</strong>, it will assume that data has
+been loaded with the <a class="reference internal" href="rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> function and that multiple temperatures
+are present and plot it accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data container.</li>
-<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Axis in which to plot the data.</li>
-<li><strong>color</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Color for the data. If a number, it takes from the current
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code> palette.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data container.</li>
+<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Axis in which to plot the data.</li>
+<li><strong>color</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – <strong>DataFrame:</strong> Color for the data. If a number, it takes from
+the current <code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code> palette. <strong>CDFrame:</strong> Provide the palette ID to use.</li>
 <li><strong>wavelengths</strong> (<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – List with min and max wavelengths to plot.</li>
+<li><strong>sample</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – <strong>CDFrame:</strong> Limit the number of temperatures shown. According to
+the number of temperatures available, it will get them as separate as possible.
+If <code class="docutils literal notranslate"><span class="pre">sample</span></code> is bigger than the available temperatures, all are shown.
+Sampling selection is based on
+<a class="reference external" href="http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm">Bresenham’s line algorithm</a></li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raise:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ValueError:</th><td class="field-body">If a wrong palette name is provided.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ValueError:</th><td class="field-body">If 0 samples are requested.</td>
+</tr>
+</tbody>
+</table>
 </td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Example</p>
+<p class="rubric">Example - Single Tabulated Data File</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.plot</span> <span class="kn">import</span> <span class="n">plot_CD</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
@@ -168,9 +189,26 @@ columns:</p>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/plot_cd_docs.png"><img alt="../_images/plot_cd_docs.png" src="../_images/plot_cd_docs.png" style="width: 5in;" /></a>
+<p class="rubric">Example - Multiple Machine-Generated Data Files</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="kn">from</span> <span class="nn">rstoolbox.plot</span> <span class="kn">import</span> <span class="n">plot_CD</span>
+<span class="gp">   ....: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">   ....: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ....: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="gp">   ....: </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/cd.csv&quot;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">plot_CD</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [18]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="gp">In [19]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/plot_cd2_docs.png"><img alt="../_images/plot_cd2_docs.png" src="../_images/plot_cd2_docs.png" style="width: 5in;" /></a>
 </dd></dl>
 
-<span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>
@@ -188,7 +226,7 @@ columns:</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

@@ -27,6 +27,8 @@ If you are not comfortable with scripting, ``rstoolbox`` offers some :ref:`direc
 If you want to exploit the full possibilities of the library, you should probably follow the :ref:`tutorials <tutorial>` and then explore
 the :ref:`API <api>`.
 
+Have you used ``rstoolbox`` on your work? Let us know so we can :ref:`highlight it <highlights>`!
+
 To see the code or report a bug, please visit the `github repository
 <https://github.com/jaumebonet/RosettaSilentToolbox>`_.
 
@@ -40,6 +42,7 @@ To see the code or report a bug, please visit the `github repository
    :maxdepth: 1
 
    introduction
+   highlights
    installing
    scripts
    tutorial

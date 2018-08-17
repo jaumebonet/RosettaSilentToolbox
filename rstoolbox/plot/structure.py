@@ -68,6 +68,7 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.analysis import positional_structural_count
@@ -75,6 +76,7 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
            ...: from rstoolbox.plot import positional_structural_similarity_plot
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'scores': ['score'], 'structure': 'C'})
            ...: df.add_reference_structure('C', df.get_structure('C').values[0])
@@ -87,6 +89,8 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
 
         @savefig plot_positional_structural_similarity.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
 
     # Color management
@@ -144,6 +148,7 @@ def plot_ramachandran( df, seqID, fig):
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: import rstoolbox as rb
            ...: import pandas as pd
@@ -165,9 +170,11 @@ def plot_ramachandran( df, seqID, fig):
 
         @savefig plot_ramachandran.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
     # Data type management.
-    if not isinstance(df, pd.Series):
+    if not isinstance(df, (pd.Series, DesignSeries)):
         raise ValueError("Input data must be in a Series or DesignSeries")
     if not isinstance(df, DesignSeries):
         df = DesignSeries(df)
@@ -292,6 +299,7 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     .. rubric:: Example1
 
     .. ipython::
+        :okwarning:
 
         In [1]: import rstoolbox as rb
            ...: import pandas as pd
@@ -318,6 +326,7 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     .. rubric:: Example2
 
     .. ipython::
+        :okwarning:
 
         In [3]: import rstoolbox as rb
            ...: import pandas as pd
@@ -341,6 +350,8 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
 
         @savefig plot_dssp_vs_psipred_multi.png width=5in
         In [4]: plt.show()
+
+        In [3]: plt.close('all')
     """
     # Data type management.
     if not isinstance(df, pd.Series):
@@ -355,6 +366,7 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     # get dssp and psipred
     dssp    = df.get_structure(seqID)
     psipred = df.get_structure_prediction(seqID)
+    shift   = df.get_reference_shift(seqID)
 
     # Compute scores
     dssp_scores = []
@@ -385,3 +397,10 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
                 alpha=0.5,
                 fmt="",
                 ax=ax)
+
+    if isinstance(shift, list):
+        ax.set_xticks(np.arange(0.5, len(shift), 5))
+        ax.set_xticklabels(shift[::5])
+    else:
+        ax.set_xticks(np.arange(0.5, len(dssp), 5))
+        ax.set_xticklabels(range(shift, len(dssp) + shift, 5))

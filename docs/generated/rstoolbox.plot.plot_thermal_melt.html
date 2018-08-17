@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -61,7 +61,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
@@ -115,10 +116,10 @@
 <h1>rstoolbox.plot.plot_thermal_melt<a class="headerlink" href="#rstoolbox-plot-plot-thermal-melt" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.plot.plot_thermal_melt">
-<code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_thermal_melt</code><span class="sig-paren">(</span><em>df</em>, <em>ax</em>, <em>linecolor=0</em>, <em>pointcolor=0</em>, <em>min_temperature=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_thermal_melt" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_thermal_melt</code><span class="sig-paren">(</span><em>df</em>, <em>ax</em>, <em>linecolor=0</em>, <em>pointcolor=0</em>, <em>min_temperature=None</em>, <em>fusion_temperature=False</em>, <em>temp_marker=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_thermal_melt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot <a class="reference external" href="https://www.wikiwand.com/en/Thermal_shift_assay">Thermal Melt</a> data.</p>
 <p>Plot thermal melt and generate the fitting curve to the pointsself.</p>
-<p>The provied <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> must contain, at least, the following
+<p>The provied <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> must contain, at least, the following
 columns:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -139,19 +140,28 @@ columns:</p>
 </tr>
 </tbody>
 </table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Some of the advanced attributes in this function require <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code> to be
+installed.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data container.</li>
-<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Axis in which to plot the data.</li>
+<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data container.</li>
+<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – Axis in which to plot the data.</li>
 <li><strong>linecolor</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Color for the fitting line. If a number, it takes from the current
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code> palette.</li>
 <li><strong>pointcolor</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – Color for the points. If a number, it takes from the current
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">seaborn</span></code> palette.</li>
 <li><strong>min_temperature</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – If provided, set minimum temperature in the Y axis
 of the plot.</li>
+<li><strong>fusion_temperature</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, calculates the fusion temperature
+when possible. <strong>Requires ``scipy`` library</strong>.</li>
+<li><strong>temp_marker</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, approximate and annotate the expected melting
+point. <strong>requires ``scipy`` library</strong>.</li>
 </ul>
 </td>
 </tr>
@@ -165,16 +175,18 @@ of the plot.</li>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/thermal_melt.csv&quot;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">))</span>
 <span class="gp">   ...: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="gp">   ...: </span><span class="n">plot_thermal_melt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">plot_thermal_melt</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">fusion_temperature</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">temp_marker</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">   ...: </span>
 
 <span class="gp">In [9]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="gp">In [10]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/plot_tmelt_docs.png"><img alt="../_images/plot_tmelt_docs.png" src="../_images/plot_tmelt_docs.png" style="width: 5in;" /></a>
 </dd></dl>
 
-<span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>
@@ -192,7 +204,7 @@ of the plot.</li>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>
