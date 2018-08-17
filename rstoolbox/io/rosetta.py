@@ -24,7 +24,7 @@ import glob
 import gzip
 import json
 import string
-import subprocess
+import shutil
 from collections import OrderedDict
 
 # External Libraries
@@ -35,7 +35,7 @@ import yaml
 # This Library
 import rstoolbox.core as core
 import rstoolbox.components as rc
-from rstoolbox.utils import baseline
+from rstoolbox.utils import baseline, make_rosetta_app_path, execute_process
 
 __all__ = ['open_rosetta_file', 'parse_rosetta_file', 'parse_rosetta_contacts',
            'parse_rosetta_fragments', 'write_rosetta_fragments',
@@ -194,9 +194,9 @@ def open_rosetta_file( filename, multi=False, check_symmetry=True ):
     files = _gather_file_list( filename, multi )
     for file_count, f in enumerate( files ):
         if check_symmetry:
-            cmd = "zgrep SYMMETRY_INFO {} |wc" if f.endswith(".gz") else "grep SYMMETRY_INFO {} |wc"
-            process = subprocess.Popen(cmd.format(f), stdout=subprocess.PIPE, shell=True)
-            symm = int(process.communicate()[0].strip().split()[0]) > 0
+            cmd = "zgrep SYMMETRY_INFO {}" if f.endswith(".gz") else "grep SYMMETRY_INFO {}"
+            process = execute_process(cmd.format(f))
+            symm = (process == 0)
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
             line = line.decode('utf8') if f.endswith(".gz") else line
@@ -256,6 +256,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz")
            ...: df.head(2)
     """
@@ -376,6 +377,7 @@ def parse_rosetta_json( filename ):
         In [1]: from rstoolbox.io import parse_rosetta_json
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_json("../rstoolbox/tests/data/score.json.gz")
            ...: df.head(2)
     """
@@ -606,13 +608,13 @@ def write_fragment_sequence_profiles( df, filename=None, consensus=None ):
         return data
 
 
-def get_sequence_and_structure( pdbfile ):
+def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized_res=True ):
     """Provided a PDB file, it will run a small **RosettaScript** to capture its sequence and
     structure, i.e. dssp and phi-psi dihedrals.
 
     .. note::
         Depends on :ref:`rosetta.path <options>` and :ref:`rosetta.compilation <options>`,
-        if the quality file is not provided.
+        if the corresponding silent file does not exist.
 
     .. attention::
         This function **REQUIRES** a local installation of **Rosetta**.
@@ -622,6 +624,9 @@ def get_sequence_and_structure( pdbfile ):
     ``<pdbfile>.dssp.minisilent.gz`` will also work.
 
     :param str pdbfile: Name of the input structure.
+    :param bool mk_minisilent: If :data:`True`, transeform output into ``minisilent`` format.
+    :param bool ignore_unrecognized_res: If :data:`True`, **Rosetta** ignores non-recognizable
+        residues.
 
     :return: :class:`.DesignFrame`.
 
@@ -643,7 +648,11 @@ def get_sequence_and_structure( pdbfile ):
     """
     if not os.path.isfile( pdbfile ):
         raise IOError("Structure {} cannot be found".format(pdbfile))
-    minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.minisilent"
+    if mk_minisilent:
+        minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.minisilent"
+    else:
+        minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.silent"
+
     if os.path.isfile(minisilent):
         return parse_rosetta_file(minisilent,
                                   {"sequence": "*", "structure": "*", "dihedrals": "*"})
@@ -651,30 +660,37 @@ def get_sequence_and_structure( pdbfile ):
         return parse_rosetta_file(minisilent + ".gz",
                                   {"sequence": "*", "structure": "*", "dihedrals": "*"})
 
+    sys.stdout.write("Generating file {}\n".format(minisilent))
+
     with open("dssp.xml", "w") as fd:
         fd.write(baseline())
 
     # Check rosetta executable & run
-    path = core.get_option("rosetta", "path")
-    comp = core.get_option("rosetta", "compilation")
-    exe = os.path.join(path, "rosetta_scripts.{0}".format(comp))
-    if not os.path.isfile(exe):
-        raise IOError("The expected Rosetta executable {0} is not found".format(exe))
-    command = "{0} -parser:protocol {1} -s {2} -out:file:silent {3} -ignore_unrecognized_res"
+    exe = make_rosetta_app_path('rosetta_scripts')
+    command = ['{0}', '-parser:protocol {1}', '-s {2}', '-out:file:silent {3}',
+               '-ignore_zero_occupancy off']
+    if ignore_unrecognized_res:
+        command.append('-ignore_unrecognized_res')
+    command = ' '.join(command)
     command = command.format( exe, "dssp.xml", pdbfile, str(os.getpid()) + "_" )
     sys.stdout.write("Running Rosetta\n")
     sys.stdout.write(command + "\n")
-    error = os.system( command )
+    error = execute_process( command )
     os.unlink("dssp.xml")
     if not bool(error):
         if os.path.isfile(str(os.getpid()) + "_"):
             sys.stdout.write("Execution has finished\n")
-            fd = open( minisilent, "w" )
-            for line, _, _, _ in open_rosetta_file( str(os.getpid()) + "_" ):
-                fd.write( line )
-            fd.close()
+            if mk_minisilent:
+                sys.stdout.write("Making minisilent\n")
+                fd = open( minisilent, "w" )
+                for line, _, _, _ in open_rosetta_file( str(os.getpid()) + "_" ):
+                    fd.write( line )
+                fd.close()
+            else:
+                sys.stdout.write("Keeping original silent output\n")
+                shutil.copy( str(os.getpid()) + "_", minisilent)
             os.unlink(str(os.getpid()) + "_")
-            return get_sequence_and_structure( pdbfile )
+            return get_sequence_and_structure( pdbfile, mk_minisilent )
         else:
             raise ValueError("Execution has failed\n")
     else:
@@ -763,11 +779,7 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
         outdir = os.path.join(outdir, prefix)
 
     # Check rosetta executable
-    path = core.get_option("rosetta", "path")
-    comp = core.get_option("rosetta", "compilation")
-    exe = os.path.join( path, "extract_pdbs.{0}".format(comp))
-    if not os.path.isfile(exe):
-        raise IOError("The expected Rosetta executable {0} is not found".format(exe))
+    exe = make_rosetta_app_path('extract_pdbs')
 
     # Print the tag file
     df[[column]].to_csv( tagsfilename, index=False, header=False)
@@ -781,7 +793,7 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
     sys.stdout.write("Executing Rosetta's extract_pdbs app\n")
     sys.stdout.write("(depending on the total number of decoys and how many have "
                      "been requested this might take a while...)\n")
-    error = os.system( command )
+    error = execute_process( command )
     if not bool(error):
         sys.stdout.write("Execution has finished\n")
     else:

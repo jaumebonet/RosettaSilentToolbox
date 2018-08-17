@@ -35,7 +35,7 @@ from matplotlib.text import TextPath
 from rstoolbox.analysis import binary_overlap, sequence_similarity
 from rstoolbox.analysis.SimilarityMatrix import SimilarityMatrix
 from rstoolbox.components import DesignFrame, DesignSeries, SequenceFrame
-from rstoolbox.components import get_selection, Selection
+from rstoolbox.components import get_selection
 from rstoolbox.utils.getters import _check_column
 from rstoolbox.utils import discrete_cmap_from_colors, add_column
 from .color_schemes import color_scheme
@@ -112,7 +112,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     :param float clean_unused: Remove amino acids from the plot when they never get represented
         over the given frequency. Residues present in the reference sequence are not taken
         into account.
-    :param rbool efseq: if :data:`True` (default), mark the original residues according to
+    :param rbool refseq: if :data:`True` (default), mark the original residues according to
         the reference sequence.
     :param key_residues: |keyres_param|.
     :type key_residue: |keyres_types|
@@ -130,6 +130,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.plot import sequence_frequency_plot
@@ -142,6 +143,8 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
 
         @savefig sequence_frequency_plot_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
 
     order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
@@ -242,6 +245,8 @@ def plot_alignment( df, seqID, ax, line_break=None, matrix=None ):
         to split the alignment in that many pieces.
     :type ax: Union[:class:`~matplotlib.axes.Axes`, :func:`list` of
         :class:`~matplotlib.axes.Axes`]
+    :param int line_break: Set a line break after x residues. To execute that,
+        multiple axes must be provided.
     :param str matrix: Identifier of the matrix used to evaluate similarity. Default is
         :data:`None` highlight differences.
 
@@ -393,6 +398,7 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.plot import per_residue_matrix_score_plot
@@ -411,7 +417,7 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
         @savefig per_residue_matrix_score_plot_docs.png width=5in
         In [2]: plt.show()
 
-
+        In [3]: plt.close()
     """
     if not isinstance(df, DesignSeries) or not df.has_reference_sequence(seqID):
         raise ValueError("Data must be a DesignSeries with reference for the requested seqID")
@@ -442,14 +448,9 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
     if selections is None:
         selections = []
     for s in selections:
-        xift = False
-        try:
-            xift = Selection(s[0]).is_shifted()
-        except AttributeError:
-            xift = False
         s_ = get_selection(s[0], seqID, shift, len(refsq))
-
-        ax.fill([s_[0] - int(xift), s_[-1] - int(xift), s_[-1] - int(xift), s_[0] - int(xift)],
+        # plot starts in 0
+        ax.fill([s_[0] - 1, s_[-1] - 1, s_[-1] - 1, s_[0] - 1],
                 [axlim[0] - 1, axlim[0] - 1, axlim[1] + 1, axlim[1] + 1],
                 color=s[1], alpha=0.2, zorder=-100)
     ax.set_ylim(axlim[0], axlim[1])
@@ -471,7 +472,8 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     :param int line_break: Force a line-change in the plot after n residues are plotted.
     :param float font_size: Expected size of the axis font.
     :param colors: Colors to assign; it can be the name of a available color set or
-        a dictionary with a color for each type.
+        a dictionary with a color for each type. Available color schemes are: Weblogo
+        (default), Hydrophobicity, Chemistry, and Charge.
     :type colors: Union[:class:`str`, :class:`dict`]
 
     :return: :class:`~matplotlib.figure.Figure` and
@@ -480,6 +482,7 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.plot import logo_plot
@@ -492,6 +495,8 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
 
         @savefig sequence_logo_plot_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
     def _letterAt( letter, x, y, yscale=1, ax=None, globscale=1.35,
                    LETTERS=None, COLOR_SCHEME=None ):
@@ -521,6 +526,8 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
              "Q", "R", "H", "K", "D", "E", "C", "G", "P"]
     data = copy.deepcopy(df)
+    if data.empty:
+        raise ValueError("Provided data container is empty. Nothing to plot.")
 
     mpl.rcParams['svg.fonttype'] = 'none'
     # Graphical Properties of resizable letters
@@ -532,8 +539,15 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     globscale = 1.22
     letters_shift = -0.5
     LETTERS = {}
-    for aa in color_scheme(colors):
-        LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
+    if isinstance(colors, dict):
+        for aa in colors:
+            LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
+    elif isinstance(colors, str):
+        for aa in color_scheme(colors):
+            LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
+    else:
+        raise ValueError("Colors need to either be a string representing the name of a available "
+                         "color set or a dictionary with a color for each type.")
 
     # Data type management.
     if not isinstance(data, pd.DataFrame):
@@ -601,7 +615,10 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         for scores in wdata:
             y = 0
             for base, score in scores:
-                _letterAt(base, x, y, score, ax, globscale, LETTERS, color_scheme(colors))
+                if isinstance(colors, dict):
+                    _letterAt(base, x, y, score, ax, globscale, LETTERS, colors)
+                else:
+                    _letterAt(base, x, y, score, ax, globscale, LETTERS, color_scheme(colors))
                 y += score
             x += 1
             maxi = max(maxi, y)

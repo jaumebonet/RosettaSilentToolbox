@@ -13,6 +13,7 @@
 .. func:: binary_overlap
 .. func:: selector_percentage
 .. func:: label_percentage
+.. func:: positional_enrichment
 """
 # Standard Libraries
 import copy
@@ -28,7 +29,8 @@ from .SimilarityMatrix import SimilarityMatrix as SM
 
 __all__ = ['sequential_frequencies', 'sequence_similarity',
            'positional_sequence_similarity', 'binary_similarity',
-           'binary_overlap', 'selector_percentage', 'label_percentage']
+           'binary_overlap', 'selector_percentage', 'label_percentage',
+           'positional_enrichment']
 
 
 def _get_sequential_table( seqType ):
@@ -74,7 +76,7 @@ def _get_sequential_table( seqType ):
             table.setdefault( 'U', [])
             table.pop('T', None)
         extra = ['X', '*', 'B', 'D', 'H', 'K', 'M', 'N', 'R', 'S', 'V', 'W', 'Y']
-    elif seqType.lower == "protein_sse":
+    elif seqType.lower() == "protein_sse":
         table = {
             'H': [], 'E': [], 'L': [], '*': [], 'G': []
         }
@@ -159,6 +161,7 @@ def sequential_frequencies( df, seqID, query="sequence", seqType="protein",
            ...: from rstoolbox.analysis import sequential_frequencies
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'AB'})
            ...: df = sequential_frequencies(df, 'B')
@@ -265,6 +268,7 @@ def sequence_similarity( df, seqID, key_residues=None, matrix="BLOSUM62" ):
            ...: from rstoolbox.analysis import sequence_similarity
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -345,6 +349,7 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None,
            ...: from rstoolbox.analysis import positional_sequence_similarity
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -439,6 +444,7 @@ def binary_similarity( df, seqID, key_residues=None, matrix="IDENTITY"):
            ...: from rstoolbox.analysis import binary_similarity
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -483,6 +489,7 @@ def binary_overlap( df, seqID, key_residues=None, matrix="IDENTITY" ):
            ...: from rstoolbox.analysis import binary_overlap
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'B'})
            ...: df.add_reference_sequence('B', df.get_sequence('B').values[0])
@@ -539,6 +546,7 @@ def selector_percentage( df, seqID, key_residues, selection_name='selection' ):
            ...: from rstoolbox.analysis import selector_percentage
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': 'C'})
            ...: df = selector_percentage(df, 'C', '1-15')
@@ -595,6 +603,7 @@ def label_percentage( df, seqID, label ):
            ...: from rstoolbox.analysis import label_percentage
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': '*',
            ...:                          'labels': ['MOTIF']})
@@ -614,3 +623,41 @@ def label_percentage( df, seqID, label ):
         return df.append(pd.Series([float(len(seq2)) / len(seq1)], [colname]))
     else:
         raise NotImplementedError
+
+
+def positional_enrichment(df, other, seqID):
+    """Calculates per-residue enrichment from sequences in the first :class:`.DesignFrame`
+    with respect to the second.
+
+    .. note::
+        Position / AA type pairs present in ``df`` but not ``other`` will have a value of
+        :data:`~np.inf`.
+
+    :param df: |df_param|.
+    :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
+    :param other: |df_param|.
+    :type other: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
+    :param str seqID: |seqID_param|.
+
+    :return: :class:`.FragmentFrame` - with enrichment percentages.
+
+    :raises:
+        :NotImplementedError: if the data passed is not in Union[:class:`.DesignFrame`,
+            :class:`~pandas.DataFrame`].
+        :KeyError: |seqID_error|.
+    """
+    from rstoolbox.components import DesignFrame
+
+    for i, x in enumerate([df, other]):
+        if not isinstance(x, DesignFrame):
+            if not isinstance(x, pd.DataFrame):
+                raise NotImplementedError('Unknow input format')
+            else:
+                if i == 0:
+                    df = DesignFrame(df)
+                else:
+                    other = DesignFrame(other)
+    result = df.sequence_frequencies(seqID) / other.sequence_frequencies(seqID)
+    if df._reference == other._reference:
+        result.transfer_reference(df)
+    return result.replace(np.nan, 0)

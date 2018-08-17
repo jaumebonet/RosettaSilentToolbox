@@ -387,7 +387,7 @@ class Selection( object ):
             In [1]: from rstoolbox.components import Selection
                ...: ss = Selection([3, 4, 5, 13, 14, 15, 21, 25])
                ...: seq = range(1, 31)
-               ...: seq = seq[:14]+seq[19:]
+               ...: seq = list(seq[:14]) + list(seq[19:])
                ...: ",".join([str(_) for _ in seq])
 
             In [1]: ss.shift("A", seq)
@@ -442,7 +442,7 @@ class Selection( object ):
             In [1]: from rstoolbox.components import Selection
                ...: ss = Selection([3, 4, 5, 13, 14, 15, 21, 25])
                ...: seq = range(1, 31)
-               ...: seq = seq[:14]+seq[19:]
+               ...: seq = list(seq[:14]) + list(seq[19:])
                ...: ",".join([str(_) for _ in seq])
 
             In [1]: sf = ss.shift("A", seq)

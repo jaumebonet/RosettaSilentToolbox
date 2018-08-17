@@ -37,6 +37,7 @@ Helper functions to read/write direct sequence information. They can be called t
    ~io.write_clustalw
    ~io.write_mutant_alignments
    ~io.read_hmmsearch
+   ~io.pymol_mutant_selector
 
 IO: Rosetta
 -----------
@@ -64,6 +65,8 @@ Helper functions to read/write data generated through wedlab experiments. They c
    :toctree: generated/
 
    ~io.read_SPR
+   ~io.read_CD
+   ~io.read_MALS
    ~io.read_fastq
 
 Analysis
@@ -79,6 +82,7 @@ Helper functions for sequence analysis. They can be called through ``rstoolbox.a
    ~analysis.positional_sequence_similarity
    ~analysis.binary_similarity
    ~analysis.binary_overlap
+   ~analysis.positional_enrichment
    ~analysis.positional_structural_count
    ~analysis.positional_structural_identity
    ~analysis.secondary_structure_percentage
@@ -155,6 +159,7 @@ Get the **RosettaScripts** that are called by different functions of the library
    :toctree: generated/
 
    ~utils.baseline
+   ~utils.mutations
 
 Utils: Experiments
 ------------------
@@ -179,3 +184,7 @@ This functions are only of interest if you plan on writing new functionalities i
 
    io.open_rosetta_file
    components.get_selection
+   utils.make_rosetta_app_path
+   tests.helper.random_frequency_matrix
+   tests.helper.random_proteins
+   tests.helper.random_fastq

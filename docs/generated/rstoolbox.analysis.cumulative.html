@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -61,7 +61,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
@@ -125,7 +126,7 @@ values).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>values</strong> (Union[<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – List of values to analyze.</li>
+<li><strong>values</strong> (Union[<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – List of values to analyze.</li>
 <li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of bins in which to split the data (~resolution).</li>
 <li><strong>max_count</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Maximum number of counts expected. If nothing is provided,
 defaults to the length of values. This helps to set the values between 0 and 1.</li>
@@ -171,22 +172,24 @@ and <strong>3)</strong> bin positions. 2 and 3 would correspond to the y, x valu
 <span class="gp">   ...: </span><span class="n">ax11</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;raw data&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[12]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x11521dc50&gt;]</span>
-<span class="gh">Out[13]: </span><span class="go">Text(0.5,1,u&#39;cumulative&#39;)</span>
-<span class="gh">Out[15]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x11660e690&gt;]</span>
-<span class="gh">Out[16]: </span><span class="go">Text(0.5,1,u&#39;non-cumulative&#39;)</span>
-<span class="gh">Out[18]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x116742210&gt;]</span>
-<span class="gh">Out[19]: </span><span class="go">Text(0.5,1,u&#39;reverse-cumulative&#39;)</span>
-<span class="gh">Out[21]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x116742c90&gt;]</span>
-<span class="gh">Out[22]: </span><span class="go">Text(0.5,1,u&#39;raw data&#39;)</span>
+<span class="gh">Out[12]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x10f4486a0&gt;]</span>
+<span class="gh">Out[13]: </span><span class="go">Text(0.5,1,&#39;cumulative&#39;)</span>
+<span class="gh">Out[15]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x10f4f1f28&gt;]</span>
+<span class="gh">Out[16]: </span><span class="go">Text(0.5,1,&#39;non-cumulative&#39;)</span>
+<span class="gh">Out[18]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x10f3bd5c0&gt;]</span>
+<span class="gh">Out[19]: </span><span class="go">Text(0.5,1,&#39;reverse-cumulative&#39;)</span>
+<span class="gh">Out[21]: </span><span class="go">[&lt;matplotlib.lines.Line2D at 0x10f4aa7f0&gt;]</span>
+<span class="gh">Out[22]: </span><span class="go">Text(0.5,1,&#39;raw data&#39;)</span>
 
 <span class="gp">In [24]: </span><span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="gp">In [25]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/plot_cumulative_versions.png"><img alt="../_images/plot_cumulative_versions.png" src="../_images/plot_cumulative_versions.png" style="width: 5in;" /></a>
 </dd></dl>
 
-<span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>
@@ -204,7 +207,7 @@ and <strong>3)</strong> bin positions. 2 and 3 would correspond to the y, x valu
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

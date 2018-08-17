@@ -54,6 +54,7 @@ def positional_structural_count( df, seqID=None, key_residues=None ):
            ...: from rstoolbox.analysis import positional_structural_count
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'scores': ['score'], 'structure': 'C'})
            ...: df = positional_structural_count(df.iloc[1:], 'C')
@@ -133,6 +134,7 @@ def positional_structural_identity( df, seqID=None, ref_sse=None, key_residues=N
            ...: from rstoolbox.analysis import positional_structural_identity
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'scores': ['score'], 'structure': 'C'})
            ...: df.add_reference_structure('C', df.get_structure('C').values[0])
@@ -222,6 +224,7 @@ def secondary_structure_percentage( df, seqID, key_residues=None ):
            ...: from rstoolbox.analysis import secondary_structure_percentage
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_ssebig.minisilent.gz",
            ...:                         {'scores': ['score'], 'structure': 'C'})
            ...: df = secondary_structure_percentage(df, 'C')
@@ -237,11 +240,14 @@ def secondary_structure_percentage( df, seqID, key_residues=None ):
                                                                   seqID,
                                                                   key_residues),
                        axis=1, result_type='expand')
+        df2.transfer_reference(df)
         return df2
     elif isinstance(df, DesignSeries):
         sse = list(df.get_structure(seqID, key_residues))
         csse = collections.Counter(sse)
-        return df.append(pd.Series([float(csse['H']) / len(sse), float(csse['E']) / len(sse),
-                         float(csse['L']) / len(sse)], [H, E, L]))
+        dfp = df.append(pd.Series([float(csse['H']) / len(sse), float(csse['E']) / len(sse),
+                        float(csse['L']) / len(sse)], [H, E, L]))
+        dfp.transfer_reference(df)
+        return dfp
     else:
         raise NotImplementedError

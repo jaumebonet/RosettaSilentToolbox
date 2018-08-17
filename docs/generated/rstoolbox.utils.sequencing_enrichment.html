@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -61,7 +61,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
@@ -170,31 +171,31 @@ enrichment per binder (if requested).</p>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">sequencing_enrichment</span><span class="p">(</span><span class="n">indat</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="p">[[</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">_</span> <span class="o">!=</span> <span class="s1">&#39;sequence_A&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[8]: </span><span class="go"></span>
-<span class="go">   description  binder2_conc1  binder2_conc2  binder2_conc3  binder1_conc1  binder1_conc2  binder1_conc3  len</span>
-<span class="go">0  0            4.0            1.0            1.0            0.0            2.0            0.0            304</span>
-<span class="go">1  1            4.0            3.0            2.0            0.0            1.0            2.0            298</span>
-<span class="go">2  2            3.0            0.0            0.0            1.0            0.0            2.0            304</span>
-<span class="go">3  3            3.0            4.0            3.0            0.0            1.0            1.0            304</span>
-<span class="go">4  4            3.0            0.0            3.0            0.0            1.0            1.0            298</span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">   description  binder1_conc1  binder1_conc2  binder1_conc3  binder2_conc1  binder2_conc2  binder2_conc3  len</span>
+<span class="go">0  0            4.0            1.0            0.0            1.0            0.0            3.0            304</span>
+<span class="go">1  1            4.0            2.0            1.0            2.0            1.0            0.0            304</span>
+<span class="go">2  2            3.0            2.0            4.0            1.0            1.0            1.0            304</span>
+<span class="go">3  3            3.0            1.0            1.0            1.0            0.0            3.0            304</span>
+<span class="go">4  4            3.0            0.0            1.0            2.0            2.0            1.0            298</span>
 
-<span class="gp">In [9]: </span><span class="n">enrich</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;binder1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;conc1&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">],</span>
+<span class="gp">In [7]: </span><span class="n">enrich</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;binder1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;conc1&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">],</span>
 <span class="gp">   ...: </span>          <span class="s1">&#39;binder2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;conc1&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">]}</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">sequencing_enrichment</span><span class="p">(</span><span class="n">indat</span><span class="p">,</span> <span class="n">enrich</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="p">[[</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">_</span> <span class="o">!=</span> <span class="s1">&#39;sequence_A&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[11]: </span><span class="go"></span>
-<span class="go">   description  binder2_conc1  binder2_conc2  binder2_conc3  binder1_conc1  binder1_conc2  binder1_conc3  len  enrichment_binder2  enrichment_binder1</span>
-<span class="go">0  0            4.0            1.0            1.0            0.0            2.0            0.0            304  4.0                 0.0               </span>
-<span class="go">1  1            4.0            3.0            2.0            0.0            1.0            2.0            298  2.0                 0.0               </span>
-<span class="go">2  2            3.0            0.0            0.0            1.0            0.0            2.0            304 -1.0                 0.5               </span>
-<span class="go">3  3            3.0            4.0            3.0            0.0            1.0            1.0            304  1.0                 0.0               </span>
-<span class="go">4  4            3.0            0.0            3.0            0.0            1.0            1.0            298  1.0                 0.0               </span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             Out[7]: </span>
+<span class="go">   description  binder1_conc1  binder1_conc2  binder1_conc3  binder2_conc1  binder2_conc2  binder2_conc3  len  enrichment_binder1  enrichment_binder2</span>
+<span class="go">0  0            4.0            1.0            0.0            1.0            0.0            3.0            304 -1.00                0.333333          </span>
+<span class="go">1  1            4.0            2.0            1.0            2.0            1.0            0.0            304  4.00               -1.000000          </span>
+<span class="go">2  2            3.0            2.0            4.0            1.0            1.0            1.0            304  0.75                1.000000          </span>
+<span class="go">3  3            3.0            1.0            1.0            1.0            0.0            3.0            304  3.00                0.333333          </span>
+<span class="go">4  4            3.0            0.0            1.0            2.0            2.0            1.0            298  3.00                2.000000          </span>
 </pre></div>
 </div>
 </dd></dl>
 
-<span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>
@@ -212,7 +213,7 @@ enrichment per binder (if requested).</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

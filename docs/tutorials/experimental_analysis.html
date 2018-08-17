@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Experimental Data &#8212; rstoolbox 0.0.6 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/functions.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="What’s new" href="../whatsnew.html" />
+    <link rel="prev" title="Generation of New Variants" href="new_mutants.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          rstoolbox</a>
+        <span class="navbar-text navbar-version pull-left"><b>0.0.6</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../scripts.html">Scripts</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rosettascripts.html">RosettaScripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Experimental Data</a><ul>
+<li><a class="reference internal" href="#circular-dichroism">Circular Dichroism</a></li>
+<li><a class="reference internal" href="#thermal-melt">Thermal Melt</a></li>
+<li><a class="reference internal" href="#multi-angle-light-scattering">Multi-Angle Light Scattering</a></li>
+<li><a class="reference internal" href="#surface-plasmon-resonance">Surface Plasmon Resonance</a></li>
+<li><a class="reference internal" href="#deep-sequence-analysis-and-population-enrichment">Deep Sequence Analysis and Population Enrichment</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="experimental-data">
+<span id="experimental-analysis"></span><h1>Experimental Data<a class="headerlink" href="#experimental-data" title="Permalink to this headline">¶</a></h1>
+<p>Experimental data derived from the analysis of the design decoys can be added and processed through the library. For some experiments, like
+<strong>Circular Dichroism</strong> or <strong>Surface Plasmon Resonance</strong>, very specific formats exist. In those cases, the proper parser (<a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> or
+<a class="reference internal" href="../generated/rstoolbox.io.read_SPR.html#rstoolbox.io.read_SPR" title="rstoolbox.io.read_SPR"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_SPR()</span></code></a>) exists. Other cases provide different +*CSV* files. This can be imported to python with <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html#pandas.read_csv" title="(in pandas v0.23.4)"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_csv()</span></code></a>, but might
+need to be post-processed to work with them.</p>
+<p>Each plotting function shows in its documentation the exact naming of the column that it expects.</p>
+<div class="section" id="circular-dichroism">
+<h2>Circular Dichroism<a class="headerlink" href="#circular-dichroism" title="Permalink to this headline">¶</a></h2>
+<p>Circular dichroism data can be easily worked with.</p>
+<p>Currently the library can automatically import data compatible with the <a class="reference external" href="https://jascoinc.com/products/spectroscopy/circular-dichroism/">Jasco</a> J-815
+series by means of the <a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> function, but any data can be read as long as it finally produces a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> with, at least, the following
+two columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column Name</th>
+<th class="head">Data Content</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Wavelength</strong></td>
+<td>Wavelength (nm).</td>
+</tr>
+<tr class="row-odd"><td><strong>MRE</strong></td>
+<td>Value at each wavelength (10 deg^2 cm^2 dmol^-1).</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="../contributing.html#contributing"><span class="std std-ref">Adding a new available format to the library</span></a> would be as easy as adding the appropriate private function to <code class="docutils literal notranslate"><span class="pre">rstoolbox/io/experimental</span></code> and provide access to
+it through the <a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> function.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When loading data with <a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> notice that the <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> contains extra columns with extra information. From those, <code class="docutils literal notranslate"><span class="pre">Temp</span></code> is the more relevant for
+plotting and analysis, as is the one that allows to separate the different data series.</p>
+</div>
+<p>Currently, CD data can be obtained and plotted such as:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">rstoolbox</span> <span class="kn">as</span> <span class="nn">rs</span>
+<span class="gp">   ...: </span><span class="n">dfCD</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_CD</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/CD&quot;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">dfCD</span><span class="o">.</span><span class="n">columns</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[3]: </span><span class="go">Index([&#39;Wavelength&#39;, &#39;MRE&#39;, &#39;voltage&#39;, &#39;title&#39;, &#39;bin&#39;, &#39;minw&#39;, &#39;Temp&#39;], dtype=&#39;object&#39;)</span>
+
+<span class="gp">In [4]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_CD</span><span class="p">(</span><span class="n">dfCD</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [8]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_exp_plt1.png"><img alt="../_images/tutorial_exp_plt1.png" src="../_images/tutorial_exp_plt1.png" style="width: 5in;" /></a>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">Depending on how many temperatures one might have, trying to plot all of them will create a very large legend. One can either delete it or use the <code class="docutils literal notranslate"><span class="pre">sample</span></code> option, which
+uses the <a class="reference external" href="http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm">Bresenham’s line algorithm</a> to sample temperatures across all possible</p>
+</div>
+</div>
+<div class="section" id="thermal-melt">
+<h2>Thermal Melt<a class="headerlink" href="#thermal-melt" title="Permalink to this headline">¶</a></h2>
+<p>As before, thermal melt data can be loaded by properly parsing any input file as long as the generated <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> contains at least the following columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column Name</th>
+<th class="head">Data Content</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Temp</strong></td>
+<td>Temperatures (celsius).</td>
+</tr>
+<tr class="row-odd"><td><strong>MRE</strong></td>
+<td>Value at each temperature (10 deg^2 cm^2 dmol^-1).</td>
+</tr>
+</tbody>
+</table>
+<p>If loaded from CD data containing a temp column (as is the case when loaded with <a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a>), one can directly pick the data from there:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">dfTM</span> <span class="o">=</span> <span class="n">dfCD</span><span class="p">[(</span><span class="n">dfCD</span><span class="p">[</span><span class="s1">&#39;Wavelength&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">220</span><span class="p">)]</span>
+<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_thermal_melt</span><span class="p">(</span><span class="n">dfTM</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [13]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_exp_plt2.png"><img alt="../_images/tutorial_exp_plt2.png" src="../_images/tutorial_exp_plt2.png" style="width: 5in;" /></a>
+<p>For well-behaved proteins, the library can approximate the melting point.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [14]: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_thermal_melt</span><span class="p">(</span><span class="n">dfTM</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">fusion_temperature</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">temp_marker</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [17]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_exp_plt3.png"><img alt="../_images/tutorial_exp_plt3.png" src="../_images/tutorial_exp_plt3.png" style="width: 5in;" /></a>
+</div>
+<div class="section" id="multi-angle-light-scattering">
+<h2>Multi-Angle Light Scattering<a class="headerlink" href="#multi-angle-light-scattering" title="Permalink to this headline">¶</a></h2>
+<p>MALS data can be manually loaded or read through the <a class="reference internal" href="../generated/rstoolbox.io.read_MALS.html#rstoolbox.io.read_MALS" title="rstoolbox.io.read_MALS"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_MALS()</span></code></a> function.
+In order to properly work with the plotting functions, it needs to have at least two of the following columns:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Column Name</th>
+<th class="head">Data Content</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Time</strong></td>
+<td>Time (min).</td>
+</tr>
+<tr class="row-odd"><td><strong>UV</strong></td>
+<td>UV data (V).</td>
+</tr>
+<tr class="row-even"><td><strong>LS</strong></td>
+<td>Light Scattering data (V).</td>
+</tr>
+<tr class="row-odd"><td><strong>MW</strong></td>
+<td>Molecular Weight (Daltons).</td>
+</tr>
+</tbody>
+</table>
+<p>being <strong>Time</strong> always mandatory. Depending on the amount of data, the plot function can pick which information to print.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [18]: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ....: </span><span class="n">dfMALS</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/mals.csv&quot;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_MALS</span><span class="p">(</span><span class="n">dfMALS</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [23]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_exp_plt4.png"><img alt="../_images/tutorial_exp_plt4.png" src="../_images/tutorial_exp_plt4.png" style="width: 5in;" /></a>
+</div>
+<div class="section" id="surface-plasmon-resonance">
+<h2>Surface Plasmon Resonance<a class="headerlink" href="#surface-plasmon-resonance" title="Permalink to this headline">¶</a></h2>
+<p>Optimal SPR data has to contain the fitted curves on input, but can be read directly from the default output of the machine.
+More details on the format are listed in the corresponding function <a class="reference internal" href="../generated/rstoolbox.io.read_SPR.html#rstoolbox.io.read_SPR" title="rstoolbox.io.read_SPR"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_SPR()</span></code></a>.</p>
+<p>The fitted curves will be directly represented with <a class="reference internal" href="../generated/rstoolbox.plot.plot_SPR.html#rstoolbox.plot.plot_SPR" title="rstoolbox.plot.plot_SPR"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_SPR()</span></code></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [24]: </span><span class="n">dfSPR</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_SPR</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/spr_data.csv.gz&quot;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_SPR</span><span class="p">(</span><span class="n">dfSPR</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">datacolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">fitcolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [28]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="gp">In [29]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_exp_plt5.png"><img alt="../_images/tutorial_exp_plt5.png" src="../_images/tutorial_exp_plt5.png" style="width: 5in;" /></a>
+</div>
+<div class="section" id="deep-sequence-analysis-and-population-enrichment">
+<h2>Deep Sequence Analysis and Population Enrichment<a class="headerlink" href="#deep-sequence-analysis-and-population-enrichment" title="Permalink to this headline">¶</a></h2>
+<p>Individual raw <strong>FASTQ</strong> data obtained from deep sequencing can be directly read with the <a class="reference internal" href="../generated/rstoolbox.io.read_fastq.html#rstoolbox.io.read_fastq" title="rstoolbox.io.read_fastq"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_fastq()</span></code></a> function.
+In order to evaluate the enrichment of different outputs submitted to a different experimental conditions in different
+concentrations, and provide the <code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> concentrations to use for the calculus to <code class="xref py py-func docutils literal notranslate"><span class="pre">sequence_enrichment()</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">indat</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;binder1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;conc1&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_001.fasq.gz&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                     <span class="s1">&#39;conc2&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_002.fasq.gz&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                     <span class="s1">&#39;conc3&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_003.fasq.gz&#39;</span><span class="p">},</span>
+<span class="gp">   ...: </span>         <span class="s1">&#39;binder2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;conc1&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_004.fasq.gz&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                     <span class="s1">&#39;conc2&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_005.fasq.gz&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                     <span class="s1">&#39;conc3&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_006.fasq.gz&#39;</span><span class="p">}}</span>
+<span class="gp">   ...: </span><span class="n">enrich</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;binder1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;conc1&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">],</span>
+<span class="gp">   ...: </span>          <span class="s1">&#39;binder2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;conc1&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">]}</span>
+<span class="gp">   ...: </span><span class="n">dfSeq</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sequencing_enrichment</span><span class="p">(</span><span class="n">indat</span><span class="p">,</span> <span class="n">enrich</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">dfSeq</span><span class="p">[[</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dfSeq</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">_</span> <span class="o">!=</span> <span class="s1">&#39;sequence_A&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[1]: </span><span class="go"></span>
+<span class="go">   description  binder1_conc1  binder1_conc2  binder1_conc3  binder2_conc1  binder2_conc2  binder2_conc3  len  enrichment_binder1  enrichment_binder2</span>
+<span class="go">0  0            4.0            1.0            0.0            1.0            0.0            3.0            304 -1.00                0.333333          </span>
+<span class="go">1  1            4.0            2.0            1.0            2.0            1.0            0.0            304  4.00               -1.000000          </span>
+<span class="go">2  2            3.0            2.0            4.0            1.0            1.0            1.0            304  0.75                1.000000          </span>
+<span class="go">3  3            3.0            1.0            1.0            1.0            0.0            3.0            304  3.00                0.333333          </span>
+<span class="go">4  4            3.0            0.0            1.0            2.0            2.0            1.0            298  3.00                2.000000          </span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, Jaume Bonet.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

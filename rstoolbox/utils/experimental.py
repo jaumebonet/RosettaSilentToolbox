@@ -45,6 +45,7 @@ def translate_dna_sequence( sequence ):
            ...: from rstoolbox.utils import translate_dna_sequence
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = read_fastq("../rstoolbox/tests/data/cdk2_rand_001.fasq.gz")
            ...: df.iloc[0]['sequence_A']
 
@@ -101,6 +102,7 @@ def translate_3frames( sequence, matches=None ):
            ...: from rstoolbox.utils import translate_3frames
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = read_fastq("../rstoolbox/tests/data/cdk2_rand_001.fasq.gz")
            ...: df.iloc[0]['sequence_A']
 
@@ -114,6 +116,7 @@ def translate_3frames( sequence, matches=None ):
            ...: from rstoolbox.utils import translate_3frames
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = read_fastq("../rstoolbox/tests/data/cdk2_rand_001.fasq.gz")
            ...: matches = ['GAS', 'FFG']
            ...: translate_3frames('AT' + df.iloc[0]['sequence_A'], matches)
@@ -172,6 +175,7 @@ def adapt_length( seqlist, start, stop, inclusive=False ):
            ...: from rstoolbox.utils import adapt_length
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = read_fastq("../rstoolbox/tests/data/cdk2_rand_001.fasq.gz")
            ...: df['sequence_A'] = df.apply(lambda row: translate_dna_sequence(row['sequence_A']),
            ...:                             axis=1)

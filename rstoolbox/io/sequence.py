@@ -54,6 +54,7 @@ def read_fasta( filename, expand=False, multi=False, defchain='A' ):
         In [1]: from rstoolbox.io import read_fasta
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = read_fasta("../rstoolbox/tests/data/*fa$", multi=True)
            ...: df
 
@@ -344,6 +345,7 @@ def read_hmmsearch( filename ):
         In [1]: from rstoolbox.io import read_hmmsearch
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = read_hmmsearch("../rstoolbox/tests/data/search.hmm.gz")
            ...: df.head()
     """

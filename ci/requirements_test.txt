@@ -1,0 +1,6 @@
+pyyaml == 3.13
+pandas == 0.23.3
+seaborn == 0.9.0
+libconfig == 0.6.7
+six == 1.11.0
+networkx == 2.1

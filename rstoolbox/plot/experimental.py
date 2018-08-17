@@ -15,6 +15,7 @@
 # Standard Libraries
 import math
 import string
+from operator import itemgetter
 
 # External Libraries
 import numpy as np
@@ -69,6 +70,7 @@ def plot_96wells(cdata=None, sdata=None, bdata=None, bcolors=None, bmeans=None, 
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.plot import plot_96wells
            ...: import numpy as np
@@ -81,6 +83,8 @@ def plot_96wells(cdata=None, sdata=None, bdata=None, bcolors=None, bmeans=None, 
 
         @savefig plot_96wells_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
 
     # Changes in one of this parameters should change others to ensure size fit.
@@ -208,7 +212,8 @@ def plot_96wells(cdata=None, sdata=None, bdata=None, bcolors=None, bmeans=None, 
     return fig, ax
 
 
-def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  ):
+def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None,
+                       fusion_temperature=False, temp_marker=False ):
     """Plot `Thermal Melt <https://www.wikiwand.com/en/Thermal_shift_assay>`_ data.
 
     Plot thermal melt and generate the fitting curve to the pointsself.
@@ -223,6 +228,10 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  
     **MRE**          Value at each temperature (10 deg^2 cm^2 dmol^-1).
     ===============  ===================================================
 
+    .. warning::
+        Some of the advanced attributes in this function require :mod:`scipy` to be
+        installed.
+
     :param df: Data container.
     :type df: :class:`~pandas.DataFrame`
     :param ax: Axis in which to plot the data.
@@ -235,10 +244,15 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  
     :type pointcolor: Union[:class:`int`, :class:`str`]
     :param float min_temperature: If provided, set minimum temperature in the Y axis
         of the plot.
+    :param bool fusion_temperature: When :data:`True`, calculates the fusion temperature
+        when possible. **Requires ``scipy`` library**.
+    :param bool temp_marker: When :data:`True`, approximate and annotate the expected melting
+        point. **requires ``scipy`` library**.
 
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.plot import plot_thermal_melt
            ...: import numpy as np
@@ -247,23 +261,70 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None  
            ...: df = pd.read_csv("../rstoolbox/tests/data/thermal_melt.csv")
            ...: fig = plt.figure(figsize=(10, 6.7))
            ...: ax = plt.subplot2grid((1, 1), (0, 0))
-           ...: plot_thermal_melt(df, ax)
+           ...: plot_thermal_melt(df, ax, fusion_temperature=True, temp_marker=True)
 
         @savefig plot_tmelt_docs.png width=5in
         In [2]: plt.show()
 
+        In [3]: plt.close()
     """
+    if fusion_temperature:
+        try:
+            from scipy.optimize import curve_fit
+        except ImportError:
+            raise ImportError("scipy library is necessary to calculate fusion temperature")
+
+    def TmFunc(T, Io, Ie, Tm, beta):
+        return Io + 0.5 * (Ie - Io) * (1 + np.tanh(beta * (T - Tm)))
+
+    def fit(df, Tm=60.0, beta=0.1, Io=None, Ie=None):
+        # set-up initial fit values
+        Io = df['MRE'].values[0] if Io is None else Io
+        Ie = df['MRE'].values[-1] if Ie is None else Ie
+
+        try:
+            popt, pcov = curve_fit(TmFunc, df['Temp'].values,
+                                   df['MRE'].values, p0=[Io, Ie, Tm, beta] )
+        except RuntimeError:
+            return None
+        else:
+            perr = 2 * np.sqrt(np.diag(pcov))
+            results = {
+                'Io': popt[0], 'Ie': popt[1],
+                'Tm': popt[2], 'beta': popt[3],
+                'Tm_errorbar': perr[2], 'beta_error': perr[3]
+            }
+            return results
+
+    R = fit(df) if fusion_temperature else None
     if isinstance(linecolor, int):
-        linecolor = sns.color_palette()[linecolor]
-    fit = np.poly1d(np.polyfit(df['Temp'].values, df['MRE'].values, 4))
-    ax.plot(df['Temp'].values, fit(df['Temp'].values), color=linecolor)
+            linecolor = sns.color_palette()[linecolor]
+    if not fusion_temperature or R is None:
+        fit = np.poly1d(np.polyfit(df['Temp'].values, df['MRE'].values, 4))
+        ax.plot(df['Temp'].values, fit(df['Temp'].values), color=linecolor)
+    else:
+        ax.plot(df['Temp'].values,
+                TmFunc(df['Temp'].values, R["Io"], R["Ie"], R["Tm"], R["beta"]),
+                color=linecolor)
+        if temp_marker:
+            mn = R["Io"] if R["Io"] < R["Ie"] else R["Ie"]
+            mx = R["Io"] if R["Io"] > R["Ie"] else R["Ie"]
+            if R["Tm"] < 100.0 and R["Tm"] > 0.0:
+                ax.plot([R["Tm"], R["Tm"]], [mn, mx], 'k:')
+        txtTM = '{0:.1f}C +/- {1:.2f}'.format(R["Tm"], R["Tm_errorbar"])
+        ptTM = [R["Tm"], TmFunc(R["Tm"], R["Io"], R["Ie"], R["Tm"], R["beta"])]
+
+        if temp_marker:
+            ax.annotate(txtTM, xy=ptTM, xytext=(R["Tm"] + 3, min(df['MRE'].values)))
+        else:
+            ax.annotate(txtTM, xy=ptTM, xytext=(0.85, 0.1), textcoords='figure fraction',)
 
     if isinstance(pointcolor, int):
         pointcolor = sns.color_palette()[pointcolor]
     ax.plot(df['Temp'].values, df['MRE'].values, marker='s', linestyle='None', color=pointcolor)
 
     ax.set_ylabel(r'MRE(10 deg$^3$ cm$^2$ dmol$^-1$)')
-    ax.set_xlabel(r'Temperature ($^\circ$C)')
+    ax.set_xlabel('Temperature (C)')
 
     ax.set_xlim(ax.get_xlim()[0] if min_temperature is None else min_temperature)
     ax.set_ylim(ymax=0)
@@ -307,6 +368,7 @@ def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_ti
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.plot import plot_MALS
            ...: import numpy as np
@@ -319,6 +381,8 @@ def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_ti
 
         @savefig plot_mals_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
     if lscolor is not False:
         if isinstance(lscolor, int):
@@ -331,8 +395,6 @@ def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_ti
         df_ = df[np.isfinite(df['UV'])]
         ax.plot(df_['Time'].values, df_['UV'].values, color=uvcolor, label='UV')
 
-    # quarter = df['UV'].max()
-
     if max_voltage is not None:
         ax.set_ylim(0, max_voltage)
     else:
@@ -342,6 +404,8 @@ def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_ti
     else:
         ax.set_xlim(0)
 
+    if 'MW' not in df.columns:
+        mwcolor = False
     if mwcolor is not False:
         if isinstance(mwcolor, int):
             mwcolor = sns.color_palette()[mwcolor]
@@ -353,13 +417,14 @@ def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_ti
     ax.set_xlabel('Time (min)')
     ax.legend()
 
-    meanW = sum(df_['MW'].values) / float(len(df_['MW'].values))
-    maxW = (ax.get_ylim()[1] * meanW) / 0.8
-    ax2.set_ylim(0, maxW)
-    ax2.get_yaxis().set_visible(False)
+    if mwcolor is not False:
+        meanW = sum(df_['MW'].values) / float(len(df_['MW'].values))
+        maxW = (ax.get_ylim()[1] * meanW) / 0.8
+        ax2.set_ylim(0, maxW)
+        ax2.get_yaxis().set_visible(False)
 
 
-def plot_CD( df, ax, color=0, wavelengths=None  ):
+def plot_CD( df, ax, color=None, wavelengths=None, sample=None  ):
     """Plot `Circular Dichroism <https://www.wikiwand.com/en/Circular_dichroism>`_ data.
 
     The provied :class:`~pandas.DataFrame` must contain, at least, the following
@@ -372,19 +437,33 @@ def plot_CD( df, ax, color=0, wavelengths=None  ):
     **MRE**          Value at each wavelength (10 deg^2 cm^2 dmol^-1).
     ===============  ===================================================
 
+    If the input data is of the class **CDFrame**, it will assume that data has
+    been loaded with the :func:`.read_CD` function and that multiple temperatures
+    are present and plot it accordingly.
+
     :param df: Data container.
     :type df: :class:`~pandas.DataFrame`
     :param ax: Axis in which to plot the data.
     :type ax: :class:`~matplotlib.axes.Axes`
-    :param color: Color for the data. If a number, it takes from the current
-        :mod:`seaborn` palette.
+    :param color: **DataFrame:** Color for the data. If a number, it takes from
+        the current :mod:`seaborn` palette. **CDFrame:** Provide the palette ID to use.
     :type color: Union[:class:`int`, :class:`str`]
     :param wavelengths: List with min and max wavelengths to plot.
     :type wavelengths: :func:`list` of :class:`float`
+    :param int sample: **CDFrame:** Limit the number of temperatures shown. According to
+        the number of temperatures available, it will get them as separate as possible.
+        If ``sample`` is bigger than the available temperatures, all are shown.
+        Sampling selection is based on
+        `Bresenham's line algorithm <http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm>`_
 
-    .. rubric:: Example
+    :raise:
+        :ValueError: If a wrong palette name is provided.
+        :ValueError: If 0 samples are requested.
+
+    .. rubric:: Example - Single Tabulated Data File
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.plot import plot_CD
            ...: import numpy as np
@@ -397,15 +476,69 @@ def plot_CD( df, ax, color=0, wavelengths=None  ):
 
         @savefig plot_cd_docs.png width=5in
         In [2]: plt.show()
+
+    .. rubric:: Example - Multiple Machine-Generated Data Files
+
+    .. ipython::
+
+        In [1]: from rstoolbox.plot import plot_CD
+           ...: import numpy as np
+           ...: import pandas as pd
+           ...: import matplotlib.pyplot as plt
+           ...: df = pd.read_csv("../rstoolbox/tests/data/cd.csv")
+           ...: fig = plt.figure(figsize=(10, 6.7))
+           ...: ax = plt.subplot2grid((1, 1), (0, 0))
+           ...: plot_CD(df, ax)
+
+        @savefig plot_cd2_docs.png width=5in
+        In [2]: plt.show()
+
+        In [3]: plt.close('all')
     """
-    if isinstance(color, int):
-        color = sns.color_palette()[color]
-    ax.plot(df['Wavelength'].values, df['MRE'].values, color=color)
+    from rstoolbox.io.experimental import CDFrame
+
+    def sampling( m, n ):
+        return [i * n // m + n // (2 * m) for i in range(m)]
+
+    if not isinstance(df, CDFrame):
+        if color is None:
+            color = 0
+        if isinstance(color, int):
+            color = sns.color_palette()[color]
+        ax.plot(df['Wavelength'].values, df['MRE'].values, color=color)
+    else:
+        if sample is None:
+            sample = len(df['bin'].unique())
+        if sample == 0:
+            raise ValueError('At least 1 temperature must be plotted')
+        positions = sampling(sample, len(df['bin'].unique()))
+        bins = list(df['bin'].unique())
+        positions = itemgetter(*positions)(bins)
+
+        current_palette = sns.color_palette(None, len(positions))
+        try:
+            current_palette = sns.color_palette(color, len(positions))
+        except ValueError:
+            raise ValueError('Invalid palette id {}'.format(color))
+        except TypeError:
+            raise ValueError('Invalid palette id {}'.format(color))
+
+        count = 0
+        for _, gf in df.groupby('bin'):
+            if gf['bin'].unique()[0] in positions:
+                ax.plot(gf['Wavelength'].values, gf['MRE'].values,
+                        label=gf['Temp'].unique()[0], color=current_palette[count])
+                count += 1
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles, ['{} C'.format(x) for x in labels])
+
     ax.plot(df['Wavelength'].values, [0, ] * len(df['Wavelength'].values),
             linestyle='dashed', color='grey')
 
     if isinstance(wavelengths, list) and len(wavelengths) == 2:
         ax.set_xlim(wavelengths[0], wavelengths[1])
+    else:
+        ax.set_xlim(min(df['Wavelength'].values), max(df['Wavelength'].values))
 
     ax.set_ylabel(r'MRE(10 deg$^3$ cm$^2$ dmol$^-1$)')
     ax.set_xlabel('Wavelength (nm)')
@@ -439,11 +572,13 @@ def plot_SPR( df, ax, datacolor=0, fitcolor=0, max_time=None, max_response=None 
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import read_SPR
            ...: from rstoolbox.plot import plot_SPR
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = read_SPR("../rstoolbox/tests/data/spr_data.csv.gz")
            ...: fig = plt.figure(figsize=(10, 6.7))
            ...: ax = plt.subplot2grid((1, 1), (0, 0))
@@ -452,6 +587,7 @@ def plot_SPR( df, ax, datacolor=0, fitcolor=0, max_time=None, max_response=None 
         @savefig plot_spr_docs.png width=5in
         In [2]: plt.show()
 
+        In [3]: plt.close()
     """
     if isinstance(datacolor, int):
         datacolor = sns.color_palette()[datacolor]

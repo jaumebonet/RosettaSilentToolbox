@@ -38,8 +38,20 @@ If you feel there is a feature that might improve the library here are the steps
 Tests
 -----
 
-Tests reside in ``rstoolbox/tests`` and depend on `pytest <https://docs.pytest.org/en/latest/>`_. A full list of requirements for the
-tests can be found in ``rstoolbox/ci/requirements_devel.txt``.
+Tests reside in ``rstoolbox/tests`` and depend on `pytest <https://docs.pytest.org/en/latest/>`_.
+
+Development libraries required for tests and documentation building can be found in ``rstoolbox/ci/requirements_devel.txt``.
+
+When running the test, the regular libraries will not be loaded from the default ``REQUIMENTS`` file, but from the extra
+``rstoolbox/ci/requirements_test.txt``. The difference between both files being that, while ``REQUIMENTS`` requests the
+minimum working version for a given library, ``rstoolbox/ci/requirements_test.txt`` requires the specified version of the test.
+This is important for the test to succeed, specially for graphical libraries such as `seaborn <https://seaborn.pydata.org/index.html>`_,
+that might change their visuals from one version to another.
+
+.. note::
+  This double library requirements entails the need to take ``rstoolbox/ci/requirements_test.txt`` into account when adding a new feature
+  that needs the last version of an already required library to work.
+
 
 The easiest way to execute them is through `tox <https://tox.readthedocs.io/>`_; for which three different environments are set up::
 

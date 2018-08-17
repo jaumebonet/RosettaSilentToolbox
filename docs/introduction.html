@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -20,7 +20,7 @@
     <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installing and getting started" href="installing.html" />
+    <link rel="next" title="Highlighted works" href="highlights.html" />
     <link rel="prev" title="rstoolbox: management and analysis of design populations" href="index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -61,7 +61,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Available direct executables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API reference</a></li>
@@ -113,7 +114,16 @@
       
   <div class="section" id="an-introduction-to-rstoolbox">
 <span id="introduction"></span><h1>An introduction to rstoolbox<a class="headerlink" href="#an-introduction-to-rstoolbox" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="definitions"></span></div>
+<p>Heuristic approaches to protein computational design have become extremely prolific due to potentially unlimited size of the sequence-structure space. Thus, computational
+design platforms such as <a class="reference external" href="https://www.rosettacommons.org/docs/latest/getting_started/Getting-Started">Rosetta</a> does not tend to generate a single optimal design but a
+population of <strong>decoys</strong> amongst which biologically relevant designs are expected to appear. As a matter of fact, depending on <a class="reference external" href="https://www.rosettacommons.org/docs/latest/getting_started/Rosetta-on-different-scales">the size of the search space</a>, the number of necessary decoys can range from one up to a million, as it is
+summarised in <strong>this image from the Rosetta documentation page</strong>:</p>
+<img alt="https://www.rosettacommons.org/docs/latest/getting_started/Rosetta-on-different-scales.png" class="align-center" src="https://www.rosettacommons.org/docs/latest/getting_started/Rosetta-on-different-scales.png" />
+<p>The <code class="docutils literal notranslate"><span class="pre">rstoolbox</span></code> aims to analyse these decoy populations in order to aid in the selection of a manageable number of decoys for experimental validation.
+Furthermore, is can help protocol developers to benchmark their data in order to guide the development of new design approaches.</p>
+<p>Although mostly prepared to work with <strong>Rosetta</strong>, most of the tools integrated in the <code class="docutils literal notranslate"><span class="pre">rstoolbox</span></code> would work with any other design system generating big decoy populations
+by simply adding the appropriate parser.</p>
+</div>
 
 
     </div>
@@ -131,7 +141,7 @@
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

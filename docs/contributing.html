@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -60,7 +60,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Available direct executables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API reference</a></li>
@@ -150,8 +151,18 @@ you for your time and your improvements to the code.</p>
 </ol>
 <div class="section" id="tests">
 <span id="id2"></span><h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
-<p>Tests reside in <code class="docutils literal notranslate"><span class="pre">rstoolbox/tests</span></code> and depend on <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a>. A full list of requirements for the
-tests can be found in <code class="docutils literal notranslate"><span class="pre">rstoolbox/ci/requirements_devel.txt</span></code>.</p>
+<p>Tests reside in <code class="docutils literal notranslate"><span class="pre">rstoolbox/tests</span></code> and depend on <a class="reference external" href="https://docs.pytest.org/en/latest/">pytest</a>.</p>
+<p>Development libraries required for tests and documentation building can be found in <code class="docutils literal notranslate"><span class="pre">rstoolbox/ci/requirements_devel.txt</span></code>.</p>
+<p>When running the test, the regular libraries will not be loaded from the default <code class="docutils literal notranslate"><span class="pre">REQUIMENTS</span></code> file, but from the extra
+<code class="docutils literal notranslate"><span class="pre">rstoolbox/ci/requirements_test.txt</span></code>. The difference between both files being that, while <code class="docutils literal notranslate"><span class="pre">REQUIMENTS</span></code> requests the
+minimum working version for a given library, <code class="docutils literal notranslate"><span class="pre">rstoolbox/ci/requirements_test.txt</span></code> requires the specified version of the test.
+This is important for the test to succeed, specially for graphical libraries such as <a class="reference external" href="https://seaborn.pydata.org/index.html">seaborn</a>,
+that might change their visuals from one version to another.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This double library requirements entails the need to take <code class="docutils literal notranslate"><span class="pre">rstoolbox/ci/requirements_test.txt</span></code> into account when adding a new feature
+that needs the last version of an already required library to work.</p>
+</div>
 <p>The easiest way to execute them is through <a class="reference external" href="https://tox.readthedocs.io/">tox</a>; for which three different environments are set up:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tox</span> <span class="o">-</span><span class="n">e</span> <span class="n">py27</span>
 <span class="n">tox</span> <span class="o">-</span><span class="n">e</span> <span class="n">py35</span>
@@ -181,7 +192,7 @@ comprehend the effects of the function. Use other functions as guidelines on how
 </pre></div>
 </div>
 <p>Lastly, list your new improvements into: <code class="docutils literal notranslate"><span class="pre">sphinx-docs/releases/Vxxx.txt</span></code> where <code class="docutils literal notranslate"><span class="pre">xxx</span></code> represents the higher version listed.</p>
-<span class="target" id="definitions"></span></div>
+</div>
 </div>
 
 
@@ -200,7 +211,7 @@ comprehend the effects of the function. Use other functions as guidelines on how
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

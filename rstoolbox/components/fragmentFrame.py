@@ -21,7 +21,7 @@ import numpy as np
 import networkx as nx
 
 # This Library
-import rstoolbox.core as core
+from rstoolbox.utils import make_rosetta_app_path, execute_process
 
 __all__ = ["FragmentFrame"]
 
@@ -54,6 +54,7 @@ class FragmentFrame( pd.DataFrame ):
         In [1]: from rstoolbox.io import parse_rosetta_fragments
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_fragments("../rstoolbox/tests/data/wauto.200.3mers.gz")
            ...: df.head()
     """
@@ -162,16 +163,12 @@ class FragmentFrame( pd.DataFrame ):
             filename = sofi + ".qual"
             if not os.path.isfile(filename) and not os.path.isfile(filename + ".gz"):
                 # Check rosetta executable
-                exe = os.path.join(core.get_option("rosetta", "path"),
-                                   "r_frag_quality.{0}".format(core.get_option("rosetta",
-                                                                               "compilation")))
-                if not os.path.isfile(exe):
-                    raise IOError("The expected Rosetta executable {0} is not found".format(exe))
+                exe = make_rosetta_app_path('r_frag_quality')
                 if not os.path.isfile(pdbfile):
                     raise IOError("{0} not found".format(pdbfile))
                 command = "{0} -in:file:native {1} -f {2} -out:qual {3}".format(
                           exe, pdbfile, self._source_file, filename )
-                error = os.system( command )
+                error = execute_process( command )
                 if not bool(error):
                     sys.stdout.write("Execution has finished\n")
                 else:

@@ -84,6 +84,7 @@ def plot_fragment_profiles( fig, small_frags, large_frags, ref_seq, ref_sse, mat
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_fragments
            ...: from rstoolbox.plot import plot_fragment_profiles
@@ -100,6 +101,8 @@ def plot_fragment_profiles( fig, small_frags, large_frags, ref_seq, ref_sse, mat
 
         @savefig plot_fragment_profiles_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
 
     # make subplots
@@ -202,6 +205,7 @@ def plot_fragments( small_frags, large_frags, small_ax, large_ax, small_color=0,
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_fragments
            ...: from rstoolbox.plot import plot_fragments
@@ -218,6 +222,8 @@ def plot_fragments( small_frags, large_frags, small_ax, large_ax, small_color=0,
 
         @savefig plot_fragments_docs.png width=5in
         In [2]: plt.show()
+
+        In [3]: plt.close()
     """
 
     # Color management

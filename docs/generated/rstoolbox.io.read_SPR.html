@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -20,7 +20,7 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="rstoolbox.io.read_fastq" href="rstoolbox.io.read_fastq.html" />
+    <link rel="next" title="rstoolbox.io.read_CD" href="rstoolbox.io.read_CD.html" />
     <link rel="prev" title="rstoolbox.io.make_structures" href="rstoolbox.io.make_structures.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -61,7 +61,8 @@
       role="menu"
       aria-labelledby="dLabelGlobalToc"><ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
@@ -127,13 +128,19 @@
 </div>
 <p>each <code class="docutils literal notranslate"><span class="pre">conc</span></code> condition will have a <code class="docutils literal notranslate"><span class="pre">_X</span></code> and <code class="docutils literal notranslate"><span class="pre">_Y</span></code> value.</p>
 <p>This seems to be a pretty standard format as output from the machine.</p>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p class="last">The provided <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> will actually be casted to <strong>SPRFrame</strong>.
+This class has no other purpose that identification to help other library functions
+and, thus, works as a normal <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Input file.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> with <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code>.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> with <code class="docutils literal notranslate"><span class="pre">MultiIndex</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -145,22 +152,21 @@
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">read_SPR</span>
 <span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">read_SPR</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/spr_data.csv.gz&quot;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[5]: </span><span class="go"></span>
-<span class="go">data                 raw                                                                                                                                              ...                                                          fitted                                                                     </span>
-<span class="go">concentration     0.0585                0.117             0.234375              0.46875               0.9375              1.875               3.75                7.5 ...         15         30                   60                 3.75             7.5              15              30              60     </span>
-<span class="go">axis                   X         Y          X         Y          X         Y          X         Y          X       Y          X       Y          X       Y          X ...          Y          X         Y          X         Y          X    Y          X    Y          X    Y          X    Y          X    Y</span>
-<span class="go">0             -37.400002 -0.011209 -37.300003  0.284098 -37.300003  0.190698 -37.200001  0.159199 -37.100002  0.3337 -37.000000  0.2639 -37.000000  0.2056 -36.900002 ...   0.330999 -36.900002  0.119499 -36.900002  0.218399 -37.000000  0.0 -36.900002  0.0 -36.900002  0.0 -36.900002  0.0 -36.900002  0.0</span>
-<span class="go">1             -37.299999 -0.117500 -37.200001  0.073299 -37.200001 -0.034101 -37.099998  0.013600 -37.000000 -0.0063 -36.899998  0.0813 -36.899998  0.1044 -36.799999 ...   0.090100 -36.799999 -0.051800 -36.799999  0.146300 -36.950001  0.0 -36.850002  0.0 -36.850002  0.0 -36.850002  0.0 -36.850002  0.0</span>
-
-<span class="go">[2 rows x 32 columns]</span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">data                 raw                                                                                                                                                                                                                           fitted                                                                     </span>
+<span class="go">concentration     0.0585                0.117             0.234375              0.46875               0.9375              1.875               3.75                7.5                   15                   30                   60                 3.75             7.5              15              30              60     </span>
+<span class="go">axis                   X         Y          X         Y          X         Y          X         Y          X       Y          X       Y          X       Y          X         Y          X         Y          X         Y          X         Y          X    Y          X    Y          X    Y          X    Y          X    Y</span>
+<span class="go">0             -37.400002 -0.011209 -37.300003  0.284098 -37.300003  0.190698 -37.200001  0.159199 -37.100002  0.3337 -37.000000  0.2639 -37.000000  0.2056 -36.900002  0.176199 -36.900002  0.330999 -36.900002  0.119499 -36.900002  0.218399 -37.000000  0.0 -36.900002  0.0 -36.900002  0.0 -36.900002  0.0 -36.900002  0.0</span>
+<span class="go">1             -37.299999 -0.117500 -37.200001  0.073299 -37.200001 -0.034101 -37.099998  0.013600 -37.000000 -0.0063 -36.899998  0.0813 -36.899998  0.1044 -36.799999  0.013100 -36.799999  0.090100 -36.799999 -0.051800 -36.799999  0.146300 -36.950001  0.0 -36.850002  0.0 -36.850002  0.0 -36.850002  0.0 -36.850002  0.0</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<span class="target" id="definitions"></span></div>
+</div>
 
 
     </div>
@@ -178,7 +184,7 @@
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
     </p>
   </div>
 </footer>

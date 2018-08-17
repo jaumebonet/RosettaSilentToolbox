@@ -9,18 +9,25 @@
 .. func:: format_Ipython
 .. func:: add_column
 .. func:: split_values
+.. func:: make_rosetta_app_path
+.. func:: execute_process
 """
 # Standard Libraries
+import os
 import copy
 import textwrap
+import subprocess
+import shlex
 
 # External Libraries
 import pandas as pd
+from six import string_types
 
 # This Library
 
 
-__all__ = ['format_Ipython', 'add_column', 'split_values']
+__all__ = ['format_Ipython', 'add_column', 'split_values', 'make_rosetta_app_path',
+           'execute_process']
 
 
 def format_Ipython():
@@ -83,6 +90,8 @@ def split_values( df, keys ):
     :type df: :class:`~pandas.DataFrame`
     :param dict keys: Selection of the columns to keep and split.
 
+    :return: Altered Data container.
+
     .. rubric:: Example
 
     .. ipython::
@@ -91,6 +100,7 @@ def split_values( df, keys ):
            ...: from rstoolbox.utils import split_values
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
            ...: ifile = '../rstoolbox/tests/data/input_2seq.minisilent.gz'
            ...: scorel = ['score', 'GRMSD2Target', 'GRMSD2Template', 'LRMSD2Target',
            ...:           'LRMSDH2Target', 'LRMSDLH2Target', 'description']
@@ -132,3 +142,45 @@ def split_values( df, keys ):
             })
         dataframes.append(wdf)
     return pd.concat(dataframes)
+
+
+def make_rosetta_app_path( application ):
+    """Provided the expected Rosetta application, add path and suffix.
+
+    .. note::
+        Depends on :ref:`rosetta.path <options>` and :ref:`rosetta.compilation <options>`,
+        if the ``filename`` does not exist.
+
+    :param str application: Name of the application to call.
+
+    :return: :class:`str`
+
+    :raise:
+        :IOError: If the final path created does not exist.
+    """
+    import rstoolbox.core as core
+
+    path    = core.get_option("rosetta", "path")
+    comp    = core.get_option("rosetta", "compilation")
+    exe     = os.path.join(path, "{0}.{1}".format(application, comp))
+    if not os.path.isfile(exe):
+        raise IOError("The expected Rosetta executable {0} is not found".format(exe))
+    return exe
+
+
+def execute_process( command ):
+    """Execute the provided command.
+
+    :param command: Command to be executed.
+    :type command: Union(:class:`str`, :func:`list`)
+    :param bool subp: When :data:`True` return ``subprocess`` otherwise return
+        the execution status as 0 (OK) or another number if failed.
+
+    :return: Output info of the execution
+    """
+    if isinstance(command, string_types):
+        command = shlex.split(command)
+    try:
+        return subprocess.call( command )
+    except OSError:
+        return 1

@@ -11,9 +11,12 @@ import os
 
 # External Libraries
 import pytest
+import matplotlib.pyplot as plt
 
 # This Library
 from rstoolbox.io import read_fasta, write_fasta, read_hmmsearch
+from rstoolbox.io import parse_rosetta_file, pymol_mutant_selector
+from rstoolbox.plot import sequence_frequency_plot
 
 
 class TestReadSilentFiles( object ):
@@ -27,6 +30,8 @@ class TestReadSilentFiles( object ):
         self.dirpath = os.path.join(os.path.dirname(__file__), '..', 'data')
         self.tmpdir = tmpdir.strpath
 
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='seq_freq_plot_fasta.png')
     def test_fasta(self):
         # Test simple read
         plain_id_string = "{}|PDBID|CHAIN|SEQUENCE"
@@ -107,8 +112,32 @@ class TestReadSilentFiles( object ):
             expected = df2[df2["description"] == newid.split(":")[0]]["sequence_A"].values[0]
             assert expected == newseq
 
+        # plot
+        fig = plt.figure(figsize=(25, 10))
+        ax = plt.subplot2grid((1, 1), (0, 0))
+        sequence_frequency_plot(df1, 'A', ax, refseq=False)
+        return fig
+
     def test_hmm( self ):
         df = read_hmmsearch(os.path.join(self.dirpath, 'search.hmm.gz'))
         assert df.shape[0] == 4932
         assert len(df['description'].unique()) == 4927
         assert df[df['full-e-value'] < 10].shape[0] == 2650
+
+    def test_pymol( self ):
+        df = parse_rosetta_file(os.path.join(self.dirpath, 'input_2seq.minisilent.gz'),
+                                {'sequence': 'B'})
+        df.add_reference_sequence('B', df.iloc[0].get_sequence('B'))
+        df = df.identify_mutants('B').head()
+
+        pick1 = ""
+        pick2 = "sele test_3lhp_binder_labeled_00002_mut, test_3lhp_binder_labeled_00002 and " \
+                "((c. B and (i. 1-2 or i. 7-9 or i. 11-12 or i. 14-17 or i. 19 or i. 21-23 or " \
+                "i. 25-27 or i. 31-33 or i. 35-39 or i. 42 or i. 45 or i. 48 or i. 52 or " \
+                "i. 64-68 or i. 70-75 or i. 77 or i. 79-82 or i. 84-86 or i. 88-89 or " \
+                "i. 91-102 or i. 104-111 or i. 113-116)))"
+        sel = pymol_mutant_selector(df)
+        assert len(sel[0]) == 0
+        assert sel[0] == pick1
+        assert len(sel[1]) != 0
+        assert sel[1] == pick2

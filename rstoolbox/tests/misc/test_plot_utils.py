@@ -19,6 +19,7 @@ import pytest
 import rstoolbox.utils as ru
 import rstoolbox.plot as rp
 import rstoolbox.io as ri
+import rstoolbox.components as rc
 
 
 class TestPlotUtils( object ):
@@ -97,9 +98,28 @@ class TestPlotUtils( object ):
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_cd2.png')
+    def test_cd_read( self ):
+        df = ri.read_CD(os.path.join(self.dirpath, 'CD'), prefix='kx8', model='J-815')
+        fig = plt.figure(figsize=(10, 6.7))
+        ax = plt.subplot2grid((1, 1), (0, 0))
+        rp.plot_CD(df, ax, sample=5)
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
                                    filename='plot_mals.png')
     def test_mals( self ):
         df = pd.read_csv(os.path.join(self.dirpath, 'mals.csv'))
+        fig = plt.figure(figsize=(10, 6.7))
+        ax = plt.subplot2grid((1, 1), (0, 0))
+        rp.plot_MALS(df, ax)
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_mals2.png')
+    def test_mals_read( self ):
+        df = ri.read_MALS(filename=os.path.join(self.dirpath, 'mota_1kx8_d2.csv'),
+                          mmfile=os.path.join(self.dirpath, 'mota_1kx8_d2_mm.csv'))
         fig = plt.figure(figsize=(10, 6.7))
         ax = plt.subplot2grid((1, 1), (0, 0))
         rp.plot_MALS(df, ax)
@@ -132,3 +152,59 @@ class TestPlotUtils( object ):
         assert df.shape == (20, 11)
         assert df['enrichment_binder2'].mean() == pytest.approx(1.13, rel=1e-3)
         assert df['enrichment_binder1'].max() == pytest.approx(5, rel=1e-3)
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_color_hydrophobicity.png')
+    def test_color_scheme_hydrophobicity( self ):
+        df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
+                                        header=None).rename(columns={0: 'sequence_A'}))
+        fig, axs = rp.logo_plot(df, "A", refseq=False, line_break=50, font_size=10,
+                                colors='HYDROPHOBICITY')
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_color_chemistry.png')
+    def test_color_scheme_chemistry( self ):
+        df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
+                                        header=None).rename(columns={0: 'sequence_A'}))
+        fig, axs = rp.logo_plot(df, "A", refseq=False, line_break=50, font_size=10,
+                                colors="CHEMISTRY")
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_color_charge.png')
+    def test_color_scheme_charge( self ):
+        df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
+                                        header=None).rename(columns={0: 'sequence_A'}))
+        fig, axs = rp.logo_plot(df, "A", refseq=False, line_break=50, font_size=10,
+                                colors="CHARGE")
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_color_custom.png')
+    def test_color_scheme_custom( self ):
+        custom = {
+            'A': '#e6194b', 'C': '#3cb44b', 'D': '#ffe119', 'E': '#ffe119',
+            'F': '#f58231', 'G': '#911eb4', 'H': '#46f0f0', 'I': '#f032e6',
+            'K': '#d2f53c', 'L': '#d2f53c', 'M': '#008080', 'N': '#e6beff',
+            'P': '#aa6e28', 'Q': '#fffac8', 'R': '#800000', 'S': '#aaffc3',
+            'T': '#808000', 'V': '#ffd8b1', 'W': '#000080', 'Y': '#808080'
+        }
+        df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
+                                        header=None).rename(columns={0: 'sequence_A'}))
+        fig, axs = rp.logo_plot(df, "A", refseq=False, line_break=50, font_size=10,
+                                colors=custom)
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='plot_logo_sse.png')
+    def test_sse_logo(self):
+        custom = {
+            'E': '#0000FF', 'H': '#00FF00', 'L': '#FF0000'
+        }
+        ff = os.path.join(self.dirpath, 'input_3ssepred.minisilent.gz')
+        df = ri.parse_rosetta_file(ff, {'structure': 'A'})
+        fs = df.structure_bits('A')
+        fig, axs = rp.logo_plot(fs, "A", refseq=False, line_break=50, font_size=10,
+                                colors=custom)
+        return fig

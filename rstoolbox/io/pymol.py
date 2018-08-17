@@ -11,12 +11,8 @@
 # Standard Libraries
 
 # External Libraries
-import pandas as pd
 
 # This Library
-import rstoolbox.core as core
-import rstoolbox.components as cp
-
 
 __all__ = ['pymol_mutant_selector']
 
@@ -37,15 +33,21 @@ def pymol_mutant_selector( df ):
 
     :return: :func:`list` of :class:`str` - one command of selection for provided decoy
     """
+    from rstoolbox.components import Selection
 
     def make_selector( name, row, chains ):
         comm = "sele {0}_mut, {0} ".format(name)
         sels = []
         for i, h in enumerate(list(row)):
             sele = "(c. {} and (".format(chains[i])
-            sele += " or ".join(["i. {}".format(n) for n in h.split(",")])
+            if len(h) == 0:
+                continue
+            snum = Selection([int(x) for x in h.split(',')]).to_string()
+            sele += " or ".join(["i. {}".format(n) for n in snum.split(",")])
             sele += "))"
             sels.append(sele)
+        if len(sels) == 0:
+            return ""
         comm += "and (" + " or ".join(sels) + ")"
         return comm
 

@@ -43,6 +43,12 @@ if six.PY3:
     RSBaseDesign.get_phi                             = ru.get_phi
     RSBaseDesign.get_psi                             = ru.get_psi
 
+    RSBaseDesign.add_source_file                     = ru.add_source_file
+    RSBaseDesign.replace_source_files                = ru.replace_source_files
+    RSBaseDesign.add_source_files                    = ru.add_source_files
+    RSBaseDesign.get_source_files                    = ru.get_source_files
+    RSBaseDesign.has_source_files                    = ru.has_source_files
+
     RSBaseDesign.get_available_references            = ru.get_available_references
     RSBaseDesign.has_reference_sequence              = ru.has_reference_sequence
     RSBaseDesign.add_reference_sequence              = ru.add_reference_sequence
@@ -66,6 +72,7 @@ if six.PY3:
     RSBaseDesign.generate_wt_reversions              = ru.generate_wt_reversions
     RSBaseDesign.score_by_pssm                       = ru.score_by_pssm
     RSBaseDesign.make_resfile                        = ru.make_resfile
+    RSBaseDesign.apply_resfile                       = ru.apply_resfile
     RSBaseDesign.view_mutants_alignment              = ru.view_mutants_alignment
 
     RSBaseFrequency.get_available_references         = ru.get_available_references
@@ -79,7 +86,7 @@ if six.PY3:
     RSBaseFrequency.get_reference_shift              = ru.get_reference_shift
     RSBaseFrequency.add_reference                    = ru.add_reference
     RSBaseFrequency.transfer_reference               = ru.transfer_reference
-    RSBaseFrequency.delete_reference                    = ru.delete_reference
+    RSBaseFrequency.delete_reference                 = ru.delete_reference
 
 else:
     from types import MethodType
@@ -109,6 +116,17 @@ else:
         ru.get_phi, None, RSBaseDesign)
     RSBaseDesign.get_psi = MethodType(
         ru.get_psi, None, RSBaseDesign)
+
+    RSBaseDesign.add_source_file = MethodType(
+        ru.add_source_file, None, RSBaseDesign)
+    RSBaseDesign.replace_source_files = MethodType(
+        ru.replace_source_files, None, RSBaseDesign)
+    RSBaseDesign.add_source_files = MethodType(
+        ru.add_source_files, None, RSBaseDesign)
+    RSBaseDesign.get_source_files = MethodType(
+        ru.get_source_files, None, RSBaseDesign)
+    RSBaseDesign.has_source_files = MethodType(
+        ru.has_source_files, None, RSBaseDesign)
 
     RSBaseDesign.get_available_references = MethodType(
         ru.get_available_references, None, RSBaseDesign)
@@ -155,6 +173,8 @@ else:
         ru.score_by_pssm, None, RSBaseDesign)
     RSBaseDesign.make_resfile = MethodType(
         ru.make_resfile, None, RSBaseDesign)
+    RSBaseDesign.apply_resfile = MethodType(
+        ru.apply_resfile, None, RSBaseDesign)
     RSBaseDesign.view_mutants_alignment = MethodType(
         ru.view_mutants_alignment, None, RSBaseDesign)
 
