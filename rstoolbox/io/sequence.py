@@ -353,7 +353,7 @@ def read_hmmsearch( filename ):
         raise IOError('{} cannot be found'.format(filename))
 
     ali = re.compile('\d+\s[\!\?][\s\S]*')
-    fd = open(filename)if not filename.endswith("gz") else gzip.open(filename)
+    fd = open(filename)if not filename.endswith("gz") else gzip.open(filename, 'rt')
     searches = fd.read().split("\n//")
     fd.close()
 
@@ -371,7 +371,6 @@ def read_hmmsearch( filename ):
         read = 0
         nohits = None
         for line in search.split('\n'):
-            line = line.decode('utf8') if filename.endswith(".gz") else line
             if line.startswith('#'):
                 if 'hmmsearch' in line:
                     mode = 'hmmsearch'
@@ -466,6 +465,8 @@ def read_hmmsearch( filename ):
         if nohits == True:
             df = pd.DataFrame(cols)
         else:
+            if len(dat2['sequence']) == 0:
+                dat2['sequence'] = ['', ] * len(dat2['score'])
             onid = 'description'
             if mode == 'hmmscan':
                 onid = 'domain'
