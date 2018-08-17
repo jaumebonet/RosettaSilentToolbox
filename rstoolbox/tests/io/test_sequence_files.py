@@ -124,6 +124,14 @@ class TestReadSilentFiles( object ):
         assert len(df['description'].unique()) == 4927
         assert df[df['full-e-value'] < 10].shape[0] == 2650
 
+        df = read_hmmsearch(os.path.join(self.dirpath, 'search2.hmm.gz'))
+        assert df.shape[0] == 11
+        assert len(df.iloc[0]['sequence']) == 87
+
+        df = read_hmmsearch(os.path.join(self.dirpath, 'scan.hmm.gz'))
+        assert df.shape[0] == 9
+        assert len(df.iloc[0]['sequence']) == 99
+
     def test_pymol( self ):
         df = parse_rosetta_file(os.path.join(self.dirpath, 'input_2seq.minisilent.gz'),
                                 {'sequence': 'B'})
