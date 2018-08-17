@@ -359,7 +359,7 @@ def read_hmmsearch( filename ):
 
     dfs = []
     mode = ''
-    for i, search in enumerate(searches):
+    for _, search in enumerate(searches):
         data = {'full-e-value': [], 'full-score': [], 'full-bias': [],
                 'dom-e-value': [], 'dom-score': [], 'dom-bias': [],
                 'dom-exp': [], 'dom-N': []}
