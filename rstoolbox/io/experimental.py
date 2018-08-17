@@ -9,6 +9,7 @@
 
 .. func:: read_CD
 .. func:: read_SPR
+.. func:: read_MALS
 .. func:: read_fastq
 """
 # Standard Libraries

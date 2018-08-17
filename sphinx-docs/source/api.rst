@@ -82,7 +82,6 @@ Helper functions for sequence analysis. They can be called through ``rstoolbox.a
    ~analysis.positional_sequence_similarity
    ~analysis.binary_similarity
    ~analysis.binary_overlap
-   ~analysis.population_enrichment
    ~analysis.positional_enrichment
    ~analysis.positional_structural_count
    ~analysis.positional_structural_identity
@@ -187,4 +186,5 @@ This functions are only of interest if you plan on writing new functionalities i
    components.get_selection
    utils.make_rosetta_app_path
    tests.helper.random_frequency_matrix
+   tests.helper.random_proteins
    tests.helper.random_fastq

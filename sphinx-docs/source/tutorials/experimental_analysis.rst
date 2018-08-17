@@ -141,3 +141,23 @@ The fitted curves will be directly represented with :func:`.plot_SPR`.
   In [2]: plt.show()
 
   In [3]: plt.close('all')
+
+Deep Sequence Analysis and Population Enrichment
+------------------------------------------------
+
+Individual raw **FASTQ** data obtained from deep sequencing can be directly read with the :func:`.read_fastq` function.
+In order to evaluate the enrichment of different outputs submitted to a different experimental conditions in different
+concentrations, and provide the ``min`` and ``max`` concentrations to use for the calculus to :func:`.sequence_enrichment`.
+
+.. ipython::
+
+  In [4]: indat = {'binder1': {'conc1': '../rstoolbox/tests/data/cdk2_rand_001.fasq.gz',
+     ...:                      'conc2': '../rstoolbox/tests/data/cdk2_rand_002.fasq.gz',
+     ...:                      'conc3': '../rstoolbox/tests/data/cdk2_rand_003.fasq.gz'},
+     ...:          'binder2': {'conc1': '../rstoolbox/tests/data/cdk2_rand_004.fasq.gz',
+     ...:                      'conc2': '../rstoolbox/tests/data/cdk2_rand_005.fasq.gz',
+     ...:                      'conc3': '../rstoolbox/tests/data/cdk2_rand_006.fasq.gz'}}
+     ...: enrich = {'binder1': ['conc1', 'conc3'],
+     ...:           'binder2': ['conc1', 'conc3']}
+     ...: dfSeq = rs.utils.sequencing_enrichment(indat, enrich)
+     ...: dfSeq[[_ for _ in dfSeq.columns if _ != 'sequence_A']].head()

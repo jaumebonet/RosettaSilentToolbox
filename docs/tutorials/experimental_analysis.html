@@ -87,6 +87,7 @@
 <li><a class="reference internal" href="#thermal-melt">Thermal Melt</a></li>
 <li><a class="reference internal" href="#multi-angle-light-scattering">Multi-Angle Light Scattering</a></li>
 <li><a class="reference internal" href="#surface-plasmon-resonance">Surface Plasmon Resonance</a></li>
+<li><a class="reference internal" href="#deep-sequence-analysis-and-population-enrichment">Deep Sequence Analysis and Population Enrichment</a></li>
 </ul>
 </li>
 </ul>
@@ -271,18 +272,44 @@ In order to properly work with the plotting functions, it needs to have at least
 <p>Optimal SPR data has to contain the fitted curves on input, but can be read directly from the default output of the machine.
 More details on the format are listed in the corresponding function <a class="reference internal" href="../generated/rstoolbox.io.read_SPR.html#rstoolbox.io.read_SPR" title="rstoolbox.io.read_SPR"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_SPR()</span></code></a>.</p>
 <p>The fitted curves will be directly represented with <a class="reference internal" href="../generated/rstoolbox.plot.plot_SPR.html#rstoolbox.plot.plot_SPR" title="rstoolbox.plot.plot_SPR"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_SPR()</span></code></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">dfSPR</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_SPR</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/spr_data.csv.gz&quot;</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">))</span>
-<span class="gp">   ...: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="gp">   ...: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_SPR</span><span class="p">(</span><span class="n">dfSPR</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">datacolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">fitcolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="gp">   ...: </span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [24]: </span><span class="n">dfSPR</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_SPR</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/spr_data.csv.gz&quot;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">6.7</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_SPR</span><span class="p">(</span><span class="n">dfSPR</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">datacolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">fitcolor</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span>
 
-<span class="gp">In [5]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [28]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-<span class="gp">In [6]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="gp">In [29]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_exp_plt5.png"><img alt="../_images/tutorial_exp_plt5.png" src="../_images/tutorial_exp_plt5.png" style="width: 5in;" /></a>
+</div>
+<div class="section" id="deep-sequence-analysis-and-population-enrichment">
+<h2>Deep Sequence Analysis and Population Enrichment<a class="headerlink" href="#deep-sequence-analysis-and-population-enrichment" title="Permalink to this headline">¶</a></h2>
+<p>Individual raw <strong>FASTQ</strong> data obtained from deep sequencing can be directly read with the <a class="reference internal" href="../generated/rstoolbox.io.read_fastq.html#rstoolbox.io.read_fastq" title="rstoolbox.io.read_fastq"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_fastq()</span></code></a> function.
+In order to evaluate the enrichment of different outputs submitted to a different experimental conditions in different
+concentrations, and provide the <code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> concentrations to use for the calculus to <code class="xref py py-func docutils literal notranslate"><span class="pre">sequence_enrichment()</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="n">indat</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;binder1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;conc1&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_001.fasq.gz&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                     <span class="s1">&#39;conc2&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_002.fasq.gz&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                     <span class="s1">&#39;conc3&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_003.fasq.gz&#39;</span><span class="p">},</span>
+<span class="gp">   ...: </span>         <span class="s1">&#39;binder2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;conc1&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_004.fasq.gz&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                     <span class="s1">&#39;conc2&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_005.fasq.gz&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                     <span class="s1">&#39;conc3&#39;</span><span class="p">:</span> <span class="s1">&#39;../rstoolbox/tests/data/cdk2_rand_006.fasq.gz&#39;</span><span class="p">}}</span>
+<span class="gp">   ...: </span><span class="n">enrich</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;binder1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;conc1&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">],</span>
+<span class="gp">   ...: </span>          <span class="s1">&#39;binder2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;conc1&#39;</span><span class="p">,</span> <span class="s1">&#39;conc3&#39;</span><span class="p">]}</span>
+<span class="gp">   ...: </span><span class="n">dfSeq</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sequencing_enrichment</span><span class="p">(</span><span class="n">indat</span><span class="p">,</span> <span class="n">enrich</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">dfSeq</span><span class="p">[[</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dfSeq</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">_</span> <span class="o">!=</span> <span class="s1">&#39;sequence_A&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[1]: </span><span class="go"></span>
+<span class="go">   description  binder1_conc1  binder1_conc2  binder1_conc3  binder2_conc1  binder2_conc2  binder2_conc3  len  enrichment_binder1  enrichment_binder2</span>
+<span class="go">0  0            4.0            1.0            0.0            1.0            0.0            3.0            304 -1.00                0.333333          </span>
+<span class="go">1  1            4.0            2.0            1.0            2.0            1.0            0.0            304  4.00               -1.000000          </span>
+<span class="go">2  2            3.0            2.0            4.0            1.0            1.0            1.0            304  0.75                1.000000          </span>
+<span class="go">3  3            3.0            1.0            1.0            1.0            0.0            3.0            304  3.00                0.333333          </span>
+<span class="go">4  4            3.0            0.0            1.0            2.0            2.0            1.0            298  3.00                2.000000          </span>
+</pre></div>
+</div>
 </div>
 </div>
 

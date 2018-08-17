@@ -92,7 +92,9 @@ The data can even be directly used on :mod:`seaborn` functions:
 
 .. ipython::
 
-  In [9]: _ = sns.pairplot(df[['design_score', 'GRMSD2Target', 'GRMSD2Template', 'LRMSD2Target', 'LRMSDH2Target', 'LRMSDLH2Target', 'condition']],
+  In [9]: sns.set(font_scale=1)
+     ...: sns.set_style("whitegrid")
+     ...: _ = sns.pairplot(df[['design_score', 'GRMSD2Target', 'GRMSD2Template', 'LRMSD2Target', 'LRMSDH2Target', 'LRMSDLH2Target', 'condition']],
      ...:                  hue='condition')
 
   @savefig tutorial_duo_plt2.png width=10in
@@ -186,3 +188,5 @@ one would need to transform it into a numerical value. In this case, we transfor
 
   @savefig tutorial_duo_plt4.png width=10in
   In [1]: plt.show()
+
+Comparing enrichment between the populations (i.e. full sequence enrichment) is demonstrated in the :ref:`experimental analysis tutorial <experimental_analysis>`.

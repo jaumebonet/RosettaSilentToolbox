@@ -12,6 +12,7 @@ from . import utils
 from . import io
 from . import plot
 from . import analysis
+from . import tests
 
 from ._version import get_versions
 __version__ = get_versions()['version']

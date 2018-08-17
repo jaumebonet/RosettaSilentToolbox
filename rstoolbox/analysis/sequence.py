@@ -13,6 +13,7 @@
 .. func:: binary_overlap
 .. func:: selector_percentage
 .. func:: label_percentage
+.. func:: positional_enrichment
 """
 # Standard Libraries
 import copy
@@ -29,7 +30,7 @@ from .SimilarityMatrix import SimilarityMatrix as SM
 __all__ = ['sequential_frequencies', 'sequence_similarity',
            'positional_sequence_similarity', 'binary_similarity',
            'binary_overlap', 'selector_percentage', 'label_percentage',
-           'population_enrichment', 'positional_enrichment']
+           'positional_enrichment']
 
 
 def _get_sequential_table( seqType ):
@@ -622,29 +623,6 @@ def label_percentage( df, seqID, label ):
         return df.append(pd.Series([float(len(seq2)) / len(seq1)], [colname]))
     else:
         raise NotImplementedError
-
-
-def population_enrichment(df, other, seqID):
-    """Calculates enrichment on full sequences in the first :class:`.DesignFrame` with respect to
-    the second.
-
-    Adds a new column to the data container:
-
-    =================  ====================================================
-    New Colum          Data Content
-    =================  ====================================================
-    **enrichment**     Specific sequence enrichment.
-    =================  ====================================================
-
-    :param df: |df_param|.
-    :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
-    :param other: |df_param|.
-    :type other: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]
-    :param str seqID: |seqID_param|.
-
-    :return: :class:`.DesignFrame` - with the new column.
-    """
-    pass
 
 
 def positional_enrichment(df, other, seqID):
