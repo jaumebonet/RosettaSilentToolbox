@@ -132,38 +132,44 @@ of sequences with <a class="reference external" href="http://hmmer.org/">hmmsear
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><strong>description</strong></td>
+<tr class="row-even"><td><strong>query</strong></td>
+<td>Query identifier.</td>
+</tr>
+<tr class="row-odd"><td><strong>description</strong></td>
 <td>In <code class="docutils literal notranslate"><span class="pre">hmmseach</span></code> only. Sequence identifier.</td>
 </tr>
-<tr class="row-odd"><td><strong>domain</strong></td>
+<tr class="row-even"><td><strong>domain</strong></td>
 <td>In <code class="docutils literal notranslate"><span class="pre">hmmscan</span></code> only.  Domain identifier.</td>
 </tr>
-<tr class="row-even"><td><strong>definition</strong></td>
+<tr class="row-odd"><td><strong>definition</strong></td>
 <td>In <code class="docutils literal notranslate"><span class="pre">hmmscan</span></code> only. Definition of the domain name.</td>
 </tr>
-<tr class="row-odd"><td><strong>full-e-value</strong></td>
+<tr class="row-even"><td><strong>full-e-value</strong></td>
 <td>E-value for full sequence match.</td>
 </tr>
-<tr class="row-even"><td><strong>full-score</strong></td>
+<tr class="row-odd"><td><strong>full-score</strong></td>
 <td>Score for full sequence match.</td>
 </tr>
-<tr class="row-odd"><td><strong>full-bias</strong></td>
+<tr class="row-even"><td><strong>full-bias</strong></td>
 <td>Bias for full sequence.</td>
 </tr>
-<tr class="row-even"><td><strong>dom-e-value</strong></td>
+<tr class="row-odd"><td><strong>dom-e-value</strong></td>
 <td>E-values for best scored domain.</td>
 </tr>
-<tr class="row-odd"><td><strong>dom-score</strong></td>
+<tr class="row-even"><td><strong>dom-score</strong></td>
 <td>Score for best scored domain.</td>
 </tr>
-<tr class="row-even"><td><strong>dom-bias</strong></td>
+<tr class="row-odd"><td><strong>dom-bias</strong></td>
 <td>Bias for best scored domain.</td>
 </tr>
-<tr class="row-odd"><td><strong>dom-exp</strong></td>
+<tr class="row-even"><td><strong>dom-exp</strong></td>
 <td>Expected number of domains.</td>
 </tr>
-<tr class="row-even"><td><strong>dom-N</strong></td>
+<tr class="row-odd"><td><strong>dom-N</strong></td>
 <td>Actual number of domains.</td>
+</tr>
+<tr class="row-even"><td><strong>sequence</strong></td>
+<td>Part of the sequence aligned on its own.</td>
 </tr>
 </tbody>
 </table>
@@ -199,12 +205,12 @@ of sequences with <a class="reference external" href="http://hmmer.org/">hmmsear
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
 <span class="gh">Out[6]: </span><span class="go"></span>
-<span class="go">   full-e-value  full-score  full-bias  dom-e-value  dom-score  dom-bias  dom-exp  dom-N                        description  score  bias  c-Evalue  i-Evalue  hmmfrom  hmmto  alifrom  alito  envfrom  envto   acc</span>
-<span class="go">0  0.000002      26.7        0.0        0.000002     26.7       0.0       1.1      1.0    nubinitio_auto_55313_1mw7A_0256:A  26.7   0.0   0.000001  0.000002  12.0     69.0   15.0     74.0   5.0      75.0   0.83</span>
-<span class="go">1  0.000003      26.2        0.1        0.000003     26.1       0.1       1.0      1.0    nubinitio_auto_68083_1mw7A_0296:A  26.1   0.1   0.000002  0.000003  4.0      62.0   4.0      67.0   2.0      73.0   0.86</span>
-<span class="go">2  0.000004      26.1        0.1        0.000004     25.9       0.1       1.0      1.0    nubinitio_auto_70010_1mw7A_0347:A  25.9   0.1   0.000002  0.000004  10.0     66.0   11.0     71.0   6.0      73.0   0.89</span>
-<span class="go">3  0.000004      25.9        0.1        0.000005     25.7       0.1       1.1      1.0    nubinitio_auto_68083_1mw7A_0395:A  25.7   0.1   0.000002  0.000005  13.0     61.0   18.0     66.0   4.0      72.0   0.89</span>
-<span class="go">4  0.000004      25.9        0.6        0.000005     25.7       0.6       1.0      1.0    nubinitio_auto_65350_1mw7A_0393:A  25.7   0.6   0.000002  0.000005  2.0      67.0   2.0      72.0   2.0      75.0   0.92</span>
+<span class="go">    acc  alifrom  alito  bias  c-Evalue                        description  dom-N  dom-bias  dom-e-value  dom-exp  dom-score  envfrom  envto  full-bias  full-e-value  full-score  hmmfrom  hmmto  i-Evalue                       query  score sequence</span>
+<span class="go">0  0.83  15.0     74.0   0.0   0.000001  nubinitio_auto_55313_1mw7A_0256:A  1.0    0.0       0.000002     1.1      26.7       5.0      75.0   0.0        0.000002      26.7        12.0     69.0   0.000002  cath|4_1_0|1mw7A03/131-205  26.7          </span>
+<span class="go">1  0.86  4.0      67.0   0.1   0.000002  nubinitio_auto_68083_1mw7A_0296:A  1.0    0.1       0.000003     1.0      26.1       2.0      73.0   0.1        0.000003      26.2        4.0      62.0   0.000003  cath|4_1_0|1mw7A03/131-205  26.1          </span>
+<span class="go">2  0.89  11.0     71.0   0.1   0.000002  nubinitio_auto_70010_1mw7A_0347:A  1.0    0.1       0.000004     1.0      25.9       6.0      73.0   0.1        0.000004      26.1        10.0     66.0   0.000004  cath|4_1_0|1mw7A03/131-205  25.9          </span>
+<span class="go">3  0.89  18.0     66.0   0.1   0.000002  nubinitio_auto_68083_1mw7A_0395:A  1.0    0.1       0.000005     1.1      25.7       4.0      72.0   0.1        0.000004      25.9        13.0     61.0   0.000005  cath|4_1_0|1mw7A03/131-205  25.7          </span>
+<span class="go">4  0.92  2.0      72.0   0.6   0.000002  nubinitio_auto_65350_1mw7A_0393:A  1.0    0.6       0.000005     1.0      25.7       2.0      75.0   0.6        0.000004      25.9        2.0      67.0   0.000005  cath|4_1_0|1mw7A03/131-205  25.7          </span>
 </pre></div>
 </div>
 </dd></dl>
