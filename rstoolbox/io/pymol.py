@@ -21,7 +21,7 @@ import rstoolbox.components as cp
 __all__ = ['pymol_mutant_selector']
 
 
-def pymol_mutant_selector( df ):
+def pymol_mutant_selector( df, offset=0 ):
     """Generate selectors for the mutations in target decoys.
 
     Given a :class:`.DesignFrame` with columns ``mutant_positions_<seqID>`` and a
@@ -34,6 +34,7 @@ def pymol_mutant_selector( df ):
 
     :param df: |df_param|
     :type df: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
+    :param int offset: Offset parameter. If your design start has an offset.
 
     :return: :func:`list` of :class:`str` - one command of selection for provided decoy
     """
@@ -43,7 +44,10 @@ def pymol_mutant_selector( df ):
         sels = []
         for i, h in enumerate(list(row)):
             sele = "(c. {} and (".format(chains[i])
-            sele += " or ".join(["i. {}".format(n) for n in h.split(",")])
+            if offset != 0:
+                sele += " or ".join(["i. {}".format(int(n)+offset) for n in h.split(",") if n != ''])
+            else:
+                sele += " or ".join(["i. {}".format(n) for n in h.split(",")])
             sele += "))"
             sels.append(sele)
         comm += "and (" + " or ".join(sels) + ")"
