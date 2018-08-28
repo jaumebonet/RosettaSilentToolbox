@@ -335,6 +335,11 @@ class TestDesign( object ):
         assert df.get_reference_sequence("B") == sr.get_reference_sequence("B")
         assert df.get_identified_mutants() == ["B", ]
 
+        dfshift = df.copy()
+        dfshift.add_reference_shift("B", 15)
+        dfr = ru.report(dfshift)
+        assert dfr.iloc[0].get_mutations("B") != df.iloc[0].get_mutations("B")
+
         for i, row in df.iterrows():
             # Check number of mutations
             assert row.get_mutation_count("B") == mut_number[i]
