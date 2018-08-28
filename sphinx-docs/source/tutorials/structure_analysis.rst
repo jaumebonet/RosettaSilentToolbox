@@ -25,6 +25,10 @@ As in :ref:`sequence_analysis`, we will need to load a reference with :func:`.ge
 
   In [1]: import rstoolbox as rs
      ...: import pandas as pd
+     ...: import matplotlib.pyplot as plt
+     ...: import seaborn as sns
+     ...: plt.rcParams['svg.fonttype'] = 'none' # When plt.savefig to 'svg', text is still text object
+     ...: sns.set_style('whitegrid')
      ...: pd.set_option('display.width', 1000)
      ...: pd.set_option('display.max_columns', 500)
      ...: pd.set_option("display.max_seq_items", 3)
@@ -55,6 +59,7 @@ One of the most obvious assessments is the calculation of percentages of seconda
 let's assume that we want to make sure that strand 5 (``SSE05``) from the selected labels is mostly still a strand after our design protocol:
 
 .. ipython::
+  :okwarning:
 
   In [2]: sse05 = df.get_label('SSE05', 'C').values[0]
      ...: df = rs.analysis.secondary_structure_percentage(df, 'C', sse05)
@@ -66,10 +71,7 @@ Or that we want to check if there is a correlation between the final score of ou
 
 .. ipython::
 
-  In [2]: import matplotlib.pyplot as plt
-     ...: plt.rcParams['svg.fonttype'] = 'none' # When plt.savefig to 'svg', text is still text object
-     ...: import seaborn as sns
-     ...: grid = sns.pairplot(df[['score', 'structure_C_E']])
+  In [2]: grid = sns.pairplot(df[['score', 'structure_C_E']])
 
   @savefig tutorial_str_plt1.png width=7in
   In [3]: plt.show()
@@ -82,6 +84,7 @@ The most global view, would be to see for all the population how often the expec
 :func:`.positional_structural_similarity_plot`.
 
 .. ipython::
+  :okwarning:
 
   In [4]: fig  = plt.figure(figsize=(30, 10))
      ...: ax = plt.subplot2grid((1, 1), (0, 0))
@@ -103,7 +106,7 @@ scored decoy under the :func:`.plot_ramachandran` function.
 .. ipython::
 
   In [6]: fig  = plt.figure(figsize=(30, 30))
-     ...: rs.plot.plot_ramachandran(df.sort_values('score').iloc[0], 'C', fig)
+     ...: _ = rs.plot.plot_ramachandran(df.sort_values('score').iloc[0], 'C', fig)
 
   @savefig tutorial_str_plt3.png width=10in
   In [7]: plt.show()

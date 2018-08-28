@@ -149,6 +149,7 @@ Special functions to help transform your data can be loaded through ``rstoolbox.
 
    ~utils.add_column
    ~utils.split_values
+   ~utils.report
 
 Utils: RosettaScript
 --------------------

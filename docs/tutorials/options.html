@@ -179,6 +179,12 @@ the structure is of a dictionary of dictionaries, being <code class="docutils li
 and <code class="docutils literal notranslate"><span class="pre">option_id</span></code> the second.</p>
 <p>Full description of all the functions that allow access to the global variables can be find
 in the  <a class="reference external" href="http://jaumebonet.cat/libconfig/api.html">libconfig API</a></p>
+<p class="rubric">Example: Allowing overwrite of previously generated files.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">rstoolbox.core</span> <span class="kn">as</span> <span class="nn">rc</span>
+<span class="gp">   ...: </span><span class="n">rc</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;system&#39;</span><span class="p">,</span> <span class="s1">&#39;overwrite&#39;</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="globally">
 <h2>Globally<a class="headerlink" href="#globally" title="Permalink to this headline">¶</a></h2>
@@ -189,6 +195,15 @@ configuration. Thus, by changing the default parameters in that file, the user c
 global configurations.</p>
 <p>Logically, this might change some behaviour between different users, but excludes the need of set up
 some options (like executable paths) every time.</p>
+<p class="rubric">Example: How a configuration file might look like (MacOS).</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">rosetta</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">compilation</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">macosclangrelease</span>
+  <span class="l l-Scalar l-Scalar-Plain">path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/Volumes/MiniTwo/bin/Rosetta/main/source/bin/</span>
+<span class="l l-Scalar l-Scalar-Plain">system</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">output</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">./</span>
+  <span class="l l-Scalar l-Scalar-Plain">overwrite</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -197,6 +212,7 @@ some options (like executable paths) every time.</p>
       
   </div>
 </div>
+
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -212,5 +228,15 @@ some options (like executable paths) every time.</p>
     </p>
   </div>
 </footer>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-74877325-2');
+</script>
+
   </body>
 </html>

@@ -29,11 +29,15 @@ As in :ref:`sequence_analysis`, we will need to load a reference with :func:`.ge
 
   In [1]: import rstoolbox as rs
      ...: import pandas as pd
+     ...: import matplotlib.pyplot as plt
+     ...: import seaborn as sns
      ...: pd.set_option('display.width', 1000)
      ...: pd.set_option('display.max_columns', 500)
      ...: pd.set_option("display.max_seq_items", 3)
      ...: baseline = rs.io.get_sequence_and_structure('../rstoolbox/tests/data/2pw9C.pdb')
-     ...: baseline.get_structure('C')
+     ...: baseline.get_sequence('C')
+     ...: baseline.add_reference_sequence('C', baseline.get_sequence('C'))
+     ...: baseline.add_reference_shift('C', 32)
 
 Loading the Design Data
 -----------------------
@@ -55,7 +59,7 @@ Minimal Mutant
 --------------
 
 We've seen multiple ways to identify and view mutations in :ref:`sequence_analysis`. Let's imagine that we have identified a good decoy candidate but
-we want to try all the putative back.mutations available. Basically, we ask if a less mutated decoy will perform as well as the one found.
+we want to try all the putative back mutations available. Basically, we ask if a less mutated decoy will perform as well as the one found.
 
 For this, we will take the best scored decoy and we will try to :func:`.generate_wt_reversions` on the residues belonging to strand 3 (``SSE03``) and 5 (``SSE05``):
 
@@ -70,10 +74,19 @@ For this, we will take the best scored decoy and we will try to :func:`.generate
 .. note::
   To avoid confusion, all scores are unattached from the sequences, as they will need to be recalculated.
 
-Point Mutations of Interest
----------------------------
+Mind that this will create all the combinatorial options from the selected mutant to the original wild type for the selected residues.
 
-Let's say that, after inspecting scores and visualising structures, there are some key positions for which seems relevant to keep some particular, that can also be controlled (also,
+.. ipython::
+
+  In [5]: _ = sns.distplot(ds['mutant_count_C'].values)
+
+  @savefig tutorial_muts_plt1.png width=5in
+  In [6]: plt.show()
+
+Defining New Mutations of Interest
+----------------------------------
+
+Let's say that, after inspecting scores and visualising structures, there are some key positions for which seems relevant to try some particular residue types, that can also be controlled (also,
 remember form :ref:`sequence_analysis` that we can select already decoys with some particular mutations with :meth:`.DesignFrame.get_sequence_with`). This functionality comes by the
 hand of :meth:`.DesignFrame.generate_mutant_variants`. Let's now try it for the two best scored decoys.
 
@@ -84,6 +97,24 @@ hand of :meth:`.DesignFrame.generate_mutant_variants`. Let's now try it for the 
      ...: ds.shape[0]
 
   In [6]: ds.head(4)
+
+Exhaustive Point Mutant Sampling
+--------------------------------
+
+An interesting approach could also be to create the appropriate data to exhaustively explore all possible point mutant in all possible
+positions. This is extremely easy to do with the ``rstoolbox``, generating a total of ``(len(sequence) * 19) + 1`` variants:
+
+.. ipython::
+
+  In [7]: point_mutants = []
+     ...: for i in range(1, len(baseline.get_reference_sequence('C')) + 1):
+     ...:     mutation = [(i, "*")]
+     ...:     point_mutants.append(baseline.generate_mutant_variants('C', mutation))
+     ...: point_mutants = pd.concat(point_mutants).drop_duplicates('sequence_C')
+     ...: print(','.join(point_mutants['mutants_C'].sample(frac=0.035)))  # show only some...
+
+With small variations, this same loop can be used to generate this exhaustive scanning over particular residues or to only scan
+specific residue types (for example to perform an Alanine Scanning).
 
 Learning from Amino Acids Frequency
 -----------------------------------

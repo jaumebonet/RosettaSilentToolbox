@@ -11,6 +11,7 @@
 .. func:: split_values
 .. func:: make_rosetta_app_path
 .. func:: execute_process
+.. func:: report
 """
 # Standard Libraries
 import os
@@ -18,6 +19,7 @@ import copy
 import textwrap
 import subprocess
 import shlex
+import re
 
 # External Libraries
 import pandas as pd
@@ -27,7 +29,7 @@ from six import string_types
 
 
 __all__ = ['format_Ipython', 'add_column', 'split_values', 'make_rosetta_app_path',
-           'execute_process']
+           'execute_process', 'report']
 
 
 def format_Ipython():
@@ -184,3 +186,65 @@ def execute_process( command ):
         return subprocess.call( command )
     except OSError:
         return 1
+
+
+def report( df ):
+    """Cast **basic sequence count** into **pdb count** for the appropiate
+    columns.
+
+    :param df: |df_param|
+    :type df: :class:`.DesignFrame`
+
+    :return: :class:`.DesignFrame` - with renumbered columns.
+
+    :raise:
+        :AttributeError: |designframe_cast_error|
+    """
+    from rstoolbox.components import DesignFrame
+
+    def translate_positions(row, seqID, shift):
+        if len(row.get_mutation_positions(seqID)) == 0:
+            return ''
+        mutations = [int(x) for x in row.get_mutation_positions(seqID).split(',')]
+        for i, m in enumerate(mutations):
+            if isinstance(shift, int):
+                mutations[i] += (shift - 1)
+            else:
+                mutations[i] = shift[x - 1]
+        return ','.join([str(x) for x in mutations])
+
+    def translate_mutants(row, seqID, shift):
+        if len(row.get_mutations(seqID)) == 0:
+            return ''
+        mutations = row.get_mutations(seqID).split(',')
+        for i, m in enumerate(mutations):
+            g = re.match('^(\w+)(\d+)(\w+)$', m)
+            if isinstance(shift, int):
+                position = int(g.group(2)) + (shift - 1)
+            else:
+                position = shift[int(g.group(2)) - 1]
+            mutations[i] = '{0}{1}{2}'.format(g.group(1), position, g.group(3))
+        return ','.join(mutations)
+
+    if not isinstance(df, pd.DataFrame):
+        raise AttributeError('Unexpected input attribute')
+    if not isinstance(df, DesignFrame):
+        return df
+
+    # Change mutation counts
+    chains = df.get_identified_mutants()
+
+    if len(chains) == 0:  # remove if other thing than mutations are translated
+        return df
+
+    dcop = df.copy()
+    for c in chains:
+        shift = df.get_reference_shift(c)
+        if shift == 1:
+            continue
+        col = 'mutant_positions_{}'.format(c)
+        dcop[col] = dcop.apply(lambda row: translate_positions(row, c, shift), axis=1)
+        col = 'mutants_{}'.format(c)
+        dcop[col] = dcop.apply(lambda row: translate_mutants(row, c, shift), axis=1)
+
+    return dcop

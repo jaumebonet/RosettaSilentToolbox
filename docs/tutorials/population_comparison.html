@@ -181,7 +181,7 @@ for it to be useful and possible, two conditions must meet:</p>
 <h3>There must be a column to identify to which population each decoy belongs<a class="headerlink" href="#there-must-be-a-column-to-identify-to-which-population-each-decoy-belongs" title="Permalink to this headline">¶</a></h3>
 <p>In this example, none exist. But if we take a look at the naming of the decoys:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [12]: </span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;{0} &lt;-&gt; {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">binder</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">],</span> <span class="n">nobinder</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">]))</span>
-<span class="go">classicFFL_FFL_binder_motif_DesignRelax_noaa_pack_66580_3lhp_0169 &lt;-&gt; classicFFL_FFL_nobinder_motif_DesignRelax_noaa_43489_3lhp_0096</span>
+<span class="go">classicFFL_FFL_binder_motif_DesignRelax_noaa_pack_29912_3lhp_0388 &lt;-&gt; classicFFL_FFL_nobinder_motif_DesignRelax_noaa_43489_3lhp_0056</span>
 </pre></div>
 </div>
 <p>We could see that, by loading the data not with the <a class="reference internal" href="readrosetta.html#readrosetta"><span class="std std-ref">definition</span></a> <code class="docutils literal notranslate"><span class="pre">{'sequence':</span> <span class="pre">'B'}</span></code> but with <code class="docutils literal notranslate"><span class="pre">{'sequence':</span> <span class="pre">'B',</span> <span class="pre">'naming':</span> <span class="pre">['',</span> <span class="pre">'',</span> <span class="pre">'condition']}</span></code> we would
@@ -334,6 +334,7 @@ one would need to transform it into a numerical value. In this case, we transfor
       
   </div>
 </div>
+
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -349,5 +350,15 @@ one would need to transform it into a numerical value. In this case, we transfor
     </p>
   </div>
 </footer>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-74877325-2');
+</script>
+
   </body>
 </html>

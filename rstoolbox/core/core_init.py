@@ -96,6 +96,13 @@ and ``option_id`` the second.
 Full description of all the functions that allow access to the global variables can be find
 in the  `libconfig API <http://jaumebonet.cat/libconfig/api.html>`_
 
+.. rubric:: Example: Allowing overwrite of previously generated files.
+
+.. ipython::
+
+    In [1]: import rstoolbox.core as rc
+       ...: rc.set_option('system', 'overwrite', True)
+
 Globally
 --------
 
@@ -108,6 +115,18 @@ global configurations.
 
 Logically, this might change some behaviour between different users, but excludes the need of set up
 some options (like executable paths) every time.
+
+.. rubric:: Example: How a configuration file might look like (MacOS).
+
+.. code-block:: yaml
+
+    rosetta:
+      compilation: macosclangrelease
+      path: /Volumes/MiniTwo/bin/Rosetta/main/source/bin/
+    system:
+      output: ./
+      overwrite: false
+
 """.format(
     options_table=document_options()
 )

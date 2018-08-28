@@ -135,12 +135,22 @@
 </div>
 <p class="rubric">Example</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.utils</span> <span class="kn">import</span> <span class="n">mutations</span>
-<span class="gp">   ...: </span><span class="k">print</span> <span class="n">mutations</span><span class="p">()</span>
+<span class="gp">   ...: </span><span class="k">print</span><span class="p">(</span><span class="n">mutations</span><span class="p">())</span>
 <span class="gp">   ...: </span>
-<span class="gt">  File</span><span class="nn"> &quot;&lt;ipython-input-2-2f2ce3f2bdab&gt;&quot;</span><span class="gt">, line </span><span class="mi">1</span>
-    <span class="k">print</span> <span class="n">mutations</span><span class="p">()</span>
-                  <span class="o">^</span>
-<span class="ne">SyntaxError</span>: invalid syntax
+<span class="go">&lt;ROSETTASCRIPTS&gt;</span>
+<span class="go">    &lt;TASKOPERATIONS&gt;</span>
+<span class="go">        &lt;ReadResfile name=&quot;targets&quot; filename=&quot;%%resfile%%&quot;/&gt;</span>
+<span class="go">    &lt;/TASKOPERATIONS&gt;</span>
+<span class="go">    &lt;MOVERS&gt;</span>
+<span class="go">        &lt;PackRotamersMover name=&quot;packrot&quot; task_operations=&quot;targets&quot; /&gt;</span>
+<span class="go">        &lt;AddJobPairData name=&quot;annotate&quot; value_type=&quot;string&quot;</span>
+<span class="go">                        key=&quot;resfile_A&quot; value=&quot;%%resfile%%&quot; /&gt;</span>
+<span class="go">    &lt;/MOVERS&gt;</span>
+<span class="go">    &lt;PROTOCOLS&gt;</span>
+<span class="go">        &lt;Add mover=&quot;packrot&quot; /&gt;</span>
+<span class="go">        &lt;Add mover=&quot;annotate&quot; /&gt;</span>
+<span class="go">    &lt;/PROTOCOLS&gt;</span>
+<span class="go">&lt;/ROSETTASCRIPTS&gt;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -152,6 +162,7 @@
       
   </div>
 </div>
+
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -167,5 +178,15 @@
     </p>
   </div>
 </footer>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-74877325-2');
+</script>
+
   </body>
 </html>

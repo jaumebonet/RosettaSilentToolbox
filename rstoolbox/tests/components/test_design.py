@@ -416,7 +416,7 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1, sc_des)
         df.add_reference_sequence("B", refseq)
 
-        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50 )
+        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
         plt.tight_layout()
         return fig
 
@@ -428,7 +428,7 @@ class TestDesign( object ):
         # Start test
         df = ri.parse_rosetta_file(self.silent1, sc_des)
 
-        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50 )
+        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
         plt.tight_layout()
         return fig
 
@@ -445,7 +445,7 @@ class TestDesign( object ):
         df.add_reference_sequence("B", refseq)
         df = df.sequence_bits('B')
 
-        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50 )
+        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
         plt.tight_layout()
         return fig
 
@@ -458,7 +458,7 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1, sc_des)
         df = df.sequence_bits('B')
 
-        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50 )
+        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
         plt.tight_layout()
         return fig
 

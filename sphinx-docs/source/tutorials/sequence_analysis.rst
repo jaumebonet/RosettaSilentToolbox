@@ -9,11 +9,12 @@ Loading a Reference
 -------------------
 
 When analysing the outcome of a protein design set, it can be useful to retrieve the data from the source structure (template)
-in order to assess on a sequence level which changes have happened.
+in order to assess, on a sequence level, which changes have happened.
 
 For the purpose of this example, we will use a domain from a `Putative formate dehydrogenase accessory protein <https://www.rcsb.org/structure/2pw9>`_.
-To load the data, we will use :func:`.get_sequence_and_structure`. To this function we are going to provide the PDB file ``2pw9C.pdb`` and
-it will generate a file named ``2pw9C.dssp.minisilent``.
+To load the data, we will use :func:`.get_sequence_and_structure`. To this function we are going to provide the PDB file ``2pw9C.pdb``, which contains only
+the chain C from that crystal structure and it will generate a file named ``2pw9C.dssp.minisilent``. The generated object will contain all the data generated
+by Rosetta over the particular structure, *including the sequence*.
 
 .. note::
   Through all the process several times the ``chainID`` of the decoy of interest will be called. This is due to the fact that the library can manipulate
@@ -21,33 +22,42 @@ it will generate a file named ``2pw9C.dssp.minisilent``.
 
 .. warning::
   To generate this file, the function **will run Rosetta**. If Rosetta is not locally installed, the documentation of :func:`.get_sequence_and_structure`
-  provides the RosettaScript that it will run. One can run it in a different computer/cluster and put it back in the same directory. As long as the naming
-  schema for the file is maintained, if the function finds the file it will **skip the Rosetta execution**.
+  provides the RosettaScript that it will run. One can run it in a different computer/cluster and place the obtained silent file output in the same directory.
+  As long as the naming schema for the file is maintained, if the function finds the file it will **skip the Rosetta execution**.
 
 .. ipython::
 
   In [1]: import rstoolbox as rs
      ...: import pandas as pd
+     ...: import matplotlib.pyplot as plt
+     ...: import seaborn as sns
+     ...: plt.rcParams['svg.fonttype'] = 'none' # When plt.savefig to 'svg', text is still text object
+     ...: sns.set_style('whitegrid')
      ...: pd.set_option('display.width', 1000)
      ...: pd.set_option('display.max_columns', 500)
      ...: pd.set_option("display.max_seq_items", 3)
      ...: baseline = rs.io.get_sequence_and_structure('../rstoolbox/tests/data/2pw9C.pdb')
-     ...: baseline.get_sequence('C')
+     ...: baseline
+
+  In [2]: baseline.get_sequence('C')
 
 Loading the Design Data
 -----------------------
 
-The next step would be to load the data that we have obtained from designing in Rosetta. In this case, it is a single file with 567 decoys. A part from the usual
-scores that normally can be found in a Rosetta output, some residues of interest were labeled through the use of the
-`DisplayPoseLabelsMover <https://www.rosettacommons.org/docs/latest/scripting_documentation/RosettaScripts/xsd/mover_DisplayPoseLabelsMover_type>`_, we will pick
-some of those residues for further analysis.
+The next step would be to load the data that we have obtained from designing. In this case, it is a single file with 567 decoys. This decoys come from a protein
+grafting experiment as performed by the structural heterologous grafting protocol `FunFolDes <https://doi.org/10.1101/378976>`_. This basically ensures that, the
+motif (grafted) region will always maintain the same sequence while the rest of the protein will be completely re-designed.
+
+A part from the usual scores that normally can be found in a Rosetta output, some residues of interest were labeled through the use of the
+`DisplayPoseLabelsMover <https://www.rosettacommons.org/docs/latest/scripting_documentation/RosettaScripts/xsd/mover_DisplayPoseLabelsMover_type>`_, as described
+in :ref:`how to read Rosetta outputs <readrosetta>`. We will pick some of those residues for further analysis.
 
 As we aim to acquire some extra information, we will need to **expand** the behaviour of :func:`.parse_rosetta_file` through a :ref:`description <readrosetta>`.
 Additionally, to facilitate reading, we are going to add to the description a list of score terms that we will *ignore* for the purposes of this demonstration.
 
 .. note::
   After loading the data, we will add the previously loaded sequence as a ``reference_sequence`` for the :class:`.DesignFrame`. As we are working with a previously
-  trimmed structure, we will also add a ``shift``, this being the number of the first residue of the structure (i.e. by default the ``shift==1`` as that would be
+  trimmed structure, we will also add a ``shift``, this being the number of the first residue of the structure (i.e. by default ``shift==1`` as that would be
   the first position). Adding this ``shift`` helps down the line in keeping the analysis and plotting numbered to the starting structure.
 
   Both ``reference_sequence`` and ``reference_shift`` need to be attached to the appropriate chain identifier.
@@ -82,9 +92,7 @@ with most of the popular plotting solutions in python, such as :mod:`matplotlib`
 
 .. ipython::
 
-   In [3]: import matplotlib.pyplot as plt
-      ...: plt.rcParams['svg.fonttype'] = 'none' # When plt.savefig to 'svg', text is still text object
-      ...: fig  = plt.figure(figsize=(30, 10))
+   In [3]: fig  = plt.figure(figsize=(30, 10))
       ...: grid = [2, 6]
       ...: axes = rs.plot.multiple_distributions( df, fig, grid )
       ...: plt.tight_layout()
@@ -101,8 +109,7 @@ some scores to minimize the final image):
 
 .. ipython::
 
-   In [5]: import seaborn as sns
-      ...: grid = sns.pairplot(df[['score', 'packstat', 'cav_vol', 'finalRMSD']])
+   In [5]: grid = sns.pairplot(df[['score', 'packstat', 'cav_vol', 'finalRMSD']])
 
    @savefig tutorial_seq_plt2.png width=10in
    In [6]: plt.show()
@@ -122,19 +129,49 @@ Let's make two populations: ``df_cr`` representing the ``top 10 scored`` decoys 
 .. ipython::
 
    In [7]: df_cr = df[(df['cav_vol'] <= 10) & (df['finalRMSD'] <= 1.5)].sort_values('score').head(10)
-      ...: df_sr = df[(df['packstat'] <= 0.6) & (df['finalRMSD'] <= 1.5)].sort_values('score').head(10)
-      ...: df_cr.shape[0]
+      ...: df_sr = df[(df['packstat'] >= 0.6) & (df['finalRMSD'] <= 1.5)].sort_values('score').head(10)
+
+As can be seen in this example, selections can be concatenated with either ``&`` (**AND** - meaning that all conditions must be fulfilled) or ``|`` (**OR** - meaning that
+any of the conditions need to be met). After that, one can check the overlap between the two selected groups, either by checking the common identifiers as sets:
+
+.. ipython::
+
+   In [8]: print(set(df_cr['description'].values).intersection(df_sr['description'].values))
+
+Or by merging only the common decoys, which will bring the full data:
+
+.. ipython::
+
+   In [8]: df_cr_sr = df_cr.merge(df_sr, how='inner', on='description', suffixes=['', '_2x'])
+      ...: df_cr_sr.drop(list(df_cr_sr.filter(regex = '_2x')), axis = 1, inplace = True)
+      ...: df_cr_sr
+
+There are multiple options on how this two populations can be compared, if that might be needed to decide which is the one with a higher chance of success. Some of them are
+showcased in their :ref:`specific tutorial <population_comparison>`.
 
 Identification of Mutants
 -------------------------
 
 Identifying the mutations present in a population can be key to understand the sequence signatures behind the designs. It might be also a good starting point for new sets of designs
-as is explained in :ref:`new_mutants`. Data referring to the identity and similarity with a ``reference_sequence`` is can easily be obtained by simple request:
+as is explained in :ref:`new_mutants`. Data referring to the identity and similarity with a ``reference_sequence`` is can easily be obtained by simple request (we will hide columns
+not currently informative for this example):
 
 .. ipython::
 
    In [8]: df_sr = df_sr.identify_mutants('C')
-      ...: df_sr.head(2)
+      ...: cols = ['description']
+      ...: cols.extend(list(df_sr.filter(regex = '_C')))
+      ...: df_sr[cols].head(2)
+
+.. tip::
+
+  Notice that the mutations are displayed on a **basic sequence count**; that is, assuming the protein sequence starts in 1. This is informative to keep on working on it,
+  as numerical selection is performed that way, but to make a report the actual position might be more useful to get the count in the same range as the reference structure.
+  One could get that format with :func:`.report()`.
+
+  .. ipython::
+
+     In [9]: rs.utils.report(df_sr[cols].head(2))
 
 Thanks to this quick identification, it is easy to select decoys with a particular sequence signature of interest through :meth:`.DesignFrame.get_sequence_with`.
 
@@ -143,15 +180,31 @@ Thanks to this quick identification, it is easy to select decoys with a particul
    In [9]: df_sr.get_sequence_with('C', ((3, 'W'), (9, 'R')))
 
 One important issue when selecting which decoys will move to the next round or be selected for experimental validation is the sequence distance between them,
-to avoid (unless wanted) to try too similar designs, or even to compare the sequences between two different selection criterias:
+to avoid (unless wanted) trying too similar designs:
 
 .. ipython::
 
-   In [1]: df_sr.sequence_distance('C')
+   In [1]: df_inner = df_sr.sequence_distance('C')
+      ...: df_inner
+
+Or even to compare the sequences between two different selection criteria:
 
 .. ipython::
 
-   In [2]: df_sr.sequence_distance('C', df_cr)
+   In [2]: df_outer = df_sr.sequence_distance('C', df_cr)
+      ...: df_outer
+
+   In [3]: fig = plt.figure(figsize=(30, 10))
+      ...: ax00 = plt.subplot2grid((1, 2), (0, 0))
+      ...: _ = sns.heatmap(df_inner, ax=ax00)
+      ...: rs.utils.add_top_title(ax00, 'Self Comparison')
+      ...: ax01 = plt.subplot2grid((1, 2), (0, 1))
+      ...: _ = sns.heatmap(df_outer, ax=ax01)
+      ...: rs.utils.add_top_title(ax01, 'Populations Comparison')
+      ...: plt.tight_layout()
+
+   @savefig tutorial_seq_plt2b.png width=10in
+   In [9]: plt.show()
 
 Visual Analysis of Mutations
 ----------------------------
@@ -162,7 +215,7 @@ Amino acid variation over all the decoys can be visualised in a variety of ways,
 
 .. ipython::
 
-   In [8]: fig  = plt.figure(figsize=(30, 10))
+   In [8]: fig = plt.figure(figsize=(30, 10))
       ...: ax = plt.subplot2grid((1, 1), (0, 0))
       ...: rs.plot.sequence_frequency_plot(df_cr, 'C', ax, cbar=False)
 
@@ -172,6 +225,7 @@ Amino acid variation over all the decoys can be visualised in a variety of ways,
 * As a :func:`.logo_plot` (let's see here only for the labeled region ``SSE03``):
 
 .. ipython::
+   :okwarning:
 
    In [1]: sse03 = df_cr.get_label('SSE03', 'C').values[0]
       ...: fig, axes = rs.plot.logo_plot(df_cr, 'C', key_residues=sse03)
@@ -182,6 +236,7 @@ Amino acid variation over all the decoys can be visualised in a variety of ways,
 * As a :func:`.positional_sequence_similarity` (defaults to ``BLOSUM62`` similarity matrix):
 
 .. ipython::
+   :okwarning:
 
    In [3]: fig  = plt.figure(figsize=(30, 10))
       ...: ax = plt.subplot2grid((1, 1), (0, 0))

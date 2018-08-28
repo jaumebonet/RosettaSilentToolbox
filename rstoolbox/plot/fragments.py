@@ -136,11 +136,11 @@ def plot_fragment_profiles( fig, small_frags, large_frags, ref_seq, ref_sse, mat
     # fix axis
     plt.setp(ax00.get_xticklabels(), visible=False)
     ax00.set_ylabel("aa freq")
-    ax00.set_xlim(xmin=-0.5)
+    ax00.set_xlim(-0.5, max(small_frags["position"]))
     ax00.set_ylim(0, 1.01)
     plt.setp(ax01.get_xticklabels(), visible=False)
     ax01.set_ylabel("aa freq")
-    ax01.set_xlim(xmin=-0.5)
+    ax01.set_xlim(-0.5, max(large_frags["position"]))
     ax01.set_ylim(0, 1.01)
     plt.setp(ax10.get_xticklabels(), visible=False)
     ax10.set_ylabel("sse freq")

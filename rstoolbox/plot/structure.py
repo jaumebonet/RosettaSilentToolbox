@@ -276,6 +276,8 @@ def plot_ramachandran( df, seqID, fig):
         ax[i].set_ylabel(r'$\psi$ [degrees]')
         ax[i].grid()
 
+    return ax
+
 
 def plot_dssp_vs_psipred( df, seqID, ax ):
     """Generates a horizontal heatmap showing differences in psipred predictions
@@ -292,6 +294,8 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     :type df: :class:`~pandas.Series`
     :param ax: |axis_param|.
     :type ax: :class:`~matplotlib.axes.Axes`
+
+    return: :func:`list` of :class:`~matplotlib.axes.Axes`
 
     .. seealso::
         :func:`.positional_sequence_similarity_plot`

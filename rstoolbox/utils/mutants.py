@@ -291,12 +291,15 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
     df.transfer_reference(self)
 
     avail_seqs = df.get_available_sequences()
+    avail_refs = []
     seqs = [_check_column(df, "sequence", seq) for seq in avail_seqs]
     df.drop_duplicates(seqs, inplace=True)
     for seq in avail_seqs:
-        df = df.identify_mutants(seq)
-    if len(avail_seqs) > 1:
-        muts = ["mutant_count_{}".format(seq) for seq in avail_seqs]
+        if df.has_reference_sequence(seq):
+            df = df.identify_mutants(seq)
+            avail_refs.append(seq)
+    if len(avail_refs) > 1:
+        muts = ["mutant_count_{}".format(seq) for seq in avail_refs]
         df["mutant_count_all"] = df[muts].sum(axis=1)
 
     return df.reset_index(drop=True)
@@ -644,9 +647,14 @@ def make_resfile( self, seqID, header, filename, write=True ):
         df = row.copy()
         if seqID not in df.get_identified_mutants():
             df = df.identify_mutants(seqID)
+        shift = df.get_reference_shift(seqID)
         if len(df.get_mutations(seqID)) > 0:
             for mutation in df.get_mutations(seqID).split(","):
-                data.append(str(" ".join([mutation[1:-1], seqID, "PIKAA", mutation[-1]])))
+                if isinstance(shift, int):
+                    position = str(int(mutation[1:-1]) + shift - 1)
+                else:
+                    position = str(shift[int(mutation[1:-1]) - 1])
+                data.append(str(" ".join([position, seqID, "PIKAA", mutation[-1]])))
 
         if write:
             with open(filename, 'w') as fd:
