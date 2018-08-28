@@ -158,7 +158,7 @@ class TestPlotUtils( object ):
     def test_color_scheme_hydrophobicity( self ):
         df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
                                         header=None).rename(columns={0: 'sequence_A'}))
-        fig, axs = rp.logo_plot(df, "A", refseq=False, line_break=50, font_size=10, hight_prop=2,
+        fig, axs = rp.logo_plot(df, "A", refseq=False, font_size=10, hight_prop=2,
                                 colors='HYDROPHOBICITY')
         return fig
 
