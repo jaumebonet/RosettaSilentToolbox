@@ -208,3 +208,12 @@ class TestPlotUtils( object ):
         fig, axs = rp.logo_plot(fs, "A", refseq=False, line_break=50, font_size=10, hight_prop=2,
                                 colors=custom)
         return fig
+
+    def test_colors(self):
+        red = [255, 0, 0]
+        newred = ru.color_variant(red, brightness_offset=1)
+        assert newred == '#ff0101'
+
+        cmap = ru.add_white_to_cmap(color='blue')
+        assert cmap.name == 'FromWhite'
+        assert cmap.N == 256

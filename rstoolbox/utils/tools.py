@@ -206,7 +206,7 @@ def report( df ):
         if len(row.get_mutation_positions(seqID)) == 0:
             return ''
         mutations = [int(x) for x in row.get_mutation_positions(seqID).split(',')]
-        for i, m in enumerate(mutations):
+        for i, _ in enumerate(mutations):
             if isinstance(shift, int):
                 mutations[i] += (shift - 1)
             else:
