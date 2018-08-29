@@ -9,7 +9,7 @@ Loading Fragments
 -----------------
 
 The generation of the proper fragment set is a key element in the outcome of some computational approaches such as
-*`ab initio <https://www.rosettacommons.org/docs/latest/application_documentation/structure_prediction/abinitio-relax>`_*.
+`ab initio <https://www.rosettacommons.org/docs/latest/application_documentation/structure_prediction/abinitio-relax>`_.
 
 The ability to analyse the distribution an coverage of the fragment set used in a particular experiment can translate into a better
 understanding of the putative challenging regions in a protein design. Fragments can be easily loaded with:

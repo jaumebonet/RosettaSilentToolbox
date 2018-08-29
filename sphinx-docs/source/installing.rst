@@ -26,6 +26,9 @@ Mandatory Dependencies
 * `six <https://pythonhosted.org/six/>`_
 * `networkx <http://networkx.lanl.gov/>`_
 
+**There is a hard minimum for ``pandas``.** Version ``0.23`` is required for the library to work, as includes new features to ease
+the management of pandas-derived classes, which are key to this library.
+
 Optional Dependencies
 ---------------------
 
@@ -37,8 +40,6 @@ Functions with optional dependences are properly labeled as such in the :ref:`ap
 The pip installation script will attempt to download the mandatory dependencies only if they do not exist at install-time or their version is
 not the supported one.
 
-There is a hard minimum for ``pandas``. Version ``0.23`` is required for the library to work, as includes new features to ease
-the management of pandas-derived classes, which are key to this library.
 
 Testing
 -------
@@ -53,7 +54,8 @@ Please report any bugs you encounter through the `github issue tracker of the de
 Known Issues
 ------------
 
-* **Working with virtual-environments on MacOS:**
+Working with virtual-environments on MacOS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Due to the differences on how mac manages its graphical interface, ``matplotlib`` can become unlinked from the X manager when
 working in a virtual environment. The easies way to fix this issue is not to allow ``matplotlib`` to guess the backend to use

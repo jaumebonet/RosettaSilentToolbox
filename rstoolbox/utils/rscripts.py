@@ -32,7 +32,7 @@ def baseline():
     .. ipython::
 
         In [1]: from rstoolbox.utils import baseline
-           ...: print baseline()
+           ...: print(baseline())
     """
     return textwrap.dedent("""\
     <ROSETTASCRIPTS>
@@ -62,7 +62,7 @@ def mutations( seqID='A' ):
     .. ipython::
 
         In [1]: from rstoolbox.utils import mutations
-           ...: print mutations()
+           ...: print(mutations())
     """
     return textwrap.dedent("""\
     <ROSETTASCRIPTS>

@@ -161,7 +161,7 @@ sequence
 Sequence data is integrated into the silent file as default. It can be captured
 and used to evaluate mutants and sequence drift amongst others. To retrieve that
 data, a string with the identifiers of all the chains of interest need to be
-provided, thus:
+provided, thus::
 
     {'sequence': 'AB'}
 

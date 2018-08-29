@@ -116,7 +116,7 @@
 <h1>rstoolbox.plot.logo_plot<a class="headerlink" href="#rstoolbox-plot-logo-plot" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.plot.logo_plot">
-<code class="descclassname">rstoolbox.plot.</code><code class="descname">logo_plot</code><span class="sig-paren">(</span><em>df</em>, <em>seqID</em>, <em>refseq=True</em>, <em>key_residues=None</em>, <em>line_break=None</em>, <em>font_size=35</em>, <em>colors='WEBLOGO'</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.logo_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.plot.</code><code class="descname">logo_plot</code><span class="sig-paren">(</span><em>df</em>, <em>seqID</em>, <em>refseq=True</em>, <em>key_residues=None</em>, <em>line_break=None</em>, <em>hight_prop=4</em>, <em>font_size=35</em>, <em>refplot=False</em>, <em>colors='WEBLOGO'</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.logo_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates classic <strong>LOGO</strong> plots.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -129,7 +129,12 @@
 the reference sequence.</li>
 <li><strong>key_residues</strong> – Residues of interest.</li>
 <li><strong>line_break</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Force a line-change in the plot after n residues are plotted.</li>
+<li><strong>hight_prop</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Hight proportion for each row of the plot.</li>
 <li><strong>font_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Expected size of the axis font.</li>
+<li><strong>refplot</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, it will res-order the residues in each position
+so that the reference residue will be on the bottom and setting a two-color scheme
+(provide a single color name in <code class="docutils literal notranslate"><span class="pre">colors</span></code>) that allows to quickly identify the reference
+type in each position.</li>
 <li><strong>colors</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]) – Colors to assign; it can be the name of a available color set or
 a dictionary with a color for each type. Available color schemes are: Weblogo
 (default), Hydrophobicity, Chemistry, and Charge.</li>
@@ -168,6 +173,7 @@ a dictionary with a color for each type. Available color schemes are: Weblogo
       
   </div>
 </div>
+
 <footer class="footer">
   <div class="container">
     <p class="pull-right">
@@ -183,5 +189,15 @@ a dictionary with a color for each type. Available color schemes are: Weblogo
     </p>
   </div>
 </footer>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-74877325-2');
+</script>
+
   </body>
 </html>

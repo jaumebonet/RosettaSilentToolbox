@@ -90,10 +90,9 @@ def read_fasta( filename, expand=False, multi=False, defchain='A' ):
     files = _gather_file_list( filename, multi )
     data = {"description": [], seqcol: []}
     for _, f in enumerate( files ):
-        fd = gzip.open( f ) if f.endswith(".gz") else open( f )
+        fd = gzip.open(f, 'rt') if f.endswith('.gz') else open( f )
         for line in fd:
-            line = line.decode('utf8') if f.endswith(".gz") else line
-            line = line.strip()
+            line = line.strip('\n')
             if line.startswith(">"):
                 line = line.strip(">")
                 data["description"].append(line)
@@ -132,7 +131,7 @@ def write_fasta( df, seqID, separator=None, filename=None, split=False ):
 
         In [1]: from rstoolbox.io import read_fasta, write_fasta
            ...: df = read_fasta("../rstoolbox/tests/data/*fa", multi=True)
-           ...: print write_fasta(df, "A")
+           ...: print(write_fasta(df, "A"))
 
     When working with multiple ``seqID``, one can select which ones to be printed;
     empty sequences will be skipped.
@@ -141,7 +140,7 @@ def write_fasta( df, seqID, separator=None, filename=None, split=False ):
 
         In [1]: from rstoolbox.io import read_fasta, write_fasta
            ...: df = read_fasta("../rstoolbox/tests/data/*fa", expand=True, multi=True)
-           ...: print write_fasta(df, "AC")
+           ...: print(write_fasta(df, "AC"))
 
     :param df: Data content.
     :type df: Union[:class:`.DesignFrame`, :class:`~pandas.DataFrame`]

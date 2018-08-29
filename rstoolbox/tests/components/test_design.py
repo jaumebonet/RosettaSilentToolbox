@@ -335,6 +335,11 @@ class TestDesign( object ):
         assert df.get_reference_sequence("B") == sr.get_reference_sequence("B")
         assert df.get_identified_mutants() == ["B", ]
 
+        dfshift = df.copy()
+        dfshift.add_reference_shift("B", 15)
+        dfr = ru.report(dfshift)
+        assert dfr.iloc[0].get_mutations("B") != df.iloc[0].get_mutations("B")
+
         for i, row in df.iterrows():
             # Check number of mutations
             assert row.get_mutation_count("B") == mut_number[i]
@@ -416,7 +421,7 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1, sc_des)
         df.add_reference_sequence("B", refseq)
 
-        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50 )
+        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
         plt.tight_layout()
         return fig
 
@@ -428,7 +433,7 @@ class TestDesign( object ):
         # Start test
         df = ri.parse_rosetta_file(self.silent1, sc_des)
 
-        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50 )
+        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
         plt.tight_layout()
         return fig
 
@@ -445,7 +450,7 @@ class TestDesign( object ):
         df.add_reference_sequence("B", refseq)
         df = df.sequence_bits('B')
 
-        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50 )
+        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
         plt.tight_layout()
         return fig
 
@@ -458,7 +463,7 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1, sc_des)
         df = df.sequence_bits('B')
 
-        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50 )
+        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
         plt.tight_layout()
         return fig
 

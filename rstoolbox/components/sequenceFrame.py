@@ -149,8 +149,9 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
             sft = 1
 
         kr = get_selection(key_residues, seqID, sft, self.shape[0])
-        # -1 as we access array-like positioning
-        return self.iloc[kr - 1]
+        # by position is -1
+        kr = [x - 1 for x in kr]
+        return self.iloc[kr]
 
     def max_hight( self ):
         """

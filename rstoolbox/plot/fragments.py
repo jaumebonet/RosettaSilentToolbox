@@ -27,40 +27,6 @@ from .structure import positional_structural_similarity_plot
 __all__ = ['plot_fragment_profiles', 'plot_fragments']
 
 
-def _sse_frequencies_match( sse_fit, frags ):
-
-    data_sse = {"position": range(1, len(sse_fit) + 1), "sse": list(sse_fit)}
-    df_sse = pd.DataFrame(data_sse)
-
-    ssea = frags[["position", "neighbors",
-                  "sse"]].groupby(["position", "sse"]).size().reset_index(name='counts')
-    sseb = frags[["position", "neighbors"]].groupby("position").size().reset_index(name='counts')
-    sse = pd.merge(ssea, sseb, how="left", on="position")
-    sse["percs"] = sse['counts_x'] / sse['counts_y']
-    sse = sse.drop( columns=["counts_x", "counts_y"] )
-    sse = pd.merge( df_sse, sse, how="left", on=["position", "sse"])
-    sse["position"] = sse["position"].apply( lambda x: x - 1 )
-
-    return sse.fillna(0)
-
-
-def _seq_frequencies_match( seq_fit, frags ):
-
-    data_sse = {"position": range(1, len(seq_fit) + 1), "aa": list(seq_fit)}
-    df_sse = pd.DataFrame(data_sse)
-
-    ssea = frags[["position", "neighbors",
-                  "aa"]].groupby(["position", "aa"]).size().reset_index(name='counts')
-    sseb = frags[["position", "neighbors"]].groupby("position").size().reset_index(name='counts')
-    sse = pd.merge(ssea, sseb, how="left", on="position")
-    sse["percs"] = sse['counts_x'] / sse['counts_y']
-    sse = sse.drop( columns=["counts_x", "counts_y"] )
-    sse = pd.merge( df_sse, sse, how="left", on=["position", "aa"])
-    sse["position"] = sse["position"].apply( lambda x: x - 1 )
-
-    return sse.fillna(0)
-
-
 def plot_fragment_profiles( fig, small_frags, large_frags, ref_seq, ref_sse, matrix="BLOSUM62" ):
     """Plots a full summary of the a :class:`.FragmentFrame` quality with sequence and expected
     secondary structure match.
@@ -136,11 +102,11 @@ def plot_fragment_profiles( fig, small_frags, large_frags, ref_seq, ref_sse, mat
     # fix axis
     plt.setp(ax00.get_xticklabels(), visible=False)
     ax00.set_ylabel("aa freq")
-    ax00.set_xlim(xmin=-0.5)
+    ax00.set_xlim(-0.5, max(small_frags["position"]))
     ax00.set_ylim(0, 1.01)
     plt.setp(ax01.get_xticklabels(), visible=False)
     ax01.set_ylabel("aa freq")
-    ax01.set_xlim(xmin=-0.5)
+    ax01.set_xlim(-0.5, max(large_frags["position"]))
     ax01.set_ylim(0, 1.01)
     plt.setp(ax10.get_xticklabels(), visible=False)
     ax10.set_ylabel("sse freq")

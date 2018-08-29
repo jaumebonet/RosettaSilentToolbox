@@ -115,7 +115,7 @@ class TestReadSilentFiles( object ):
         # plot
         fig = plt.figure(figsize=(25, 10))
         ax = plt.subplot2grid((1, 1), (0, 0))
-        sequence_frequency_plot(df1, 'A', ax, refseq=False)
+        sequence_frequency_plot(df1, 'A', ax, refseq=False, key_residues='12-35', clean_unused=0)
         return fig
 
     def test_hmm( self ):

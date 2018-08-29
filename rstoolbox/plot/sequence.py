@@ -123,6 +123,12 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     :param float xrotation: Rotation to apply in the x-axis text (degrees).
     :param float yrotation: Rotation to apply in the y-axis text (degrees).
 
+    .. note::
+
+        Attribute ``clean_unused``, if applied deletes the full column/row assigned to an
+        unrepresented residue type, this means that if that residue type is part of the
+        ``refseq``, it will not be labeled.
+
     :raises:
         :ValueError: if input is not a :class:`~pandas.DataFrame` derived object.
         :KeyError: |reference_error|.
@@ -228,9 +234,11 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
             border_color = sns.color_palette()[border_color]
         for i, aa in enumerate(ref_seq):
             if aminosY:
-                aa_position = (i, order.index(aa))
+                if aa in order:
+                    aa_position = (i, order.index(aa))
             else:
-                aa_position = (order.index(aa), i)
+                if aa in order:
+                    aa_position = (order.index(aa), i)
             ax.add_patch(Rectangle(aa_position, 1, 1, fill=False, clip_on=False,
                                    edgecolor=border_color, lw=border_width, zorder=100))
 
@@ -459,7 +467,7 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
 
 
 def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
-               font_size=35, colors="WEBLOGO" ):
+               hight_prop=4, font_size=35, refplot=False, colors="WEBLOGO" ):
     """Generates classic **LOGO** plots.
 
     :param df: Data container.
@@ -470,7 +478,12 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     :param key_residues: |keyres_param|.
     :type key_residue: |keyres_param|
     :param int line_break: Force a line-change in the plot after n residues are plotted.
+    :param int hight_prop: Hight proportion for each row of the plot.
     :param float font_size: Expected size of the axis font.
+    :param bool refplot: When :data:`True`, it will res-order the residues in each position
+        so that the reference residue will be on the bottom and setting a two-color scheme
+        (provide a single color name in ``colors``) that allows to quickly identify the reference
+        type in each position.
     :param colors: Colors to assign; it can be the name of a available color set or
         a dictionary with a color for each type. Available color schemes are: Weblogo
         (default), Hydrophobicity, Chemistry, and Charge.
@@ -482,7 +495,6 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     .. rubric:: Example
 
     .. ipython::
-        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.plot import logo_plot
@@ -567,14 +579,14 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
 
     # Plot
     if line_break is None:
-        figsize = (len(data) * 2, 2.3 * 2)
+        figsize = (len(data) * 2, 2.3 * hight_prop)
         grid = (1, 1)
         fig  = plt.figure(figsize=figsize)
         axs  = [plt.subplot2grid(grid, (0, 0)), ]
         krs  = [key_residues, ]
     else:
         rows = int(math.ceil(float(len(data)) / line_break))
-        figsize = (float(len(data) * 2 ) / rows, 2.3 * 2 * rows)
+        figsize = (float(len(data) * 2 ) / rows, 2.3 * hight_prop * rows)
         grid = (rows, 1)
         fig  = plt.figure(figsize=figsize)
         axs  = [plt.subplot2grid(grid, (_, 0)) for _ in range(rows)]

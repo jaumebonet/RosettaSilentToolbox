@@ -641,7 +641,7 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
     .. ipython::
 
         In [1]: from rstoolbox.utils import baseline
-           ...: print baseline()
+           ...: print(baseline())
 
     .. seealso::
         :func:`.baseline`

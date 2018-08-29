@@ -49,7 +49,8 @@ def get_selection( key_residues, seqID, shift=1, length=None ):
 
     if key_residues is None:
         if isinstance(shift, list):
-            key_residues = shift
+            key_residues = Selection(shift)
+            key_residues._seqID = seqID
         elif length is not None:
             key_residues = range(1, length + 1)
     if isinstance(key_residues, int):
