@@ -358,6 +358,35 @@ def positional_sequence_similarity_plot( df, ax, identity_color="green",
     :type df: :py:class:`~pandas.DataFrame`
     :param ax: matplotlib axis to which we will plot.
     :type ax: :py:class:`~matplotlib.axes.Axes`
+    :param str identity_color: Color assigned to identity matches.
+    :param str similarity_color: Color assigned to similarity matches.
+
+    :raises:
+        :ValueError: If the data container is not :class:`~pandas.DataFrame`.
+
+    .. rubric:: Example
+
+    .. ipython::
+        :okwarning:
+
+        In [1]: from rstoolbox.io import get_sequence_and_structure, parse_rosetta_file
+           ...: from rstoolbox.analysis import positional_sequence_similarity
+           ...: from rstoolbox.plot import positional_sequence_similarity_plot
+           ...: import matplotlib.pyplot as plt
+           ...: baseline = get_sequence_and_structure('../rstoolbox/tests/data/2pw9C.pdb')
+           ...: df = parse_rosetta_file('.../rstoolbox/tests/data/input_ssebig.minisilent.gz',
+           ...:                         {'sequence': 'C'})
+           ...: df.add_reference_sequence('C', baseline.get_sequence('C'))
+           ...: df.add_reference_shift('C', 32)
+           ...: seqsim = positional_sequence_similarity(df, 'C')
+           ...: fig = plt.figure(figsize=(30, 10))
+           ...: ax = plt.subplot2grid((1, 1), (0, 0))
+           ...: positional_sequence_similarity_plot(seqsim, ax)
+
+        @savefig positional_sequence_similarity_plot_docs.png width=5in
+        In [2]: plt.show()
+
+        In [3]: plt.close()
     """
 
     # Color management
@@ -365,6 +394,9 @@ def positional_sequence_similarity_plot( df, ax, identity_color="green",
         identity_color = sns.color_palette()[identity_color]
     if isinstance(similarity_color, int):
         similarity_color = sns.color_palette()[similarity_color]
+
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError('Wrong data input type.')
 
     y = df["positive_perc"].values
     ax.plot(range(len(y)), y, color="orange", linestyle="solid", linewidth=2)
@@ -376,6 +408,9 @@ def positional_sequence_similarity_plot( df, ax, identity_color="green",
 
     ax.set_ylim(0, 1)
     ax.set_xlim(0, len(y) - 1)
+    ax.set_xticks(range(0, len(y) - 1, 5))
+    positions = list(df.index)
+    ax.set_xticklabels(range(positions[0], positions[-1], 5))
 
 
 def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",

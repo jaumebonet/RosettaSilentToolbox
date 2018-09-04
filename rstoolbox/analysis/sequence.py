@@ -402,7 +402,10 @@ def positional_sequence_similarity( df, seqID=None, ref_seq=None,
         dfo.index = dfo.index + shft
     else:
         dfo.index = shft
-    return dfo.loc[list(get_selection(key_residues, seqID, list(dfo.index)))]
+
+    selection = list(get_selection(key_residues, seqID, list(dfo.index)))
+    selection = [x - 1 for x in selection]  # -1 for array like count
+    return dfo.iloc[selection]
 
 
 def binary_similarity( df, seqID, key_residues=None, matrix="IDENTITY"):
