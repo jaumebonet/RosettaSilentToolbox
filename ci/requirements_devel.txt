@@ -2,7 +2,7 @@ pytest>=3.5
 pytest-cov>=2.5
 pytest-mpl>=0.9
 tox>=3.0
-coverage==4.0.3
+coverage>=4.0.3
 coveralls
 python-coveralls
 codacy-coverage
