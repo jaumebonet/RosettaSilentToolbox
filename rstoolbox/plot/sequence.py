@@ -374,7 +374,7 @@ def positional_sequence_similarity_plot( df, ax, identity_color="green",
            ...: from rstoolbox.plot import positional_sequence_similarity_plot
            ...: import matplotlib.pyplot as plt
            ...: baseline = get_sequence_and_structure('../rstoolbox/tests/data/2pw9C.pdb')
-           ...: df = parse_rosetta_file('.../rstoolbox/tests/data/input_ssebig.minisilent.gz',
+           ...: df = parse_rosetta_file('../rstoolbox/tests/data/input_ssebig.minisilent.gz',
            ...:                         {'sequence': 'C'})
            ...: df.add_reference_sequence('C', baseline.get_sequence('C'))
            ...: df.add_reference_shift('C', 32)
