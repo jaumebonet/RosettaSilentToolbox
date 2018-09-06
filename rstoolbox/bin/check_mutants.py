@@ -113,6 +113,7 @@ def main( options ):
     plt.savefig(logof)
 
     # Alignment plot
+    afig = None
     if options.ffile is not None:
         alimgf = options.ofile + "_ali" + "." + options.iformat
         chunks = len(df.get_sequence(options.seqID).values[0])

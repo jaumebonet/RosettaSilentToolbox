@@ -180,15 +180,17 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         """
         from .selection import get_selection
 
-        def match_residues( value, seqID, confidence ):
+        def match_residues( value, seqID, confidence, shift ):
             t = 0
+            full = len(value)
             for s in selection:
                 # -1 as we access string position directly
-                t += 1 if value[get_selection(s[0], seqID)[0] - 1] == s[1] else 0
+                t += 1 if value[get_selection(s[0], seqID, shift, full)[0] - 1] == s[1] else 0
             return t / float(len(selection)) >= float(confidence)
 
+        shift = self.get_reference_shift(seqID)
         return self.loc[ self.apply(
-            lambda row: match_residues(row["sequence_{0}".format(seqID)], selection, confidence ),
+            lambda row: match_residues(row.get_sequence(seqID), selection, confidence, shift ),
             axis=1
         )]
 

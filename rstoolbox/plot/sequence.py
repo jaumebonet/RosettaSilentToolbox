@@ -165,7 +165,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
         raise ValueError("Input data must be in a DataFrame, DesignFrame or SequenceFrame")
     else:
         if not isinstance(data, (DesignFrame, SequenceFrame)):
-            if len(set(data.columns.values).intersction(set(order))) == len(order):
+            if len(set(data.columns.values).intersection(set(order))) == len(order):
                 data = SequenceFrame(data)
             else:
                 data = DesignFrame(data)
