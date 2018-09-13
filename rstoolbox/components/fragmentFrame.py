@@ -116,6 +116,30 @@ class FragmentFrame( pd.DataFrame ):
             return False
         return True
 
+    def add_fragments( self, fragments, ini, how='replace' ):
+        """Add to a given position a set of fragments more fragments.
+
+        Provided a :class:`.FragmentFrame`, use it to add those fragments
+        to the set of available ones starting in the given position. The
+        size and positions of the new fragments is used to assess up to where
+        they should go.
+
+        :param fragments: New fragments to add.
+        :type fragments: :class:`.FragmentFrame`
+        :param int ini: Initial position to where to add the new fragments.
+        :param str how: Adding mode: `replace` deletes the actual fragments
+            and adds the new provided ones. `append` adds them to the actual
+            set of fragments for the required positions. `exchange` will randomly
+            remove as many fragments as are being provided for each position.
+
+        :return: :class:`.FragmentFrame` - with the requested modifications.
+
+        :raises:
+            :ValueError: If the size of the provided fragments is not the same
+                as that of the actual ones.
+        """
+        pass
+
     def add_quality_measure( self, filename, pdbfile=None ):
         """Add RMSD quality measure to the fragment data.
 
