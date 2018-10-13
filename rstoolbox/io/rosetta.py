@@ -205,7 +205,7 @@ def open_rosetta_file( filename, multi=False, check_symmetry=True ):
         fd.close()
 
 
-def parse_rosetta_file( filename, description=None, multi=False ):
+def parse_rosetta_file( filename, description=None, multi=False, multidim=False ):
     """Read a Rosetta score or silent file and returns the design population
     in a :class:`.DesignFrame`.
 
@@ -242,6 +242,10 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         dictionary definition is explained in :ref:`tutorial: reading Rosetta <readrosetta>`.
     :type description: Union[:class:`str`, :class:`dict`]
     :param bool multi: When :data:`True`, indicates that data is readed from multiple files.
+    :param bool multidim: When :data:`True`, indicates that data contains score arrays of
+        different lengths. The arrays with a score of 0 will be discarded and only the arrays
+        with non-zero score will be parsed. This is usefull for the silent files created by
+        the Rosetta remodeling application.
 
     :return: :class:`.DesignFrame`.
 
@@ -271,6 +275,8 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             continue
 
         if line.startswith("SCORE"):
+            if multidim == True and float(line.split()[1]) == 0.:
+                continue
             per_res = {}
             chains  = {"id": [], "seq": "", "dssp": "", "psipred": "", "phi": [], "psi": []}
 
