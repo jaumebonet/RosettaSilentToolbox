@@ -275,11 +275,12 @@ def parse_rosetta_file( filename, description=None, multi=False, multidim=False 
             continue
 
         if line.startswith("SCORE"):
-            if multidim == True and float(line.split()[1]) == 0.:
-                continue
             per_res = {}
             chains  = {"id": [], "seq": "", "dssp": "", "psipred": "", "phi": [], "psi": []}
 
+            if multidim == True and float(line.split()[1]) == 0.:
+                continue
+                
             # General scores
             for cv, value in enumerate( line.strip().split()[1:] ):
                 hcv = header[cv]
