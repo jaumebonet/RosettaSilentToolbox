@@ -13,6 +13,7 @@ import random
 # External Libraries
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
 
@@ -21,6 +22,9 @@ import rstoolbox.utils as ru
 import rstoolbox.plot as rp
 import rstoolbox.io as ri
 import rstoolbox.components as rc
+
+if os.environ.get('DISPLAY', '') == '':
+    mpl.use('Agg')
 
 
 class TestPlotUtils( object ):

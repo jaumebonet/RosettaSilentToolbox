@@ -11,12 +11,16 @@ import os
 
 # External Libraries
 import pytest
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 # This Library
 from rstoolbox.io import read_fasta, write_fasta, read_hmmsearch
 from rstoolbox.io import parse_rosetta_file, pymol_mutant_selector
 from rstoolbox.plot import sequence_frequency_plot
+
+if os.environ.get('DISPLAY', '') == '':
+    mpl.use('Agg')
 
 
 class TestReadSilentFiles( object ):

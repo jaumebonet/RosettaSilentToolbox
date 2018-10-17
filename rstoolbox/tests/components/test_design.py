@@ -13,6 +13,7 @@ import copy
 # External Libraries
 import pandas as pd
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
 
@@ -23,6 +24,9 @@ import rstoolbox.plot as rp
 import rstoolbox.analysis as ra
 import rstoolbox.utils as ru
 from rstoolbox.tests.helper import random_frequency_matrix
+
+if os.environ.get('DISPLAY', '') == '':
+    mpl.use('Agg')
 
 
 class TestDesign( object ):

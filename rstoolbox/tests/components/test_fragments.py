@@ -10,12 +10,16 @@
 import os
 
 # External Libraries
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
 
 # This Library
 from rstoolbox.io import parse_rosetta_fragments
 from rstoolbox.plot import plot_fragment_profiles
+
+if os.environ.get('DISPLAY', '') == '':
+    mpl.use('Agg')
 
 
 class TestFragments( object ):
