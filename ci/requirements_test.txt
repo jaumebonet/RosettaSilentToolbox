@@ -1,4 +1,5 @@
 pyyaml == 3.13
+matplotlib==2.2.3
 pandas == 0.23.3
 seaborn == 0.9.0
 libconfig == 0.6.7
