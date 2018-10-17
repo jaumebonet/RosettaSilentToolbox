@@ -13,13 +13,12 @@ import os
 import pytest
 import numpy as np
 import matplotlib as mpl
+if os.environ.get('DISPLAY', '') == '':
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 # This Library
 import rstoolbox.analysis as ra
-
-if os.environ.get('DISPLAY', '') == '':
-    mpl.use('Agg')
 
 
 class TestAnalysis( object ):
