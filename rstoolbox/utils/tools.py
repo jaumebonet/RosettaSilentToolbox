@@ -7,6 +7,7 @@
     Bruno Correia <bruno.correia@epfl.ch>
 
 .. func:: format_Ipython
+.. func:: use_qgrid
 .. func:: add_column
 .. func:: split_values
 .. func:: make_rosetta_app_path
@@ -28,7 +29,7 @@ from six import string_types
 # This Library
 
 
-__all__ = ['format_Ipython', 'add_column', 'split_values', 'make_rosetta_app_path',
+__all__ = ['format_Ipython', 'use_qgrid', 'add_column', 'split_values', 'make_rosetta_app_path',
            'execute_process', 'report']
 
 
@@ -41,6 +42,9 @@ def format_Ipython():
     .. note::
         In order for this function to work, it is important that is the last
         one in the Jupyter cell to be called.
+
+    :raises:
+        :ImportError: If [Ipython library](https://ipython.org/) is not present.
     """
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -48,11 +52,60 @@ def format_Ipython():
     pd.set_option("display.max_colwidth", -1)
     from IPython.core.display import HTML
     CSS = textwrap.dedent("""
-        table.dataframe {
-            font-family: monospace;
+        table.dataframe, div.slick-cell {
+            font-family: monospace  !important;
+        }
+        div.q-grid-toolbar > button:nth-of-type(1) {
+            visibility: hidden;
+        }
+        div.q-grid-toolbar > button:nth-of-type(2) {
+            visibility: hidden;
         }
     """)
     return HTML('<style>{}</style>'.format(CSS))
+
+
+def use_qgrid( df, **kwargs ):
+    """Create a ``QgridWidget`` object from the
+    [qgrid library](https://qgrid.readthedocs.io/en/latest/) in
+    **Jupyter Notebooks**.
+
+    This allows the creation of a interactive table in a cell with a whole
+    lot of functionalities (see [qgrid documentation](https://qgrid.readthedocs.io/en/latest/))
+
+    A part from the :class:`~pandas.DataFrame`, one can provide any named parameter that can
+    be applied to [qgrid.show_grid](https://qgrid.readthedocs.io/en/latest/#qgrid.show_grid).
+    The only difference is that if there are more than 4 columns, the key ``forceFitColumns``
+    from the attribute ``grid_options`` is forced into :data:`False`.
+
+    The actual :class:`~pandas.DataFrame` can be retrieved back with::
+
+        qwdf = rstoolbox.utils.use_qgrid(df)
+        qdf = qwdf.get_changed_df()
+        # OR
+        qdf = qwdf.get_selected_df()
+
+    See more in the documentation for
+    [get_changed_df](https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_changed_df)
+    or [get_selected_df](https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_selected_df).
+
+    Best used together with :func:`.format_Ipython`.
+
+    :param df: Data container.
+    :type df: :class:`~pandas.DataFrame`
+
+    :return: [QgridWidget](https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget)
+
+    :raises:
+        :ImportError: If [qgrid library](https://qgrid.readthedocs.io/en/latest/)
+            is not present.
+    """
+    import qgrid
+
+    go = kwargs.pop('grid_options', {})
+    if df.shape[1] > 4:
+        go['forceFitColumns'] = False
+    return qgrid.show_grid(df, grid_options=go, **kwargs)
 
 
 def add_column( df, name, value ):
