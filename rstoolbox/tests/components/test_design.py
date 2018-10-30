@@ -13,6 +13,9 @@ import copy
 # External Libraries
 import pandas as pd
 import numpy as np
+import matplotlib as mpl
+if os.environ.get('DISPLAY', '') == '':
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 import pytest
 

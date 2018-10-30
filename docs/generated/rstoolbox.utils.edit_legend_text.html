@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rstoolbox.utils.add_white_to_cmap &#8212; rstoolbox 0.0.8 documentation</title>
+    <title>rstoolbox.utils.edit_legend_text &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../_static/style.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="rstoolbox.utils.color_variant" href="rstoolbox.utils.color_variant.html" />
-    <link rel="prev" title="rstoolbox.utils.edit_legend_text" href="rstoolbox.utils.edit_legend_text.html" />
+    <link rel="next" title="rstoolbox.utils.add_white_to_cmap" href="rstoolbox.utils.add_white_to_cmap.html" />
+    <link rel="prev" title="rstoolbox.utils.add_top_title" href="rstoolbox.utils.add_top_title.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -82,7 +82,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">rstoolbox.utils.add_white_to_cmap</a></li>
+<li><a class="reference internal" href="#">rstoolbox.utils.edit_legend_text</a></li>
 </ul>
 </ul>
 </li>
@@ -112,32 +112,28 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <div class="section" id="rstoolbox-utils-add-white-to-cmap">
-<h1>rstoolbox.utils.add_white_to_cmap<a class="headerlink" href="#rstoolbox-utils-add-white-to-cmap" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="rstoolbox-utils-edit-legend-text">
+<h1>rstoolbox.utils.edit_legend_text<a class="headerlink" href="#rstoolbox-utils-edit-legend-text" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="rstoolbox.utils.add_white_to_cmap">
-<code class="descclassname">rstoolbox.utils.</code><code class="descname">add_white_to_cmap</code><span class="sig-paren">(</span><em>color=None</em>, <em>cmap=None</em>, <em>n_colors=10</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.utils.add_white_to_cmap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate a new colormap with white as first instance.</p>
+<dt id="rstoolbox.utils.edit_legend_text">
+<code class="descclassname">rstoolbox.utils.</code><code class="descname">edit_legend_text</code><span class="sig-paren">(</span><em>ax</em>, <em>labels</em>, <em>title=None</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.utils.edit_legend_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the labels and title of a legend.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>color</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – Color identifier.</li>
-<li><strong>cmap</strong> (Union[<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>]) – Cmap identifier. Incompatible with color.</li>
-<li><strong>n_colors</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number discret colors to generate from.</li>
+<li><strong>ax</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code>) – Target plot axis.</li>
+<li><strong>labels</strong> (<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – List of new labels to add (in the required order)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.0.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">If both <code class="docutils literal notranslate"><span class="pre">color</span></code> and <code class="docutils literal notranslate"><span class="pre">cmap</span></code> are specified or if
-none of them are.</td>
+<tr class="field-odd field"><th class="field-name">IndexError:</th><td class="field-body">If the number of new labels do not match the current
+number of labels.</td>
 </tr>
 </tbody>
 </table>
