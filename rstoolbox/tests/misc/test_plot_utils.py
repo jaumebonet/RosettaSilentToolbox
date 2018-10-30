@@ -8,10 +8,14 @@
 """
 # Standard Libraries
 import os
+import random
 
 # External Libraries
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
+if os.environ.get('DISPLAY', '') == '':
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 import pytest
 
@@ -209,7 +213,23 @@ class TestPlotUtils( object ):
                                 colors=custom)
         return fig
 
-    def test_colors(self):
+    def test_plot_labels( self ):
+        plt.plot([random.randint(0, 100) for i in range(100)], label='text1')
+        plt.plot([random.randint(0, 100) for i in range(100)], label='text2')
+        ax = plt.gca()
+        ax.legend()
+        inilabs = [x.get_text() for x in ax.get_legend().texts]
+        newlabs = ['text3', 'text4']
+        ru.edit_legend_text(ax, newlabs, 'lines')
+        endlabs = [x.get_text() for x in ax.get_legend().texts]
+        with pytest.raises(IndexError):
+            ru.edit_legend_text(ax, ['text1', 'text2', 'text3'], 'lines')
+        plt.close()
+
+        assert newlabs == endlabs
+        assert endlabs != inilabs
+
+    def test_colors( self ):
         red = [255, 0, 0]
         newred = ru.color_variant(red, brightness_offset=1)
         assert newred == '#ff0101'

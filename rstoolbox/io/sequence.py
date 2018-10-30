@@ -168,7 +168,7 @@ def write_fasta( df, seqID, separator=None, filename=None, split=False ):
         sequence = row.get_sequence(seqID)
         if sequence is None or isinstance(sequence, float) or len(sequence) == 0:
             return ""
-        name = ">" + row.get_id()
+        name = ">" + str(row.get_id())
         if separator is not None:
             name = name + separator + seqID
         return name + "\n" + row.get_sequence(seqID)

@@ -7,10 +7,14 @@
     Bruno Correia <bruno.correia@epfl.ch>
 """
 # Standard Libraries
+import os
 
 # External Libraries
 import pytest
 import numpy as np
+import matplotlib as mpl
+if os.environ.get('DISPLAY', '') == '':
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 # This Library

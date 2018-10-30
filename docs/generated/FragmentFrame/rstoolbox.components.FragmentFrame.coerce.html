@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rstoolbox.components.FragmentFrame.is_comparable &#8212; rstoolbox 0.0.8 documentation</title>
+    <title>rstoolbox.components.FragmentFrame.coerce &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="rstoolbox.components.FragmentFrame.coerce" href="rstoolbox.components.FragmentFrame.coerce.html" />
-    <link rel="prev" title="rstoolbox.components.FragmentFrame.has_source_file" href="rstoolbox.components.FragmentFrame.has_source_file.html" />
+    <link rel="next" title="rstoolbox.components.FragmentFrame.add_fragments" href="rstoolbox.components.FragmentFrame.add_fragments.html" />
+    <link rel="prev" title="rstoolbox.components.FragmentFrame.is_comparable" href="rstoolbox.components.FragmentFrame.is_comparable.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -82,7 +82,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">rstoolbox.components.FragmentFrame.is_comparable</a></li>
+<li><a class="reference internal" href="#">rstoolbox.components.FragmentFrame.coerce</a></li>
 </ul>
 </ul>
 </li>
@@ -112,20 +112,19 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <div class="section" id="rstoolbox-components-fragmentframe-is-comparable">
-<h1>rstoolbox.components.FragmentFrame.is_comparable<a class="headerlink" href="#rstoolbox-components-fragmentframe-is-comparable" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="rstoolbox-components-fragmentframe-coerce">
+<h1>rstoolbox.components.FragmentFrame.coerce<a class="headerlink" href="#rstoolbox-components-fragmentframe-coerce" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
-<dt id="rstoolbox.components.FragmentFrame.is_comparable">
-<code class="descclassname">FragmentFrame.</code><code class="descname">is_comparable</code><span class="sig-paren">(</span><em>df</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.FragmentFrame.is_comparable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate if the current <a class="reference internal" href="../rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> is comparable to
-the provided one.</p>
-<p>This is checked on terms of (a) covered sequence length -range- and
-(2) fragment size.</p>
+<dt id="rstoolbox.components.FragmentFrame.coerce">
+<code class="descclassname">FragmentFrame.</code><code class="descname">coerce</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.FragmentFrame.coerce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make fragment data coherent.</p>
+<p>Evaluates that the columns <code class="docutils literal notranslate"><span class="pre">neighbors</span></code>, <code class="docutils literal notranslate"><span class="pre">neighbor</span></code> and <code class="docutils literal notranslate"><span class="pre">position</span></code> are coherent
+with the data contained according to <code class="docutils literal notranslate"><span class="pre">frame</span></code> and <code class="docutils literal notranslate"><span class="pre">size</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a> - True if the two <a class="reference internal" href="../rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> are comparable.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="../rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a></td>
 </tr>
 </tbody>
 </table>

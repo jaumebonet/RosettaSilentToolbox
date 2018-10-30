@@ -134,8 +134,10 @@ Special functions to help personalise your plot easily can be loaded through ``r
    :toctree: generated/
 
    ~utils.format_Ipython
+   ~utils.add_left_title
    ~utils.add_right_title
    ~utils.add_top_title
+   ~utils.edit_legend_text
    ~utils.add_white_to_cmap
    ~utils.color_variant
 

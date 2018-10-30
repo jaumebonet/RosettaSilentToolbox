@@ -11,6 +11,9 @@ import os
 
 # External Libraries
 import pytest
+import matplotlib as mpl
+if os.environ.get('DISPLAY', '') == '':
+    mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 # This Library

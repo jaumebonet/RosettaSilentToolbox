@@ -1,5 +1,5 @@
 v0.0.8 (September 2018)
 -----------------------
 
-* Patch bug when plotting ``positional_sequence_similarity_plot`` when a reference shift was added.
-* Patch bug when calling ``get_sequence_with`` providing PDB-numbered selections.
+#. Patch bug when plotting ``positional_sequence_similarity_plot`` when a reference shift was added.
+#. Patch bug when calling ``get_sequence_with`` providing PDB-numbered selections.
