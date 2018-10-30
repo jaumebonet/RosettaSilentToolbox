@@ -18,6 +18,7 @@ import multiprocessing
 
 # External Libraries
 from libconfig import *
+import distro
 
 try:
     # Register IO control options
@@ -31,10 +32,10 @@ try:
     # Register Rosetta-related options
     register_option("rosetta", "path",  os.path.expanduser('~'), "path_in",
                     "Path to the rosetta binaries")
-    if platform.linux_distribution()[0] != "":
+    if distro.linux_distribution()[0] not in ["", "Darwin"]:
         register_option("rosetta", "compilation", "linuxgccrelease", "string",
                         "Target binaries of rosetta")
-    elif platform.mac_ver()[0] != "":
+    elif distro.linux_distribution()[0] == "Darwin":
         register_option("rosetta", "compilation", "macosclangrelease", "string",
                         "Target binaries of rosetta")
     else:
