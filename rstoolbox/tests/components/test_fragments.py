@@ -60,6 +60,38 @@ class TestFragments( object ):
         plt.tight_layout()
         return fig
 
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='add_fragments_replace.png')
+    def test_add_fragments_replace( self ):
+        df = parse_rosetta_fragments(self.frag3)
+        xx = df[(df['frame'] <= 10) & (df['neighbor'] <= 100)]
+        dfrep = df.add_fragments(xx, 10)
+
+        fig = plt.figure(figsize=(25, 10))
+        ax0 = plt.subplot2grid((2, 1), (0, 0))
+        prange = range(len(dfrep.groupby('frame')))
+        ax0.bar(prange, [max(y['neighbor']) for x, y in dfrep.groupby('frame')])
+        ax1 = plt.subplot2grid((2, 1), (1, 0))
+        ax1.bar(prange, [y['neighbors'].unique()[0] for x, y in dfrep.groupby('frame')])
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+                                   filename='add_fragments_append.png')
+    def test_add_fragments_append( self ):
+        df = parse_rosetta_fragments(self.frag3)
+        xx = df[(df['frame'] <= 10) & (df['neighbor'] <= 100)]
+        dfrep = df.add_fragments(xx, 10, 'append')
+
+        fig = plt.figure(figsize=(25, 10))
+        ax0 = plt.subplot2grid((2, 1), (0, 0))
+        prange = range(len(dfrep.groupby('frame')))
+        ax0.bar(prange, [max(y['neighbor']) for x, y in dfrep.groupby('frame')])
+        ax1 = plt.subplot2grid((2, 1), (1, 0))
+        ax1.bar(prange, [y['neighbors'].unique()[0] for x, y in dfrep.groupby('frame')])
+        plt.tight_layout()
+        return fig
+
     def test_frequency_matrices_and_networks( self ):
         df3 = parse_rosetta_fragments(self.frag3)
         df9 = parse_rosetta_fragments(self.frag9)

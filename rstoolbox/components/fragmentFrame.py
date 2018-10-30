@@ -116,6 +116,24 @@ class FragmentFrame( pd.DataFrame ):
             return False
         return True
 
+    def coerce( self ):
+        """Make fragment data coherent.
+
+        Evaluates that the columns ``neighbors``, ``neighbor`` and ``position`` are coherent
+        with the data contained according to ``frame`` and ``size``.
+
+        :return: :class:`.FragmentFrame`
+        """
+        df = self.copy()
+        for frame_id, frame in df.groupby('frame'):
+            neighbors = len(frame.groupby(['neighbor', 'pdb']))
+            neighbor = list(frame.groupby(['neighbor', 'pdb']).ngroup() + 1)
+            position = list(frame.groupby(['neighbor', 'pdb']).cumcount() + frame_id)
+            df.loc[(df['frame'] == frame_id), 'neighbors'] = [neighbors] * frame.shape[0]
+            df.loc[(df['frame'] == frame_id), 'neighbor'] = neighbor
+            df.loc[(df['frame'] == frame_id), 'position'] = position
+        return df
+
     def add_fragments( self, fragments, ini, how='replace' ):
         """Add to a given position a set of fragments more fragments.
 
@@ -127,10 +145,9 @@ class FragmentFrame( pd.DataFrame ):
         :param fragments: New fragments to add.
         :type fragments: :class:`.FragmentFrame`
         :param int ini: Initial position to where to add the new fragments.
-        :param str how: Adding mode: `replace` deletes the actual fragments
-            and adds the new provided ones. `append` adds them to the actual
-            set of fragments for the required positions. `exchange` will randomly
-            remove as many fragments as are being provided for each position.
+        :param str how: Adding mode: ``replace`` deletes the actual fragments
+            and adds the new provided ones. ``append`` adds them to the actual
+            set of fragments for the required positions.
 
         :return: :class:`.FragmentFrame` - with the requested modifications.
 
@@ -138,7 +155,24 @@ class FragmentFrame( pd.DataFrame ):
             :ValueError: If the size of the provided fragments is not the same
                 as that of the actual ones.
         """
-        pass
+        if (self['size'].unique() != fragments['size'].unique()).any():
+            raise ValueError('Only same-sized fragments can be merged.')
+
+        frags = fragments.copy()
+        df = self.copy()
+        columns = ['frame', 'neighbor', 'position']
+
+        # Setup new frame range
+        frags['frame'] = frags['frame'] + ini - frags['frame'].values[0]
+
+        if how.lower() == 'replace':
+            df = df[(df['frame'] < ini) | (df['frame'] > max(frags['frame'].unique()))]
+            df = pd.concat([df, frags.coerce()]).sort_values(columns).reset_index(drop=True)
+        if how.lower() == 'append':
+            df = pd.concat([df, frags]).sort_values(columns).reset_index(drop=True)
+            df = df.coerce()
+
+        return df
 
     def add_quality_measure( self, filename, pdbfile=None ):
         """Add RMSD quality measure to the fragment data.
@@ -222,7 +256,7 @@ class FragmentFrame( pd.DataFrame ):
             :KeyError: if the ``rmsd`` column cannot be found.
 
         .. seealso::
-            :meth:`~.FragmentFrame.add_quality_measure`
+            :meth:`.FragmentFrame.add_quality_measure`
         """
         def _select_quantile(group, quantile):
             qtl = group["rmsd"].quantile(.25)
