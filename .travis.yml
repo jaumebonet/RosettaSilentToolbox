@@ -26,6 +26,15 @@ matrix:
   - python: 2.7
     env: TOXENV=py27
     os: osx
+    install:
+      - brew update
+      - brew install python2
+      - python2 -m venv venv
+      - source venv/bin/activate
+      - pip install tox-travis filelock codecov coverage
+  - python: 3.6
+    env: TOXENV=py36
+    os: osx
   - python: 3.7-dev
     env: TOXENV=py37
     os: osx
@@ -45,4 +54,4 @@ deploy:
   on:
     tags: true
     branch: master
-    condition: "$TRAVIS_PYTHON_VERSION == '3.6'"
+    condition: $TRAVIS_PYTHON_VERSION == '3.6' && $TRAVIS_OS_NAME == 'linux'
