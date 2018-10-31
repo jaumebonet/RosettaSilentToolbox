@@ -31,18 +31,22 @@ matrix:
     - chmod +x miniconda.sh
     - "./miniconda.sh -b"
     - export PATH=/home/travis/miniconda2/bin:$PATH
+    install:
+    - pip install --user tox-travis filelock codecov coverage
+  - language: generic
+    env: TOXENV=py36
+    os: osx
+    before_install:
+    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh
+    - chmod +x miniconda.sh
+    - "./miniconda.sh -b"
+    - export PATH=/home/travis/miniconda2/bin:$PATH
     - conda update --yes conda
     - sudo rm -rf /dev/shm
     - sudo ln -s /run/shm /dev/shm
     install:
-    - conda install --yes python="2.7"
+    - conda install --yes python="3.6"
     - pip install --user tox-travis filelock codecov coverage
-  - python: 3.6
-    env: TOXENV=py36
-    os: osx
-  - python: 3.7-dev
-    env: TOXENV=py37
-    os: osx
 install:
 - pip install tox
 - if [[ $TOXENV == py36 ]]; then pip install pyyaml; fi
