@@ -24,9 +24,10 @@ matrix:
     env: TOXENV=py37
     os: linux
   - language: generic
-    env:
-    - TOXENV=py27
-    - TOXENV=py36
+    env: TOXENV=py27
+    os: osx
+  - language: generic
+    env: TOXENV=py36
     os: osx
 before_install:
 - bash ./ci/travis_before_install.sh
