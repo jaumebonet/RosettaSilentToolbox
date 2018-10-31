@@ -27,7 +27,7 @@ matrix:
     env: TOXENV=py27
     os: osx
     install:
-      -pip install tox-travis filelock codecov coverage
+    - pip install tox-travis filelock codecov coverage
   - python: 3.6
     env: TOXENV=py36
     os: osx
