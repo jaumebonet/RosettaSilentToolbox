@@ -26,26 +26,24 @@ matrix:
   - language: generic
     env: TOXENV=py27
     os: osx
-    before_install:
-    - wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh
-    - chmod +x miniconda.sh
-    - "./miniconda.sh -b"
-    - echo $PATH
-    - export PATH=/User/travis/miniconda2/bin:$PATH
-    install:
-    - conda install --yes python="2.7"
-    - pip install --user tox-travis filelock codecov coverage
   - language: generic
     env: TOXENV=py36
     os: osx
-    before_install:
-    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh
-    - chmod +x miniconda.sh
-    - "./miniconda.sh -b"
-    - export PATH=/User/travis/miniconda2/bin:$PATH
-    install:
-    - conda install --yes python="3.6"
-    - pip install --user tox-travis filelock codecov coverage
+before_install:
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+    bash miniconda.sh -b -p $HOME/miniconda;
+    export PATH="$HOME/miniconda/bin:$PATH";
+    hash -r;
+    conda config --set always_yes yes --set changeps1 no;
+    conda update -q conda;
+    conda info -a;
+    conda install --yes python=$TRAVIS_PYTHON_VERSION;
+  fi
 install:
 - pip install tox
 - if [[ $TOXENV == py36 ]]; then pip install pyyaml; fi
@@ -62,4 +60,4 @@ deploy:
   on:
     tags: true
     branch: master
-    condition: $TRAVIS_PYTHON_VERSION == '3.6' && $TRAVIS_OS_NAME == 'linux'
+    condition: "$TRAVIS_PYTHON_VERSION" == '3.6' && $TRAVIS_OS_NAME == "linux"
