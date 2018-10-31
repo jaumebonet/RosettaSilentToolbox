@@ -26,8 +26,17 @@ matrix:
   - language: generic
     env: TOXENV=py27
     os: osx
+    before_install:
+    - wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh
+    - chmod +x miniconda.sh
+    - "./miniconda.sh -b"
+    - export PATH=/home/travis/miniconda2/bin:$PATH
+    - conda update --yes conda
+    - sudo rm -rf /dev/shm
+    - sudo ln -s /run/shm /dev/shm
     install:
-    - pip install tox-travis filelock codecov coverage
+    - conda install --yes python="2.7"
+    - pip install --user tox-travis filelock codecov coverage
   - python: 3.6
     env: TOXENV=py36
     os: osx
