@@ -25,7 +25,7 @@ import rstoolbox.components as rc
 import rstoolbox.plot as rp
 import rstoolbox.analysis as ra
 import rstoolbox.utils as ru
-from rstoolbox.tests.helper import random_frequency_matrix
+from rstoolbox.tests.helper import baseline_test_dir, random_frequency_matrix
 
 
 class TestDesign( object ):
@@ -265,7 +265,7 @@ class TestDesign( object ):
         assert 'rmsd_target' not in dfs1.columns
         assert 'rmsd_target' in dfs2.columns
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_global_preview.png')
     def test_global_preview(self):
 
@@ -277,7 +277,7 @@ class TestDesign( object ):
         plt.tight_layout()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_mutants_alignment.png')
     def test_mutants(self):
         # Static data
@@ -398,7 +398,7 @@ class TestDesign( object ):
         rp.plot_alignment(df, "B", ax, matrix="BLOSUM62")
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_summary.png')
     def test_summary_plot(self):
         # Start test
@@ -412,7 +412,7 @@ class TestDesign( object ):
         plt.tight_layout()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_logo.png')
     def test_logo_plot(self):
         refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
@@ -428,7 +428,7 @@ class TestDesign( object ):
         plt.tight_layout()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_logo_noref.png')
     def test_logo_plot_noref(self):
         sc_des  = {"sequence": "B"}
@@ -440,7 +440,7 @@ class TestDesign( object ):
         plt.tight_layout()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_logo_bits.png')
     def test_logo_plot_bits(self):
         refseq = "GSISDIRKDAEVRMDKAVEAFKNKLDKFKAAVRKVFPTEERIDMRPEIWIAQELRRIGDE" \
@@ -457,7 +457,7 @@ class TestDesign( object ):
         plt.tight_layout()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_logo_bits_noref.png')
     def test_logo_plot_bits_noref(self):
         sc_des  = {"sequence": "B"}
@@ -470,7 +470,7 @@ class TestDesign( object ):
         plt.tight_layout()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_per_res_matrix_score.png')
     def test_per_res_matrix_score(self):
         sc_des  = {"scores": ["score"], "sequence": "B"}
@@ -579,7 +579,7 @@ class TestDesign( object ):
         assert dfpc['structure_C_E'].mean() == pytest.approx(0.4038, rel=1e-3)
         assert dfpc['structure_C_L'].min() == pytest.approx(0.3275, rel=1e-3)
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_sse_profile.png')
     def test_sse_profile_plot(self):
         sse_ref = "LEEEEEEELLLEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL"
@@ -598,7 +598,7 @@ class TestDesign( object ):
         plt.tight_layout()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_ramachandran.png')
     def test_ramachandran_plot(self):
         # Start test
@@ -613,7 +613,7 @@ class TestDesign( object ):
         plt.tight_layout()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_dssp_vs_psipred.png')
     def test_plot_dssp_vs_psipred(self):
         # Start test

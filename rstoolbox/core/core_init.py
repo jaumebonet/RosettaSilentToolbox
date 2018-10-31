@@ -12,7 +12,6 @@
 .. class:: DesignFrame
 """
 # Standard Libraries
-import platform
 import os
 import multiprocessing
 
