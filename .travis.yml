@@ -33,8 +33,8 @@ matrix:
     - conda config --set always_yes yes --set changeps1 no
     - export PATH=/User/travis/miniconda2/bin:$PATH
     - conda install --yes python=$TRAVIS_PYTHON_VERSION
-    - mkdir $HOME/matplotlib
-    - echo 'backend: TkAgg' > $HOME/.matplotlib/matplotlibrc
+    - mkdir $HOME/.matplotlib
+    - "echo 'backend: TkAgg' > $HOME/.matplotlib/matplotlibrc"
   - language: generic
     env: TOXENV=py36
     os: osx
@@ -45,7 +45,8 @@ matrix:
     - conda config --set always_yes yes --set changeps1 no
     - export PATH=/User/travis/miniconda2/bin:$PATH
     - conda install --yes python=$TRAVIS_PYTHON_VERSION
-    - echo 'backend: TkAgg' > $HOME/.matplotlib/matplotlibrc
+    - mkdir $HOME/.matplotlib
+    - "echo 'backend: TkAgg' > $HOME/.matplotlib/matplotlibrc"
 install:
 - pip install tox
 - if [[ $TOXENV == py36 ]]; then pip install pyyaml; fi
