@@ -24,35 +24,14 @@ matrix:
     env: TOXENV=py37
     os: linux
   - language: generic
-    env: TOXENV=py27
+    env:
+    - TOXENV=py27
+    - TOXENV=py36
     os: osx
-    before_install:
-    - wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh
-    - bash miniconda.sh -b -p $HOME/miniconda
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - conda config --set always_yes yes --set changeps1 no
-    - export PATH=/User/travis/miniconda2/bin:$PATH
-    - conda install --yes python=$TRAVIS_PYTHON_VERSION
-    - mkdir $HOME/.matplotlib
-    - "echo 'backend: TkAgg' > $HOME/.matplotlib/matplotlibrc"
-  - language: generic
-    env: TOXENV=py36
-    os: osx
-    before_install:
-    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh
-    - bash miniconda.sh -b -p $HOME/miniconda
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - conda config --set always_yes yes --set changeps1 no
-    - export PATH=/User/travis/miniconda2/bin:$PATH
-    - conda install --yes python=$TRAVIS_PYTHON_VERSION
-    - mkdir $HOME/.matplotlib
-    - "echo 'backend: TkAgg' > $HOME/.matplotlib/matplotlibrc"
+before_install:
+- bash ./ci/travis_before_install.sh
 install:
-- pip install tox
-- if [[ $TOXENV == py36 ]]; then pip install pyyaml; fi
-- if [[ $TOXENV == py36 ]]; then pip install coveralls; fi
-- if [[ $TOXENV == py36 ]]; then pip install python-coveralls; fi
-- if [[ $TOXENV == py36 ]]; then pip install codacy-coverage; fi
+- bash ./ci/travis_install.sh
 script:
 - tox
 deploy:
