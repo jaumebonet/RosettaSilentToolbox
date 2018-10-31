@@ -31,9 +31,10 @@ matrix:
     - chmod +x miniconda.sh
     - "./miniconda.sh -b"
     - echo $PATH
-    - export PATH=/home/travis/miniconda2/bin:$PATH
+    - export PATH=/User/travis/miniconda2/bin:$PATH
     install:
-    - /home/travis/miniconda2/bin/pip install --user tox-travis filelock codecov coverage
+    - conda install --yes python="2.7"
+    - pip install --user tox-travis filelock codecov coverage
   - language: generic
     env: TOXENV=py36
     os: osx
@@ -41,10 +42,7 @@ matrix:
     - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh
     - chmod +x miniconda.sh
     - "./miniconda.sh -b"
-    - export PATH=/home/travis/miniconda2/bin:$PATH
-    - conda update --yes conda
-    - sudo rm -rf /dev/shm
-    - sudo ln -s /run/shm /dev/shm
+    - export PATH=/User/travis/miniconda2/bin:$PATH
     install:
     - conda install --yes python="3.6"
     - pip install --user tox-travis filelock codecov coverage
