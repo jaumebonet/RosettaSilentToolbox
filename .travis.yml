@@ -32,7 +32,7 @@ matrix:
     - "./miniconda.sh -b"
     - export PATH=/home/travis/miniconda2/bin:$PATH
     install:
-    - pip install --user tox-travis filelock codecov coverage
+    - /home/travis/miniconda2/bin/pip install --user tox-travis filelock codecov coverage
   - language: generic
     env: TOXENV=py36
     os: osx
