@@ -20,16 +20,13 @@ matrix:
     - coveralls --data_file rstoolbox/tests/.coverage
     - python-codacy-coverage -r /tmp/cov-single.xml
     - bash <(curl -s https://codecov.io/bash) -Z -c -f /tmp/cov-single.xml
-  - python: 3.7
+  - python: 3.7-dev
     env: TOXENV=py37
     os: linux
   - python: 2.7
     env: TOXENV=py27
     os: osx
-  - python: 3.5
-    env: TOXENV=py35
-    os: osx
-  - python: 3.7
+  - python: 3.7-dev
     env: TOXENV=py37
     os: osx
 install:
