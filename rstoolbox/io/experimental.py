@@ -76,9 +76,16 @@ def read_CD( dirname, prefix=None, invert_temp=False, model='J-815'):
         return CDFrame(_read_CD_J815(dirname, prefix, invert_temp))
     else:
         raise AttributeError('Unknown CD format')
+    if model == 'Chirascan':
+        return df(_read_CD_Chirascan(infile,outfile=None))
+    else:
+        raise AttributeError('Unknown CD format')
 
+#def _read_CD_...( dirname, prefix, invert_temp ):
+#    """
+#    """
 
-def _read_CD_J815( dirname, prefix, invert_temp):
+def _read_CD_J815( dirname, prefix, invert_temp ):
     """CD read method for the J-815 output format.
 
     .. seealso::
@@ -139,6 +146,26 @@ def _read_CD_J815( dirname, prefix, invert_temp):
                                                                        (splits)))],
                            columns=['bin', 'Temp'])
         df = df.merge(tmp, on=['bin'])
+    return df
+
+def _read_CD_Chirascan(infile,outfile=None):
+    data = pd.read_csv(infile).values
+    data_split = [[]]
+    for x in data:
+        if x[0] == 'Cell:':
+            data_split.append([])
+        data_split[-1].append(x)
+    header = pd.DataFrame(data_split[0])[[0]].dropna()
+    header = [x.strip() for x in list(header[header[0].str.startswith('#Sample')].apply(lambda row: row[0].split(':')[1], axis=1).values)]
+    df = {}
+    for i, h in enumerate(header):
+        df.setdefault(h, pd.DataFrame(data_split[i + 1]))
+        columns = [float(x) for x in list(df[h].iloc[4].values)]
+        columns[0] = 'Wavelength'
+        df[h].columns = columns
+        df[h] = df[h].dropna().reset_index(drop=True)
+        if outfile:
+            df[h].to_csv('{}.csv'.format(h), index=False)
     return df
 
 
