@@ -44,7 +44,7 @@ class SPRFrame( pd.DataFrame ):
         return SPRFrame
 
 
-def read_CD( dirname, prefix=None, invert_temp=False, model='J-815'):
+def read_CD( dirname, prefix=None, invert_temp=False, model='Chirascan'):
     """Read `Circular Dichroism <https://www.wikiwand.com/en/Circular_dichroism>`_ data
     for multiple temperatures.
 
@@ -81,9 +81,7 @@ def read_CD( dirname, prefix=None, invert_temp=False, model='J-815'):
     else:
         raise AttributeError('Unknown CD format')
 
-#def _read_CD_...( dirname, prefix, invert_temp ):
-#    """
-#    """
+
 
 def _read_CD_J815( dirname, prefix, invert_temp ):
     """CD read method for the J-815 output format.
