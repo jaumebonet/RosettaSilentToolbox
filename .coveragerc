@@ -19,10 +19,13 @@ exclude_lines =
     raise NotImplementedError
     raise IOError
     raise ValueError
+    raise AttributeError
+    continue
 
     # Don't complain if non-runnable code isn't run:
     if 0:
     if __name__ == .__main__.:
+    if six.PY2:
 
 show_missing = True
 
