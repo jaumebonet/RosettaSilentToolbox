@@ -2,6 +2,6 @@ pyyaml == 3.13
 matplotlib==2.2.3
 pandas ==0.23.4
 seaborn == 0.9.0
-libconfig == 0.6.7
+libconfig ==0.7.0
 six == 1.11.0
 networkx == 2.1
