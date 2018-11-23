@@ -63,7 +63,7 @@ setup(
     keywords='development',
 
     install_requires=['pandas>=0.23', 'pyyaml', 'distro', 'seaborn',
-                      'libconfig', 'six', 'networkx'],
+                      'libconfig>=0.8', 'six', 'networkx'],
 
     packages=find_packages(exclude=['docs', 'demo', 'sphinx-docs']),
     include_package_data=True,

@@ -8,7 +8,7 @@
 The `rstoolbox` is a python library aimed to the analysis and management of big populations of protein or nucleotide decoys.
 
 [![bioRxiv](https://img.shields.io/badge/bioRxiv%20preprint-doi.org/10.1101/428045-blue.svg)](https://doi.org/10.1101/428045)
-[![Bioinformatics](https://img.shields.io/badge/Bioinformatics-submitted-green.svg)](https://doi.org/10.1101/428045)
+[![Bioinformatics](https://img.shields.io/badge/Bioinformatics-submitted-green.svg)]()
 
 Although inspired by the output of the protein design tool **ROSETTA**, the library aims to be of a wider applicability, and can be
 easily set up to retrieve data from other design tools.
