@@ -69,6 +69,7 @@ setup(
     include_package_data=True,
     package_data={
         'rstoolbox': ['analysis/matrices/*',
+                      'utils/baseline/*',
                       'components/square.ttf',
                       'plot/rama_bgdists/*']
     },

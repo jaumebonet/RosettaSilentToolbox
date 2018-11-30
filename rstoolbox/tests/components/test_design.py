@@ -265,6 +265,13 @@ class TestDesign( object ):
         assert 'rmsd_target' not in dfs1.columns
         assert 'rmsd_target' in dfs2.columns
 
+    def test_clean_rosetta_suffix(self):
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1)
+        df2 = df.clean_rosetta_suffix()
+        assert len(df['description'].unique()) == df.shape[0]
+        assert len(df2['description'].unique()) == 1
+
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_global_preview.png')
     def test_global_preview(self):
@@ -274,6 +281,32 @@ class TestDesign( object ):
                   "cav_vol", "design_score", "packstat", "rmsd_drift"]
         fig = plt.figure(figsize=(25, 10))
         rp.multiple_distributions(df, fig, (2, 4), values)
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_global_preview_ref1.png')
+    def test_global_preview_withref1(self):
+
+        df = ri.parse_rosetta_file(self.silent1, {'sequence': 'A'})
+        values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
+                  "cav_vol", "design_score", "packstat", "rmsd_drift"]
+        fig = plt.figure(figsize=(25, 10))
+        rp.multiple_distributions(df, fig, (2, 4), values, ref='scop2', seqID='A')
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_global_preview_ref2.png')
+    def test_global_preview_withref2(self):
+
+        df = ri.parse_rosetta_file(self.silent1, {'sequence': 'A'})
+        values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
+                  "cav_vol", "design_score", "packstat", "rmsd_drift"]
+        fig = plt.figure(figsize=(25, 10))
+        rp.multiple_distributions(df, fig, (2, 4), values, ref='scop2', seqID='A',
+                                  ref_equivalences={'cavity': 'cav_vol',
+                                                    'pack': 'packstat'})
         plt.tight_layout()
         return fig
 

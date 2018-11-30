@@ -119,6 +119,7 @@ def add_column( df, name, value ):
     :return: :class:`~pandas.DataFrame` - The data container with the new column
     """
     data = pd.Series([value] * df.shape[0])
+    data.index = df.index
     return df.assign(_placeholder=data).rename(columns={"_placeholder": name})
 
 
