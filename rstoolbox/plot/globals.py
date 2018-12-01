@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # This Library
-from rstoolbox.utils import add_top_title, add_column, load_refdata
+from rstoolbox.utils import add_top_title, add_column
 
 
 __all__ = ['multiple_distributions']
