@@ -142,6 +142,16 @@ Special functions to help personalise your plot easily can be loaded through ``r
    ~utils.add_white_to_cmap
    ~utils.color_variant
 
+Utils: Contextualize
+--------------------
+
+Functions aimed to help assess a design population in the context of known protein structures.
+
+.. autosummary::
+   :toctree: generated/
+
+   ~utils.load_refdata 
+
 Utils: Transforms
 -----------------
 

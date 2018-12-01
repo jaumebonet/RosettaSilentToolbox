@@ -21,11 +21,12 @@ import pandas as pd
 __all__ = ['load_refdata']
 
 
-def load_refdata( ref ):
-    """Load the reference data from ``cath``, ``scop``, ``scop2`` or
+def load_refdata( ref, homology=None ):
+    """Load the predefined reference data from ``cath``, ``scop``, ``scop2`` or
     ``chain``.
 
     :param str ref: Reference data to load.
+    :param float homology: Allowed redundancy threshold. Between 0 and 1.
 
     :return: :class:`~pandas.DataFrame`
 

@@ -291,8 +291,12 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1, {'sequence': 'A'})
         values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
                   "cav_vol", "design_score", "packstat", "rmsd_drift"]
+        slength = len(df.iloc[0].get_sequence('A'))
+        refdf = ru.load_refdata('scop2')
+        refdf = refdf[(refdf['length'] >= slength - 5) &
+                      (refdf['length'] <= slength + 5)]
         fig = plt.figure(figsize=(25, 10))
-        rp.multiple_distributions(df, fig, (2, 4), values, ref='scop2', seqID='A')
+        rp.multiple_distributions(df, fig, (2, 4), values, refdata=refdf)
         plt.tight_layout()
         return fig
 
@@ -303,8 +307,12 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1, {'sequence': 'A'})
         values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
                   "cav_vol", "design_score", "packstat", "rmsd_drift"]
+        slength = len(df.iloc[0].get_sequence('A'))
+        refdf = ru.load_refdata('scop2')
+        refdf = refdf[(refdf['length'] >= slength - 5) &
+                      (refdf['length'] <= slength + 5)]
         fig = plt.figure(figsize=(25, 10))
-        rp.multiple_distributions(df, fig, (2, 4), values, ref='scop2', seqID='A',
+        rp.multiple_distributions(df, fig, (2, 4), values, refdata=refdf,
                                   ref_equivalences={'cavity': 'cav_vol',
                                                     'pack': 'packstat'})
         plt.tight_layout()
