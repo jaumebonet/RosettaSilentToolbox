@@ -30,7 +30,7 @@ def make_parser( *args, **kwds ):
 
     parser.add_argument('-in:file', dest='ifile', action='store',
                         help='Input silent file (single entry).', default=None)
-    parser.add_argument('-in:files', dest='ifiles', action='store',
+    parser.add_argument('-in:files', dest='ifiles', action='store', nargs='+',
                         help='Prefix of input silent files (multiple files).'
                         'Incompatible with ``-in:file``.', default=None)
     parser.add_argument('-out:file', dest='ofile', action='store',

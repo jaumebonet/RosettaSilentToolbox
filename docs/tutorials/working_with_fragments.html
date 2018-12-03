@@ -7,13 +7,13 @@
     <title>Working with Fragments &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/functions.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -147,7 +147,7 @@ and it will generate a file named similarly to the original fragments file name.
 computer/cluster and put it back in the same directory. As long as the naming schema for the file is maintained, if the function finds the file it
 will <strong>skip the Rosetta execution</strong>. It that case, we just need to provide <a class="reference external" href="https://docs.python.org/2/library/constants.html#None" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">None</span></code></a> to activate the automatic behaviour.</p>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">df3</span> <span class="o">=</span> <span class="n">df3</span><span class="o">.</span><span class="n">add_quality_measure</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [2]: </span><span class="n">df3</span> <span class="o">=</span> <span class="n">df3</span><span class="o">.</span><span class="n">add_quality_measure</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df9</span> <span class="o">=</span> <span class="n">df9</span><span class="o">.</span><span class="n">add_quality_measure</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
 <span class="gp">   ...: </span>
 </pre></div>
@@ -157,17 +157,17 @@ will <strong>skip the Rosetta execution</strong>. It that case, we just need to 
 <h2>Plotting Fragments<a class="headerlink" href="#plotting-fragments" title="Permalink to this headline">¶</a></h2>
 <p>The most complete way to view the fragment’s distribution over a given structure requires first to provide the <code class="docutils literal notranslate"><span class="pre">reference_sequence</span></code> and <code class="docutils literal notranslate"><span class="pre">reference_structure</span></code>;
 with this data, one can <a class="reference internal" href="../generated/rstoolbox.plot.plot_fragment_profiles.html#rstoolbox.plot.plot_fragment_profiles" title="rstoolbox.plot.plot_fragment_profiles"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_fragment_profiles()</span></code></a></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="gp">   ....: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="gp">   ....: </span><span class="n">seq</span> <span class="o">=</span> <span class="s2">&quot;ETPYAIALNDRVIGSSMVLPVDLEEFGAGFLFGQGYIKKAEEIREILVCPQGRISVYA&quot;</span>
-<span class="gp">   ....: </span><span class="n">sse</span> <span class="o">=</span> <span class="s2">&quot;LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL&quot;</span>
-<span class="gp">   ....: </span><span class="n">axs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_fragment_profiles</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">df3</span><span class="p">,</span> <span class="n">df9</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">sse</span><span class="p">)</span>
-<span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="gp">   ....: </span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [3]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">seq</span> <span class="o">=</span> <span class="s2">&quot;ETPYAIALNDRVIGSSMVLPVDLEEFGAGFLFGQGYIKKAEEIREILVCPQGRISVYA&quot;</span>
+<span class="gp">   ...: </span><span class="n">sse</span> <span class="o">=</span> <span class="s2">&quot;LEEEEEEELLEEEEEEEELLLLHHHHHHHHHHHHLLLLLLLLLLLEEEELLLEEEELL&quot;</span>
+<span class="gp">   ...: </span><span class="n">axs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_fragment_profiles</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">df3</span><span class="p">,</span> <span class="n">df9</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">sse</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">   ...: </span>
 
-<span class="gp">In [16]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [4]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-<span class="gp">In [17]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+<span class="gp">In [5]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_frag_plt1.png"><img alt="../_images/tutorial_frag_plt1.png" src="../_images/tutorial_frag_plt1.png" style="width: 5in;" /></a>
@@ -191,7 +191,7 @@ with this data, one can <a class="reference internal" href="../generated/rstoolb
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

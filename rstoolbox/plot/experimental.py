@@ -480,6 +480,7 @@ def plot_CD( df, ax, color=None, wavelengths=None, sample=None  ):
     .. rubric:: Example - Multiple Machine-Generated Data Files
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.plot import plot_CD
            ...: import numpy as np

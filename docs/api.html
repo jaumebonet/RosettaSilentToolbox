@@ -7,13 +7,13 @@
     <title>API reference &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/functions.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -91,6 +91,7 @@
 <li><a class="reference internal" href="#plot">Plot</a></li>
 <li><a class="reference internal" href="#plot-experiments">Plot: Experiments</a></li>
 <li><a class="reference internal" href="#utils-plot">Utils: Plot</a></li>
+<li><a class="reference internal" href="#utils-contextualize">Utils: Contextualize</a></li>
 <li><a class="reference internal" href="#utils-transforms">Utils: Transforms</a></li>
 <li><a class="reference internal" href="#utils-rosettascript">Utils: RosettaScript</a></li>
 <li><a class="reference internal" href="#utils-experiments">Utils: Experiments</a></li>
@@ -381,23 +382,41 @@ plotting library, but some special plotting alternatives are offered through <co
 <tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.format_Ipython.html#rstoolbox.utils.format_Ipython" title="rstoolbox.utils.format_Ipython"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_Ipython</span></code></a>()</td>
 <td>Ensure <code class="docutils literal notranslate"><span class="pre">monospace</span></code> representation of <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> in <strong>Jupyter Notebooks</strong>.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.add_left_title.html#rstoolbox.utils.add_left_title" title="rstoolbox.utils.add_left_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_left_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.use_qgrid.html#rstoolbox.utils.use_qgrid" title="rstoolbox.utils.use_qgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">use_qgrid</span></code></a>(df,&nbsp;**kwargs)</td>
+<td>Create a <code class="docutils literal notranslate"><span class="pre">QgridWidget</span></code> object from the [qgrid library](<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/">https://qgrid.readthedocs.io/en/latest/</a>) in <strong>Jupyter Notebooks</strong>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.add_left_title.html#rstoolbox.utils.add_left_title" title="rstoolbox.utils.add_left_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_left_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
 <td>Add a centered title on the left of the selected axis.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.add_right_title.html#rstoolbox.utils.add_right_title" title="rstoolbox.utils.add_right_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_right_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.add_right_title.html#rstoolbox.utils.add_right_title" title="rstoolbox.utils.add_right_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_right_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
 <td>Add a centered title on rigth of the selected axis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.add_top_title.html#rstoolbox.utils.add_top_title" title="rstoolbox.utils.add_top_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_top_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.add_top_title.html#rstoolbox.utils.add_top_title" title="rstoolbox.utils.add_top_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_top_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
 <td>Add a centered title on top of the selected axis.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.edit_legend_text.html#rstoolbox.utils.edit_legend_text" title="rstoolbox.utils.edit_legend_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit_legend_text</span></code></a>(ax,&nbsp;labels[,&nbsp;title])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.edit_legend_text.html#rstoolbox.utils.edit_legend_text" title="rstoolbox.utils.edit_legend_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit_legend_text</span></code></a>(ax,&nbsp;labels[,&nbsp;title])</td>
 <td>Change the labels and title of a legend.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.add_white_to_cmap.html#rstoolbox.utils.add_white_to_cmap" title="rstoolbox.utils.add_white_to_cmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_white_to_cmap</span></code></a>([color,&nbsp;cmap,&nbsp;n_colors])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.add_white_to_cmap.html#rstoolbox.utils.add_white_to_cmap" title="rstoolbox.utils.add_white_to_cmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_white_to_cmap</span></code></a>([color,&nbsp;cmap,&nbsp;n_colors])</td>
 <td>Generate a new colormap with white as first instance.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.color_variant.html#rstoolbox.utils.color_variant" title="rstoolbox.utils.color_variant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">color_variant</span></code></a>(color[,&nbsp;brightness_offset])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.color_variant.html#rstoolbox.utils.color_variant" title="rstoolbox.utils.color_variant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">color_variant</span></code></a>(color[,&nbsp;brightness_offset])</td>
 <td>Make a color darker or lighter.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="utils-contextualize">
+<h2>Utils: Contextualize<a class="headerlink" href="#utils-contextualize" title="Permalink to this headline">¶</a></h2>
+<p>Functions aimed to help assess a design population in the context of known protein structures.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.load_refdata.html#rstoolbox.utils.load_refdata" title="rstoolbox.utils.load_refdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_refdata</span></code></a>(ref[,&nbsp;homology])</td>
+<td>Load the predefined reference data from <code class="docutils literal notranslate"><span class="pre">cath</span></code>, <code class="docutils literal notranslate"><span class="pre">scop</span></code>, <code class="docutils literal notranslate"><span class="pre">scop2</span></code> or <code class="docutils literal notranslate"><span class="pre">chain</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -514,7 +533,7 @@ plotting library, but some special plotting alternatives are offered through <co
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

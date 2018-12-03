@@ -27,3 +27,4 @@ Pipeline Examples
    tutorials/population_comparison
    tutorials/new_mutants
    tutorials/experimental_analysis
+   tutorials/contextualize

@@ -314,7 +314,26 @@ class TestDesign( object ):
         fig = plt.figure(figsize=(25, 10))
         rp.multiple_distributions(df, fig, (2, 4), values, refdata=refdf,
                                   ref_equivalences={'cavity': 'cav_vol',
-                                                    'pack': 'packstat'})
+                                                    'pack': 'packstat'},
+                                  violins=False)
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_global_preview_ref3.png')
+    def test_global_preview_withref3(self):
+
+        slength = 100
+        df = ru.load_refdata('scop2')
+        df = df[(df['length'] >= slength - 5) &
+                (df['length'] <= slength + 5)]
+        refdf = ru.load_refdata('scop2', 50)
+        refdf = refdf[(refdf['length'] >= slength - 5) &
+                      (refdf['length'] <= slength + 5)]
+        values = ["score", "hbond_sr_bb", "avdegree", "hbond_bb_sc",
+                  "cavity", "CYDentropy", "pack", "radius"]
+        fig = plt.figure(figsize=(25, 10))
+        rp.multiple_distributions(df, fig, (2, 4), values, refdata=refdf)
         plt.tight_layout()
         return fig
 

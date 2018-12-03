@@ -7,13 +7,13 @@
     <title>rstoolbox.utils.translate_dna_sequence &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/functions.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -143,10 +143,10 @@ of the sequence.</p>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">read_fastq</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/cdk2_rand_001.fasq.gz&quot;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;sequence_A&#39;</span><span class="p">]</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[7]: </span><span class="go">&#39;GGTGCGTCGTACTTTATGCAGATCCCCCATAGGCGCATGTCAGTATTCGGTATCGCCAAAGTGCACGCTCGTCACAAGCACTTAACAGGTGAGGTGGTAGCTCTTAAGAAAATACGCCTGTTCCAACCAGAACCAGGGCCGATCATGGTCAAGCCGAATATGTGTCCCTACTACTATGAATGGATTGGAAAGCGTAATCAACTGGATTCCTTTGCGCCCTGCATATCGTGTAAGATAAAGAAACGTGACACAAAGGTGAGGGGGGTTTGTTTTCATAATAGCGCAATACATTGTAAAAGTTATCGGTGCGTCGATCAAATCTTCTGCGGTTGTATAAAATGGATGATGATGGGCCGCGATTGTGAGGGGCAGGGGGAATCTCAGAATAATACGGATATAGGGGGTCCAACGGGATGTGATATCAATTGGCGAACATGTCATTTTACAGAACTTCGACATGACTGTGAAAACTGGCAAAGCGTCATCTGCAGTACTCATCACATATGTACGATGGGCCATATCGACCAGACTTCTGCTTCGGAGACCCAGGACTGGGATTCCTTTCAATGGGTGATGCTCCGATACATCCACGGCGAACAGAAGAAATATAGCATTCAGTTGGGCAATTGGGATGCTAAACAGGCAGTCAACATGCATAGACAGGAGCTGAAGGTGCTTGTGAAGAAGCGCCACGAGGAAGGCAAGATTTGTGCATGCTGCGTAATGTCACACATCGGTGTCGAAATTTCATTCTTTGGCAAGCGCTCACAGAGATTTCAGAGCGAATTTATGCAACATTGGGTGGCAAACTTCGCTATGAAGTTCAAATTTAGGAATATAGGTTGGCCACACACATCGTGGACCCAGCTCGCTGCACTGGGGGGTTGGGAGGGCTGGCACAAACCCGGGACT&#39;</span>
+<span class="gh">Out[1]: </span><span class="go">&#39;GGTGCGTCGTACTTTATGCAGATCCCCCATAGGCGCATGTCAGTATTCGGTATCGCCAAAGTGCACGCTCGTCACAAGCACTTAACAGGTGAGGTGGTAGCTCTTAAGAAAATACGCCTGTTCCAACCAGAACCAGGGCCGATCATGGTCAAGCCGAATATGTGTCCCTACTACTATGAATGGATTGGAAAGCGTAATCAACTGGATTCCTTTGCGCCCTGCATATCGTGTAAGATAAAGAAACGTGACACAAAGGTGAGGGGGGTTTGTTTTCATAATAGCGCAATACATTGTAAAAGTTATCGGTGCGTCGATCAAATCTTCTGCGGTTGTATAAAATGGATGATGATGGGCCGCGATTGTGAGGGGCAGGGGGAATCTCAGAATAATACGGATATAGGGGGTCCAACGGGATGTGATATCAATTGGCGAACATGTCATTTTACAGAACTTCGACATGACTGTGAAAACTGGCAAAGCGTCATCTGCAGTACTCATCACATATGTACGATGGGCCATATCGACCAGACTTCTGCTTCGGAGACCCAGGACTGGGATTCCTTTCAATGGGTGATGCTCCGATACATCCACGGCGAACAGAAGAAATATAGCATTCAGTTGGGCAATTGGGATGCTAAACAGGCAGTCAACATGCATAGACAGGAGCTGAAGGTGCTTGTGAAGAAGCGCCACGAGGAAGGCAAGATTTGTGCATGCTGCGTAATGTCACACATCGGTGTCGAAATTTCATTCTTTGGCAAGCGCTCACAGAGATTTCAGAGCGAATTTATGCAACATTGGGTGGCAAACTTCGCTATGAAGTTCAAATTTAGGAATATAGGTTGGCCACACACATCGTGGACCCAGCTCGCTGCACTGGGGGGTTGGGAGGGCTGGCACAAACCCGGGACT&#39;</span>
 
-<span class="gp">In [8]: </span><span class="n">translate_dna_sequence</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;sequence_A&#39;</span><span class="p">])</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           Out[8]: &#39;GASYFMQIPHRRMSVFGIAKVHARHKHLTGEVVALKKIRLFQPEPGPIMVKPNMCPYYYEWIGKRNQLDSFAPCISCKIKKRDTKVRGVCFHNSAIHCKSYRCVDQIFCGCIKWMMMGRDCEGQGESQNNTDIGGPTGCDINWRTCHFTELRHDCENWQSVICSTHHICTMGHIDQTSASETQDWDSFQWVMLRYIHGEQKKYSIQLGNWDAKQAVNMHRQELKVLVKKRHEEGKICACCVMSHIGVEISFFGKRSQRFQSEFMQHWVANFAMKFKFRNIGWPHTSWTQLAALGGWEGWHKPGT&#39;</span>
+<span class="gp">In [2]: </span><span class="n">translate_dna_sequence</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;sequence_A&#39;</span><span class="p">])</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           Out[2]: &#39;GASYFMQIPHRRMSVFGIAKVHARHKHLTGEVVALKKIRLFQPEPGPIMVKPNMCPYYYEWIGKRNQLDSFAPCISCKIKKRDTKVRGVCFHNSAIHCKSYRCVDQIFCGCIKWMMMGRDCEGQGESQNNTDIGGPTGCDINWRTCHFTELRHDCENWQSVICSTHHICTMGHIDQTSASETQDWDSFQWVMLRYIHGEQKKYSIQLGNWDAKQAVNMHRQELKVLVKKRHEEGKICACCVMSHIGVEISFFGKRSQRFQSEFMQHWVANFAMKFKFRNIGWPHTSWTQLAALGGWEGWHKPGT&#39;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -170,7 +170,7 @@ of the sequence.</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

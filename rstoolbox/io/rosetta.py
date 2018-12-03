@@ -132,10 +132,13 @@ def _add_sequences( manager, data, chains ):
     nonPoly = [x for x, v in enumerate(chains["seq"]) if v == 'Z']
     ochaini = chains["id"]
     for index in sorted(nonPoly, reverse=True):
-        del chains["id"][index]
-        del chains["seq"][index]
-        if len(chains["dssp"]) > 0:
-            del chains["dssp"][index]
+        try:
+            del chains["id"][index]
+            del chains["seq"][index]
+            if len(chains["dssp"]) > 0:
+                del chains["dssp"][index]
+        except IndexError:
+            pass
 
     for seqname, seq in manager.get_expected_sequences( chains ):
         data.setdefault( seqname, [] ).append( seq )

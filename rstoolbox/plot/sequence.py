@@ -530,6 +530,7 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     .. rubric:: Example
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.io import parse_rosetta_file
            ...: from rstoolbox.plot import logo_plot

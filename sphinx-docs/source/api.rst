@@ -150,7 +150,7 @@ Functions aimed to help assess a design population in the context of known prote
 .. autosummary::
    :toctree: generated/
 
-   ~utils.load_refdata 
+   ~utils.load_refdata
 
 Utils: Transforms
 -----------------

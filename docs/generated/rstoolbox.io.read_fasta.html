@@ -7,13 +7,13 @@
     <title>rstoolbox.io.read_fasta &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/functions.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -149,7 +149,7 @@ has to do compatibility issues with the rest of functions and methods of
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">read_fasta</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/*fa$&quot;</span><span class="p">,</span> <span class="n">multi</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="gh">Out[1]: </span><span class="go"></span>
 <span class="go">                   description                                                                                                                                                                                                                                    sequence_A</span>
 <span class="go">0  2TEP:A|PDBID|CHAIN|SEQUENCE  AETVSFNFNSFSEGNPAINFQGDVTVLSNGNIQLTNLNKVNSVGRVLYAMPVRIWSSATGNVASFLTSFSFEMKDIKDYDPADGIIFFIAPEDTQIPAGSIGGGTLGVSDTKGAGHFVGVEFDTYSNSEYNDPPTDHVGIDVNSVDSVKTVPWNSVSGAVVKVTVIYDSSTKTLSVAVTNDNGDITTIAQVVDLKAKLPERVKFGFSASGSLGGRQIHLIRSWSFTSTLITTTRRS</span>
 <span class="go">1  2TEP:B|PDBID|CHAIN|SEQUENCE  AETVSFNFNSFSEGNPAINFQGDVTVLSNGNIQLTNLNKVNSVGRVLYAMPVRIWSSATGNVASFLTSFSFEMKDIKDYDPADGIIFFIAPEDTQIPAGSIGGGTLGVSDTKGAGHFVGVEFDTYSNSEYNDPPTDHVGIDVNSVDSVKTVPWNSVSGAVVKVTVIYDSSTKTLSVAVTNDNGDITTIAQVVDLKAKLPERVKFGFSASGSLGGRQIHLIRSWSFTSTLITTTRRS</span>
@@ -162,11 +162,11 @@ has to do compatibility issues with the rest of functions and methods of
 <p>If the <strong>FASTA</strong> comes or is formated as <strong>PDB FASTA</strong> (as in the example avobe),
 it is possible to better assign the column names to the actual sequence ID. To force
 that behaviour, activate the <code class="docutils literal notranslate"><span class="pre">expand</span></code> option.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">read_fasta</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">read_fasta</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">read_fasta</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/*fa&quot;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">multi</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[9]: </span><span class="go"></span>
+<span class="gh">Out[2]: </span><span class="go"></span>
 <span class="go">  description                                                                                                                                                                                                                                    sequence_A  \</span>
 <span class="go">0  2TEP        AETVSFNFNSFSEGNPAINFQGDVTVLSNGNIQLTNLNKVNSVGRVLYAMPVRIWSSATGNVASFLTSFSFEMKDIKDYDPADGIIFFIAPEDTQIPAGSIGGGTLGVSDTKGAGHFVGVEFDTYSNSEYNDPPTDHVGIDVNSVDSVKTVPWNSVSGAVVKVTVIYDSSTKTLSVAVTNDNGDITTIAQVVDLKAKLPERVKFGFSASGSLGGRQIHLIRSWSFTSTLITTTRRS   </span>
 <span class="go">1  3TP2        GAMTSWRDKSAKVQVKESELPSSIPAQTGLTFNIWYNKWSQGFAGNTRFVSPFALQPQLHSGKTRGDNDGQLFFCLFFAKGMCCLGPKCEYLHHIPDEEDIGKLALRTEVLDCFGREKFADYREDMGGIGSFRKKNKTLYVGGIDGALNSKHLKPAQIESRIRFVFSRLGDIDRIRYVESKNCGFVKFKYQANAEFAKEAMSNQTLLLPSDKEWDDRREGTGLLVKWAN          </span>
@@ -238,7 +238,7 @@ multiple files.</li>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>
