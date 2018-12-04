@@ -151,6 +151,7 @@ Functions aimed to help assess a design population in the context of known prote
    :toctree: generated/
 
    ~utils.load_refdata
+   ~utils.make_redundancy_table
 
 Utils: Transforms
 -----------------

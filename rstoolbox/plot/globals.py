@@ -21,7 +21,7 @@ import seaborn as sns
 from rstoolbox.utils import add_top_title, add_column
 
 
-__all__ = ['multiple_distributions']
+__all__ = ['multiple_distributions', 'plot_in_context']
 
 
 def multiple_distributions( df, fig, grid, values="*", titles=None, labels=None,
@@ -33,7 +33,7 @@ def multiple_distributions( df, fig, grid, values="*", titles=None, labels=None,
     :func:`~seaborn.boxplot`, except for ``y``, ``data`` and ``ax``, which
     are used internally by this function.
 
-    :param df: Data container
+    :param df: Data container.
     :type df: :class:`~pandas.DataFrame`
     :param fig: Figure into which the data is going to be plotted.
     :type fig: :class:`~matplotlib.figure.Figure`
@@ -46,7 +46,7 @@ def multiple_distributions( df, fig, grid, values="*", titles=None, labels=None,
     :param labels: Y labels to assign to the value of each plot. By default this will be
         the name of the value.
     :type labels: :func:`list` of :class:`str`
-    :param str refdata: Data content to use as reference.
+    :param refdata: Data content to use as reference.
     :type refdata: :class:`~pandas.DataFrame`
     :param dict ref_equivalences: When names between the query data and the provided data are the
         same, they will be directly assigned. Here a dictionary ``db_name``:``query_name`` can be
@@ -163,6 +163,111 @@ def multiple_distributions( df, fig, grid, values="*", titles=None, labels=None,
             add_top_title(ax, titles[_])
         if labels is not None:
             ax.set_ylabel(labels[_])
+        axis.append(ax)
+
+    return axis
+
+
+def plot_in_context( df, fig, grid, refdata, values='*', ref_equivalences=None, **kwargs ):
+    """Plot position of decoys in a backgroud reference dataset.
+
+    .. note::
+        Personalization is possible by providing argument keys for :func:`~seaborn.kdeplot`
+        with the prefix ``kde_`` and for :func:`~matplotlib.plot` (for the points) with the
+        prefix ``point_``.
+
+    :param df: Data container.
+    :type df: :class:`~pandas.DataFrame`
+    :param fig: Figure into which the data is going to be plotted.
+    :type fig: :class:`~matplotlib.figure.Figure`
+    :param grid: Shape of the grid to plot the values in the figure (rows x columns).
+    :type grid: :class:`tuple` with two :class:`int`
+    :param refdata: Data content to use as reference.
+    :type refdata: :class:`~pandas.DataFrame`
+    :param values: Contents from the data container that are expected to be plotted.
+    :type values: :func:`list` of :class:`str`
+    :param dict ref_equivalences: When names between the query data and the provided data are the
+        same, they will be directly assigned. Here a dictionary ``db_name``:``query_name`` can be
+        provided otherwise.
+
+    :return: :func:`list` of :class:`~matplotlib.axes.Axes`
+
+    :raises:
+        :ValueError: If columns are requested that do not exist in the :class:`~pandas.DataFrame` of
+            data **and** reference.
+        :ValueError: If the given grid does not have enought positions for all the requested values.
+        :ValueError: If ``refdata`` or ``df`` are not :class:`~pandas.DataFrame`.
+
+    .. rubric:: Example 2: Design population data vs. DB reference.
+
+    .. ipython::
+        :okwarning:
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.plot import plot_in_context
+           ...: from rstoolbox.utils import load_refdata
+           ...: import matplotlib.pyplot as plt
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'sequence': 'A'})
+           ...: slength = len(df.iloc[0]['sequence_A'])
+           ...: refdf = load_refdata('scop2')
+           ...: refdf = refdf[(refdf['length'] >= slength - 5) &
+           ...:               (refdf['length'] <= slength + 5)]
+           ...: values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
+           ...:           "cav_vol", "design_score", "packstat", "rmsd_drift"]
+           ...: fig = plt.figure(figsize=(25, 10))
+           ...: axs = plot_in_context(df, fig, (2, 4), refdata=refdf, values=values)
+           ...: plt.tight_layout()
+
+        @savefig multiple_distributions_docs2.png width=5in
+        In [2]: plt.show()
+
+        In [3]: plt.close()
+    """
+    if not isinstance(df, pd.DataFrame):
+        raise ValueError('Unknown data format.')
+    if not isinstance(refdata, pd.DataFrame):
+        raise ValueError('Unknown reference data format.')
+    if values == "*":
+        values = df.select_dtypes(include=[np.number]).columns.tolist()
+    if ref_equivalences is not None:
+        refdata = refdata.rename(columns=ref_equivalences)
+    if len(set(values).difference(set(list(df.columns)))) > 0:
+        raise ValueError("Some of the requested values do not exist "
+                         "in the data container.")
+    if len(set(values).difference(set(list(refdata.columns)))) > 0:
+        raise ValueError("Some of the requested values do not exist "
+                         "in the reference data container.")
+    if grid[0] * grid[1] < len(values):
+        raise ValueError("The grid does not provide enought positions for all"
+                         " requested values.")
+
+    pk = [k for k in kwargs if k.startswith('point_')]
+    kk = [k for k in kwargs if k.startswith('kde_')]
+    kwargs_point = {}
+    kwargs_kde = {}
+
+    for p in pk:
+        kwargs_point.setdefault(p.replace('point_', ''), kwargs[p])
+    kwargs_point.setdefault('marker', 'o')
+    kwargs_point.setdefault('color', 'orange')
+    for k in kk:
+        kwargs_kde.setdefault(k.replace('kde_', ''), kwargs[k])
+    kwargs_kde.setdefault('shade', True)
+
+    axis = []
+    for _, x in enumerate(itertools.product(*[range(grid[0]), range(grid[1])])):
+        if _ >= len(values):
+            break
+        ax = plt.subplot2grid(grid, x, fig=fig)
+        kde = sns.kdeplot(refdata[values[_]], ax=ax, **kwargs_kde)
+        data_x, data_y = kde.lines[0].get_data()
+        for __, row in df.iterrows():
+            ref_x = row[values[_]]
+            ref_y = np.interp(ref_x, data_x, data_y)
+            kde.plot([ref_x], [ref_y], **kwargs_point)
+        ax.get_legend().remove()
+        ax.set_xlabel(values[_])
         axis.append(ax)
 
     return axis

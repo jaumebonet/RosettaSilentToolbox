@@ -32,7 +32,33 @@ structures. The access to these datasets is provided through the :func:`.load_re
      ...: scop2_70 = rs.utils.load_refdata('scop2', 70)  # 70% homology filter
      ...: scop2_70.drop(columns=['sequence_$', 'structure_$', 'psi_$', 'phi_$', 'node_name']).head(5)
 
-These seta are only provided as help, but the user can create its own sets, as long as they are loaded as a :class:`~pandas.DataFrame`.
+These sets are only provided as help, but the user can create its own sets, as long as they are loaded as a :class:`~pandas.DataFrame`.
+
+Cleaning your own background sets
+---------------------------------
+
+In case one has its own background reference dataset, **rstoolbox** offers the option to retrieve homology clusters precalculated
+from PDB with the :func:`.make_redundancy_table` function. By default, this function will call on the PDB's ftp to download those
+homology cluster files, but with ``precalculated==True`` it will directly provide a quicker access to the table available in the
+library (as the first option is relatively time consuming).
+
+The generated table can be used on your reference set as long as a ``pdb`` and ``chain`` column exists.
+
+The following example shows now this table can be applied in what would be the equivalent of ``rs.utils.load_refdata('scop2', 30)``
+and creates a visual representation of the clusters.
+
+.. ipython::
+  :okwarning:
+
+  In [1]: hmdf = rs.utils.make_redundancy_table(precalculated=True)
+     ...: scop2_30 = scop2.merge(hmdf, on=['pdb', 'chain'])
+     ...: scop2_30 = scop2_30.sort_values('score').groupby('c30').first().reset_index()
+     ...: fig = plt.figure(figsize=(20, 20))
+     ...: ax = plt.subplot2grid((1, 1), (0, 0), fig=fig)
+     ...: _ = sns.heatmap(hmdf.drop(columns=['pdb', 'chain']).sort_values(['c30', 'c40', 'c50', 'c70', 'c90', 'c95', 'c100']), ax=ax)
+
+  @savefig tutorial_ctx_plt1.png width=10in
+  In [2]: plt.show()
 
 Distribution in context
 -----------------------
@@ -60,7 +86,7 @@ scores of the design population:
      ...: axes = rs.plot.multiple_distributions( df, fig, grid )
      ...: plt.tight_layout()
 
-  @savefig tutorial_ctx_plt1.png width=10in
+  @savefig tutorial_ctx_plt2.png width=10in
   In [4]: plt.show()
 
 But we can also see the population behave against other protein of a similar size.
@@ -75,12 +101,31 @@ But we can also see the population behave against other protein of a similar siz
 
   In [5]: slength = len(df.iloc[0].get_sequence('C'))
      ...: refdf = scop2[(scop2['length'] >= slength - 5) &
-     ...:               (scop2['length'] <= slength + 5)]
-     ...: fig = plt.figure(figsize=(25, 10))
+     ...:               (scop2['length'] <= slength + 5) &
+     ...:               (scop2['score'] <= 100)]
+     ...: fig = plt.figure(figsize=(30, 10))
      ...: axs = rs.plot.multiple_distributions(df, fig, grid, refdata=refdf, violins=False,
      ...:                                      ref_equivalences={'cavity': 'cav_vol', 'pack': 'packstat'})
      ...: plt.tight_layout()
 
-  @savefig tutorial_ctx_plt2.png width=10in
+  @savefig tutorial_ctx_plt3.png width=10in
   In [6]: plt.show()
 
+Selection in context
+--------------------
+
+Contrary to the previous example, in which full distributions where compared, another useful tool is the ability to place selected
+structures in a given context. This can have two main uses: **(1)** see the position of selected decoys in a given distribution
+or **(2)** see the quality of putative template scaffolds before working with them.
+
+.. ipython::
+  :okwarning:
+
+  In [1]: pickdf = df.sample(10)
+     ...: fig = plt.figure(figsize=(20, 20))
+     ...: axs = rs.plot.plot_in_context(pickdf, fig, (4, 4), refdata=refdf, values= ['score', 'packstat', 'cav_vol', 'BUNS'],
+     ...:                               ref_equivalences={'cavity': 'cav_vol', 'pack': 'packstat'})
+     ...: plt.tight_layout()
+
+  @savefig tutorial_ctx_plt4.png width=10in
+  In [6]: plt.show()

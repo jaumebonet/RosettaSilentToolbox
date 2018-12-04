@@ -84,7 +84,9 @@
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Contextualize your Data</a><ul>
 <li><a class="reference internal" href="#pre-calculated-datasets">Pre-calculated datasets</a></li>
+<li><a class="reference internal" href="#cleaning-your-own-background-sets">Cleaning your own background sets</a></li>
 <li><a class="reference internal" href="#distribution-in-context">Distribution in context</a></li>
+<li><a class="reference internal" href="#selection-in-context">Selection in context</a></li>
 </ul>
 </li>
 </ul>
@@ -149,19 +151,41 @@ structures. The access to these datasets is provided through the <a class="refer
 <span class="go">[5 rows x 36 columns]</span>
 </pre></div>
 </div>
-<p>These seta are only provided as help, but the user can create its own sets, as long as they are loaded as a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
+<p>These sets are only provided as help, but the user can create its own sets, as long as they are loaded as a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>.</p>
+</div>
+<div class="section" id="cleaning-your-own-background-sets">
+<h2>Cleaning your own background sets<a class="headerlink" href="#cleaning-your-own-background-sets" title="Permalink to this headline">¶</a></h2>
+<p>In case one has its own background reference dataset, <strong>rstoolbox</strong> offers the option to retrieve homology clusters precalculated
+from PDB with the <a class="reference internal" href="../generated/rstoolbox.utils.make_redundancy_table.html#rstoolbox.utils.make_redundancy_table" title="rstoolbox.utils.make_redundancy_table"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_redundancy_table()</span></code></a> function. By default, this function will call on the PDB’s ftp to download those
+homology cluster files, but with <code class="docutils literal notranslate"><span class="pre">precalculated==True</span></code> it will directly provide a quicker access to the table available in the
+library (as the first option is relatively time consuming).</p>
+<p>The generated table can be used on your reference set as long as a <code class="docutils literal notranslate"><span class="pre">pdb</span></code> and <code class="docutils literal notranslate"><span class="pre">chain</span></code> column exists.</p>
+<p>The following example shows now this table can be applied in what would be the equivalent of <code class="docutils literal notranslate"><span class="pre">rs.utils.load_refdata('scop2',</span> <span class="pre">30)</span></code>
+and creates a visual representation of the clusters.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [2]: </span><span class="n">hmdf</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">make_redundancy_table</span><span class="p">(</span><span class="n">precalculated</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">scop2_30</span> <span class="o">=</span> <span class="n">scop2</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">hmdf</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pdb&#39;</span><span class="p">,</span> <span class="s1">&#39;chain&#39;</span><span class="p">])</span>
+<span class="gp">   ...: </span><span class="n">scop2_30</span> <span class="o">=</span> <span class="n">scop2_30</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;c30&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot2grid</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">_</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">hmdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pdb&#39;</span><span class="p">,</span> <span class="s1">&#39;chain&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;c30&#39;</span><span class="p">,</span> <span class="s1">&#39;c40&#39;</span><span class="p">,</span> <span class="s1">&#39;c50&#39;</span><span class="p">,</span> <span class="s1">&#39;c70&#39;</span><span class="p">,</span> <span class="s1">&#39;c90&#39;</span><span class="p">,</span> <span class="s1">&#39;c95&#39;</span><span class="p">,</span> <span class="s1">&#39;c100&#39;</span><span class="p">]),</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [3]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_ctx_plt1.png"><img alt="../_images/tutorial_ctx_plt1.png" src="../_images/tutorial_ctx_plt1.png" style="width: 10in;" /></a>
 </div>
 <div class="section" id="distribution-in-context">
 <h2>Distribution in context<a class="headerlink" href="#distribution-in-context" title="Permalink to this headline">¶</a></h2>
 <p>Let’s assume the following population dataset:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [2]: </span><span class="n">rules</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scores_ignore&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;fa_*&#39;</span><span class="p">,</span> <span class="s1">&#39;niccd_*&#39;</span><span class="p">,</span> <span class="s1">&#39;hbond_*&#39;</span><span class="p">,</span> <span class="s1">&#39;lk_ball_wtd&#39;</span><span class="p">,</span> <span class="s1">&#39;pro_close&#39;</span><span class="p">,</span> <span class="s1">&#39;dslf_fa13&#39;</span><span class="p">,</span> <span class="s1">&#39;C_ni_rmsd_threshold&#39;</span><span class="p">,</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">rules</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scores_ignore&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;fa_*&#39;</span><span class="p">,</span> <span class="s1">&#39;niccd_*&#39;</span><span class="p">,</span> <span class="s1">&#39;hbond_*&#39;</span><span class="p">,</span> <span class="s1">&#39;lk_ball_wtd&#39;</span><span class="p">,</span> <span class="s1">&#39;pro_close&#39;</span><span class="p">,</span> <span class="s1">&#39;dslf_fa13&#39;</span><span class="p">,</span> <span class="s1">&#39;C_ni_rmsd_threshold&#39;</span><span class="p">,</span>
 <span class="gp">   ...: </span>                           <span class="s1">&#39;omega&#39;</span><span class="p">,</span> <span class="s1">&#39;p_aa_pp&#39;</span><span class="p">,</span> <span class="s1">&#39;yhh_planarity&#39;</span><span class="p">,</span> <span class="s1">&#39;ref&#39;</span><span class="p">,</span> <span class="s1">&#39;rama_prepro&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">],</span>
 <span class="gp">   ...: </span>         <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span>
 <span class="gp">   ...: </span>         <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MOTIF&#39;</span><span class="p">,</span> <span class="s1">&#39;SSE03&#39;</span><span class="p">,</span> <span class="s1">&#39;SSE05&#39;</span><span class="p">]}</span>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s1">&#39;../rstoolbox/tests/data/input_ssebig.minisilent.gz&#39;</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[2]: </span><span class="go"></span>
+<span class="gh">Out[4]: </span><span class="go"></span>
 <span class="go">    score  ALIGNRMSD  BUNS  COMPRRMSD  C_ni_mtcontacts  C_ni_rmsd  C_ni_trials  MOTIFRMSD                             ...                              finalRMSD  packstat  C_ni_rmsd_type                            description lbl_MOTIF lbl_SSE03 lbl_SSE05                                                  sequence_C</span>
 <span class="go">0 -64.070  0.608      12.0  7.585      4.0              3.301      1.0          0.957                                 ...                              3.323      0.544     no_motif        nubinitio_wauto_18326_2pw9C_0001_0001  [C]       [C]       [C]       TTWIKFFAGGTLVEEFEYSSVNWEEIEKRAWKKLGRWKKAEEGDLMIVYPDGKVVSWA</span>
 <span class="go">1 -70.981  0.639      12.0  2.410      8.0              1.423      1.0          0.737                                 ...                              1.395      0.552     no_motif        nubinitio_wauto_18326_2pw9C_0002_0001  [C]       [C]       [C]       NTWSTNILNGHPKITLLVEERGAEEIHLEWLKKQGLRKKAEENVYTTKLPNGAVKVYG</span>
@@ -172,29 +196,9 @@ structures. The access to these datasets is provided through the <a class="refer
 </div>
 <p>As previously demonstrated in the <a class="reference internal" href="sequence_analysis.html#sequence-analysis"><span class="std std-ref">sequence analysis</span></a> tutorial, we can preview the distribution of different
 scores of the design population:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [3]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="gp">   ...: </span><span class="n">grid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
 <span class="gp">   ...: </span><span class="n">axes</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">multiple_distributions</span><span class="p">(</span> <span class="n">df</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">grid</span> <span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [4]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-<a class="reference internal image-reference" href="../_images/tutorial_ctx_plt1.png"><img alt="../_images/tutorial_ctx_plt1.png" src="../_images/tutorial_ctx_plt1.png" style="width: 10in;" /></a>
-<p>But we can also see the population behave against other protein of a similar size.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The function will pick up that columns with the same name are the same, for others that should be the same but are called
-differently, a translation dictionary can be provided, as is the case in this example with <code class="docutils literal notranslate"><span class="pre">cavity</span> <span class="pre">volume</span></code> and <code class="docutils literal notranslate"><span class="pre">packstat</span></code>
-data.</p>
-</div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">slength</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_sequence</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">))</span>
-<span class="gp">   ...: </span><span class="n">refdf</span> <span class="o">=</span> <span class="n">scop2</span><span class="p">[(</span><span class="n">scop2</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">slength</span> <span class="o">-</span> <span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span>
-<span class="gp">   ...: </span>              <span class="p">(</span><span class="n">scop2</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">slength</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)]</span>
-<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="gp">   ...: </span><span class="n">axs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">multiple_distributions</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">refdata</span><span class="o">=</span><span class="n">refdf</span><span class="p">,</span> <span class="n">violins</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-<span class="gp">   ...: </span>                                     <span class="n">ref_equivalences</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;cavity&#39;</span><span class="p">:</span> <span class="s1">&#39;cav_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;pack&#39;</span><span class="p">:</span> <span class="s1">&#39;packstat&#39;</span><span class="p">})</span>
 <span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="gp">   ...: </span>
 
@@ -202,6 +206,44 @@ data.</p>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_ctx_plt2.png"><img alt="../_images/tutorial_ctx_plt2.png" src="../_images/tutorial_ctx_plt2.png" style="width: 10in;" /></a>
+<p>But we can also see the population behave against other protein of a similar size.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The function will pick up that columns with the same name are the same, for others that should be the same but are called
+differently, a translation dictionary can be provided, as is the case in this example with <code class="docutils literal notranslate"><span class="pre">cavity</span> <span class="pre">volume</span></code> and <code class="docutils literal notranslate"><span class="pre">packstat</span></code>
+data.</p>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="n">slength</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_sequence</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">refdf</span> <span class="o">=</span> <span class="n">scop2</span><span class="p">[(</span><span class="n">scop2</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">slength</span> <span class="o">-</span> <span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span>
+<span class="gp">   ...: </span>              <span class="p">(</span><span class="n">scop2</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">slength</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span>
+<span class="gp">   ...: </span>              <span class="p">(</span><span class="n">scop2</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">)]</span>
+<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">axs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">multiple_distributions</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">refdata</span><span class="o">=</span><span class="n">refdf</span><span class="p">,</span> <span class="n">violins</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+<span class="gp">   ...: </span>                                     <span class="n">ref_equivalences</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;cavity&#39;</span><span class="p">:</span> <span class="s1">&#39;cav_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;pack&#39;</span><span class="p">:</span> <span class="s1">&#39;packstat&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [8]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_ctx_plt3.png"><img alt="../_images/tutorial_ctx_plt3.png" src="../_images/tutorial_ctx_plt3.png" style="width: 10in;" /></a>
+</div>
+<div class="section" id="selection-in-context">
+<h2>Selection in context<a class="headerlink" href="#selection-in-context" title="Permalink to this headline">¶</a></h2>
+<p>Contrary to the previous example, in which full distributions where compared, another useful tool is the ability to place selected
+structures in a given context. This can have two main uses: <strong>(1)</strong> see the position of selected decoys in a given distribution
+or <strong>(2)</strong> see the quality of putative template scaffolds before working with them.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">pickdf</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">axs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_in_context</span><span class="p">(</span><span class="n">pickdf</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">refdata</span><span class="o">=</span><span class="n">refdf</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;packstat&#39;</span><span class="p">,</span> <span class="s1">&#39;cav_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;BUNS&#39;</span><span class="p">],</span>
+<span class="gp">   ...: </span>                              <span class="n">ref_equivalences</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;cavity&#39;</span><span class="p">:</span> <span class="s1">&#39;cav_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;pack&#39;</span><span class="p">:</span> <span class="s1">&#39;packstat&#39;</span><span class="p">})</span>
+<span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [10]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_ctx_plt4.png"><img alt="../_images/tutorial_ctx_plt4.png" src="../_images/tutorial_ctx_plt4.png" style="width: 10in;" /></a>
 </div>
 </div>
 

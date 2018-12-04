@@ -240,7 +240,7 @@ positions. This is extremely easy to do with the <code class="docutils literal n
 <span class="gp">   ...: </span><span class="n">point_mutants</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">point_mutants</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="s1">&#39;sequence_C&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="k">print</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">point_mutants</span><span class="p">[</span><span class="s1">&#39;mutants_C&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.035</span><span class="p">)))</span>  <span class="c1"># show only some...</span>
 <span class="gp">   ...: </span>
-<span class="go">K38G,V48C,D10S,I46M,E1Y,T2D,R11N,D10F,R44G,V56M,L8G,I13M,P3E,E1C,V18C,Q34R,Q51I,V48M,G29M,L23H,K38F,I54H,R11M,S16M,I37K,I37G,I37S,E42F,R44V,S16F,G27T,I46H,G35S,V21P,P3W,I43L,L47D,Y36H,S16Y</span>
+<span class="go">A58Y,G14E,V56L,A5I,V18L,R11V,M17A,E1Y,L8T,P3S,V21G,I6N,A5H,S16Y,E41R,E41W,A28H,D10R,M17W,L31R,R44L,N9I,L31W,E41M,L47A,A40P,F30Q,F26D,N9P,A40M,R11W,I13Y,G33S,E1Q,F26M,I6L,V21K,N9C,A58N</span>
 </pre></div>
 </div>
 <p>With small variations, this same loop can be used to generate this exhaustive scanning over particular residues or to only scan
@@ -258,27 +258,27 @@ actually follow the statistical rules of that set with <a class="reference inter
 <span class="gp">   ....: </span>
 <span class="gh">Out[10]: </span><span class="go"></span>
 <span class="go">[                                   description                                                  sequence_C  pssm_score_C</span>
-<span class="go"> 0  nubinitio_wauto_18326_2pw9C_0260_0001_v0001  PIPVEIRTNGQAKFVILVNNINEEERGWRMQKKKGLLKKAEEGKTVFVYPNGRILTWA  24.133333   </span>
-<span class="go"> 1  nubinitio_wauto_18326_2pw9C_0260_0001_v0002  LIWFVFRFNGEPKMRMILNPPGEEEEAYEILKKQGVLKKAEEDKYSYFSPNGIIRSRG  24.266667   </span>
-<span class="go"> 2  nubinitio_wauto_18326_2pw9C_0260_0001_v0003  KTVFELMLRGVAKIIMYRNKKNLLERAKAEYKEQNLLKKAEEGIFSIFKSNGIIYISA  20.133333   </span>
-<span class="go"> 3  nubinitio_wauto_18326_2pw9C_0260_0001_v0004  KIYVVFVTRGVIIGRIKVEDTKEEEIAKEMLKKKGLWKKAEEDTYVYYKPNGVIWSSE  23.533333   </span>
-<span class="go"> 4  nubinitio_wauto_18326_2pw9C_0260_0001_v0005  ITWVEFVQNGEPIKRILSHKKGEEEIAWRLMKKKGVMKKAEEGKKVIVYPKGWVVVYA  25.400000   </span>
-<span class="go"> 5  nubinitio_wauto_18326_2pw9C_0260_0001_v0006  LTWLEVRSNGELTTRTLSEDRGQEEIAWEMMRKMGLAKKAEEGQFVRISPDGIVWTWE  23.466667   </span>
-<span class="go"> 6  nubinitio_wauto_18326_2pw9C_0260_0001_v0007  PFWLYFIFGGEPIIVMYVNLPNQEEAAWRYLKRQGLMKKAEEHTTSYLFPDGRLEFYA  22.400000   </span>
-<span class="go"> 7  nubinitio_wauto_18326_2pw9C_0260_0001_v0008  KWVVKFFVNGEPVTQSLVEEDKEEEYARAYLKKQGLMKKAEEGKTTYFKSSGVVEIAG  23.133333   </span>
-<span class="go"> 8  nubinitio_wauto_18326_2pw9C_0260_0001_v0009  NVWVEFVYNGEPIKRLDVNNPNLLEIALEMLKELGLWKKAEEDTEIELKPDGIIVSSP  24.200000   </span>
-<span class="go"> 9  nubinitio_wauto_18326_2pw9C_0260_0001_v0010  ITWVYFMFNGVPIIMVLTKPTNQEERAEEMMKKKGYLKKAEEGKKVYIRPNGVALFYD  25.666667   ,</span>
+<span class="go"> 0  nubinitio_wauto_18326_2pw9C_0260_0001_v0001  RTPVEVKFNGELVTMLDSNGRRQKEIAYAELLKQGLWKKAEEGKYTIIYPDGWVVFVG  23.200000   </span>
+<span class="go"> 1  nubinitio_wauto_18326_2pw9C_0260_0001_v0002  PTVVVVRLGGQPISRQLRDLINLEEIAKEFMRKLGYAKKAEEGQKVVIEPDGSIISAD  24.866667   </span>
+<span class="go"> 2  nubinitio_wauto_18326_2pw9C_0260_0001_v0003  KKWLVVMLRGVPKIVIYVLNSNLEEEAREYLREQGLWKKAEEGTYTIVYSKGYIRTSA  23.933333   </span>
+<span class="go"> 3  nubinitio_wauto_18326_2pw9C_0260_0001_v0004  GQWIYVMFRGVPIKVMDIKDKNEEEEAWEMLKKKGVWKKAEEGKYVYILPNGYVITAA  24.733333   </span>
+<span class="go"> 4  nubinitio_wauto_18326_2pw9C_0260_0001_v0005  LFWVEFFFNGVPTFMLLSEDIGEEEIARRIFKKKGLLKKAEEGTYVMYLPDGIVEISD  25.666667   </span>
+<span class="go"> 5  nubinitio_wauto_18326_2pw9C_0260_0001_v0006  NTWVLVRFRGVPKTVLLTNNRGQLEIAREEMRKLGLMKKAEEDIYIRFLPNGIVIISP  24.400000   </span>
+<span class="go"> 6  nubinitio_wauto_18326_2pw9C_0260_0001_v0007  PFWVVVELNGVPIIVQIVVPIGEEEIAREYQKKQGVWKKAEEGQEGEYYPDGVLLIYG  25.333333   </span>
+<span class="go"> 7  nubinitio_wauto_18326_2pw9C_0260_0001_v0008  PQVFVFETGGEPKTIQIINDKNQEELAEKEYKRLGQGKKAEEGKTVMIYPNGVIYFYG  23.266667   </span>
+<span class="go"> 8  nubinitio_wauto_18326_2pw9C_0260_0001_v0009  PTWVEFFFNGEPIMILLTTGSGLKERAWEYLKKMGQLKKAEEGEYVVFSPNGWIEHYA  24.866667   </span>
+<span class="go"> 9  nubinitio_wauto_18326_2pw9C_0260_0001_v0010  PQWLVFEVNGVLKTMQLRVNPNLLEIAYRLLRKLGLWKKAEEGTETIILSDGIVLSSE  24.000000   ,</span>
 <span class="go">                                    description                                                  sequence_C  pssm_score_C</span>
-<span class="go"> 0  nubinitio_wauto_18326_2pw9C_0278_0001_v0001  IQYVYFEFNGVPVMQQKSTNRNLEEAAYEIKKKLGLAKKAEEGTYIVIYSNGIAVHYA  23.933333   </span>
-<span class="go"> 1  nubinitio_wauto_18326_2pw9C_0278_0001_v0002  ITWFLFRVNGELVFRQLSNLENLKELAKRLLKRQGQGKKAEEGIYVVFSPDGEILSVG  23.800000   </span>
-<span class="go"> 2  nubinitio_wauto_18326_2pw9C_0278_0001_v0003  TWLVVFMYNGVPTTRILLELDNQLELAREMLRRQGQGKKAEEGKFARVYPDGSILSWA  23.466667   </span>
-<span class="go"> 3  nubinitio_wauto_18326_2pw9C_0278_0001_v0004  PVWVEFRLNGVPISILLTNLRNPKERAEQILKRLGYLKKAEEGKYVEESPKGIIYIHD  25.266667   </span>
-<span class="go"> 4  nubinitio_wauto_18326_2pw9C_0278_0001_v0005  GKWFEFVVRGVPKKIQLSNNDNQEEALREILRRQNKLKKAEENTYIEIYPKGYVETWA  22.533333   </span>
-<span class="go"> 5  nubinitio_wauto_18326_2pw9C_0278_0001_v0006  PTVFLFRQRGVAKTRILVTGPKEEEAAERELRKQGLGKKAEEHTEAILYPSGEVYVAD  22.466667   </span>
-<span class="go"> 6  nubinitio_wauto_18326_2pw9C_0278_0001_v0007  PTWLEVRLNGVPVQRLLTHKINLEEEAREMQRKKGLWKKAEEGKKGWIFPDGRIIYSP  26.200000   </span>
-<span class="go"> 7  nubinitio_wauto_18326_2pw9C_0278_0001_v0008  GIWVEVVQNGEIIFVILLLLPGLLEIARRELKKQGKGKKAEEGQKTYIYSKGSVYSAA  23.266667   </span>
-<span class="go"> 8  nubinitio_wauto_18326_2pw9C_0278_0001_v0009  KQPVYLVFNGEPVKRQYVTNINIEEYLRKILKRLGYAKKAEEGKYIYIRPNGVVRVWG  23.466667   </span>
-<span class="go"> 9  nubinitio_wauto_18326_2pw9C_0278_0001_v0010  KTWVLFRFNGQIKIVIASTPPGLEKAAREIKLRLGYWKKAEEHITVIYSPDGSIETSG  22.066667   ]</span>
+<span class="go"> 0  nubinitio_wauto_18326_2pw9C_0278_0001_v0001  KKVFEVRYNGVPTSVLLTNNTGLEEIALRLLKRQGQWKKAEEGEFSIIYPNGAVIFYP  24.666667   </span>
+<span class="go"> 1  nubinitio_wauto_18326_2pw9C_0278_0001_v0002  TTLIKFMLNGVPVTMQLSEGSNLLEYAYKLQKKQGLLKKAEEGKTVYIYSKGEVRFWA  23.733333   </span>
+<span class="go"> 2  nubinitio_wauto_18326_2pw9C_0278_0001_v0003  PTWVVFFTNGVPKSRILTEDSNLEEIGEREMKKLGVWKKAEEGKYVIVKPDGIVIIVG  26.466667   </span>
+<span class="go"> 3  nubinitio_wauto_18326_2pw9C_0278_0001_v0004  KTWVEVRFNGEPITISLLNGRNIEEAAYRELKKKGLLKKAEEGKEVEVYPSGIILHAA  26.866667   </span>
+<span class="go"> 4  nubinitio_wauto_18326_2pw9C_0278_0001_v0005  GIWVVIRVNGEPISVLATKGKNLEEIAREEFRKLGLMKKAEENKYVEEYPKGVIWIYD  25.533333   </span>
+<span class="go"> 5  nubinitio_wauto_18326_2pw9C_0278_0001_v0006  TFWVEVKLNGVPKIVMLVENINEKEIAREELKKMGLLKKAEESKYVRIYPDGVVYTFG  26.866667   </span>
+<span class="go"> 6  nubinitio_wauto_18326_2pw9C_0278_0001_v0007  LTPFVIRVNGQPITMILVVNSNEEERAREELKRKGLLKKAEEGKFVYFEPKGVAYSYG  25.466667   </span>
+<span class="go"> 7  nubinitio_wauto_18326_2pw9C_0278_0001_v0008  STWVYFRVNGEPISVVLVNNRNQEERARREQRRKGLWKKAEESEEVIIYSDGVVYSTG  24.933333   </span>
+<span class="go"> 8  nubinitio_wauto_18326_2pw9C_0278_0001_v0009  SQWVVVRVRGVPIKRILVTPKNQEEIAYEELKKQGKWKKAEEGTTAIILPKGEIWFYD  25.933333   </span>
+<span class="go"> 9  nubinitio_wauto_18326_2pw9C_0278_0001_v0010  PIPVEVKFNGVPIKMIAIVDIKEEKYAREFLKKQGLAKKAEEDKTVIFLPDGELWSYA  23.866667   ]</span>
 </pre></div>
 </div>
 <div class="admonition note">

@@ -338,6 +338,31 @@ class TestDesign( object ):
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_incontext.png')
+    def test_in_context_plot(self):
+
+        slength = 100
+        df = ru.load_refdata('scop2')
+        df = df[(df['length'] >= slength - 5) &
+                (df['length'] <= slength + 5)].sample(10)
+        refdf = ru.load_refdata('scop2', 50)
+        refdf = refdf[(refdf['length'] >= slength - 5) &
+                      (refdf['length'] <= slength + 5)]
+        values = ["score", "hbond_sr_bb", "avdegree", "hbond_bb_sc",
+                  "cavity", "CYDentropy", "pack", "radius"]
+        fig = plt.figure(figsize=(25, 10))
+        rp.plot_in_context(df, fig, (2, 4), refdata=refdf, values=values,
+                           point_ms=10, kde_color='red')
+        plt.tight_layout()
+        return fig
+
+    def test_get_homology(self):
+        #  Values are difficult to assess here, as this will change from one
+        #  download to the next.
+        data = ru.make_redundancy_table(select=[30])
+        assert len(data.groupby('c30')) > 1
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_mutants_alignment.png')
     def test_mutants(self):
         # Static data
