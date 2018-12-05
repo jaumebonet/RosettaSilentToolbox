@@ -376,10 +376,12 @@ class Description( object ):
                     "Requested a chain not present in the file. "
                     "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
-            for ch in sele:
-                guidep = np.where(guide == ch)[0]
-                ch = ch if self.sequence != "$" else "$"
-                yield "sequence_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
+            if self.sequence == "$":
+                yield "sequence_$", "".join(seq)
+            else:
+                for ch in sele:
+                    guidep = np.where(guide == ch)[0]
+                    yield "sequence_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
 
     def get_expected_structures( self, chains ):
         if self.structure is not None:
@@ -390,10 +392,12 @@ class Description( object ):
                     "Requested a chain not present in the file. "
                     "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
-            for ch in sele:
-                guidep = np.where(guide == ch)[0]
-                ch = ch if self.structure != "$" else "$"
-                yield "structure_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
+            if self.structure == "$":
+                yield "structure_$", "".join(seq)
+            else:
+                for ch in sele:
+                    guidep = np.where(guide == ch)[0]
+                    yield "structure_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
 
     def get_expected_psipred( self, chains ):
         if self.psipred is not None:
@@ -404,10 +408,12 @@ class Description( object ):
                     "Requested a chain not present in the file. "
                     "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
-            for ch in sele:
-                guidep = np.where(guide == ch)[0]
-                ch = ch if self.psipred != "$" else "$"
-                yield "psipred_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
+            if self.psipred == "$":
+                yield "psipred_$", "".join(seq)
+            else:
+                for ch in sele:
+                    guidep = np.where(guide == ch)[0]
+                    yield "psipred_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
 
     def get_expected_dihedrals( self, chains, angle ):
         if self.dihedrals is not None:
@@ -418,10 +424,12 @@ class Description( object ):
                     "Requested a chain not present in the file. "
                     "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
-            for ch in sele:
-                guidep = np.where(guide == ch)[0]
-                ch = ch if self.dihedrals != "$" else "$"
-                yield angle + "_" + ch, np.array(seq[guidep[0]:guidep[-1] + 1])
+            if self.dihedrals == "$":
+                yield angle + "_$", np.array(seq)
+            else:
+                for ch in sele:
+                    guidep = np.where(guide == ch)[0]
+                    yield angle + "_" + ch, np.array(seq[guidep[0]:guidep[-1] + 1])
 
     def to_json( self ):
         data = {}

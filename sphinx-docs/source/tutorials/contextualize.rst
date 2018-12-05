@@ -122,7 +122,7 @@ or **(2)** see the quality of putative template scaffolds before working with th
   :okwarning:
 
   In [1]: pickdf = df.sample(10)
-     ...: fig = plt.figure(figsize=(20, 20))
+     ...: fig = plt.figure(figsize=(20, 5))
      ...: axs = rs.plot.plot_in_context(pickdf, fig, (4, 4), refdata=refdf, values= ['score', 'packstat', 'cav_vol', 'BUNS'],
      ...:                               ref_equivalences={'cavity': 'cav_vol', 'pack': 'packstat'})
      ...: plt.tight_layout()

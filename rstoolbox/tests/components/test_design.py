@@ -344,7 +344,7 @@ class TestDesign( object ):
         slength = 100
         df = ru.load_refdata('scop2')
         df = df[(df['length'] >= slength - 5) &
-                (df['length'] <= slength + 5)].sample(10)
+                (df['length'] <= slength + 5)].head(10)
         refdf = ru.load_refdata('scop2', 50)
         refdf = refdf[(refdf['length'] >= slength - 5) &
                       (refdf['length'] <= slength + 5)]

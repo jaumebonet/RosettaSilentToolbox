@@ -131,14 +131,15 @@ def _add_sequences( manager, data, chains ):
     # Correct by non polymer residues
     nonPoly = [x for x, v in enumerate(chains["seq"]) if v == 'Z']
     ochaini = chains["id"]
-    for index in sorted(nonPoly, reverse=True):
-        try:
-            del chains["id"][index]
-            del chains["seq"][index]
-            if len(chains["dssp"]) > 0:
-                del chains["dssp"][index]
-        except IndexError:
-            pass
+    if len(nonPoly) != len(chains["seq"]):
+        for index in sorted(nonPoly, reverse=True):
+            try:
+                del chains["id"][index]
+                del chains["seq"][index]
+                if len(chains["dssp"]) > 0:
+                    del chains["dssp"][index]
+            except IndexError:
+                pass
 
     for seqname, seq in manager.get_expected_sequences( chains ):
         data.setdefault( seqname, [] ).append( seq )
@@ -346,10 +347,16 @@ def parse_rosetta_file( filename, description=None, multi=False ):
                     data["lbl_" + labinfo[0].upper()][-1] = labinfo[1]
             continue
         if line.startswith("REMARK PHI"):
-            chains["phi"] = [float(x) for x in line.split()[2].strip().split(",")]
+            try:
+                chains["phi"] = [float(x) for x in line.split()[2].strip().split(",")]
+            except IndexError:
+                chains["phi"] = []
             continue
         if line.startswith("REMARK PSI"):
-            chains["psi"] = [float(x) for x in line.split()[2].strip().split(",")]
+            try:
+                chains["psi"] = [float(x) for x in line.split()[2].strip().split(",")]
+            except IndexError:
+                chains["psi"] = []
             continue
 
     df = rc.DesignFrame( data )
