@@ -525,7 +525,7 @@ def parse_rosetta_fragments( filename ):
                        "aa", "sse", "phi", "psi", "omega"], axis=1)
 
 
-def write_rosetta_fragments( df, frag_size, n_frags=200 ):
+def write_rosetta_fragments( df, frag_size, n_frags=200, prefix='rosetta_frags' ):
     """Writes a Rosetta fragment-file (new format) from an appropiate :class:`.FragmentFrame`.
 
     Supports varying size fragment sets.
@@ -538,7 +538,7 @@ def write_rosetta_fragments( df, frag_size, n_frags=200 ):
     """
     _STRING = " {:4s} {:1s} {:5d} {:1s} {:1s} {:8.3f} {:8.3f} {:8.3f}\n"
     _HEADER = "position:            {} neighbors:          {}\n\n"
-    with open("rosetta_frags.{}mers".format(frag_size), "w") as f:
+    with open("{}.{}mers".format(prefix, frag_size), "w") as f:
         frame_count = 0
         for i in range(len(df)):
             if i % ((frag_size * n_frags)) == 0:
