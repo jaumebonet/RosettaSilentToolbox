@@ -280,7 +280,7 @@ class TestDesign( object ):
         values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
                   "cav_vol", "design_score", "packstat", "rmsd_drift"]
         fig = plt.figure(figsize=(25, 10))
-        rp.multiple_distributions(df, fig, (2, 4), values)
+        rp.multiple_distributions(df, fig, (2, 4), values=values)
         plt.tight_layout()
         return fig
 
@@ -296,7 +296,7 @@ class TestDesign( object ):
         refdf = refdf[(refdf['length'] >= slength - 5) &
                       (refdf['length'] <= slength + 5)]
         fig = plt.figure(figsize=(25, 10))
-        rp.multiple_distributions(df, fig, (2, 4), values, refdata=refdf)
+        rp.multiple_distributions(df, fig, (2, 4), values=values, refdata=refdf)
         plt.tight_layout()
         return fig
 
@@ -312,7 +312,7 @@ class TestDesign( object ):
         refdf = refdf[(refdf['length'] >= slength - 5) &
                       (refdf['length'] <= slength + 5)]
         fig = plt.figure(figsize=(25, 10))
-        rp.multiple_distributions(df, fig, (2, 4), values, refdata=refdf,
+        rp.multiple_distributions(df, fig, (2, 4), values=values, refdata=refdf,
                                   ref_equivalences={'cavity': 'cav_vol',
                                                     'pack': 'packstat'},
                                   violins=False)
@@ -333,7 +333,7 @@ class TestDesign( object ):
         values = ["score", "hbond_sr_bb", "avdegree", "hbond_bb_sc",
                   "cavity", "CYDentropy", "pack", "radius"]
         fig = plt.figure(figsize=(25, 10))
-        rp.multiple_distributions(df, fig, (2, 4), values, refdata=refdf)
+        rp.multiple_distributions(df, fig, (2, 4), values=values, refdata=refdf)
         plt.tight_layout()
         return fig
 
@@ -353,6 +353,31 @@ class TestDesign( object ):
         fig = plt.figure(figsize=(25, 10))
         rp.plot_in_context(df, fig, (2, 4), refdata=refdf, values=values,
                            point_ms=10, kde_color='red')
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_incontexts.png')
+    def test_in_contexts_plot(self):
+
+        df = ru.load_refdata('scop')
+        qr = pd.DataFrame([['2F4V', 'C'], ['3BFU', 'B'], ['2APJ', 'C'],
+                           ['2C37', 'V'], ['2I6E', 'H']], columns=['pdb', 'chain'])
+        qr = qr.merge(df, on=['pdb', 'chain'])
+
+        refs = []
+        for i, t in qr.iterrows():
+            refs.append(df[(df['length'] >= (t['length'] - 5)) &
+                           (df['length'] <= (t['length'] + 5))])
+
+        fig  = plt.figure(figsize=(20, 6))
+
+        rp.distribution_quality(df=qr, refdata=refs,
+                                values=['score', 'pack', 'avdegree',
+                                        'cavity', 'psipred'],
+                                ascending=[True, False, True, True, False],
+                                names=['pdb', 'chain'],
+                                fig=fig)
         plt.tight_layout()
         return fig
 
@@ -490,7 +515,7 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1)
         fig = plt.figure(figsize=(30, 30))
 
-        rp.multiple_distributions(df, fig, (3, 3),
+        rp.multiple_distributions(df, fig, (3, 3), (0, 0),
                                   ['score', 'GRMSD2Target', 'GRMSD2Template',
                                    'LRMSD2Target', 'LRMSDH2Target', 'LRMSDLH2Target',
                                    'design_score', 'packstat', 'rmsd_drift'])

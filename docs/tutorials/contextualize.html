@@ -86,7 +86,8 @@
 <li><a class="reference internal" href="#pre-calculated-datasets">Pre-calculated datasets</a></li>
 <li><a class="reference internal" href="#cleaning-your-own-background-sets">Cleaning your own background sets</a></li>
 <li><a class="reference internal" href="#distribution-in-context">Distribution in context</a></li>
-<li><a class="reference internal" href="#selection-in-context">Selection in context</a></li>
+<li><a class="reference internal" href="#selections-in-context">Selections in context</a></li>
+<li><a class="reference internal" href="#each-selection-in-its-context">Each selection in its context</a></li>
 </ul>
 </li>
 </ul>
@@ -228,14 +229,14 @@ data.</p>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_ctx_plt3.png"><img alt="../_images/tutorial_ctx_plt3.png" src="../_images/tutorial_ctx_plt3.png" style="width: 10in;" /></a>
 </div>
-<div class="section" id="selection-in-context">
-<h2>Selection in context<a class="headerlink" href="#selection-in-context" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="selections-in-context">
+<h2>Selections in context<a class="headerlink" href="#selections-in-context" title="Permalink to this headline">¶</a></h2>
 <p>Contrary to the previous example, in which full distributions where compared, another useful tool is the ability to place selected
 structures in a given context. This can have two main uses: <strong>(1)</strong> see the position of selected decoys in a given distribution
 or <strong>(2)</strong> see the quality of putative template scaffolds before working with them.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">pickdf</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
-<span class="gp">   ...: </span><span class="n">axs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_in_context</span><span class="p">(</span><span class="n">pickdf</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">refdata</span><span class="o">=</span><span class="n">refdf</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;packstat&#39;</span><span class="p">,</span> <span class="s1">&#39;cav_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;BUNS&#39;</span><span class="p">],</span>
+<span class="gp">   ...: </span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gp">   ...: </span><span class="n">axs</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_in_context</span><span class="p">(</span><span class="n">pickdf</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">refdata</span><span class="o">=</span><span class="n">refdf</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;packstat&#39;</span><span class="p">,</span> <span class="s1">&#39;cav_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;BUNS&#39;</span><span class="p">],</span>
 <span class="gp">   ...: </span>                              <span class="n">ref_equivalences</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;cavity&#39;</span><span class="p">:</span> <span class="s1">&#39;cav_vol&#39;</span><span class="p">,</span> <span class="s1">&#39;pack&#39;</span><span class="p">:</span> <span class="s1">&#39;packstat&#39;</span><span class="p">})</span>
 <span class="gp">   ...: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="gp">   ...: </span>
@@ -244,6 +245,33 @@ or <strong>(2)</strong> see the quality of putative template scaffolds before wo
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/tutorial_ctx_plt4.png"><img alt="../_images/tutorial_ctx_plt4.png" src="../_images/tutorial_ctx_plt4.png" style="width: 10in;" /></a>
+</div>
+<div class="section" id="each-selection-in-its-context">
+<h2>Each selection in its context<a class="headerlink" href="#each-selection-in-its-context" title="Permalink to this headline">¶</a></h2>
+<p>Multiple selected decoys or scaffolds originated from different sources might not be all comparable under the same set. The most
+simple case would be when those structures do not have a similar length, which does affect <strong>Rosetta</strong> scores.
+In those scenarios, it is possible to see, for each decoy of interest, how well it compares to its reference dataset, and rank
+them according to which quantile of the distribution they belong to:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [11]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">load_refdata</span><span class="p">(</span><span class="s1">&#39;scop&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">qr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="s1">&#39;2F4V&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;3BFU&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;2APJ&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span>
+<span class="gp">   ....: </span>                   <span class="p">[</span><span class="s1">&#39;2C37&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;2I6E&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pdb&#39;</span><span class="p">,</span> <span class="s1">&#39;chain&#39;</span><span class="p">])</span>
+<span class="gp">   ....: </span><span class="n">qr</span> <span class="o">=</span> <span class="n">qr</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pdb&#39;</span><span class="p">,</span> <span class="s1">&#39;chain&#39;</span><span class="p">])</span>
+<span class="gp">   ....: </span><span class="n">refs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">   ....: </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">qr</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+<span class="gp">   ....: </span>  <span class="n">refs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">5</span><span class="p">))</span> <span class="o">&amp;</span>
+<span class="gp">   ....: </span>                 <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">5</span><span class="p">))])</span>
+<span class="gp">   ....: </span><span class="n">fig</span>  <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="gp">   ....: </span><span class="n">rs</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">distribution_quality</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">qr</span><span class="p">,</span> <span class="n">refdata</span><span class="o">=</span><span class="n">refs</span><span class="p">,</span>
+<span class="gp">   ....: </span>                             <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;pack&#39;</span><span class="p">,</span> <span class="s1">&#39;avdegree&#39;</span><span class="p">,</span> <span class="s1">&#39;cavity&#39;</span><span class="p">,</span> <span class="s1">&#39;psipred&#39;</span><span class="p">],</span>
+<span class="gp">   ....: </span>                             <span class="n">ascending</span><span class="o">=</span><span class="p">[</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">],</span>
+<span class="gp">   ....: </span>                             <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;domain_id&#39;</span><span class="p">],</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
+<span class="gp">   ....: </span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [12]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/tutorial_ctx_plt5.png"><img alt="../_images/tutorial_ctx_plt5.png" src="../_images/tutorial_ctx_plt5.png" style="width: 10in;" /></a>
 </div>
 </div>
 

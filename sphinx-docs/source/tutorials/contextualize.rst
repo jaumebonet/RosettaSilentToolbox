@@ -111,8 +111,8 @@ But we can also see the population behave against other protein of a similar siz
   @savefig tutorial_ctx_plt3.png width=10in
   In [6]: plt.show()
 
-Selection in context
---------------------
+Selections in context
+---------------------
 
 Contrary to the previous example, in which full distributions where compared, another useful tool is the ability to place selected
 structures in a given context. This can have two main uses: **(1)** see the position of selected decoys in a given distribution
@@ -123,9 +123,38 @@ or **(2)** see the quality of putative template scaffolds before working with th
 
   In [1]: pickdf = df.sample(10)
      ...: fig = plt.figure(figsize=(20, 5))
-     ...: axs = rs.plot.plot_in_context(pickdf, fig, (4, 4), refdata=refdf, values= ['score', 'packstat', 'cav_vol', 'BUNS'],
+     ...: axs = rs.plot.plot_in_context(pickdf, fig, (1, 4), refdata=refdf, values= ['score', 'packstat', 'cav_vol', 'BUNS'],
      ...:                               ref_equivalences={'cavity': 'cav_vol', 'pack': 'packstat'})
      ...: plt.tight_layout()
 
   @savefig tutorial_ctx_plt4.png width=10in
+  In [6]: plt.show()
+
+Each selection in its context
+-----------------------------
+
+Multiple selected decoys or scaffolds originated from different sources might not be all comparable under the same set. The most
+simple case would be when those structures do not have a similar length, which does affect **Rosetta** scores.
+In those scenarios, it is possible to see, for each decoy of interest, how well it compares to its reference dataset, and rank
+them according to which quantile of the distribution they belong to:
+
+.. ipython::
+  :okwarning:
+
+  In [1]: df = rs.utils.load_refdata('scop')
+     ...: qr = pd.DataFrame([['2F4V', 'C'], ['3BFU', 'B'], ['2APJ', 'C'],
+     ...:                    ['2C37', 'V'], ['2I6E', 'H']], columns=['pdb', 'chain'])
+     ...: qr = qr.merge(df, on=['pdb', 'chain'])
+     ...: refs = []
+     ...: for i, t in qr.iterrows():
+     ...:   refs.append(df[(df['length'] >= (t['length'] - 5)) &
+     ...:                  (df['length'] <= (t['length'] + 5))])
+     ...: fig  = plt.figure(figsize=(22, 7))
+     ...: rs.plot.distribution_quality(df=qr, refdata=refs,
+     ...:                              values=['score', 'pack', 'avdegree', 'cavity', 'psipred'],
+     ...:                              ascending=[True, False, True, True, False],
+     ...:                              names=['domain_id'], fig=fig)
+     ...: plt.tight_layout()
+
+  @savefig tutorial_ctx_plt5.png width=10in
   In [6]: plt.show()

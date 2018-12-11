@@ -213,7 +213,7 @@ def plot_fragments( small_frags, large_frags, small_ax, large_ax, small_color=0,
     if small_max is not None:
         small_ax.set_ylim(0, small_max)
     else:
-        small_ax.set_ylim(ymin=0)
+        small_ax.set_ylim(0)
     small_ax.yaxis.grid(False)
     small_ax.xaxis.grid(True)
     small_ax.set_axisbelow(True)
@@ -225,7 +225,7 @@ def plot_fragments( small_frags, large_frags, small_ax, large_ax, small_color=0,
     if large_max is not None:
         large_ax.set_ylim(0, large_max)
     else:
-        large_ax.set_ylim(ymin=0)
+        large_ax.set_ylim(0)
     large_ax.yaxis.grid(False)
     large_ax.xaxis.grid(True)
     large_ax.set_axisbelow(True)

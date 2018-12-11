@@ -115,7 +115,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     :param rbool refseq: if :data:`True` (default), mark the original residues according to
         the reference sequence.
     :param key_residues: |keyres_param|.
-    :type key_residue: |keyres_types|
+    :type key_residues: |keyres_types|
     :param border_color: Color to use to mark the original residue types.
     :type border_color: Union[:class:`int`, :class:`str`]
     :param int border_width: Line width used to mark the original residue types.
@@ -414,7 +414,7 @@ def positional_sequence_similarity_plot( df, ax, identity_color="green",
 
 
 def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
-                                   selections=None, **kwargs ):
+                                   selections=None, add_alignment=True, **kwargs ):
     """Plot a linear representation of the scoring obtained by applying a
     substitution matrix.
 
@@ -433,6 +433,8 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
         a selector and a color.
     :type selections: :func:`list` of :class:`tuple` with |keyres_types| and
         a color (:class:`str` or :class:`int`)
+    ;param bool add_alignment: When :data:`True`, show the alignment summary
+        in the top axis.
 
     :raises:
         :ValueError: If the data container is not :class:`.DesignSeries` or it
@@ -472,6 +474,10 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
     if column not in df.index:
         df = sequence_similarity(df.to_frame().T, seqID, matrix=matrix).iloc[0]
 
+    if 'color' in kwargs:
+        if isinstance(kwargs['color'], int):
+            kwargs['color'] = sns.color_palette()[kwargs['color']]
+
     ax.plot(range(0, len(refsq)), [0, ] * len(refsq), color='grey', linestyle='dashed')
     ax.plot(range(0, len(refsq)), df[column], **kwargs)
 
@@ -482,10 +488,11 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
     else:
         ax.set_xticklabels(shift[0::5])
 
-    axb = ax.twiny()
-    axb.set_xticks(range(0, len(refsq)))
-    axb.set_xticklabels(list(df['{0}_{1}_ali'.format(matrix.lower(), seqID)].replace('.', ' ')))
-    axb.tick_params('x', top=False, pad=0)
+    if add_alignment:
+        axb = ax.twiny()
+        axb.set_xticks(range(0, len(refsq)))
+        axb.set_xticklabels(list(df['{0}_{1}_ali'.format(matrix.lower(), seqID)].replace('.', ' ')))
+        axb.tick_params('x', top=False, pad=0)
 
     axlim = ax.get_ylim()
     if selections is None:
@@ -511,7 +518,7 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     :param bool refseq: if :data:`True` (default), mark the original residues according to
         the reference sequence.
     :param key_residues: |keyres_param|.
-    :type key_residue: |keyres_param|
+    :type key_residues: |keyres_param|
     :param int line_break: Force a line-change in the plot after n residues are plotted.
     :param int hight_prop: Hight proportion for each row of the plot.
     :param float font_size: Expected size of the axis font.

@@ -278,6 +278,13 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             per_res = {}
             chains  = {"id": [], "seq": "", "dssp": "", "psipred": "", "phi": [], "psi": []}
 
+            if (len(data)) > 0:
+                lll = max([len(data[k]) for k in data])
+                for k in data:
+                    if len(data[k]) != lll:
+                        print(k, data[k][-1])
+                        return
+
             # General scores
             for cv, value in enumerate( line.strip().split()[1:] ):
                 hcv = header[cv]
@@ -554,8 +561,8 @@ def write_rosetta_fragments( df, frag_size, n_frags=200 ):
             if i % ((frag_size * n_frags)) == 0:
                 frame_count += 1
                 f.write(_HEADER.format(frame_count, n_frags))
-            f.write(_STRING.format( df.loc[i]["pdb"], "X", int(0), df.loc[i]["aa"],
-                    df.loc[i]["sse"], df.loc[i]["phi"], df.loc[i]["psi"], df.loc[i]["omega"]) )
+            f.write(_STRING.format( df.iloc[i]["pdb"], "X", int(0), df.iloc[i]["aa"],
+                    df.iloc[i]["sse"], df.iloc[i]["phi"], df.iloc[i]["psi"], df.iloc[i]["omega"]) )
             if i != 0 and (i + 1) % frag_size == 0:
                 f.write("\n")
 

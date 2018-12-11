@@ -109,6 +109,7 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.plot_fragment_profiles
    ~plot.plot_alignment
    ~plot.plot_ramachandran
+   ~plot.plot_ramachandran_single
    ~plot.plot_dssp_vs_psipred
 
 Plot: Experiments
@@ -152,6 +153,8 @@ Functions aimed to help assess a design population in the context of known prote
 
    ~utils.load_refdata
    ~utils.make_redundancy_table
+   ~plot.plot_in_context
+   ~plot.distribution_quality
 
 Utils: Transforms
 -----------------
