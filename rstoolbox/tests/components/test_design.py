@@ -384,7 +384,8 @@ class TestDesign( object ):
     def test_get_homology(self):
         #  Values are difficult to assess here, as this will change from one
         #  download to the next.
-        data = ru.make_redundancy_table(select=[30])
+        #  Seems that downloading might not be possible in Travis... (?)
+        data = ru.make_redundancy_table(precalculated=True, select=[30])
         assert len(data.groupby('c30')) > 1
 
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
