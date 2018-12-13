@@ -30,6 +30,7 @@ from collections import OrderedDict
 # External Libraries
 import six
 import pandas as pd
+import numpy as np
 import yaml
 
 # This Library
@@ -162,6 +163,27 @@ def _add_sequences( manager, data, chains ):
     return data
 
 
+def _fix_unloaded( data ):
+    """Check errors in which data has not been loaded properly and
+    add :data:`~numpy.nan` to those.
+
+    Assumes the maximum amount of columns is that of the first content
+    read.
+
+    :return: data
+    """
+    if (len(data)) > 0:
+        datalens = [len(data[k]) for k in data]
+        if len(set(datalens)) == 1:
+            return data
+
+        datamax = max(datalens)
+        for k in data:
+            if len(data[k]) < datamax:
+                data[k].append(np.nan)
+    return data
+
+
 def open_rosetta_file( filename, multi=False, check_symmetry=True ):
     """
     *Internal function*; reads through a Rosetta silent file and yields only
@@ -278,15 +300,10 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             per_res = {}
             chains  = {"id": [], "seq": "", "dssp": "", "psipred": "", "phi": [], "psi": []}
 
-            if (len(data)) > 0:
-                lll = max([len(data[k]) for k in data])
-                for k in data:
-                    if len(data[k]) != lll:
-                        print(k, data[k][-1])
-                        return
+            _fix_unloaded( data )
 
             # General scores
-            for cv, value in enumerate( line.strip().split()[1:] ):
+            for cv, value in enumerate( line.strip().split()[1:-1] ):
                 hcv = header[cv]
                 if manager.wanted_per_residue_score( hcv ):
                     hcvn = re.sub("\d+$", "", hcv)
@@ -294,11 +311,16 @@ def parse_rosetta_file( filename, description=None, multi=False ):
                     per_res[hcvn][int(re.findall('\d+$', hcv)[0])] = _check_type( value )
                     continue
                 if manager.wanted_score( hcv ):
-                    data.setdefault( manager.score_name( hcv), [] ).append( _check_type( value ) )
+                    data.setdefault( manager.score_name(hcv), []).append( _check_type( value ) )
 
             # Namings from the description
+            # Also, description is added separately from the rest... in case there are weird
+            # changes in the number of score terms without the previously expected header line.
+            dscptn = line.strip().split()[-1]
+            if manager.wanted_score( 'description' ):
+                data.setdefault( manager.score_name('description'), []).append(_check_type(dscptn))
             manager.check_naming( header )
-            for namingID, namingVL in manager.get_naming_pairs( line.strip().split()[-1] ):
+            for namingID, namingVL in manager.get_naming_pairs(dscptn):
                 data.setdefault( namingID, [] ).append( _check_type( namingVL ) )
 
             # Fix per-residue
@@ -366,7 +388,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
                 chains["psi"] = []
             continue
 
-    df = rc.DesignFrame( data )
+    df = rc.DesignFrame( _fix_unloaded( data ) )
     df.add_source_files( _gather_file_list( filename, multi ) )
     return df
 
