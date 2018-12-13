@@ -41,6 +41,7 @@ class TestDesign( object ):
         self.silent2 = os.path.join(self.dirpath, 'input_sse.minsilent.gz')
         self.silent3 = os.path.join(self.dirpath, 'input_ssebig.minisilent.gz')
         self.silent4 = os.path.join(self.dirpath, 'input_3ssepred.minisilent.gz')
+        self.score1 = os.path.join(self.dirpath, 'remodel.sc.gz')
 
     @pytest.fixture(autouse=True)
     def setup( self, tmpdir ):
@@ -125,6 +126,17 @@ class TestDesign( object ):
         assert sr.get_phi("A").min() >= -180
         assert sr.get_psi("A").max() <= 180
         assert sr.get_psi("A").min() >= -180
+
+    def test_incomplete_read( self ):
+        """
+        Test that incomplete score files  without the proper header change (such as
+        is the case with non-successful remodel runs) are read properly
+        """
+        df = ri.parse_rosetta_file(self.score1)
+        assert (df[df['description'] == 'sketch4_0001']['dslf_fa13'].isna()).all()
+        assert df[~df['dslf_fa13'].isna()].shape[0] == 6
+        assert df[df['dslf_fa13'].isna()].shape[0] == 2
+        assert df.shape[0] == 8
 
     def test_reference( self ):
         """

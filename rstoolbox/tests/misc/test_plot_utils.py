@@ -108,7 +108,7 @@ class TestPlotUtils( object ):
         df = ri.read_CD(os.path.join(self.dirpath, 'CD'), prefix='kx8', model='J-815')
         fig = plt.figure(figsize=(10, 6.7))
         ax = plt.subplot2grid((1, 1), (0, 0))
-        rp.plot_CD(df, ax, sample=None)
+        rp.plot_CD(df, ax, sample=5)
         ax.get_legend().remove()
         return fig
 
