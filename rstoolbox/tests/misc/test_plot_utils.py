@@ -109,6 +109,7 @@ class TestPlotUtils( object ):
         fig = plt.figure(figsize=(10, 6.7))
         ax = plt.subplot2grid((1, 1), (0, 0))
         rp.plot_CD(df, ax, sample=5)
+        ax.get_legend().remove()
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
