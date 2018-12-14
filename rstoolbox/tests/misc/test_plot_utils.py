@@ -105,7 +105,12 @@ class TestPlotUtils( object ):
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_cd2.png')
     def test_cd_read( self ):
+        def sampling( m, n ):
+            return [i * n // m + n // (2 * m) for i in range(m)]
+
         df = ri.read_CD(os.path.join(self.dirpath, 'CD'), prefix='kx8', model='J-815')
+        assert len(df['bin'].unique()) == 36
+        assert sampling(5, 35) == [3, 10, 17, 24, 31]
         fig = plt.figure(figsize=(10, 6.7))
         ax = plt.subplot2grid((1, 1), (0, 0))
         rp.plot_CD(df, ax, sample=5)
