@@ -124,7 +124,7 @@ class TestFragments( object ):
 
     def test_concat_fragments( self ):
         # load fragments
-        df3 = parse_rosetta_fragments(self.frag3)
+        _3mers = parse_rosetta_fragments(self.frag3)
         # make chunks
         _3mers_1 = _3mers[(_3mers['frame'] >= 9) & (_3mers['frame'] <= 12)]
         _3mers_2 = _3mers[(_3mers['frame'] >= 22) & (_3mers['frame'] <= 24)]
