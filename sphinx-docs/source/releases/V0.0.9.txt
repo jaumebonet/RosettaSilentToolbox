@@ -5,3 +5,4 @@ v0.0.9 (November 2018)
 #. Adds utility function to change the text of a legend on plotting.
 #. Adds function to ensure logic in fragment data is properly kept.
 #. Adds function to mix fragment data.
+#. Adds function to concatenate fragment data.
