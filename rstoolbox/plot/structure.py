@@ -9,6 +9,7 @@
 
 .. func:: positional_structural_similarity_plot
 .. func:: plot_ramachandran
+.. func:: plot_ramachandran_single
 .. func:: plot_dssp_vs_psipred
 """
 # Standard Libraries
@@ -119,7 +120,7 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
                              df.index.values[-1], 5))
 
 
-def plot_ramachandran( df, seqID, fig ):
+def plot_ramachandran( df, seqID, fig, grid=None, positions=None, **kwargs ):
     """Generates a ramachandran plot in RAMPAGE style.
 
     For more details and sources please refert to
@@ -134,14 +135,27 @@ def plot_ramachandran( df, seqID, fig ):
     Note that this function will only plot the ramachandran for a single decoy. If one
     would like to compute it for mutiple decoys, please see the example below.
 
+    Parameters for :func:`~matplotlib.pyplot.scatter` can be provided with prefix 'scatter_'.
+    Parameters for :func:`~matplotlib.pyplot.plot` can be provided with prefix 'line_'.
+
     :param df: |df_param|, where ONE column cotains the phi and a second column
         the psi angles.
     :type df: :class:`~pandas.Series`
     :param str seqID: |seqID_param|
     :param fig: Figure into which the data is going to be plotted.
     :type fig: :class:`~matplotlib.figure.Figure`
+    :param tuple grid: Grid of the figure. By default assumes the figure has nothing
+        else and so, the grid is (2, 2).
+    :param positions: Positions in the grid (in case the image will contain more than
+        the Ramachandran). By default, it assumes a (2, 2) grid and fills all positions.
+    :type positions: :func:`list` of :class:`tuple`
 
     :return: :func:`list` of :class:`~matplotlib.axes.Axes`
+
+    :raises:
+        :ValueError: If the grid does not provide at least 4 positions.
+        :ValueError: If there number of positions is not 4.
+
     .. seealso::
         :func:`.plot_ramachandran_single
         :func:`.get_sequence_and_structure`
@@ -178,20 +192,30 @@ def plot_ramachandran( df, seqID, fig ):
         In [3]: plt.close()
     """
     order = ["GENERAL", "GLY", "PRE-PRO", "PRO"]
-    grid = (2, 2)
-    axs = [plt.subplot2grid(grid, (0, 0), fig=fig),
-           plt.subplot2grid(grid, (0, 1), fig=fig),
-           plt.subplot2grid(grid, (1, 0), fig=fig),
-           plt.subplot2grid(grid, (1, 1), fig=fig)]
+    if grid is None:
+        grid = (2, 2)
+    if grid[0] * grid[1] < 4:
+        raise ValueError('Not enough positions to place all Ramachandran plots.')
+    if positions is None:
+        positions = [(0, 0), (0, 1), (1, 0), (1, 1)]
+    if len(positions) != 4:
+        raise ValueError('Number op provided positions must be 4.')
+    axs = [plt.subplot2grid(grid, positions[0], fig=fig),
+           plt.subplot2grid(grid, positions[1], fig=fig),
+           plt.subplot2grid(grid, positions[2], fig=fig),
+           plt.subplot2grid(grid, positions[3], fig=fig)]
 
     for i, ax in enumerate(axs):
-        plot_ramachandran_single(df, seqID, ax, order[i])
+        plot_ramachandran_single(df, seqID, ax, order[i], **kwargs)
 
     return axs
 
 
-def plot_ramachandran_single( df, seqID, ax, rama_type='GENERAL' ):
+def plot_ramachandran_single( df, seqID, ax, rama_type='GENERAL', **kwargs ):
     """Plot only one of the 4 ramachandran plots in RAMPAGE format.
+
+    Parameters for :func:`~matplotlib.pyplot.scatter` can be provided with prefix 'scatter_'.
+    Parameters for :func:`~matplotlib.pyplot.plot` can be provided with prefix 'line_'.
 
     :param df: |df_param|, where ONE column cotains the phi and a second column
         the psi angles.
@@ -268,12 +292,23 @@ def plot_ramachandran_single( df, seqID, ax, rama_type='GENERAL' ):
     ax.imshow(rama_pref_values, cmap=rama_preferences["cmap"],
               norm=colors.BoundaryNorm(rama_preferences["bounds"],
               rama_preferences["cmap"].N), extent=(-180, 180, 180, -180))
-    ax.scatter(phi, psi, color="black")
+
+    scatter_kwargs = {}
+    for k in kwargs:
+        if k.startswith('scatter_'):
+            scatter_kwargs.setdefault(k.replace('scatter_', ''), kwargs[k])
+    scatter_kwargs.setdefault('color', 'black')
+    ax.scatter(phi, psi, **scatter_kwargs)
     add_top_title( ax, rama_type.upper())
     ax.set_xlim([-180, 180])
     ax.set_ylim([-180, 180])
-    ax.plot([-180, 180], [0, 0], color="black")
-    ax.plot([0, 0], [-180, 180], color="black")
+    line_kwargs = {}
+    for k in kwargs:
+        if k.startswith('line_'):
+            line_kwargs.setdefault(k.replace('line_', ''), kwargs[k])
+    line_kwargs.setdefault('color', 'black')
+    ax.plot([-180, 180], [0, 0], **line_kwargs)
+    ax.plot([0, 0], [-180, 180], **line_kwargs)
     ax.locator_params(axis='x', nbins=7)
     ax.set_xlabel(r'$\phi$ [degrees]')
     ax.set_ylabel(r'$\psi$ [degrees]')

@@ -99,6 +99,16 @@ class FragmentFrame( pd.DataFrame ):
         """
         return self._source_file is not None
 
+    def slice_region( self, ini, end ):
+        """Retrieve only fragments within certain positions.
+
+        :param int ini: Starting position.
+        :param int end: Ending position.
+
+        :return: :class:`.FragmentFrame`
+        """
+        return self[(self['frame'] >= ini) & (self['frame'] <= end)]
+
     def is_comparable( self, df ):
         """Evaluate if the current :class:`.FragmentFrame` is comparable to
         the provided one.
@@ -193,6 +203,8 @@ class FragmentFrame( pd.DataFrame ):
             a ``pdbfile``.
         :param str pdbfile: In case the quality has to be calculated. Provide the
             PDB over which to calculate it. Default is :data:`None`.
+
+        :return: :class:`.FragmentFrame`
 
         :raises:
             :IOError: if ``filename`` does not exist.

@@ -779,7 +779,7 @@ def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False 
             cmd = command.format(exe, rscript, " ".join(self.get_source_files()),
                                  origin, outfiles[-1], row[resfile])
             sys.stdout.write(cmd + "\n")
-            error = execute_process( command )
+            error = execute_process( cmd )
             if bool(error):
                 errors += 1
                 sys.stdout.write("Execution for variant {} has failed\n".format(row['description']))
@@ -791,7 +791,7 @@ def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False 
             cmd = command.format(exe, " ".join(outfiles), filename)
             sys.stdout.write("Merging all silent files\n")
             sys.stdout.write(cmd + "\n")
-            error = execute_process( command )
+            error = execute_process( cmd )
             if bool(error):
                 raise SystemError("A file with the new variants could not be created.")
         else:

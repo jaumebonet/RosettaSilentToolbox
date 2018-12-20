@@ -40,6 +40,8 @@ def add_left_title(ax, title, **kwargs ):
     :param ax: Target plot axis.
     :type ax: :class:`~matplotlib.Axes`
     :param str title: Title text to add.
+
+    :return: :class:`~matplotlib.text.Annotation`
     """
 
     if title is None:
@@ -52,7 +54,7 @@ def add_left_title(ax, title, **kwargs ):
     kwargs.setdefault("ha", 'right')
     kwargs.setdefault("va", 'center')
 
-    ax.annotate(title, **kwargs)
+    return ax.annotate(title, **kwargs)
 
 
 def add_right_title(ax, title, **kwargs ):
@@ -64,6 +66,8 @@ def add_right_title(ax, title, **kwargs ):
     :param ax: Target plot axis.
     :type ax: :class:`~matplotlib.Axes`
     :param str title: Title text to add.
+
+    :return: :class:`~matplotlib.text.Annotation`
     """
 
     if title is None:
@@ -75,7 +79,7 @@ def add_right_title(ax, title, **kwargs ):
     kwargs.setdefault("ha", 'left')
     kwargs.setdefault("va", 'center')
 
-    ax.annotate(title, **kwargs)
+    return ax.annotate(title, **kwargs)
 
 
 def add_top_title( ax, title, **kwargs ):
@@ -87,6 +91,8 @@ def add_top_title( ax, title, **kwargs ):
     :param ax: Target plot axis.
     :type ax: :py:class:`~matplotlib.Axes`
     :param str title: Title text to add.
+
+    :return: :class:`~matplotlib.text.Annotation`
     """
     if title is None:
         return
@@ -98,7 +104,7 @@ def add_top_title( ax, title, **kwargs ):
     kwargs.setdefault("ha", 'center')
     kwargs.setdefault("va", 'baseline')
 
-    ax.annotate(title, **kwargs)
+    return ax.annotate(title, **kwargs)
 
 
 def edit_legend_text( ax, labels, title=None ):

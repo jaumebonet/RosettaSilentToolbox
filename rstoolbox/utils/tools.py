@@ -238,7 +238,11 @@ def execute_process( command ):
         command = shlex.split(command)
     try:
         return subprocess.call( command )
-    except OSError:
+    except OSError as e:
+        print('OS', e)
+        return 1
+    except subprocess.CalledProcessError as e:
+        print('CPE', e)
         return 1
 
 

@@ -42,7 +42,7 @@ from .color_schemes import color_scheme
 
 __all__ = ["plot_sequence_frequency_graph", "plot_alignment", "logo_plot",
            "positional_sequence_similarity_plot", "sequence_frequency_plot",
-           "per_residue_matrix_score_plot"]
+           "per_residue_matrix_score_plot", "logo_plot_in_axis"]
 
 
 def barcode_plot( df, column_name, ax, color="blue" ):
@@ -628,7 +628,7 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         axs  = [plt.subplot2grid(grid, (0, 0)), ]
         krs  = [key_residues, ]
     else:
-        rows = int(math.ceil(float(len(data)) / line_break))
+        rows = int(math.ceil(float(len(key_residues)) / line_break))
         figsize = (float(len(data) * 2 ) / rows, 2.3 * hight_prop * rows)
         grid = (rows, 1)
         fig  = plt.figure(figsize=figsize)
@@ -684,3 +684,118 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
                 label.set_fontproperties(font)
 
     return fig, axs
+
+
+def logo_plot_in_axis( df, seqID, ax, refseq=True, key_residues=None, colors="WEBLOGO" ):
+    """
+    """
+    # @TODO: LOGO in axis
+    # @BODY: Add docs and test. fix repetitions.
+    def _letterAt( letter, x, y, yscale=1, ax=None, globscale=1.35,
+                   LETTERS=None, COLOR_SCHEME=None ):
+        text = LETTERS[letter]
+        t = mpl.transforms.Affine2D().scale(1 * globscale, yscale * globscale) + \
+            mpl.transforms.Affine2D().translate(x, y) + ax.transData
+        p = PathPatch(text, lw=0, fc=COLOR_SCHEME[letter],  transform=t)
+        if ax is not None:
+            ax.add_artist(p)
+        return p
+
+    def _dataframe2logo( data ):
+        aa = list(data)
+        odata = []
+        for _, pos in data.iterrows():
+            pdata = []
+            for k in aa:
+                if pos[k] > 0.0000000:
+                    pdata.append( ( k, float(pos[k]) ) )
+            odata.append(sorted(pdata, key=operator.itemgetter(1, 0)))
+        return odata
+
+    def _chunks(l, n):
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
+             "Q", "R", "H", "K", "D", "E", "C", "G", "P"]
+    data = copy.deepcopy(df)
+    if data.empty:
+        raise ValueError("Provided data container is empty. Nothing to plot.")
+
+    mpl.rcParams['svg.fonttype'] = 'none'
+    # Graphical Properties of resizable letters
+    path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        '../components/square.ttf'
+    )
+    fp = FontProperties(fname=path, weight="bold")
+    globscale = 1.22
+    letters_shift = -0.5
+    LETTERS = {}
+    if isinstance(colors, dict):
+        for aa in colors:
+            LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
+    elif isinstance(colors, str):
+        for aa in color_scheme(colors):
+            LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
+    else:
+        raise ValueError("Colors need to either be a string representing the name of a available "
+                         "color set or a dictionary with a color for each type.")
+
+    # Data type management.
+    if not isinstance(data, pd.DataFrame):
+        raise ValueError("Input data must be in a DataFrame, DesignFrame or SequenceFrame")
+    else:
+        if not isinstance(data, (DesignFrame, SequenceFrame)):
+            if len(set(data.columns.values).intersection(set(order))) == len(order):
+                data = SequenceFrame(data)
+            else:
+                data = DesignFrame(data)
+    if isinstance(data, DesignFrame):
+        data = data.sequence_frequencies(seqID)
+
+    # font = FontProperties()
+    # font.set_weight('bold')
+
+    # Refseq and key_residues management.
+    ref_seq = data.get_reference_sequence(seqID, key_residues) if refseq else ""
+    # data and key_residues management.
+    _data = data.get_key_residues(key_residues)
+
+    maxv = int(math.ceil(data.max_hight()))
+
+    ticks = len(_data)
+    ax.set_xticks(np.arange(0.5, ticks + 1))
+    ax.set_yticks( range(0, maxv + 1) )
+    ax.set_xticklabels( _data.index.values )
+    ax.set_yticklabels( np.arange( 0, maxv + 1, 1 ) )
+    ax.set_xlim(-0.1, len(_data) + 0.1)
+    if ref_seq is not None:
+        ax2 = ax.twiny()
+        ax2.set_xticks(ax.get_xticks())
+        ax2.set_xticklabels(list(ref_seq))
+        ax2.set_xlim(-0.1, len(_data) + 0.1)
+    sns.despine(ax=ax, trim=True)
+    ax.grid(False)
+    if ref_seq is not None:
+        sns.despine(ax=ax2, top=False, right=True, left=True, trim=True)
+        ax2.grid(False)
+    ax.lines = []
+    wdata = _dataframe2logo( _data )
+    x = 0.5
+    maxi = 0
+    for scores in wdata:
+        y = 0
+        for base, score in scores:
+            if isinstance(colors, dict):
+                _letterAt(base, x, y, score, ax, globscale, LETTERS, colors)
+            else:
+                _letterAt(base, x, y, score, ax, globscale, LETTERS, color_scheme(colors))
+            y += score
+        x += 1
+        maxi = max(maxi, y)
+    # for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+    #     label.set_fontproperties(font)
+    # if ref_seq is not None:
+    #     for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
+    #         label.set_fontproperties(font)

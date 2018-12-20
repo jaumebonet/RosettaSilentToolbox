@@ -206,8 +206,8 @@ def plot_fragments( small_frags, large_frags, small_ax, large_ax, small_color=0,
     sns.boxplot(x="frame", y="rmsd", data=large_frags_, ax=large_ax, color=large_color, **kwargs)
 
     # Basic formating
-    small_ax.set_xticks(range(0, max(small_frags["frame"]), 5))
-    small_ax.set_xticklabels(range(1, max(small_frags["frame"]) + 1, 5))
+    small_ax.set_xticks(range(0, len(small_frags["frame"].unique()), 5))
+    small_ax.set_xticklabels(range(min(small_frags["frame"]), max(small_frags["frame"]) + 1, 5))
     small_ax.set_xlabel("sequence")
     small_ax.set_ylabel("RMSD")
     if small_max is not None:
@@ -218,8 +218,8 @@ def plot_fragments( small_frags, large_frags, small_ax, large_ax, small_color=0,
     small_ax.xaxis.grid(True)
     small_ax.set_axisbelow(True)
 
-    large_ax.set_xticks(range(0, max(large_frags["frame"]), 5))
-    large_ax.set_xticklabels(range(1, max(large_frags["frame"]) + 1, 5))
+    large_ax.set_xticks(range(0, len(large_frags["frame"].unique()), 5))
+    large_ax.set_xticklabels(range(min(small_frags["frame"]), max(large_frags["frame"]) + 1, 5))
     large_ax.set_xlabel("sequence")
     large_ax.set_ylabel("RMSD")
     if large_max is not None:

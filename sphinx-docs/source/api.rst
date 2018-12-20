@@ -102,6 +102,7 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.multiple_distributions
    ~plot.sequence_frequency_plot
    ~plot.logo_plot
+   ~plot.logo_plot_in_axis
    ~plot.positional_sequence_similarity_plot
    ~plot.per_residue_matrix_score_plot
    ~plot.positional_structural_similarity_plot
