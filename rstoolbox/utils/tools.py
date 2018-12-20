@@ -24,6 +24,7 @@ import re
 
 # External Libraries
 import pandas as pd
+import numpy as np
 from six import string_types
 
 # This Library
@@ -118,7 +119,10 @@ def add_column( df, name, value ):
 
     :return: :class:`~pandas.DataFrame` - The data container with the new column
     """
-    data = pd.Series([value] * df.shape[0])
+    if not isinstance(value, (list, np.ndarray)):
+        data = pd.Series([value] * df.shape[0])
+    else:
+        data = pd.Series(value)
     return df.assign(_placeholder=data).rename(columns={"_placeholder": name})
 
 

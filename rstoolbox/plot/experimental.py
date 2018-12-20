@@ -500,6 +500,10 @@ def plot_CD( df, ax, color=None, wavelengths=None, sample=None  ):
     def sampling( m, n ):
         return [i * n // m + n // (2 * m) for i in range(m)]
 
+    if 'Temp' in df.columns:
+        if len(df['Temp'].unique()) == 1 and sample < 2:
+            sample = 2
+
     if not isinstance(df, CDFrame):
         if color is None:
             color = 0
@@ -511,6 +515,7 @@ def plot_CD( df, ax, color=None, wavelengths=None, sample=None  ):
             sample = len(df['bin'].unique())
         if sample == 0:
             raise ValueError('At least 1 temperature must be plotted')
+
         positions = sampling(sample, len(df['bin'].unique()))
         bins = list(df['bin'].unique())
         positions = itemgetter(*positions)(bins)

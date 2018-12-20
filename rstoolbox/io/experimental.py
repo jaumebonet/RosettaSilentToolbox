@@ -44,7 +44,7 @@ class SPRFrame( pd.DataFrame ):
         return SPRFrame
 
 
-def read_CD( dirname, prefix=None, invert_temp=False, model='Chirascan'):
+def read_CD( dirname, prefix=None, invert_temp=False, model='Chirascan', outfile=None ):
     """Read `Circular Dichroism <https://www.wikiwand.com/en/Circular_dichroism>`_ data
     for multiple temperatures.
 
@@ -59,9 +59,12 @@ def read_CD( dirname, prefix=None, invert_temp=False, model='Chirascan'):
     :param str prefix: Prefix of the files inside the folder.
     :param bool invert_temp: Temperature assignation might be inverted. Switch it with this
         option.
-    :param str model: Format of the data. Available models are: ``['J-815']``
+    :param str model: Format of the data. Available models are: ``['J-815', 'Chirascan']``
+    :param bool outfile: Option to print individual csv files for each sample.
+        Works only for ``Chirascan``.
 
-    :return:  :class:`~pandas.DataFrame`.
+    :return:  Union[:class:`~pandas.DataFrame`, :class:`dict` of :class:`~pandas.DataFrame`] -
+        for `J-815` and `Chirascan` respectively.
 
     :raise:
         :IOError: If ``dirname`` is not a directory.
@@ -74,10 +77,8 @@ def read_CD( dirname, prefix=None, invert_temp=False, model='Chirascan'):
     """
     if model == 'J-815':
         return CDFrame(_read_CD_J815(dirname, prefix, invert_temp))
-    else:
-        raise AttributeError('Unknown CD format')
-    if model == 'Chirascan':
-        return df(_read_CD_Chirascan(infile,outfile=None))
+    elif model == 'Chirascan':
+        return _read_CD_Chirascan(dirname, outfile=None)
     else:
         raise AttributeError('Unknown CD format')
 
@@ -146,7 +147,7 @@ def _read_CD_J815( dirname, prefix, invert_temp ):
         df = df.merge(tmp, on=['bin'])
     return df
 
-def _read_CD_Chirascan(infile,outfile=None):
+def _read_CD_Chirascan( infile, outfile=None ):
     data = pd.read_csv(infile).values
     data_split = [[]]
     for x in data:
@@ -157,7 +158,7 @@ def _read_CD_Chirascan(infile,outfile=None):
     header = [x.strip() for x in list(header[header[0].str.startswith('#Sample')].apply(lambda row: row[0].split(':')[1], axis=1).values)]
     df = {}
     for i, h in enumerate(header):
-        df.setdefault(h, pd.DataFrame(data_split[i + 1]))
+        df.setdefault(h, CDFrame(data_split[i + 1]))
         columns = [float(x) for x in list(df[h].iloc[4].values)]
         columns[0] = 'Wavelength'
         df[h].columns = columns

@@ -111,6 +111,15 @@ class TestPlotUtils( object ):
         rp.plot_CD(df, ax, sample=5)
         return fig
 
+    #@pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+    #                               filename='plot_cd2.png')
+    #def test_cd_read( self ):
+    #    df = ri.read_CD(os.path.join(self.dirpath, 'CD'), prefix='kx8', model='J-815')
+    #    fig = plt.figure(figsize=(10, 6.7))
+    #    ax = plt.subplot2grid((1, 1), (0, 0))
+    #    rp.plot_CD(df, ax, sample=5)
+    #    return fig
+
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_mals.png')
     def test_mals( self ):
