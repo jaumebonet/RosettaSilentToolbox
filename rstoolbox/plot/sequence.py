@@ -433,7 +433,7 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
         a selector and a color.
     :type selections: :func:`list` of :class:`tuple` with |keyres_types| and
         a color (:class:`str` or :class:`int`)
-    ;param bool add_alignment: When :data:`True`, show the alignment summary
+    :param bool add_alignment: When :data:`True`, show the alignment summary
         in the top axis.
 
     :raises:
@@ -510,7 +510,7 @@ def per_residue_matrix_score_plot( df, seqID, ax, matrix="BLOSUM62",
 
 def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
                hight_prop=4, font_size=35, refplot=False, colors="WEBLOGO" ):
-    """Generates classic **LOGO** plots.
+    """Generates full figure classic **LOGO** plots.
 
     :param df: Data container.
     :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
@@ -522,7 +522,7 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     :param int line_break: Force a line-change in the plot after n residues are plotted.
     :param int hight_prop: Hight proportion for each row of the plot.
     :param float font_size: Expected size of the axis font.
-    :param bool refplot: When :data:`True`, it will res-order the residues in each position
+    :param bool refplot: When :data:`True`, it will reorder the residues in each position
         so that the reference residue will be on the bottom and setting a two-color scheme
         (provide a single color name in ``colors``) that allows to quickly identify the reference
         type in each position.
@@ -532,7 +532,11 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     :type colors: Union[:class:`str`, :class:`dict`]
 
     :return: :class:`~matplotlib.figure.Figure` and
-        :func:`list` of :class:`~matplotlib.axes.Axes`
+        :func:`list` of [:class:`~matplotlib.axes.Axes`, :class:`~matplotlib.axes.Axes`] -
+        with primary and secondary axis of each subplot.
+
+    .. seealso::
+        :func:`.logo_plot_in_axis`
 
     .. rubric:: Example
 
@@ -553,56 +557,12 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
 
         In [3]: plt.close()
     """
-    def _letterAt( letter, x, y, yscale=1, ax=None, globscale=1.35,
-                   LETTERS=None, COLOR_SCHEME=None ):
-        text = LETTERS[letter]
-        t = mpl.transforms.Affine2D().scale(1 * globscale, yscale * globscale) + \
-            mpl.transforms.Affine2D().translate(x, y) + ax.transData
-        p = PathPatch(text, lw=0, fc=COLOR_SCHEME[letter],  transform=t)
-        if ax is not None:
-            ax.add_artist(p)
-        return p
-
-    def _dataframe2logo( data ):
-        aa = list(data)
-        odata = []
-        for _, pos in data.iterrows():
-            pdata = []
-            for k in aa:
-                if pos[k] > 0.0000000:
-                    pdata.append( ( k, float(pos[k]) ) )
-            odata.append(sorted(pdata, key=operator.itemgetter(1, 0)))
-        return odata
-
-    def _chunks(l, n):
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
 
     order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
              "Q", "R", "H", "K", "D", "E", "C", "G", "P"]
     data = copy.deepcopy(df)
     if data.empty:
         raise ValueError("Provided data container is empty. Nothing to plot.")
-
-    mpl.rcParams['svg.fonttype'] = 'none'
-    # Graphical Properties of resizable letters
-    path = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        '../components/square.ttf'
-    )
-    fp = FontProperties(fname=path, weight="bold")
-    globscale = 1.22
-    letters_shift = -0.5
-    LETTERS = {}
-    if isinstance(colors, dict):
-        for aa in colors:
-            LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
-    elif isinstance(colors, str):
-        for aa in color_scheme(colors):
-            LETTERS[aa] = TextPath((letters_shift, 0), aa, size=1, prop=fp)
-    else:
-        raise ValueError("Colors need to either be a string representing the name of a available "
-                         "color set or a dictionary with a color for each type.")
 
     # Data type management.
     if not isinstance(data, pd.DataFrame):
@@ -625,14 +585,14 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
         figsize = (len(data) * 2, 2.3 * hight_prop)
         grid = (1, 1)
         fig  = plt.figure(figsize=figsize)
-        axs  = [plt.subplot2grid(grid, (0, 0)), ]
+        axs  = [[plt.subplot2grid(grid, (0, 0)), None], ]
         krs  = [key_residues, ]
     else:
         rows = int(math.ceil(float(len(key_residues)) / line_break))
         figsize = (float(len(data) * 2 ) / rows, 2.3 * hight_prop * rows)
         grid = (rows, 1)
         fig  = plt.figure(figsize=figsize)
-        axs  = [plt.subplot2grid(grid, (_, 0)) for _ in range(rows)]
+        axs  = [[plt.subplot2grid(grid, (_, 0)), None] for _ in range(rows)]
         krs  = list(_chunks(key_residues, line_break))
 
     font = FontProperties()
@@ -640,81 +600,37 @@ def logo_plot( df, seqID, refseq=True, key_residues=None, line_break=None,
     font.set_weight('bold')
 
     for _, ax in enumerate(axs):
-        # Refseq and key_residues management.
-        ref_seq = data.get_reference_sequence(seqID, krs[_]) if refseq else ""
-        # data and key_residues management.
-        _data = data.get_key_residues(krs[_])
 
-        maxv = int(math.ceil(data.max_hight()))
-
-        ticks = len(_data)
-        if line_break is not None and len(_data) < line_break:
-            ticks = line_break
-        ax.set_xticks(np.arange(0.5, ticks + 1))
-        ax.set_yticks( range(0, maxv + 1) )
-        ax.set_xticklabels( _data.index.values )
-        ax.set_yticklabels( np.arange( 0, maxv + 1, 1 ) )
-        if ref_seq is not None:
-            ax2 = ax.twiny()
-            ax2.set_xticks(ax.get_xticks())
-            ax2.set_xticklabels(list(ref_seq))
-        sns.despine(ax=ax, trim=True)
-        ax.grid(False)
-        if ref_seq is not None:
-            sns.despine(ax=ax2, top=False, right=True, left=True, trim=True)
-            ax2.grid(False)
-        ax.lines = []
-        wdata = _dataframe2logo( _data )
-        x = 0.5
-        maxi = 0
-        for scores in wdata:
-            y = 0
-            for base, score in scores:
-                if isinstance(colors, dict):
-                    _letterAt(base, x, y, score, ax, globscale, LETTERS, colors)
-                else:
-                    _letterAt(base, x, y, score, ax, globscale, LETTERS, color_scheme(colors))
-                y += score
-            x += 1
-            maxi = max(maxi, y)
-        for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-            label.set_fontproperties(font)
-        if ref_seq is not None:
-            for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
-                label.set_fontproperties(font)
-
+        axs[_][1] = logo_plot_in_axis(data, seqID, ax[0], refseq=refseq, key_residues=krs[_],
+                                      refplot=refplot, colors=colors, line_break=line_break)
     return fig, axs
 
 
-def logo_plot_in_axis( df, seqID, ax, refseq=True, key_residues=None, colors="WEBLOGO" ):
-    """
-    """
-    # @TODO: LOGO in axis
-    # @BODY: Add docs and test. fix repetitions.
-    def _letterAt( letter, x, y, yscale=1, ax=None, globscale=1.35,
-                   LETTERS=None, COLOR_SCHEME=None ):
-        text = LETTERS[letter]
-        t = mpl.transforms.Affine2D().scale(1 * globscale, yscale * globscale) + \
-            mpl.transforms.Affine2D().translate(x, y) + ax.transData
-        p = PathPatch(text, lw=0, fc=COLOR_SCHEME[letter],  transform=t)
-        if ax is not None:
-            ax.add_artist(p)
-        return p
+def logo_plot_in_axis( df, seqID, ax, refseq=True, key_residues=None, refplot=False,
+                       colors="WEBLOGO", **kwargs ):
+    """Generates classic **LOGO** plot in a given axis.
 
-    def _dataframe2logo( data ):
-        aa = list(data)
-        odata = []
-        for _, pos in data.iterrows():
-            pdata = []
-            for k in aa:
-                if pos[k] > 0.0000000:
-                    pdata.append( ( k, float(pos[k]) ) )
-            odata.append(sorted(pdata, key=operator.itemgetter(1, 0)))
-        return odata
+    :param df: Data container.
+    :type df: Union[:class:`.DesignFrame`, :class:`.SequenceFrame`]
+    :param str seqID: |seqID_param|.
+    :param bool refseq: if :data:`True` (default), mark the original residues according to
+        the reference sequence.
+    :param key_residues: |keyres_param|.
+    :type key_residues: |keyres_param|
+    :param bool refplot: When :data:`True`, it will reorder the residues in each position
+        so that the reference residue will be on the bottom and setting a two-color scheme
+        (provide a single color name in ``colors``) that allows to quickly identify the reference
+        type in each position.
+    :param colors: Colors to assign; it can be the name of a available color set or
+        a dictionary with a color for each type. Available color schemes are: Weblogo
+        (default), Hydrophobicity, Chemistry, and Charge.
+    :type colors: Union[:class:`str`, :class:`dict`]
 
-    def _chunks(l, n):
-        for i in range(0, len(l), n):
-            yield l[i:i + n]
+    :return: :class:`~matplotlib.axes.Axes` - secondary axis
+
+    .. seealso::
+        :func:`.logo_plot`
+    """
 
     order = ["A", "V", "I", "L", "M", "F", "Y", "W", "S", "T", "N",
              "Q", "R", "H", "K", "D", "E", "C", "G", "P"]
@@ -754,9 +670,6 @@ def logo_plot_in_axis( df, seqID, ax, refseq=True, key_residues=None, colors="WE
     if isinstance(data, DesignFrame):
         data = data.sequence_frequencies(seqID)
 
-    # font = FontProperties()
-    # font.set_weight('bold')
-
     # Refseq and key_residues management.
     ref_seq = data.get_reference_sequence(seqID, key_residues) if refseq else ""
     # data and key_residues management.
@@ -765,16 +678,21 @@ def logo_plot_in_axis( df, seqID, ax, refseq=True, key_residues=None, colors="WE
     maxv = int(math.ceil(data.max_hight()))
 
     ticks = len(_data)
+    # This is applied if it comes from the logo_plot function
+    if 'line_break' in kwargs and kwargs['line_break'] is not None:
+        if ticks < kwargs['line_break']:
+            ticks = kwargs['line_break']
     ax.set_xticks(np.arange(0.5, ticks + 1))
     ax.set_yticks( range(0, maxv + 1) )
     ax.set_xticklabels( _data.index.values )
     ax.set_yticklabels( np.arange( 0, maxv + 1, 1 ) )
-    ax.set_xlim(-0.1, len(_data) + 0.1)
+    ax.set_xlim(-0.1, ticks + 0.1)
+    ax2 = None
     if ref_seq is not None:
         ax2 = ax.twiny()
         ax2.set_xticks(ax.get_xticks())
         ax2.set_xticklabels(list(ref_seq))
-        ax2.set_xlim(-0.1, len(_data) + 0.1)
+        ax2.set_xlim(-0.1, ticks + 0.1)
     sns.despine(ax=ax, trim=True)
     ax.grid(False)
     if ref_seq is not None:
@@ -794,8 +712,39 @@ def logo_plot_in_axis( df, seqID, ax, refseq=True, key_residues=None, colors="WE
             y += score
         x += 1
         maxi = max(maxi, y)
-    # for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-    #     label.set_fontproperties(font)
-    # if ref_seq is not None:
-    #     for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
-    #         label.set_fontproperties(font)
+
+    return ax2
+
+
+def _letterAt( letter, x, y, yscale=1, ax=None, globscale=1.35, LETTERS=None,
+               COLOR_SCHEME=None ):
+    """Generates the letter at the right size and position for the LOGO plot.
+    """
+    text = LETTERS[letter]
+    t = mpl.transforms.Affine2D().scale(1 * globscale, yscale * globscale) + \
+        mpl.transforms.Affine2D().translate(x, y) + ax.transData
+    p = PathPatch(text, lw=0, fc=COLOR_SCHEME[letter],  transform=t)
+    if ax is not None:
+        ax.add_artist(p)
+    return p
+
+
+def _dataframe2logo( data ):
+    """Reshape data to fit LOGO plot
+    """
+    aa = list(data)
+    odata = []
+    for _, pos in data.iterrows():
+        pdata = []
+        for k in aa:
+            if pos[k] > 0.0000000:
+                pdata.append( ( k, float(pos[k]) ) )
+        odata.append(sorted(pdata, key=operator.itemgetter(1, 0)))
+    return odata
+
+
+def _chunks(l, n):
+    """Chunk list in pieces of n.
+    """
+    for i in range(0, len(l), n):
+        yield l[i:i + n]

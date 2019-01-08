@@ -25,7 +25,7 @@ __all__ = ['multiple_distributions', 'plot_in_context', 'distribution_quality']
 
 
 def multiple_distributions( df, fig, grid, igrid=None, values="*", titles=None, labels=None,
-                            refdata=None, ref_equivalences=None, violins=True, **kwargs ):
+                            refdata=None, ref_equivalences=None, violins=True, legends=False, **kwargs ):
     """Automatically plot boxplot distributions for multiple score types of the
     decoy population.
 
@@ -55,6 +55,7 @@ def multiple_distributions( df, fig, grid, igrid=None, values="*", titles=None, 
         provided otherwise.
     :param bool violins: When :data:`True`, plot refdata comparisson with violins, otherwise do it
         with kdplots.
+    :param bool legends: When :data:`True`, show the legends of each axis.
 
     :return: :func:`list` of :class:`~matplotlib.axes.Axes`
 
@@ -77,7 +78,7 @@ def multiple_distributions( df, fig, grid, igrid=None, values="*", titles=None, 
            ...: values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
            ...:           "cav_vol", "design_score", "packstat", "rmsd_drift"]
            ...: fig = plt.figure(figsize=(25, 10))
-           ...: axs = multiple_distributions(df, fig, (2, 4), values)
+           ...: axs = multiple_distributions(df, fig, (2, 4), values=values)
            ...: plt.tight_layout()
 
         @savefig multiple_distributions_docs.png width=5in
@@ -103,7 +104,7 @@ def multiple_distributions( df, fig, grid, igrid=None, values="*", titles=None, 
            ...: values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
            ...:           "cav_vol", "design_score", "packstat", "rmsd_drift"]
            ...: fig = plt.figure(figsize=(25, 10))
-           ...: axs = multiple_distributions(df, fig, (2, 4), values, refdata=refdf)
+           ...: axs = multiple_distributions(df, fig, (2, 4), values=values, refdata=refdf)
            ...: plt.tight_layout()
 
         @savefig multiple_distributions_docs2.png width=5in
@@ -158,13 +159,15 @@ def multiple_distributions( df, fig, grid, igrid=None, values="*", titles=None, 
             if violins:
                 sns.violinplot(x='violinx', y=values[_], hue='target', data=qd, ax=ax,
                                hue_order=["query", "reference"], split=True)
-                ax.get_legend().remove()
+                if not legends:
+                    ax.get_legend().remove()
                 ax.set_xlabel('')
                 ax.set_xticklabels('')
             else:
                 sns.kdeplot(s1[values[_]], ax=ax, shade=True)
                 sns.kdeplot(s2[values[_]], ax=ax, shade=True)
-                ax.get_legend().remove()
+                if not legends:
+                    ax.get_legend().remove()
                 ax.set_xlabel(values[_])
         if titles is not None:
             add_top_title(ax, titles[_])
@@ -176,7 +179,7 @@ def multiple_distributions( df, fig, grid, igrid=None, values="*", titles=None, 
 
 
 def plot_in_context( df, fig, grid, refdata, igrid=None, values='*', ref_equivalences=None,
-                     **kwargs ):
+                     legends=False, **kwargs ):
     """Plot position of decoys in a backgroud reference dataset.
 
     .. note::
@@ -199,6 +202,7 @@ def plot_in_context( df, fig, grid, refdata, igrid=None, values='*', ref_equival
     :param dict ref_equivalences: When names between the query data and the provided data are the
         same, they will be directly assigned. Here a dictionary ``db_name``:``query_name`` can be
         provided otherwise.
+    :param bool legends: When :data:`True`, show the legends of each axis.
 
     :return: :func:`list` of :class:`~matplotlib.axes.Axes`
 
@@ -279,7 +283,8 @@ def plot_in_context( df, fig, grid, refdata, igrid=None, values='*', ref_equival
             ref_x = row[values[_]]
             ref_y = np.interp(ref_x, data_x, data_y)
             kde.plot([ref_x], [ref_y], **kwargs_point)
-        ax.get_legend().remove()
+        if not legends:
+            ax.get_legend().remove()
         ax.set_xlabel(values[_])
         axis.append(ax)
 

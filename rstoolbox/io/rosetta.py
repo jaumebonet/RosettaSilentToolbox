@@ -647,7 +647,7 @@ def write_fragment_sequence_profiles( df, filename=None, consensus=None ):
         return data
 
 
-def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized_res=True ):
+def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized_res=True, minimize=False ):
     """Provided a PDB file, it will run a small **RosettaScript** to capture its sequence and
     structure, i.e. dssp and phi-psi dihedrals.
 
@@ -666,6 +666,7 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
     :param bool mk_minisilent: If :data:`True`, transeform output into ``minisilent`` format.
     :param bool ignore_unrecognized_res: If :data:`True`, **Rosetta** ignores non-recognizable
         residues.
+    :param bool minimize: If :data:`True`, apply minimization before evaluating the structure.
 
     :return: :class:`.DesignFrame`.
 
@@ -702,7 +703,7 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
     sys.stdout.write("Generating file {}\n".format(minisilent))
 
     with open("dssp.xml", "w") as fd:
-        fd.write(baseline())
+        fd.write(baseline(minimize))
 
     # Check rosetta executable & run
     exe = make_rosetta_app_path('rosetta_scripts')
@@ -736,7 +737,7 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
         raise ValueError("Execution has failed\n")
 
 
-def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True ):
+def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True ):  # pragma: no cover
     """Extract the selected decoys (if any).
 
     .. note::

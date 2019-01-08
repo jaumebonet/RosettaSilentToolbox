@@ -224,7 +224,7 @@ def make_rosetta_app_path( application ):
     return exe
 
 
-def execute_process( command ):
+def execute_process( command ):  # pragma: no cover
     """Execute the provided command.
 
     :param command: Command to be executed.

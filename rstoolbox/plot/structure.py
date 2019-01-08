@@ -135,8 +135,9 @@ def plot_ramachandran( df, seqID, fig, grid=None, positions=None, **kwargs ):
     Note that this function will only plot the ramachandran for a single decoy. If one
     would like to compute it for mutiple decoys, please see the example below.
 
-    Parameters for :func:`~matplotlib.pyplot.scatter` can be provided with prefix 'scatter_'.
-    Parameters for :func:`~matplotlib.pyplot.plot` can be provided with prefix 'line_'.
+    Parameters for :func:`~matplotlib.pyplot.scatter` can be provided with prefix ``scatter_``.
+
+    Parameters for :func:`~matplotlib.pyplot.plot` can be provided with prefix ``line_``.
 
     :param df: |df_param|, where ONE column cotains the phi and a second column
         the psi angles.
@@ -157,7 +158,7 @@ def plot_ramachandran( df, seqID, fig, grid=None, positions=None, **kwargs ):
         :ValueError: If there number of positions is not 4.
 
     .. seealso::
-        :func:`.plot_ramachandran_single
+        :func:`.plot_ramachandran_single`
         :func:`.get_sequence_and_structure`
         :func:`.get_dihedrals`
         :func:`.get_phi`
@@ -214,8 +215,9 @@ def plot_ramachandran( df, seqID, fig, grid=None, positions=None, **kwargs ):
 def plot_ramachandran_single( df, seqID, ax, rama_type='GENERAL', **kwargs ):
     """Plot only one of the 4 ramachandran plots in RAMPAGE format.
 
-    Parameters for :func:`~matplotlib.pyplot.scatter` can be provided with prefix 'scatter_'.
-    Parameters for :func:`~matplotlib.pyplot.plot` can be provided with prefix 'line_'.
+    Parameters for :func:`~matplotlib.pyplot.scatter` can be provided with prefix ``scatter_``.
+
+    Parameters for :func:`~matplotlib.pyplot.plot` can be provided with prefix ``line_``.
 
     :param df: |df_param|, where ONE column cotains the phi and a second column
         the psi angles.

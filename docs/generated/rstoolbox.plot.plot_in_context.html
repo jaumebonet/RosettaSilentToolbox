@@ -116,7 +116,7 @@
 <h1>rstoolbox.plot.plot_in_context<a class="headerlink" href="#rstoolbox-plot-plot-in-context" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.plot.plot_in_context">
-<code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_in_context</code><span class="sig-paren">(</span><em>df</em>, <em>fig</em>, <em>grid</em>, <em>refdata</em>, <em>values='*'</em>, <em>ref_equivalences=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_in_context" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_in_context</code><span class="sig-paren">(</span><em>df</em>, <em>fig</em>, <em>grid</em>, <em>refdata</em>, <em>igrid=None</em>, <em>values='*'</em>, <em>ref_equivalences=None</em>, <em>legends=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_in_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot position of decoys in a backgroud reference dataset.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -133,10 +133,12 @@ prefix <code class="docutils literal notranslate"><span class="pre">point_</span
 <li><strong>fig</strong> (<a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>) – Figure into which the data is going to be plotted.</li>
 <li><strong>grid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code> with two <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Shape of the grid to plot the values in the figure (rows x columns).</li>
 <li><strong>refdata</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data content to use as reference.</li>
+<li><strong>igrid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code> with two <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Initial position of the grid. Defaults to (0, 0)</li>
 <li><strong>values</strong> (<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Contents from the data container that are expected to be plotted.</li>
 <li><strong>ref_equivalences</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – When names between the query data and the provided data are the
 same, they will be directly assigned. Here a dictionary <code class="docutils literal notranslate"><span class="pre">db_name</span></code>:<code class="docutils literal notranslate"><span class="pre">query_name</span></code> can be
 provided otherwise.</li>
+<li><strong>legends</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, show the legends of each axis.</li>
 </ul>
 </td>
 </tr>

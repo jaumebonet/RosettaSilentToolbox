@@ -672,7 +672,7 @@ def make_resfile( self, seqID, header, filename, write=True ):
     return self
 
 
-def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False ):
+def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False ):  # pragma: no cover
     """Apply a generated Rosetta `resfile
     <https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles>`_
     to the decoy.

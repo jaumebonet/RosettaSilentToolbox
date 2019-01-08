@@ -116,7 +116,7 @@
 <h1>rstoolbox.components.DesignFrame.get_sequence_with<a class="headerlink" href="#rstoolbox-components-designframe-get-sequence-with" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="rstoolbox.components.DesignFrame.get_sequence_with">
-<code class="descclassname">DesignFrame.</code><code class="descname">get_sequence_with</code><span class="sig-paren">(</span><em>seqID</em>, <em>selection</em>, <em>confidence=1</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.get_sequence_with" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">DesignFrame.</code><code class="descname">get_sequence_with</code><span class="sig-paren">(</span><em>seqID</em>, <em>selection</em>, <em>confidence=1</em>, <em>invert=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.get_sequence_with" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects those decoys with a particular set of residue matches.</p>
 <p>Basically, is meant to find, for example, all the decoys in which
 position 25 is A and position 46 is T.</p>
@@ -130,6 +130,8 @@ position 25 is A and position 46 is T.</p>
 type (in 1 letter code).</li>
 <li><strong>confidence</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Percentage of the number of the selection
 rules that we expect the matches to fulfill. Default is 1 (all).</li>
+<li><strong>invert</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>, return the sequences that do NOT
+fulfill the search conditions.</li>
 </ul>
 </td>
 </tr>

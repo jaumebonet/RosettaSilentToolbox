@@ -17,6 +17,7 @@ import matplotlib as mpl
 if os.environ.get('DISPLAY', '') == '':
     mpl.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
 import pytest
 
 # This Library
@@ -547,7 +548,20 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1, sc_des)
         df.add_reference_sequence("B", refseq)
 
-        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
+        font = FontProperties()
+        font.set_size(35)
+        font.set_weight('bold')
+
+        fig, axs = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
+
+        for ax, ax2 in axs:
+            for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+                label.set_fontproperties(font)
+            if ax2 is None:
+                continue
+            for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
+                label.set_fontproperties(font)
+
         plt.tight_layout()
         return fig
 
@@ -559,7 +573,20 @@ class TestDesign( object ):
         # Start test
         df = ri.parse_rosetta_file(self.silent1, sc_des)
 
-        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
+        font = FontProperties()
+        font.set_size(35)
+        font.set_weight('bold')
+
+        fig, axs = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
+
+        for ax, ax2 in axs:
+            for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+                label.set_fontproperties(font)
+            if ax2 is None:
+                continue
+            for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
+                label.set_fontproperties(font)
+
         plt.tight_layout()
         return fig
 
@@ -576,7 +603,20 @@ class TestDesign( object ):
         df.add_reference_sequence("B", refseq)
         df = df.sequence_bits('B')
 
-        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
+        font = FontProperties()
+        font.set_size(35)
+        font.set_weight('bold')
+
+        fig, axs = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
+
+        for ax, ax2 in axs:
+            for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+                label.set_fontproperties(font)
+            if ax2 is None:
+                continue
+            for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
+                label.set_fontproperties(font)
+
         plt.tight_layout()
         return fig
 
@@ -589,7 +629,20 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1, sc_des)
         df = df.sequence_bits('B')
 
-        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
+        font = FontProperties()
+        font.set_size(35)
+        font.set_weight('bold')
+
+        fig, axs = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
+
+        for ax, ax2 in axs:
+            for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+                label.set_fontproperties(font)
+            if ax2 is None:
+                continue
+            for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
+                label.set_fontproperties(font)
+
         plt.tight_layout()
         return fig
 

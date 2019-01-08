@@ -145,9 +145,18 @@ that is executed can be found in <a class="reference internal" href="generated/r
 <span class="go">&lt;ROSETTASCRIPTS&gt;</span>
 <span class="go">    &lt;MOVERS&gt;</span>
 <span class="go">        &lt;WriteSSEMover dssp=&quot;1&quot; name=&quot;w&quot; write_phipsi=&quot;true&quot; /&gt;</span>
+<span class="go">        &lt;MinMover name=&quot;m&quot; bb=&quot;true&quot; chi=&quot;true&quot; tolerance=&quot;.1&quot; /&gt;</span>
 <span class="go">    &lt;/MOVERS&gt;</span>
+<span class="go">    &lt;FILTERS&gt;</span>
+<span class="go">        &lt;CavityVolume name=&quot;cavity&quot; confidence=&quot;0&quot; /&gt;</span>
+<span class="go">        &lt;PackStat name=&quot;pack&quot; confidence=&quot;0&quot; /&gt;</span>
+<span class="go">        &lt;AverageDegree name=&quot;avdegree&quot; confidence=&quot;0&quot; /&gt;</span>
+<span class="go">    &lt;/FILTERS&gt;</span>
 <span class="go">    &lt;PROTOCOLS&gt;</span>
 <span class="go">        &lt;Add mover=&quot;w&quot; /&gt;</span>
+<span class="go">        &lt;Add filter=&quot;cavity&quot; /&gt;</span>
+<span class="go">        &lt;Add filter=&quot;pack&quot; /&gt;</span>
+<span class="go">        &lt;Add filter=&quot;avdegree&quot; /&gt;</span>
 <span class="go">    &lt;/PROTOCOLS&gt;</span>
 <span class="go">&lt;/ROSETTASCRIPTS&gt;</span>
 </pre></div>

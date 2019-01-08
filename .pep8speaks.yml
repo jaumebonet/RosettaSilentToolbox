@@ -15,7 +15,7 @@ scanner:
     diff_only: False  # If True, errors caused by only the patch are shown
 
 pycodestyle:
-    max-line-length: 100 # Let's think big screen, for now
+    max-line-length: 150 # Let's think big screen, for now
     ignore:  # Errors and warnings to ignore
         - E402  # Not importing files at top of file.
         - E201  # whitespace after '('
