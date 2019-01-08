@@ -348,9 +348,7 @@ class Description( object ):
         for h in self.naming:
             if h in header and self.wanted_score(h):
                 if h == self.score_name(h):
-                    raise AttributeError(
-                        "New column {} ".format(h) +
-                        "cannot be created, a score has that name")
+                    raise AttributeError("New column {} cannot be created".format(h))
 
     def get_naming_pairs( self, description ):
         if self.naming is not None:

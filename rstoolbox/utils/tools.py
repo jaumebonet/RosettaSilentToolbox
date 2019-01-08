@@ -276,7 +276,7 @@ def report( df ):
             return ''
         mutations = row.get_mutations(seqID).split(',')
         for i, m in enumerate(mutations):
-            g = re.match('^(\w+)(\d+)(\w+)$', m)
+            g = re.match(r'^(\w+)(\d+)(\w+)$', m)
             if isinstance(shift, int):
                 position = int(g.group(2)) + (shift - 1)
             else:

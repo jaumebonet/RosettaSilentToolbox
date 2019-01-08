@@ -306,9 +306,9 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             for cv, value in enumerate( line.strip().split()[1:-1] ):
                 hcv = header[cv]
                 if manager.wanted_per_residue_score( hcv ):
-                    hcvn = re.sub("\d+$", "", hcv)
+                    hcvn = re.sub(r'\d+$', "", hcv)
                     per_res.setdefault( hcvn, {} )
-                    per_res[hcvn][int(re.findall('\d+$', hcv)[0])] = _check_type( value )
+                    per_res[hcvn][int(re.findall(r'\d+$', hcv)[0])] = _check_type( value )
                     continue
                 if manager.wanted_score( hcv ):
                     data.setdefault( manager.score_name(hcv), []).append( _check_type( value ) )
@@ -689,9 +689,9 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
     if not os.path.isfile( pdbfile ):
         raise IOError("Structure {} cannot be found".format(pdbfile))
     if mk_minisilent:
-        minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.minisilent"
+        minisilent = re.sub(r'\.pdb|\.cif$', "", re.sub(r'\.gz$', "", pdbfile)) + ".dssp.minisilent"
     else:
-        minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.silent"
+        minisilent = re.sub(r'\.pdb|\.cif$', "", re.sub(r'\.gz$', "", pdbfile)) + ".dssp.silent"
 
     if os.path.isfile(minisilent):
         return parse_rosetta_file(minisilent,

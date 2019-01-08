@@ -20,6 +20,7 @@ pycodestyle:
         - E402  # Not importing files at top of file.
         - E201  # whitespace after '('
         - E202  # whitespace before ')'
-        - E712, # comparisson to bool (for assertions)
-        - E221, # multiple spaces before operator
+        - E712  # comparisson to bool (for assertions)
+        - E221  # multiple spaces before operator
         - E241  # Multiple spaces after ','
+        - W504  # line break after binary operator

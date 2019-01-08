@@ -247,7 +247,7 @@ class FragmentFrame( pd.DataFrame ):
                 filename = filename + ".gz"
 
         # Load the data
-        df = pd.read_csv(filename, header=None, sep="\s+",
+        df = pd.read_csv(filename, header=None, sep=r'\s+',
                          names=["size", "frame", "neighbor", "rmsd", "_null1", "_null2"],
                          usecols=["size", "frame", "neighbor", "rmsd"])
 

@@ -162,7 +162,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         :return: :class:`.DesignFrame`
         """
         df = self.copy()
-        df['description'] = df['description'].str.replace('\_\d+$', '', regex=True)
+        df['description'] = df['description'].str.replace(r'\_\d+$', '', regex=True)
         return df
 
     def get_sequence_with( self, seqID, selection, confidence=1, invert=False ):
