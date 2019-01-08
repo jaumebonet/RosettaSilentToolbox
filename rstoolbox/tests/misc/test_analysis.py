@@ -19,13 +19,14 @@ import matplotlib.pyplot as plt
 
 # This Library
 import rstoolbox.analysis as ra
+from rstoolbox.tests.helper import baseline_test_dir
 
 
 class TestAnalysis( object ):
     """
     Test utilities in analysis.
     """
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_cumulative.png')
     def test_cumulative( self ):
         np.random.seed(0)

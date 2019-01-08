@@ -137,7 +137,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
     _metadata = ['_reference', '_source_files']
     _subtyp = 'design_frame'
 
-    def __init__(self, *args, **kwargs):
+    def __init__( self, *args, **kwargs ):
 
         if len(args) > 0 or 'data' in kwargs:
             d = args[0] if 'data' not in kwargs else kwargs['data']
@@ -151,7 +151,21 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         self._reference = reference
         self._source_files = source
 
-    def get_sequence_with( self, seqID, selection, confidence=1 ):
+    def clean_rosetta_suffix( self ):
+        """Remove the numerical suffix that **Rosetta** adds to the output identifiers.
+
+        .. warning::
+            This function is useful when each input was runned once, if it was runned more
+            than one, and has multiple numerical suffixes, it will loose the ability to
+            differenciate between them.
+
+        :return: :class:`.DesignFrame`
+        """
+        df = self.copy()
+        df['description'] = df['description'].str.replace(r'\_\d+$', '', regex=True)
+        return df
+
+    def get_sequence_with( self, seqID, selection, confidence=1, invert=False ):
         """Selects those decoys with a particular set of residue matches.
 
         Basically, is meant to find, for example, all the decoys in which
@@ -163,6 +177,8 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         :type selection: :func:`list` of :class:`tuple`
         :param float confidence: Percentage of the number of the selection
             rules that we expect the matches to fulfill. Default is 1 (all).
+        :param bool invert: When :data:`False`, return the sequences that do NOT
+            fulfill the search conditions.
 
         :return: :class:`.DesignFrame` - filtered by the requested sequence
 
@@ -189,10 +205,13 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
             return t / float(len(selection)) >= float(confidence)
 
         shift = self.get_reference_shift(seqID)
-        return self.loc[ self.apply(
+        df = self.loc[ self.apply(
             lambda row: match_residues(row.get_sequence(seqID), selection, confidence, shift ),
             axis=1
         )]
+        if invert:
+            return self[~self['description'].isin(df['description'])]
+        return df
 
     def sequence_distance( self, seqID, other=None ):
         """Make identity sequence distance between the selected decoys.

@@ -18,6 +18,7 @@ import string
 from operator import itemgetter
 
 # External Libraries
+import six
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -327,7 +328,10 @@ def plot_thermal_melt( df, ax, linecolor=0, pointcolor=0, min_temperature=None,
     ax.set_xlabel('Temperature (C)')
 
     ax.set_xlim(ax.get_xlim()[0] if min_temperature is None else min_temperature)
-    ax.set_ylim(ymax=0)
+    if six.PY2:
+        ax.set_ylim(ymax=0)
+    else:
+        ax.set_ylim(top=0)
 
 
 def plot_MALS( df, ax, uvcolor=0, lscolor=1, mwcolor=2, max_voltage=None, max_time=None ):
@@ -480,6 +484,7 @@ def plot_CD( df, ax, color=None, wavelengths=None, sample=None  ):
     .. rubric:: Example - Multiple Machine-Generated Data Files
 
     .. ipython::
+        :okwarning:
 
         In [1]: from rstoolbox.plot import plot_CD
            ...: import numpy as np

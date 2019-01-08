@@ -35,7 +35,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'Environment :: Console',
@@ -46,6 +46,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Operating System :: MacOS',
         'Operating System :: Unix',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -61,12 +62,14 @@ setup(
     platforms='UNIX',
     keywords='development',
 
-    install_requires=['pandas>=0.23', 'pyyaml', 'seaborn', 'libconfig', 'six', 'networkx'],
+    install_requires=['pandas>=0.23', 'pyyaml', 'distro', 'seaborn',
+                      'libconfig>=0.8', 'six', 'networkx'],
 
     packages=find_packages(exclude=['docs', 'demo', 'sphinx-docs']),
     include_package_data=True,
     package_data={
         'rstoolbox': ['analysis/matrices/*',
+                      'utils/baselines/*',
                       'components/square.ttf',
                       'plot/rama_bgdists/*']
     },

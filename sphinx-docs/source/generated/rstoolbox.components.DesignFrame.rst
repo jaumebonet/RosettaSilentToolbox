@@ -80,3 +80,9 @@ rstoolbox.components.DesignFrame
       ~DesignFrame.apply_resfile
       ~DesignFrame.score_by_pssm
       ~DesignFrame.view_mutants_alignment
+
+  .. rubric:: Miscellaneous
+  .. autosummary::
+     :toctree: DesignFrame
+
+      ~DesignFrame.clean_rosetta_suffix

@@ -7,13 +7,13 @@
     <title>rstoolbox.components.DesignFrame.get_sequence_with &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/style.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/style.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/functions.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -116,7 +116,7 @@
 <h1>rstoolbox.components.DesignFrame.get_sequence_with<a class="headerlink" href="#rstoolbox-components-designframe-get-sequence-with" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="rstoolbox.components.DesignFrame.get_sequence_with">
-<code class="descclassname">DesignFrame.</code><code class="descname">get_sequence_with</code><span class="sig-paren">(</span><em>seqID</em>, <em>selection</em>, <em>confidence=1</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.get_sequence_with" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">DesignFrame.</code><code class="descname">get_sequence_with</code><span class="sig-paren">(</span><em>seqID</em>, <em>selection</em>, <em>confidence=1</em>, <em>invert=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.components.DesignFrame.get_sequence_with" title="Permalink to this definition">¶</a></dt>
 <dd><p>Selects those decoys with a particular set of residue matches.</p>
 <p>Basically, is meant to find, for example, all the decoys in which
 position 25 is A and position 46 is T.</p>
@@ -130,6 +130,8 @@ position 25 is A and position 46 is T.</p>
 type (in 1 letter code).</li>
 <li><strong>confidence</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Percentage of the number of the selection
 rules that we expect the matches to fulfill. Default is 1 (all).</li>
+<li><strong>invert</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – When <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>, return the sequences that do NOT
+fulfill the search conditions.</li>
 </ul>
 </td>
 </tr>
@@ -147,7 +149,7 @@ rules that we expect the matches to fulfill. Default is 1 (all).</li>
 <span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">})</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">get_sequence_with</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">)])</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="gh">Out[1]: </span><span class="go"></span>
 <span class="go">     score                                                                                                            sequence_B</span>
 <span class="go">0 -206.678  TRPEEARERAWRLAEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK</span>
 <span class="go">2 -203.582  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW</span>
@@ -175,7 +177,7 @@ rules that we expect the matches to fulfill. Default is 1 (all).</li>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

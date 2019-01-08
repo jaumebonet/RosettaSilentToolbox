@@ -19,6 +19,7 @@ from rstoolbox.bin.rename_decoys import main as rename_main
 from rstoolbox.bin.check_mutants import main as check_mutants_main
 from rstoolbox.bin.plot_fragments_rmsd import main as fragment_main
 from rstoolbox.bin.regplot_rosetta import main as regplot_main
+from rstoolbox.tests.helper import baseline_test_dir
 
 
 class TestExecutables( object ):
@@ -61,7 +62,7 @@ class TestExecutables( object ):
                             ofile=os.path.join(self.tmpdir, "renamed.sc"))
         rename_main(options)
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_exe_check_mutants_logo.png')
     def test_exe_check_mutants_logo(self):
         options = Namespace(ifile=self.silent1, ifiles=None, ifasta=None, seqID='B',
@@ -70,7 +71,7 @@ class TestExecutables( object ):
         lfig, afig = check_mutants_main(options)
         return lfig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_exe_check_mutants_ali.png')
     def test_exe_check_mutants_ali(self):
         options = Namespace(ifile=self.silent1, ifiles=None, ifasta=None, seqID='B',
@@ -79,14 +80,14 @@ class TestExecutables( object ):
         lfig, afig = check_mutants_main(options)
         return afig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_exe_fragments.png')
     def test_exe_plot_fragments(self):
         options = Namespace(fsmall=self.frag3, qsmall=self.frag3q, flarge=self.frag9,
                             qlarge=self.frag9q, pdb=None, silent=True, format='h', ofile=None)
         return fragment_main(options)
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_exe_regplot.png')
     def test_exe_regplot(self):
         options = Namespace(ifile=self.silent3, ifiles=None, x='finalRMSD', y='score',

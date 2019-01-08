@@ -24,6 +24,7 @@ import rstoolbox.utils as ru
 import rstoolbox.plot as rp
 import rstoolbox.io as ri
 import rstoolbox.components as rc
+from rstoolbox.tests.helper import baseline_test_dir
 
 
 class TestPlotUtils( object ):
@@ -33,7 +34,7 @@ class TestPlotUtils( object ):
     def setup_method( self, method ):
         self.dirpath = os.path.join(os.path.dirname(__file__), '..', 'data')
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_titles.png')
     def test_plot_titles( self ):
         fig  = plt.figure(figsize=(10, 10))
@@ -45,13 +46,13 @@ class TestPlotUtils( object ):
         ru.add_left_title(ax00, 'left title text', rotation=90)
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_96wells_blanc.png')
     def test_plot_96wells_blanc( self ):
         fig, ax = rp.plot_96wells()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_96wells_color.png')
     def test_plot_96wells_color( self ):
         np.random.seed(0)
@@ -59,7 +60,7 @@ class TestPlotUtils( object ):
         fig, ax = rp.plot_96wells(cdata=df)
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_96wells_size.png')
     def test_plot_96wells_size( self ):
         np.random.seed(0)
@@ -67,7 +68,7 @@ class TestPlotUtils( object ):
         fig, ax = rp.plot_96wells(sdata=-df)
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_96wells_bool.png')
     def test_plot_96wells_bool( self ):
         np.random.seed(0)
@@ -75,7 +76,7 @@ class TestPlotUtils( object ):
         fig, ax = rp.plot_96wells(bdata=df < 0)
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_96wells_all.png')
     def test_plot_96wells_all( self ):
         np.random.seed(0)
@@ -83,7 +84,7 @@ class TestPlotUtils( object ):
         fig, ax = rp.plot_96wells(cdata=df, sdata=-df, bdata=df < 0)
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_spr.png')
     def test_spr( self ):
         df = ri.read_SPR(os.path.join(self.dirpath, 'spr_data.csv.gz'))
@@ -92,7 +93,7 @@ class TestPlotUtils( object ):
         rp.plot_SPR(df, ax, datacolor='black', fitcolor='red')
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_cd.png')
     def test_cd( self ):
         df = pd.read_csv(os.path.join(self.dirpath, 'cd.csv'))
@@ -101,16 +102,21 @@ class TestPlotUtils( object ):
         rp.plot_CD(df, ax)
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_cd2.png')
     def test_cd_read( self ):
+        def sampling( m, n ):
+            return [i * n // m + n // (2 * m) for i in range(m)]
+
         df = ri.read_CD(os.path.join(self.dirpath, 'CD'), prefix='kx8', model='J-815')
+        assert len(df['bin'].unique()) == 36
+        assert sampling(5, 35) == [3, 10, 17, 24, 31]
         fig = plt.figure(figsize=(10, 6.7))
         ax = plt.subplot2grid((1, 1), (0, 0))
         rp.plot_CD(df, ax, sample=5)
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_mals.png')
     def test_mals( self ):
         df = pd.read_csv(os.path.join(self.dirpath, 'mals.csv'))
@@ -119,7 +125,7 @@ class TestPlotUtils( object ):
         rp.plot_MALS(df, ax)
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_mals2.png')
     def test_mals_read( self ):
         df = ri.read_MALS(filename=os.path.join(self.dirpath, 'mota_1kx8_d2.csv'),
@@ -129,7 +135,7 @@ class TestPlotUtils( object ):
         rp.plot_MALS(df, ax)
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_tm.png')
     def test_thermal_melt( self ):
         df = pd.read_csv(os.path.join(self.dirpath, 'thermal_melt.csv'))
@@ -157,7 +163,7 @@ class TestPlotUtils( object ):
         assert df['enrichment_binder2'].mean() == pytest.approx(1.13, rel=1e-3)
         assert df['enrichment_binder1'].max() == pytest.approx(5, rel=1e-3)
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_color_hydrophobicity.png')
     def test_color_scheme_hydrophobicity( self ):
         df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
@@ -166,7 +172,7 @@ class TestPlotUtils( object ):
                                 colors='HYDROPHOBICITY')
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_color_chemistry.png')
     def test_color_scheme_chemistry( self ):
         df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
@@ -175,7 +181,7 @@ class TestPlotUtils( object ):
                                 colors="CHEMISTRY")
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_color_charge.png')
     def test_color_scheme_charge( self ):
         df = rc.DesignFrame(pd.read_csv(os.path.join(self.dirpath, 'logo_plot_sequence.csv'),
@@ -184,7 +190,7 @@ class TestPlotUtils( object ):
                                 colors="CHARGE")
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_color_custom.png')
     def test_color_scheme_custom( self ):
         custom = {
@@ -200,7 +206,7 @@ class TestPlotUtils( object ):
                                 colors=custom)
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_logo_sse.png')
     def test_sse_logo(self):
         custom = {

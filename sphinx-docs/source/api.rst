@@ -102,6 +102,7 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.multiple_distributions
    ~plot.sequence_frequency_plot
    ~plot.logo_plot
+   ~plot.logo_plot_in_axis
    ~plot.positional_sequence_similarity_plot
    ~plot.per_residue_matrix_score_plot
    ~plot.positional_structural_similarity_plot
@@ -109,6 +110,7 @@ plotting library, but some special plotting alternatives are offered through ``r
    ~plot.plot_fragment_profiles
    ~plot.plot_alignment
    ~plot.plot_ramachandran
+   ~plot.plot_ramachandran_single
    ~plot.plot_dssp_vs_psipred
 
 Plot: Experiments
@@ -134,12 +136,26 @@ Special functions to help personalise your plot easily can be loaded through ``r
    :toctree: generated/
 
    ~utils.format_Ipython
+   ~utils.use_qgrid
    ~utils.add_left_title
    ~utils.add_right_title
    ~utils.add_top_title
    ~utils.edit_legend_text
    ~utils.add_white_to_cmap
    ~utils.color_variant
+
+Utils: Contextualize
+--------------------
+
+Functions aimed to help assess a design population in the context of known protein structures.
+
+.. autosummary::
+   :toctree: generated/
+
+   ~utils.load_refdata
+   ~utils.make_redundancy_table
+   ~plot.plot_in_context
+   ~plot.distribution_quality
 
 Utils: Transforms
 -----------------

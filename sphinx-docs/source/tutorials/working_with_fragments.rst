@@ -15,6 +15,7 @@ The ability to analyse the distribution an coverage of the fragment set used in 
 understanding of the putative challenging regions in a protein design. Fragments can be easily loaded with:
 
 .. ipython::
+  :okwarning:
 
   In [1]: import rstoolbox as rs
      ...: import pandas as pd
@@ -37,6 +38,7 @@ and it will generate a file named similarly to the original fragments file name.
   will **skip the Rosetta execution**. It that case, we just need to provide :data:`None` to activate the automatic behaviour.
 
 .. ipython::
+  :okwarning:
 
   In [2]: df3 = df3.add_quality_measure(None)
      ...: df9 = df9.add_quality_measure(None)
@@ -48,6 +50,7 @@ The most complete way to view the fragment's distribution over a given structure
 with this data, one can :func:`.plot_fragment_profiles`
 
 .. ipython::
+  :okwarning:
 
   In [3]: import matplotlib.pyplot as plt
      ...: fig = plt.figure(figsize=(25, 10))

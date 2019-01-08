@@ -99,6 +99,16 @@ class FragmentFrame( pd.DataFrame ):
         """
         return self._source_file is not None
 
+    def slice_region( self, ini, end ):
+        """Retrieve only fragments within certain positions.
+
+        :param int ini: Starting position.
+        :param int end: Ending position.
+
+        :return: :class:`.FragmentFrame`
+        """
+        return self[(self['frame'] >= ini) & (self['frame'] <= end)]
+
     def is_comparable( self, df ):
         """Evaluate if the current :class:`.FragmentFrame` is comparable to
         the provided one.
@@ -194,6 +204,8 @@ class FragmentFrame( pd.DataFrame ):
         :param str pdbfile: In case the quality has to be calculated. Provide the
             PDB over which to calculate it. Default is :data:`None`.
 
+        :return: :class:`.FragmentFrame`
+
         :raises:
             :IOError: if ``filename`` does not exist.
             :IOError: if ``pdbfile`` is provided and does not exist.
@@ -235,7 +247,7 @@ class FragmentFrame( pd.DataFrame ):
                 filename = filename + ".gz"
 
         # Load the data
-        df = pd.read_csv(filename, header=None, sep="\s+",
+        df = pd.read_csv(filename, header=None, sep=r'\s+',
                          names=["size", "frame", "neighbor", "rmsd", "_null1", "_null2"],
                          usecols=["size", "frame", "neighbor", "rmsd"])
 

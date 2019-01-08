@@ -7,20 +7,20 @@
     <title>rstoolbox.plot.plot_ramachandran &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/functions.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="rstoolbox.plot.plot_dssp_vs_psipred" href="rstoolbox.plot.plot_dssp_vs_psipred.html" />
+    <link rel="next" title="rstoolbox.plot.plot_ramachandran_single" href="rstoolbox.plot.plot_ramachandran_single.html" />
     <link rel="prev" title="rstoolbox.plot.plot_alignment" href="rstoolbox.plot.plot_alignment.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -116,7 +116,7 @@
 <h1>rstoolbox.plot.plot_ramachandran<a class="headerlink" href="#rstoolbox-plot-plot-ramachandran" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.plot.plot_ramachandran">
-<code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_ramachandran</code><span class="sig-paren">(</span><em>df</em>, <em>seqID</em>, <em>fig</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_ramachandran" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.plot.</code><code class="descname">plot_ramachandran</code><span class="sig-paren">(</span><em>df</em>, <em>seqID</em>, <em>fig</em>, <em>grid=None</em>, <em>positions=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.plot.plot_ramachandran" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a ramachandran plot in RAMPAGE style.</p>
 <p>For more details and sources please refert to
 <a class="reference external" href="https://warwick.ac.uk/fac/sci/moac/people/students/peter_cock/python/ramachandran/">ramachandran plot for python</a></p>
@@ -126,22 +126,45 @@
 consider computing them using for example the <a class="reference internal" href="rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sequence_and_structure()</span></code></a>.
 Note that this function will only plot the ramachandran for a single decoy. If one
 would like to compute it for mutiple decoys, please see the example below.</p>
+<p>Parameters for <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="(in Matplotlib v3.0.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scatter()</span></code></a> can be provided with prefix <code class="docutils literal notranslate"><span class="pre">scatter_</span></code>.</p>
+<p>Parameters for <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.0.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot()</span></code></a> can be provided with prefix <code class="docutils literal notranslate"><span class="pre">line_</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>) – Data container, where ONE column cotains the phi and a second column
 the psi angles.</li>
-<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v2.2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>) – <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> axis to which we will plot.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest</li>
+<li><strong>fig</strong> (<a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>) – Figure into which the data is going to be plotted.</li>
+<li><strong>grid</strong> (<em>tuple</em>) – Grid of the figure. By default assumes the figure has nothing
+else and so, the grid is (2, 2).</li>
+<li><strong>positions</strong> (<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>) – Positions in the grid (in case the image will contain more than
+the Ramachandran). By default, it assumes a (2, 2) grid and fills all positions.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ValueError:</th><td class="field-body">If the grid does not provide at least 4 positions.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ValueError:</th><td class="field-body">If there number of positions is not 4.</td>
+</tr>
+</tbody>
+</table>
 </td>
 </tr>
 </tbody>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sequence_and_structure()</span></code></a>
+<p class="last"><a class="reference internal" href="rstoolbox.plot.plot_ramachandran_single.html#rstoolbox.plot.plot_ramachandran_single" title="rstoolbox.plot.plot_ramachandran_single"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_ramachandran_single()</span></code></a>
+<a class="reference internal" href="rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sequence_and_structure()</span></code></a>
 <code class="xref py py-func docutils literal notranslate"><span class="pre">get_dihedrals()</span></code>
 <code class="xref py py-func docutils literal notranslate"><span class="pre">get_phi()</span></code>
 <code class="xref py py-func docutils literal notranslate"><span class="pre">get_psi()</span></code></p>
@@ -166,9 +189,9 @@ the psi angles.</li>
 <span class="gp">   ...: </span><span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
 <span class="gp">   ...: </span>
 
-<span class="gp">In [5]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="gp">In [2]: </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-<span class="gp">In [6]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">In [3]: </span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/plot_ramachandran.png"><img alt="../_images/plot_ramachandran.png" src="../_images/plot_ramachandran.png" style="width: 5in;" /></a>
@@ -193,7 +216,7 @@ the psi angles.</li>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>
