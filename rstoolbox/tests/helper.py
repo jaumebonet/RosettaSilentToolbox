@@ -9,17 +9,29 @@
 .. func:: random_frequency_matrix
 .. func:: random_fastq
 """
-# Standard Libraries
+# Standard Librarie
+import os
 from random import randint, choice
 
 # External Libraries
 import pandas as pd
 import numpy as np
+import six
 
 # This Library
 from rstoolbox.components import DesignFrame, Selection
 
-__all__ = ['random_frequency_matrix', 'random_fastq', 'random_proteins']
+__all__ = ['baseline_test_dir', 'random_frequency_matrix',
+           'random_fastq', 'random_proteins']
+
+
+def baseline_test_dir():
+    """Provide directory for baseline images depending on python version.
+
+    :return: :class:`str`
+    """
+    py = 'py2' if six.PY2 else 'py3'
+    return os.path.join('..', 'baseline_images', py)
 
 
 def random_frequency_matrix(size, seed=None):

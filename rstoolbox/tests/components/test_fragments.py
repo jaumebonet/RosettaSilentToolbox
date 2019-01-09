@@ -20,6 +20,8 @@ import pytest
 from rstoolbox.io import parse_rosetta_fragments
 from rstoolbox.plot import plot_fragment_profiles
 from rstoolbox.utils import concat_fragments
+from rstoolbox.tests.helper import baseline_test_dir
+
 
 class TestFragments( object ):
     """
@@ -32,7 +34,7 @@ class TestFragments( object ):
         self.frag9 = os.path.join(self.dirpath, 'wauto.200.9mers.gz')
         self.frag9q = os.path.join(self.dirpath, 'wauto.200.9mers.qual.gz')
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_fragment_profiles.png')
     def test_quality_plot( self ):
         df3 = parse_rosetta_fragments(self.frag3)
@@ -60,7 +62,7 @@ class TestFragments( object ):
         plt.tight_layout()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='add_fragments_replace.png')
     def test_add_fragments_replace( self ):
         df = parse_rosetta_fragments(self.frag3)
@@ -76,7 +78,7 @@ class TestFragments( object ):
         plt.tight_layout()
         return fig
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='add_fragments_append.png')
     def test_add_fragments_append( self ):
         df = parse_rosetta_fragments(self.frag3)
@@ -120,7 +122,6 @@ class TestFragments( object ):
             if origin in G:
                 value = 1 - G.get_edge_data(origin, target)['weight']
                 assert matrix["R"].values[n] == pytest.approx(value)
-
 
     def test_concat_fragments( self ):
         # load fragments

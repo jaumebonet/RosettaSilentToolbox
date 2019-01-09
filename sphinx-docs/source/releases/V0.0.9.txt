@@ -1,4 +1,4 @@
-v0.0.9 (November 2018)
+v0.0.9 (January 2019)
 ----------------------
 
 #. Patch bug that will crash FASTA sequence output when sequence identifier is a number.
@@ -6,3 +6,8 @@ v0.0.9 (November 2018)
 #. Adds function to ensure logic in fragment data is properly kept.
 #. Adds function to mix fragment data.
 #. Adds function to concatenate fragment data.
+#. Adds function to generate qgrids as per the [qgrid library](https://qgrid.readthedocs.io/en/latest/). This is a simple wrapper that just makes sure that the ``html div`` overflows if the number of columns is too high. Adds a soft requirement to the library.
+#. Adds method :meth:`.DesignFrame.clean_rosetta_suffix` to clean Rosetta ``_0001`` suffixes (use with caution)
+#. Adds ability to read from different single-chain Poses with different chain identifier :ref:`into the same column <readrosetta>`.
+#. Add the ability to compare design populations with ``real data``.
+#. Improved plotting control over axis in some multi-axis functions, notably in Ramachandran and LOGO plots.

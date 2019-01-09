@@ -9,6 +9,7 @@
 
 .. func:: positional_structural_similarity_plot
 .. func:: plot_ramachandran
+.. func:: plot_ramachandran_single
 .. func:: plot_dssp_vs_psipred
 """
 # Standard Libraries
@@ -27,7 +28,8 @@ from rstoolbox.components import DesignSeries
 from rstoolbox.utils import add_top_title
 
 
-__all__ = ['positional_structural_similarity_plot', 'plot_ramachandran', 'plot_dssp_vs_psipred']
+__all__ = ['positional_structural_similarity_plot', 'plot_ramachandran', 'plot_dssp_vs_psipred',
+           'plot_ramachandran_single']
 
 
 def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
@@ -118,7 +120,7 @@ def positional_structural_similarity_plot( df, ax, alpha_color='royalblue',
                              df.index.values[-1], 5))
 
 
-def plot_ramachandran( df, seqID, fig):
+def plot_ramachandran( df, seqID, fig, grid=None, positions=None, **kwargs ):
     """Generates a ramachandran plot in RAMPAGE style.
 
     For more details and sources please refert to
@@ -133,13 +135,30 @@ def plot_ramachandran( df, seqID, fig):
     Note that this function will only plot the ramachandran for a single decoy. If one
     would like to compute it for mutiple decoys, please see the example below.
 
+    Parameters for :func:`~matplotlib.pyplot.scatter` can be provided with prefix ``scatter_``.
+
+    Parameters for :func:`~matplotlib.pyplot.plot` can be provided with prefix ``line_``.
+
     :param df: |df_param|, where ONE column cotains the phi and a second column
         the psi angles.
     :type df: :class:`~pandas.Series`
-    :param ax: |axis_param|.
-    :type ax: :class:`~matplotlib.axes.Axes`
+    :param str seqID: |seqID_param|
+    :param fig: Figure into which the data is going to be plotted.
+    :type fig: :class:`~matplotlib.figure.Figure`
+    :param tuple grid: Grid of the figure. By default assumes the figure has nothing
+        else and so, the grid is (2, 2).
+    :param positions: Positions in the grid (in case the image will contain more than
+        the Ramachandran). By default, it assumes a (2, 2) grid and fills all positions.
+    :type positions: :func:`list` of :class:`tuple`
+
+    :return: :func:`list` of :class:`~matplotlib.axes.Axes`
+
+    :raises:
+        :ValueError: If the grid does not provide at least 4 positions.
+        :ValueError: If there number of positions is not 4.
 
     .. seealso::
+        :func:`.plot_ramachandran_single`
         :func:`.get_sequence_and_structure`
         :func:`.get_dihedrals`
         :func:`.get_phi`
@@ -173,6 +192,56 @@ def plot_ramachandran( df, seqID, fig):
 
         In [3]: plt.close()
     """
+    order = ["GENERAL", "GLY", "PRE-PRO", "PRO"]
+    if grid is None:
+        grid = (2, 2)
+    if grid[0] * grid[1] < 4:
+        raise ValueError('Not enough positions to place all Ramachandran plots.')
+    if positions is None:
+        positions = [(0, 0), (0, 1), (1, 0), (1, 1)]
+    if len(positions) != 4:
+        raise ValueError('Number op provided positions must be 4.')
+    axs = [plt.subplot2grid(grid, positions[0], fig=fig),
+           plt.subplot2grid(grid, positions[1], fig=fig),
+           plt.subplot2grid(grid, positions[2], fig=fig),
+           plt.subplot2grid(grid, positions[3], fig=fig)]
+
+    for i, ax in enumerate(axs):
+        plot_ramachandran_single(df, seqID, ax, order[i], **kwargs)
+
+    return axs
+
+
+def plot_ramachandran_single( df, seqID, ax, rama_type='GENERAL', **kwargs ):
+    """Plot only one of the 4 ramachandran plots in RAMPAGE format.
+
+    Parameters for :func:`~matplotlib.pyplot.scatter` can be provided with prefix ``scatter_``.
+
+    Parameters for :func:`~matplotlib.pyplot.plot` can be provided with prefix ``line_``.
+
+    :param df: |df_param|, where ONE column cotains the phi and a second column
+        the psi angles.
+    :type df: :class:`~pandas.Series`
+    :param str seqID: |seqID_param|
+    :param ax: |axis_param|.
+    :type ax: :class:`~matplotlib.axes.Axes`
+    :param str rama_type: Type of plot and residue types to plot. Options are:
+        [``GLY``, ``PRO``, ``PRE-PRO``, ``GENERAL``].
+
+    :raises:
+        :ValueError: If the input is not a :class:`~pandas.Series` with the
+            ``phi_seqID`` and ``psi_seqID`` columns.
+        :ValueError: If rama_type is not between the available options.
+
+    .. seealso::
+        :func:`.plot_ramachandran`
+        :func:`.get_sequence_and_structure`
+        :func:`.get_dihedrals`
+        :func:`.get_phi`
+        :func:`.get_psi`
+    """
+    if rama_type.upper() not in ['GLY', 'PRO', 'PRE-PRO', 'GENERAL']:
+        raise ValueError('Unknown rama type {}'.format(rama_type))
     # Data type management.
     if not isinstance(df, (pd.Series, DesignSeries)):
         raise ValueError("Input data must be in a Series or DesignSeries")
@@ -183,100 +252,69 @@ def plot_ramachandran( df, seqID, fig):
     if not isinstance(df.get_psi(seqID), np.ndarray):
         raise ValueError("Ramachandran plot function can only be applied on one decoy at once.")
 
-    # General variable for the background preferences.
-    cwd = os.path.dirname(__file__)
-    rama_preferences = {
-        "General": {
-            "file": os.path.join(cwd, "rama_bgdists/pref_general.data"),
-            "cmap": colors.ListedColormap(['#FFFFFF', '#B3E8FF', '#7FD9FF']),
-            "bounds": [0, 0.0005, 0.02, 1],
-        },
-        "GLY": {
-            "file": os.path.join(cwd, "rama_bgdists/pref_glycine.data"),
-            "cmap": colors.ListedColormap(['#FFFFFF', '#FFE8C5', '#FFCC7F']),
-            "bounds": [0, 0.002, 0.02, 1],
-        },
-        "PRO": {
-            "file": os.path.join(cwd, "rama_bgdists/pref_proline.data"),
-            "cmap": colors.ListedColormap(['#FFFFFF', '#D0FFC5', '#7FFF8C']),
-            "bounds": [0, 0.002, 0.02, 1],
-        },
-        "PRE-PRO": {
-            "file": os.path.join(cwd, "rama_bgdists/pref_preproline.data"),
-            "cmap": colors.ListedColormap(['#FFFFFF', '#B3E8FF', '#7FD9FF']),
-            "bounds": [0, 0.002, 0.02, 1],
-        }
-    }
-
-    # Read in the expected torsion angles.
-    __location__ = os.path.join(cwd, "rama_bgdists/")
-    rama_pref_values = {}
-    for key, val in rama_preferences.items():
-        rama_pref_values[key] = np.full((360, 360), 0, dtype=np.float64)
-        with open(os.path.join(__location__, val["file"])) as fn:
-            for line in fn:
-                if not line.startswith("#"):
-                    # Preference file has values for every second position only
-                    lp = [float(_) for _ in line.split()]
-                    rama_pref_values[key][int(lp[1]) + 180][int(lp[0]) + 180] = float(
-                        line.split()[2])
-                    rama_pref_values[key][int(lp[1]) + 179][int(lp[0]) + 179] = float(
-                        line.split()[2])
-                    rama_pref_values[key][int(lp[1]) + 179][int(lp[0]) + 180] = float(
-                        line.split()[2])
-                    rama_pref_values[key][int(lp[1]) + 180][int(lp[0]) + 179] = float(
-                        line.split()[2])
-
+    rama_preferences = make_rama_preferences()[rama_type.upper()]
+    rama_pref_values = np.full((360, 360), 0, dtype=np.float64)
+    with open(rama_preferences["file"]) as fn:
+        for line in fn:
+            if not line.startswith("#"):
+                # Preference file has values for every second position only
+                lp = [float(_) for _ in line.split()]
+                rama_pref_values[int(lp[1]) + 180][int(lp[0]) + 180] = float(
+                    line.split()[2])
+                rama_pref_values[int(lp[1]) + 179][int(lp[0]) + 179] = float(
+                    line.split()[2])
+                rama_pref_values[int(lp[1]) + 179][int(lp[0]) + 180] = float(
+                    line.split()[2])
+                rama_pref_values[int(lp[1]) + 180][int(lp[0]) + 179] = float(
+                    line.split()[2])
     # Ramachandran residue classification.
     seq = df.get_sequence(seqID)
-    rama_types = {
-        "GLY": [],
-        "PRO": [],
-        "PRE-PRO": [],
-        "GENERAL": []
-    }
+    rama_types = []
     for i, aa in enumerate(seq):
         if aa == "G":
-            rama_types["GLY"].append(i)
+            if rama_type.upper() == 'GLY':
+                rama_types.append(i)
         elif aa == "P":
-            rama_types["PRO"].append(i)
+            if rama_type.upper() == 'PRO':
+                rama_types.append(i)
         elif i + 1 < len(seq) and seq[i + 1] == "P":
-            rama_types["PRE-PRO"].append(i)
+            if rama_type.upper() == 'PRE-PRO':
+                rama_types.append(i)
         else:
-            rama_types["GENERAL"].append(i)
+            if rama_type.upper() == 'GENERAL':
+                rama_types.append(i)
 
     # Generate the plots
     all_phi = df.get_phi(seqID)
     all_psi = df.get_psi(seqID)
-    order = ["GENERAL", "GLY", "PRE-PRO", "PRO"]
-    grid = (2, 2)
-    ax = [plt.subplot2grid(grid, (0, 0), fig=fig),
-          plt.subplot2grid(grid, (0, 1), fig=fig),
-          plt.subplot2grid(grid, (1, 0), fig=fig),
-          plt.subplot2grid(grid, (1, 1), fig=fig)]
-    for i, (key, val) in enumerate(sorted(rama_preferences.items(), key=lambda x: x[0].lower())):
-        phi = all_phi[rama_types[order[i]]]
-        psi = all_psi[rama_types[order[i]]]
 
-        ax[i].imshow(rama_pref_values[key],
-                     cmap=rama_preferences[key]["cmap"],
-                     norm=colors.BoundaryNorm(rama_preferences[key]["bounds"],
-                     rama_preferences[key]["cmap"].N),
-                     extent=(-180, 180, 180, -180))
-        ax[i].scatter(phi,
-                      psi,
-                      color="black")
-        add_top_title( ax[i], order[i])
-        ax[i].set_xlim([-180, 180])
-        ax[i].set_ylim([-180, 180])
-        ax[i].plot([-180, 180], [0, 0], color="black")
-        ax[i].plot([0, 0], [-180, 180], color="black")
-        ax[i].locator_params(axis='x', nbins=7)
-        ax[i].set_xlabel(r'$\phi$ [degrees]')
-        ax[i].set_ylabel(r'$\psi$ [degrees]')
-        ax[i].grid()
+    phi = all_phi[rama_types]
+    psi = all_psi[rama_types]
 
-    return ax
+    ax.imshow(rama_pref_values, cmap=rama_preferences["cmap"],
+              norm=colors.BoundaryNorm(rama_preferences["bounds"],
+              rama_preferences["cmap"].N), extent=(-180, 180, 180, -180))
+
+    scatter_kwargs = {}
+    for k in kwargs:
+        if k.startswith('scatter_'):
+            scatter_kwargs.setdefault(k.replace('scatter_', ''), kwargs[k])
+    scatter_kwargs.setdefault('color', 'black')
+    ax.scatter(phi, psi, **scatter_kwargs)
+    add_top_title( ax, rama_type.upper())
+    ax.set_xlim([-180, 180])
+    ax.set_ylim([-180, 180])
+    line_kwargs = {}
+    for k in kwargs:
+        if k.startswith('line_'):
+            line_kwargs.setdefault(k.replace('line_', ''), kwargs[k])
+    line_kwargs.setdefault('color', 'black')
+    ax.plot([-180, 180], [0, 0], **line_kwargs)
+    ax.plot([0, 0], [-180, 180], **line_kwargs)
+    ax.locator_params(axis='x', nbins=7)
+    ax.set_xlabel(r'$\phi$ [degrees]')
+    ax.set_ylabel(r'$\psi$ [degrees]')
+    ax.grid()
 
 
 def plot_dssp_vs_psipred( df, seqID, ax ):
@@ -408,3 +446,31 @@ def plot_dssp_vs_psipred( df, seqID, ax ):
     else:
         ax.set_xticks(np.arange(0.5, len(dssp), 5))
         ax.set_xticklabels(range(shift, len(dssp) + shift, 5))
+
+
+def make_rama_preferences():
+    # General variable for the background preferences.
+    cwd = os.path.dirname(__file__)
+    rama_preferences = {
+        "GENERAL": {
+            "file": os.path.join(cwd, "rama_bgdists/pref_general.data"),
+            "cmap": colors.ListedColormap(['#FFFFFF', '#B3E8FF', '#7FD9FF']),
+            "bounds": [0, 0.0005, 0.02, 1],
+        },
+        "GLY": {
+            "file": os.path.join(cwd, "rama_bgdists/pref_glycine.data"),
+            "cmap": colors.ListedColormap(['#FFFFFF', '#FFE8C5', '#FFCC7F']),
+            "bounds": [0, 0.002, 0.02, 1],
+        },
+        "PRO": {
+            "file": os.path.join(cwd, "rama_bgdists/pref_proline.data"),
+            "cmap": colors.ListedColormap(['#FFFFFF', '#D0FFC5', '#7FFF8C']),
+            "bounds": [0, 0.002, 0.02, 1],
+        },
+        "PRE-PRO": {
+            "file": os.path.join(cwd, "rama_bgdists/pref_preproline.data"),
+            "cmap": colors.ListedColormap(['#FFFFFF', '#B3E8FF', '#7FD9FF']),
+            "bounds": [0, 0.002, 0.02, 1],
+        }
+    }
+    return rama_preferences

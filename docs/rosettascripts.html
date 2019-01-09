@@ -7,13 +7,13 @@
     <title>RosettaScripts &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/functions.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -145,9 +145,18 @@ that is executed can be found in <a class="reference internal" href="generated/r
 <span class="go">&lt;ROSETTASCRIPTS&gt;</span>
 <span class="go">    &lt;MOVERS&gt;</span>
 <span class="go">        &lt;WriteSSEMover dssp=&quot;1&quot; name=&quot;w&quot; write_phipsi=&quot;true&quot; /&gt;</span>
+<span class="go">        &lt;MinMover name=&quot;m&quot; bb=&quot;true&quot; chi=&quot;true&quot; tolerance=&quot;.1&quot; /&gt;</span>
 <span class="go">    &lt;/MOVERS&gt;</span>
+<span class="go">    &lt;FILTERS&gt;</span>
+<span class="go">        &lt;CavityVolume name=&quot;cavity&quot; confidence=&quot;0&quot; /&gt;</span>
+<span class="go">        &lt;PackStat name=&quot;pack&quot; confidence=&quot;0&quot; /&gt;</span>
+<span class="go">        &lt;AverageDegree name=&quot;avdegree&quot; confidence=&quot;0&quot; /&gt;</span>
+<span class="go">    &lt;/FILTERS&gt;</span>
 <span class="go">    &lt;PROTOCOLS&gt;</span>
 <span class="go">        &lt;Add mover=&quot;w&quot; /&gt;</span>
+<span class="go">        &lt;Add filter=&quot;cavity&quot; /&gt;</span>
+<span class="go">        &lt;Add filter=&quot;pack&quot; /&gt;</span>
+<span class="go">        &lt;Add filter=&quot;avdegree&quot; /&gt;</span>
 <span class="go">    &lt;/PROTOCOLS&gt;</span>
 <span class="go">&lt;/ROSETTASCRIPTS&gt;</span>
 </pre></div>
@@ -185,7 +194,7 @@ enforce that behaviour in the mover, the <code class="docutils literal notransla
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

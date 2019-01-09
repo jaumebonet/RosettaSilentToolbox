@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 from rstoolbox.io import read_fasta, write_fasta, read_hmmsearch
 from rstoolbox.io import parse_rosetta_file, pymol_mutant_selector
 from rstoolbox.plot import sequence_frequency_plot
+from rstoolbox.tests.helper import baseline_test_dir
 
 
 class TestReadSilentFiles( object ):
@@ -33,7 +34,7 @@ class TestReadSilentFiles( object ):
         self.dirpath = os.path.join(os.path.dirname(__file__), '..', 'data')
         self.tmpdir = tmpdir.strpath
 
-    @pytest.mark.mpl_image_compare(baseline_dir='../baseline_images',
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='seq_freq_plot_fasta.png')
     def test_fasta(self):
         # Test simple read

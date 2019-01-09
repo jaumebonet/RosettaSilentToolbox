@@ -7,13 +7,13 @@
     <title>API reference &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/style.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/functions.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -91,6 +91,7 @@
 <li><a class="reference internal" href="#plot">Plot</a></li>
 <li><a class="reference internal" href="#plot-experiments">Plot: Experiments</a></li>
 <li><a class="reference internal" href="#utils-plot">Utils: Plot</a></li>
+<li><a class="reference internal" href="#utils-contextualize">Utils: Contextualize</a></li>
 <li><a class="reference internal" href="#utils-transforms">Utils: Transforms</a></li>
 <li><a class="reference internal" href="#utils-rosettascript">Utils: RosettaScript</a></li>
 <li><a class="reference internal" href="#utils-experiments">Utils: Experiments</a></li>
@@ -313,28 +314,34 @@ plotting library, but some special plotting alternatives are offered through <co
 <td>Makes a heatmap subplot into the provided axis showing the sequence distribution of each residue type for each position.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.logo_plot.html#rstoolbox.plot.logo_plot" title="rstoolbox.plot.logo_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logo_plot</span></code></a>(df,&nbsp;seqID[,&nbsp;refseq,&nbsp;key_residues,&nbsp;…])</td>
-<td>Generates classic <strong>LOGO</strong> plots.</td>
+<td>Generates full figure classic <strong>LOGO</strong> plots.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.positional_sequence_similarity_plot.html#rstoolbox.plot.positional_sequence_similarity_plot" title="rstoolbox.plot.positional_sequence_similarity_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positional_sequence_similarity_plot</span></code></a>(df,&nbsp;ax)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.logo_plot_in_axis.html#rstoolbox.plot.logo_plot_in_axis" title="rstoolbox.plot.logo_plot_in_axis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logo_plot_in_axis</span></code></a>(df,&nbsp;seqID,&nbsp;ax[,&nbsp;refseq,&nbsp;…])</td>
+<td>Generates classic <strong>LOGO</strong> plot in a given axis.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.positional_sequence_similarity_plot.html#rstoolbox.plot.positional_sequence_similarity_plot" title="rstoolbox.plot.positional_sequence_similarity_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positional_sequence_similarity_plot</span></code></a>(df,&nbsp;ax)</td>
 <td>Generates a plot covering the amount of identities and positives matches from a population of designs to a reference sequence according to a substitution matrix.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.per_residue_matrix_score_plot.html#rstoolbox.plot.per_residue_matrix_score_plot" title="rstoolbox.plot.per_residue_matrix_score_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">per_residue_matrix_score_plot</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.per_residue_matrix_score_plot.html#rstoolbox.plot.per_residue_matrix_score_plot" title="rstoolbox.plot.per_residue_matrix_score_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">per_residue_matrix_score_plot</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
 <td>Plot a linear representation of the scoring obtained by applying a substitution matrix.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.positional_structural_similarity_plot.html#rstoolbox.plot.positional_structural_similarity_plot" title="rstoolbox.plot.positional_structural_similarity_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positional_structural_similarity_plot</span></code></a>(df,&nbsp;ax)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.positional_structural_similarity_plot.html#rstoolbox.plot.positional_structural_similarity_plot" title="rstoolbox.plot.positional_structural_similarity_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">positional_structural_similarity_plot</span></code></a>(df,&nbsp;ax)</td>
 <td>Generates a bar plot for positional prevalence of secondary structure elements.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragments.html#rstoolbox.plot.plot_fragments" title="rstoolbox.plot.plot_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragments</span></code></a>(small_frags,&nbsp;large_frags,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragments.html#rstoolbox.plot.plot_fragments" title="rstoolbox.plot.plot_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragments</span></code></a>(small_frags,&nbsp;large_frags,&nbsp;…)</td>
 <td>Plot RMSD quality of a pair of <a class="reference internal" href="generated/rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> in two provided axis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragment_profiles.html#rstoolbox.plot.plot_fragment_profiles" title="rstoolbox.plot.plot_fragment_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragment_profiles</span></code></a>(fig,&nbsp;small_frags,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_fragment_profiles.html#rstoolbox.plot.plot_fragment_profiles" title="rstoolbox.plot.plot_fragment_profiles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_fragment_profiles</span></code></a>(fig,&nbsp;small_frags,&nbsp;…)</td>
 <td>Plots a full summary of the a <a class="reference internal" href="generated/rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> quality with sequence and expected secondary structure match.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_alignment.html#rstoolbox.plot.plot_alignment" title="rstoolbox.plot.plot_alignment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_alignment</span></code></a>(df,&nbsp;seqID,&nbsp;ax[,&nbsp;line_break,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_alignment.html#rstoolbox.plot.plot_alignment" title="rstoolbox.plot.plot_alignment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_alignment</span></code></a>(df,&nbsp;seqID,&nbsp;ax[,&nbsp;line_break,&nbsp;…])</td>
 <td>Make an image representing the alignment of sequences with higlights to mutant positions.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_ramachandran.html#rstoolbox.plot.plot_ramachandran" title="rstoolbox.plot.plot_ramachandran"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ramachandran</span></code></a>(df,&nbsp;seqID,&nbsp;fig)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_ramachandran.html#rstoolbox.plot.plot_ramachandran" title="rstoolbox.plot.plot_ramachandran"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ramachandran</span></code></a>(df,&nbsp;seqID,&nbsp;fig[,&nbsp;grid,&nbsp;…])</td>
 <td>Generates a ramachandran plot in RAMPAGE style.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_ramachandran_single.html#rstoolbox.plot.plot_ramachandran_single" title="rstoolbox.plot.plot_ramachandran_single"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_ramachandran_single</span></code></a>(df,&nbsp;seqID,&nbsp;ax[,&nbsp;…])</td>
+<td>Plot only one of the 4 ramachandran plots in RAMPAGE format.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_dssp_vs_psipred.html#rstoolbox.plot.plot_dssp_vs_psipred" title="rstoolbox.plot.plot_dssp_vs_psipred"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_dssp_vs_psipred</span></code></a>(df,&nbsp;seqID,&nbsp;ax)</td>
 <td>Generates a horizontal heatmap showing differences in psipred predictions to dssp assignments.</td>
@@ -381,23 +388,50 @@ plotting library, but some special plotting alternatives are offered through <co
 <tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.format_Ipython.html#rstoolbox.utils.format_Ipython" title="rstoolbox.utils.format_Ipython"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_Ipython</span></code></a>()</td>
 <td>Ensure <code class="docutils literal notranslate"><span class="pre">monospace</span></code> representation of <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> in <strong>Jupyter Notebooks</strong>.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.add_left_title.html#rstoolbox.utils.add_left_title" title="rstoolbox.utils.add_left_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_left_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.use_qgrid.html#rstoolbox.utils.use_qgrid" title="rstoolbox.utils.use_qgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">use_qgrid</span></code></a>(df,&nbsp;**kwargs)</td>
+<td>Create a <code class="docutils literal notranslate"><span class="pre">QgridWidget</span></code> object from the [qgrid library](<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/">https://qgrid.readthedocs.io/en/latest/</a>) in <strong>Jupyter Notebooks</strong>.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.add_left_title.html#rstoolbox.utils.add_left_title" title="rstoolbox.utils.add_left_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_left_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
 <td>Add a centered title on the left of the selected axis.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.add_right_title.html#rstoolbox.utils.add_right_title" title="rstoolbox.utils.add_right_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_right_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.add_right_title.html#rstoolbox.utils.add_right_title" title="rstoolbox.utils.add_right_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_right_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
 <td>Add a centered title on rigth of the selected axis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.add_top_title.html#rstoolbox.utils.add_top_title" title="rstoolbox.utils.add_top_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_top_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.add_top_title.html#rstoolbox.utils.add_top_title" title="rstoolbox.utils.add_top_title"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_top_title</span></code></a>(ax,&nbsp;title,&nbsp;**kwargs)</td>
 <td>Add a centered title on top of the selected axis.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.edit_legend_text.html#rstoolbox.utils.edit_legend_text" title="rstoolbox.utils.edit_legend_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit_legend_text</span></code></a>(ax,&nbsp;labels[,&nbsp;title])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.edit_legend_text.html#rstoolbox.utils.edit_legend_text" title="rstoolbox.utils.edit_legend_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit_legend_text</span></code></a>(ax,&nbsp;labels[,&nbsp;title])</td>
 <td>Change the labels and title of a legend.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.add_white_to_cmap.html#rstoolbox.utils.add_white_to_cmap" title="rstoolbox.utils.add_white_to_cmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_white_to_cmap</span></code></a>([color,&nbsp;cmap,&nbsp;n_colors])</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.add_white_to_cmap.html#rstoolbox.utils.add_white_to_cmap" title="rstoolbox.utils.add_white_to_cmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_white_to_cmap</span></code></a>([color,&nbsp;cmap,&nbsp;n_colors])</td>
 <td>Generate a new colormap with white as first instance.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.color_variant.html#rstoolbox.utils.color_variant" title="rstoolbox.utils.color_variant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">color_variant</span></code></a>(color[,&nbsp;brightness_offset])</td>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.color_variant.html#rstoolbox.utils.color_variant" title="rstoolbox.utils.color_variant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">color_variant</span></code></a>(color[,&nbsp;brightness_offset])</td>
 <td>Make a color darker or lighter.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="utils-contextualize">
+<h2>Utils: Contextualize<a class="headerlink" href="#utils-contextualize" title="Permalink to this headline">¶</a></h2>
+<p>Functions aimed to help assess a design population in the context of known protein structures.</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.load_refdata.html#rstoolbox.utils.load_refdata" title="rstoolbox.utils.load_refdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_refdata</span></code></a>(ref[,&nbsp;homology])</td>
+<td>Load the predefined reference data from <code class="docutils literal notranslate"><span class="pre">cath</span></code>, <code class="docutils literal notranslate"><span class="pre">scop</span></code>, <code class="docutils literal notranslate"><span class="pre">scop2</span></code> or <code class="docutils literal notranslate"><span class="pre">chain</span></code>.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.make_redundancy_table.html#rstoolbox.utils.make_redundancy_table" title="rstoolbox.utils.make_redundancy_table"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_redundancy_table</span></code></a>([precalculated,&nbsp;select])</td>
+<td>Query into the PDB to retrieve the pre-calculated homology tables.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.plot.plot_in_context.html#rstoolbox.plot.plot_in_context" title="rstoolbox.plot.plot_in_context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_in_context</span></code></a>(df,&nbsp;fig,&nbsp;grid,&nbsp;refdata[,&nbsp;…])</td>
+<td>Plot position of decoys in a backgroud reference dataset.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.plot.distribution_quality.html#rstoolbox.plot.distribution_quality" title="rstoolbox.plot.distribution_quality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distribution_quality</span></code></a>(df,&nbsp;refdata,&nbsp;values,&nbsp;…)</td>
+<td>Locate the quantile position of each putative <code class="xref py py-class docutils literal notranslate"><span class="pre">DesingSerie</span></code> in a list of score distributions.</td>
 </tr>
 </tbody>
 </table>
@@ -432,7 +466,7 @@ plotting library, but some special plotting alternatives are offered through <co
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.baseline.html#rstoolbox.utils.baseline" title="rstoolbox.utils.baseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">baseline</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/rstoolbox.utils.baseline.html#rstoolbox.utils.baseline" title="rstoolbox.utils.baseline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">baseline</span></code></a>([minimize])</td>
 <td>RosettaScript to calculate DSSP secondary structure and phi-psi angles.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/rstoolbox.utils.mutations.html#rstoolbox.utils.mutations" title="rstoolbox.utils.mutations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mutations</span></code></a>([seqID])</td>
@@ -514,7 +548,7 @@ plotting library, but some special plotting alternatives are offered through <co
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

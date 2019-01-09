@@ -14,6 +14,7 @@ was design alone.
   available sequences on each decoy population.
 
 .. ipython::
+  :okwarning:
 
   In [1]: import rstoolbox as rs
      ...: import pandas as pd
@@ -39,6 +40,7 @@ The two populations should share column names
 Not all, but sure for those that are expected to be analysed comparatively. When they all come from a same experiment, that is relatively easy to obtain in the setup. otherwise, one can use the rename option to fix that.
 
 .. ipython::
+  :okwarning:
 
   In [3]: binder.rename(columns={'score': 'renamed_score'}).columns.values
 
@@ -48,6 +50,7 @@ There must be a column to identify to which population each decoy belongs
 In this example, none exist. But if we take a look at the naming of the decoys:
 
 .. ipython::
+  :okwarning:
 
   In [4]: print("{0} <-> {1}".format(binder.iloc[0]['description'], nobinder.iloc[0]['description']))
 
@@ -56,6 +59,7 @@ have automatically obtained a column ``condition`` defining the binder presence.
 As we did not do that, or in case that would not be possible, we will just add an extra column.
 
 .. ipython::
+  :okwarning:
 
   In [5]: binder = rs.utils.add_column(binder, 'condition', 'binder')
      ...: binder.columns.values
@@ -66,6 +70,7 @@ As we did not do that, or in case that would not be possible, we will just add a
 Once all conditions are met, the populations can be merged:
 
 .. ipython::
+  :okwarning:
 
   In [7]: df = pd.concat([binder, nobinder], ignore_index=True)
 
@@ -76,6 +81,7 @@ The first and most straight forward analysis between populations is the comparis
 :func:`.multiple_distributions` accepts any attribute of :func:`~seaborn.boxplot`, so that data can be properly separated.
 
 .. ipython::
+  :okwarning:
 
   In [7]: import matplotlib.pyplot as plt
      ...: import seaborn as sns
@@ -91,6 +97,7 @@ The first and most straight forward analysis between populations is the comparis
 The data can even be directly used on :mod:`seaborn` functions:
 
 .. ipython::
+  :okwarning:
 
   In [9]: sns.set(font_scale=1)
      ...: sns.set_style("whitegrid")
@@ -109,6 +116,7 @@ Let's assume that one wants to evaluate the spread of the two populations and ho
 we will need to provide a reference sequence.
 
 .. ipython::
+  :okwarning:
 
   In [2]: reference = rs.io.get_sequence_and_structure('../rstoolbox/tests/data/compare/4oyd.pdb', {'sequence': 'B'})
      ...: _ = df.add_reference_sequence('B', reference.iloc[0].get_sequence('B')[:-1])
@@ -118,6 +126,7 @@ A tutorial for :ref:`population sequence analysis <sequence_analysis>` is also a
 For instance, one can evaluate the internal sequence inside each decoy population and then compare it between the two:
 
 .. ipython::
+  :okwarning:
 
   In [3]: disbinder = df[df['condition'] == 'binder'].sequence_distance('B')
      ...: disbinder = disbinder.mask(np.triu(np.ones(disbinder.shape, dtype=np.bool_))) # mask diagonal and upper diagonal values
@@ -132,6 +141,7 @@ For instance, one can evaluate the internal sequence inside each decoy populatio
 Or evaluate the distance between the two sequence populations:
 
 .. ipython::
+  :okwarning:
 
   In [4]: discomp = df[df['condition'] == 'binder'].sequence_distance('B', df[df['condition'] == 'nobinder'])
      ...: discomp = discomp.values.flatten() # to array
@@ -140,6 +150,7 @@ Or evaluate the distance between the two sequence populations:
 Or the distance of each group to the reference sequence:
 
 .. ipython::
+  :okwarning:
 
   In [5]: disbinderref = rs.analysis.sequence_similarity(df[df['condition'] == 'binder'], 'B', matrix='IDENTITY')['identity_B_negative']
      ...: disnobinderref = rs.analysis.sequence_similarity(df[df['condition'] == 'nobinder'], 'B', matrix='IDENTITY')['identity_B_negative']
@@ -147,6 +158,7 @@ Or the distance of each group to the reference sequence:
 We can show all this together as:
 
 .. ipython::
+  :okwarning:
 
   In [6]: fig  = plt.figure(figsize=(17, 5))
      ...: grid = [1, 3]
@@ -171,6 +183,7 @@ this scenario, we will measure the enrichment of variants in the binder-designed
 represent residue types more present in the binder-design population per position.
 
 .. ipython::
+  :okwarning:
 
   In [8]: result = rs.analysis.positional_enrichment(df[df['condition'] == 'binder'], df[df['condition'] == 'nobinder'], 'B')
 
@@ -178,6 +191,7 @@ When a position is represented in the first population but not in the second, th
 one would need to transform it into a numerical value. In this case, we transform it into a value such as ``max + (max/2)``.
 
 .. ipython::
+  :okwarning:
 
   In [9]: maxval = result.replace(np.inf, -1).max().max()
      ...: maxval += (maxval / float(2))

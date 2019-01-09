@@ -91,7 +91,7 @@ def _read_CD_J815( dirname, prefix, invert_temp):
         temp = [-100, -100]
         title = None
         counter = 0
-        for f in files:
+        for f in sorted(files):
             if prefix is not None and not f.startswith(prefix):
                 continue
             if not f.startswith('.'):

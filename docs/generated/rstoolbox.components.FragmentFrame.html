@@ -7,13 +7,13 @@
     <title>rstoolbox.components.FragmentFrame &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/functions.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -137,7 +137,7 @@ properties.</p>
 <span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_fragments</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/wauto.200.3mers.gz&quot;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="gh">Out[1]: </span><span class="go"></span>
 <span class="go">    pdb  frame  neighbors  neighbor  position  size aa sse      phi      psi    omega</span>
 <span class="go">0  2hox  1      200        1         1         3     S  L  -154.974  117.297  176.201</span>
 <span class="go">1  2hox  1      200        1         2         3     E  E  -133.145  153.460  177.064</span>
@@ -162,22 +162,25 @@ properties.</p>
 <tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.has_source_file.html#rstoolbox.components.FragmentFrame.has_source_file" title="rstoolbox.components.FragmentFrame.has_source_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_source_file</span></code></a>()</td>
 <td>Checks if there is a source file added.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.is_comparable.html#rstoolbox.components.FragmentFrame.is_comparable" title="rstoolbox.components.FragmentFrame.is_comparable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_comparable</span></code></a>(df)</td>
+<tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.slice_region.html#rstoolbox.components.FragmentFrame.slice_region" title="rstoolbox.components.FragmentFrame.slice_region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slice_region</span></code></a>(ini,&nbsp;end)</td>
+<td>Retrieve only fragments within certain positions.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.is_comparable.html#rstoolbox.components.FragmentFrame.is_comparable" title="rstoolbox.components.FragmentFrame.is_comparable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_comparable</span></code></a>(df)</td>
 <td>Evaluate if the current <a class="reference internal" href="#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> is comparable to the provided one.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.coerce.html#rstoolbox.components.FragmentFrame.coerce" title="rstoolbox.components.FragmentFrame.coerce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce</span></code></a>()</td>
+<tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.coerce.html#rstoolbox.components.FragmentFrame.coerce" title="rstoolbox.components.FragmentFrame.coerce"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coerce</span></code></a>()</td>
 <td>Make fragment data coherent.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.add_fragments.html#rstoolbox.components.FragmentFrame.add_fragments" title="rstoolbox.components.FragmentFrame.add_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_fragments</span></code></a>(fragments,&nbsp;ini[,&nbsp;how])</td>
+<tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.add_fragments.html#rstoolbox.components.FragmentFrame.add_fragments" title="rstoolbox.components.FragmentFrame.add_fragments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_fragments</span></code></a>(fragments,&nbsp;ini[,&nbsp;how])</td>
 <td>Add to a given position a set of fragments more fragments.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.make_sequence_matrix.html#rstoolbox.components.FragmentFrame.make_sequence_matrix" title="rstoolbox.components.FragmentFrame.make_sequence_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_sequence_matrix</span></code></a>([frequency,&nbsp;round_data])</td>
+<tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.make_sequence_matrix.html#rstoolbox.components.FragmentFrame.make_sequence_matrix" title="rstoolbox.components.FragmentFrame.make_sequence_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_sequence_matrix</span></code></a>([frequency,&nbsp;round_data])</td>
 <td>Generate a PSSM-like matrix from the fragments.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.quick_consensus_sequence.html#rstoolbox.components.FragmentFrame.quick_consensus_sequence" title="rstoolbox.components.FragmentFrame.quick_consensus_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quick_consensus_sequence</span></code></a>()</td>
+<tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.quick_consensus_sequence.html#rstoolbox.components.FragmentFrame.quick_consensus_sequence" title="rstoolbox.components.FragmentFrame.quick_consensus_sequence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quick_consensus_sequence</span></code></a>()</td>
 <td>Consensus sequence with the highest representative per position.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.select_quantile.html#rstoolbox.components.FragmentFrame.select_quantile" title="rstoolbox.components.FragmentFrame.select_quantile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_quantile</span></code></a>([quantile])</td>
+<tr class="row-even"><td><a class="reference internal" href="FragmentFrame/rstoolbox.components.FragmentFrame.select_quantile.html#rstoolbox.components.FragmentFrame.select_quantile" title="rstoolbox.components.FragmentFrame.select_quantile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">select_quantile</span></code></a>([quantile])</td>
 <td>Returns fragments under the rmsd threshold of the specified uantile.</td>
 </tr>
 </tbody>
@@ -203,7 +206,7 @@ properties.</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

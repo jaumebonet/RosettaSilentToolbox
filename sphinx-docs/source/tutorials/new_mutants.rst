@@ -26,6 +26,7 @@ As in :ref:`sequence_analysis`, we will need to load a reference with :func:`.ge
   decoys with multiple chains (designed or not), and, thus, analysis must be called upon the sequences of interest.
 
 .. ipython::
+  :okwarning:
 
   In [1]: import rstoolbox as rs
      ...: import pandas as pd
@@ -45,6 +46,7 @@ Loading the Design Data
 Again, we are mimicking :ref:`sequence_analysis`.
 
 .. ipython::
+  :okwarning:
 
   In [2]: rules = {'scores_ignore': ['fa_*', 'niccd_*', 'hbond_*', 'lk_ball_wtd', 'pro_close', 'dslf_fa13', 'C_ni_rmsd_threshold',
      ...:                            'omega', 'p_aa_pp', 'yhh_planarity', 'ref', 'rama_prepro', 'time'],
@@ -64,6 +66,7 @@ we want to try all the putative back mutations available. Basically, we ask if a
 For this, we will take the best scored decoy and we will try to :func:`.generate_wt_reversions` on the residues belonging to strand 3 (``SSE03``) and 5 (``SSE05``):
 
 .. ipython::
+  :okwarning:
 
   In [3]: kres = df.get_label('SSE03', 'C').values[0] + df.get_label('SSE05', 'C').values[0]
      ...: ds = df.sort_values('score').iloc[0].generate_wt_reversions('C', kres)
@@ -77,6 +80,7 @@ For this, we will take the best scored decoy and we will try to :func:`.generate
 Mind that this will create all the combinatorial options from the selected mutant to the original wild type for the selected residues.
 
 .. ipython::
+  :okwarning:
 
   In [5]: _ = sns.distplot(ds['mutant_count_C'].values)
 
@@ -91,6 +95,7 @@ remember form :ref:`sequence_analysis` that we can select already decoys with so
 hand of :meth:`.DesignFrame.generate_mutant_variants`. Let's now try it for the two best scored decoys.
 
 .. ipython::
+  :okwarning:
 
   In [5]: mutants = [(20, "AIV"), (31, "EDQR")]
      ...: ds = df.sort_values('score').iloc[:2].generate_mutant_variants('C', mutants)
@@ -105,6 +110,7 @@ An interesting approach could also be to create the appropriate data to exhausti
 positions. This is extremely easy to do with the ``rstoolbox``, generating a total of ``(len(sequence) * 19) + 1`` variants:
 
 .. ipython::
+  :okwarning:
 
   In [7]: point_mutants = []
      ...: for i in range(1, len(baseline.get_reference_sequence('C')) + 1):
@@ -127,6 +133,7 @@ For instance, one could get the information content of the ``15 top scored`` dec
 actually follow the statistical rules of that set with :meth:`.DesignFrame.generate_mutants_from_matrix`:
 
 .. ipython::
+  :okwarning:
 
   In [7]: df15 = df.sort_values('score').iloc[:15].sequence_frequencies('C')
      ...: df.sort_values('packstat', ascending=False).iloc[:2].generate_mutants_from_matrix('C', df15, 10)
@@ -143,6 +150,7 @@ After generating new variations, those can be run in **Rosetta** to obtain their
 *fixed backbone* design with a script such as:
 
 .. ipython::
+  :okwarning:
 
   In [8]: print(rs.utils.mutations())
 

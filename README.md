@@ -1,7 +1,14 @@
 # RosettaSilentToolbox
-[![Build Status](https://travis-ci.org/jaumebonet/RosettaSilentToolbox.svg?branch=master)](https://travis-ci.org/jaumebonet/RosettaSilentToolbox) [![Coverage Status](https://coveralls.io/repos/github/jaumebonet/RosettaSilentToolbox/badge.svg?branch=master)](https://coveralls.io/github/jaumebonet/RosettaSilentToolbox?branch=master) [![codecov](https://codecov.io/gh/jaumebonet/RosettaSilentToolbox/branch/master/graph/badge.svg)](https://codecov.io/gh/jaumebonet/RosettaSilentToolbox) [![Python Versions](https://img.shields.io/pypi/pyversions/rstoolbox.svg)](https://pypi.org/project/rstoolbox/) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8e2823ea80984efc8b764f9d8d26ecf6)](https://www.codacy.com/app/jaumebonet/RosettaSilentToolbox?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jaumebonet/RosettaSilentToolbox&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.org/jaumebonet/RosettaSilentToolbox.svg?branch=master)](https://travis-ci.org/jaumebonet/RosettaSilentToolbox)
+[![Coverage Status](https://coveralls.io/repos/github/jaumebonet/RosettaSilentToolbox/badge.svg?branch=master)](https://coveralls.io/github/jaumebonet/RosettaSilentToolbox?branch=master)
+[![codecov](https://codecov.io/gh/jaumebonet/RosettaSilentToolbox/branch/master/graph/badge.svg)](https://codecov.io/gh/jaumebonet/RosettaSilentToolbox)
+[![Python Versions](https://img.shields.io/pypi/pyversions/rstoolbox.svg)](https://pypi.org/project/rstoolbox/)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8e2823ea80984efc8b764f9d8d26ecf6)](https://www.codacy.com/app/jaumebonet/RosettaSilentToolbox?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jaumebonet/RosettaSilentToolbox&amp;utm_campaign=Badge_Grade)
 
 The `rstoolbox` is a python library aimed to the analysis and management of big populations of protein or nucleotide decoys.
+
+[![bioRxiv](https://img.shields.io/badge/bioRxiv%20preprint-doi.org/10.1101/428045-blue.svg)](https://doi.org/10.1101/428045)
+[![Bioinformatics](https://img.shields.io/badge/Bioinformatics-submitted-green.svg)]()
 
 Although inspired by the output of the protein design tool **ROSETTA**, the library aims to be of a wider applicability, and can be
 easily set up to retrieve data from other design tools.
