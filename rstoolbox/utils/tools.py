@@ -13,6 +13,7 @@
 .. func:: make_rosetta_app_path
 .. func:: execute_process
 .. func:: report
+.. func:: concat_fragments
 """
 # Standard Libraries
 import os
@@ -30,7 +31,7 @@ from six import string_types
 
 
 __all__ = ['format_Ipython', 'use_qgrid', 'add_column', 'split_values', 'make_rosetta_app_path',
-           'execute_process', 'report']
+           'execute_process', 'report', 'concat_fragments']
 
 
 def format_Ipython():
@@ -306,3 +307,31 @@ def report( df ):
         dcop[col] = dcop.apply(lambda row: translate_mutants(row, c, shift), axis=1)
 
     return dcop
+
+
+def concat_fragments( fragment_list ):
+    """Combine multiple :class:`.FragmentFrame`.
+
+    .. note::
+        Make sure to give an **ordered** ``fragment_list``, as the individual
+        :class:`.FragmentFrame` are processed one by one and the frame is
+        renumbered.
+
+    :param fragment_list: Command to be executed.
+    :type fragment_list: Union(:class:`.FragmentFrame`, :func:`list`)
+
+    :return: :class:`.FragmentFrame` - combined and renumbered.
+    """
+    fragment_list_renum = []
+    for i, e in enumerate(fragment_list):
+        shiftset = e.iloc[0]['frame']
+        if i == 0:
+            e['renum_frame'] = e['frame'] - shiftset + 1
+        else:
+            e['renum_frame'] = e['frame'] - shiftset + 1 + \
+                               fragment_list[i - 1]['renum_frame'].max()
+        fragment_list_renum.append(e)
+    df = pd.concat(fragment_list_renum, ignore_index=True, sort=False)
+    df = df[['pdb', 'renum_frame', 'neighbors', 'position', 'size', 'aa',
+             'sse', 'phi', 'psi', 'omega']].rename(columns={'renum_frame': 'frame'})
+    return df

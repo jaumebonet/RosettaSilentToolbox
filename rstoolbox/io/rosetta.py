@@ -564,7 +564,7 @@ def parse_rosetta_fragments( filename ):
                        "aa", "sse", "phi", "psi", "omega"], axis=1)
 
 
-def write_rosetta_fragments( df, frag_size, n_frags=200 ):
+def write_rosetta_fragments( df, frag_size, n_frags=200, prefix='rosetta_frags' ):
     """Writes a Rosetta fragment-file (new format) from an appropiate :class:`.FragmentFrame`.
 
     Supports varying size fragment sets.
@@ -577,14 +577,19 @@ def write_rosetta_fragments( df, frag_size, n_frags=200 ):
     """
     _STRING = " {:4s} {:1s} {:5d} {:1s} {:1s} {:8.3f} {:8.3f} {:8.3f}\n"
     _HEADER = "position:            {} neighbors:          {}\n\n"
-    with open("rosetta_frags.{}mers".format(frag_size), "w") as f:
+    with open("{}.{}mers".format(prefix, frag_size), "w") as f:
         frame_count = 0
         for i in range(len(df)):
             if i % ((frag_size * n_frags)) == 0:
                 frame_count += 1
                 f.write(_HEADER.format(frame_count, n_frags))
-            f.write(_STRING.format( df.iloc[i]["pdb"], "X", int(0), df.iloc[i]["aa"],
-                    df.iloc[i]["sse"], df.iloc[i]["phi"], df.iloc[i]["psi"], df.iloc[i]["omega"]) )
+            f.write(_STRING.format( df.iloc[i]["pdb"],
+                                    "X", int(0),
+                                    df.iloc[i]["aa"],
+                                    df.iloc[i]["sse"],
+                                    df.iloc[i]["phi"],
+                                    df.iloc[i]["psi"],
+                                    df.iloc[i]["omega"]) )
             if i != 0 and (i + 1) % frag_size == 0:
                 f.write("\n")
 
