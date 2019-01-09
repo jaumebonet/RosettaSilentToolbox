@@ -327,11 +327,11 @@ def concat_fragments( fragment_list ):
     for i, e in enumerate(fragment_list):
         shiftset = e.iloc[0]['frame']
         if i == 0:
-            e['renum_frame'] = e['frame'] - shiftset + 1
+            newE = e.assign(renum_frame=e['frame'] - shiftset + 1)
         else:
-            e['renum_frame'] = e['frame'] - shiftset + 1 + \
-                               fragment_list[i - 1]['renum_frame'].max()
-        fragment_list_renum.append(e)
+            newE = e.assign(renum_frame=e['frame'] - shiftset + 1 +
+                            fragment_list_renum[i - 1]['renum_frame'].max())
+        fragment_list_renum.append(newE)
     df = pd.concat(fragment_list_renum, ignore_index=True, sort=False)
     df = df[['pdb', 'renum_frame', 'neighbors', 'position', 'size', 'aa',
              'sse', 'phi', 'psi', 'omega']].rename(columns={'renum_frame': 'frame'})

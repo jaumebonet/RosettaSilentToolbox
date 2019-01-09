@@ -116,14 +116,18 @@ class TestPlotUtils( object ):
         rp.plot_CD(df, ax, sample=5)
         return fig
 
-    #@pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
-    #                               filename='plot_cd2.png')
-    #def test_cd_read( self ):
-    #    df = ri.read_CD(os.path.join(self.dirpath, 'CD'), prefix='kx8', model='J-815')
-    #    fig = plt.figure(figsize=(10, 6.7))
-    #    ax = plt.subplot2grid((1, 1), (0, 0))
-    #    rp.plot_CD(df, ax, sample=5)
-    #    return fig
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_cd_chirascan.png')
+    def test_cd_read_chirascan( self ):
+        df = ri.read_CD(os.path.join(self.dirpath, 'chirascan_cd.csv'),  model='chirascan')
+        fig  = plt.figure(figsize=(15, 15))
+        grid = (3, 2)
+        for i, sample in enumerate(sorted(df.keys())):
+            ax = plt.subplot2grid(grid, (int(i / 2), i % 2), fig=fig)
+            rp.plot_CD(df[sample], ax, sample=5)
+            ru.add_top_title(ax, sample)
+        plt.tight_layout()
+        return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_mals.png')

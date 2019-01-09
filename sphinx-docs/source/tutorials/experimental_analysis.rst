@@ -42,7 +42,7 @@ Currently, CD data can be obtained and plotted such as:
   :okwarning:
 
   In [1]: import rstoolbox as rs
-     ...: dfCD = rs.io.read_CD("../rstoolbox/tests/data/CD")
+     ...: dfCD = rs.io.read_CD("../rstoolbox/tests/data/CD", model='J-815')
      ...: dfCD.columns
 
   In [2]: import matplotlib.pyplot as plt
