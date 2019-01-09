@@ -18,9 +18,12 @@ import textwrap
 __all__ = ['baseline', 'mutations']
 
 
-def baseline():
+def baseline( minimize=False ):  # pragma: no cover
     """RosettaScript to calculate DSSP secondary structure and
     phi-psi angles.
+
+    :param bool minimize: If :data:`True`, apply minimization before
+        evaluating the structure.
 
     :return: :class:`str`
 
@@ -34,19 +37,29 @@ def baseline():
         In [1]: from rstoolbox.utils import baseline
            ...: print(baseline())
     """
+    mover = '\n\t<Add mover="m" />' if minimize else ''
     return textwrap.dedent("""\
     <ROSETTASCRIPTS>
         <MOVERS>
             <WriteSSEMover dssp="1" name="w" write_phipsi="true" />
+            <MinMover name="m" bb="true" chi="true" tolerance=".1" />
         </MOVERS>
-        <PROTOCOLS>
+        <FILTERS>
+            <CavityVolume name="cavity" confidence="0" />
+            <PackStat name="pack" confidence="0" />
+            <AverageDegree name="avdegree" confidence="0" />
+        </FILTERS>
+        <PROTOCOLS>{}
             <Add mover="w" />
+            <Add filter="cavity" />
+            <Add filter="pack" />
+            <Add filter="avdegree" />
         </PROTOCOLS>
     </ROSETTASCRIPTS>
-    """)
+    """).format(mover)
 
 
-def mutations( seqID='A' ):
+def mutations( seqID='A' ):  # pragma: no cover
     """RosettaScript to execute a
     `RESFILE <https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles>`_.
 

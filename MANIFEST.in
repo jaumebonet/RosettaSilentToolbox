@@ -4,3 +4,4 @@ include rstoolbox/analysis/matrices/*
 include rstoolbox/components/square.ttf
 include rstoolbox/bin/*
 include rstoolbox/plot/rama_bgdists/*
+include rstoolbox/utils/baselines/*

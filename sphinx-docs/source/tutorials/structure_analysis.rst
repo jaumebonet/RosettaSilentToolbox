@@ -22,6 +22,7 @@ As in :ref:`sequence_analysis`, we will need to load a reference with :func:`.ge
   decoys with multiple chains (designed or not), and, thus, analysis must be called upon the sequences of interest.
 
 .. ipython::
+  :okwarning:
 
   In [1]: import rstoolbox as rs
      ...: import pandas as pd
@@ -41,6 +42,7 @@ Loading the Design Data
 Again, we are mimicking :ref:`sequence_analysis`, but in this case we load the structural data of the designs along with their dihedrals.
 
 .. ipython::
+  :okwarning:
 
   In [2]: rules = {'scores_ignore': ['fa_*', 'niccd_*', 'hbond_*', 'lk_ball_wtd', 'pro_close', 'dslf_fa13', 'C_ni_rmsd_threshold',
      ...:                            'omega', 'p_aa_pp', 'yhh_planarity', 'ref', 'rama_prepro', 'time'],
@@ -70,6 +72,7 @@ Or that we want to check if there is a correlation between the final score of ou
 (which does not seem to be the case):
 
 .. ipython::
+  :okwarning:
 
   In [2]: grid = sns.pairplot(df[['score', 'structure_C_E']])
 
@@ -104,6 +107,7 @@ scored decoy under the :func:`.plot_ramachandran` function.
   but they can easily be added by parsing them into a list and adding them to the :class:`.DesignFrame` with the column name ``psi_<seqID>`` and ``phi_<seqID>``.
 
 .. ipython::
+  :okwarning:
 
   In [6]: fig  = plt.figure(figsize=(30, 30))
      ...: _ = rs.plot.plot_ramachandran(df.sort_values('score').iloc[0], 'C', fig)
@@ -117,6 +121,7 @@ fold in the expected conformation.
 For this, we are going to load a different dataset in which this data is present.
 
 .. ipython::
+  :okwarning:
 
   In [8]: fig = plt.figure(figsize=(20, 5))
      ...: rules = {"scores": ["score"], "psipred": "*", "structure": "*", "dihedrals": "*" }

@@ -62,12 +62,14 @@ setup(
     platforms='UNIX',
     keywords='development',
 
-    install_requires=['pandas>=0.23', 'pyyaml', 'seaborn', 'libconfig', 'six', 'networkx'],
+    install_requires=['pandas>=0.23', 'pyyaml', 'distro', 'seaborn',
+                      'libconfig>=0.8', 'six', 'networkx'],
 
     packages=find_packages(exclude=['docs', 'demo', 'sphinx-docs']),
     include_package_data=True,
     package_data={
         'rstoolbox': ['analysis/matrices/*',
+                      'utils/baselines/*',
                       'components/square.ttf',
                       'plot/rama_bgdists/*']
     },

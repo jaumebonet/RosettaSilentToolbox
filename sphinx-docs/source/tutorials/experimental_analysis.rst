@@ -39,6 +39,7 @@ it through the :func:`.read_CD` function.
 Currently, CD data can be obtained and plotted such as:
 
 .. ipython::
+  :okwarning:
 
   In [1]: import rstoolbox as rs
      ...: dfCD = rs.io.read_CD("../rstoolbox/tests/data/CD")
@@ -71,6 +72,7 @@ Column Name       Data Content
 If loaded from CD data containing a temp column (as is the case when loaded with :func:`.read_CD`), one can directly pick the data from there:
 
 .. ipython::
+  :okwarning:
 
   In [4]: dfTM = dfCD[(dfCD['Wavelength'] == 220)]
      ...: fig = plt.figure(figsize=(10, 6.7))
@@ -83,6 +85,7 @@ If loaded from CD data containing a temp column (as is the case when loaded with
 For well-behaved proteins, the library can approximate the melting point.
 
 .. ipython::
+  :okwarning:
 
   In [6]: fig = plt.figure(figsize=(10, 6.7))
      ...: ax = plt.subplot2grid((1, 1), (0, 0), fig=fig)
@@ -110,6 +113,7 @@ Column Name       Data Content
 being **Time** always mandatory. Depending on the amount of data, the plot function can pick which information to print.
 
 .. ipython::
+  :okwarning:
 
   In [8]: import pandas as pd
      ...: dfMALS = pd.read_csv("../rstoolbox/tests/data/mals.csv")
@@ -131,6 +135,7 @@ The fitted curves will be directly represented with :func:`.plot_SPR`.
 
 
 .. ipython::
+  :okwarning:
 
   In [1]: dfSPR = rs.io.read_SPR("../rstoolbox/tests/data/spr_data.csv.gz")
      ...: fig = plt.figure(figsize=(10, 6.7))
@@ -150,6 +155,7 @@ In order to evaluate the enrichment of different outputs submitted to a differen
 concentrations, and provide the ``min`` and ``max`` concentrations to use for the calculus to :func:`.sequence_enrichment`.
 
 .. ipython::
+  :okwarning:
 
   In [4]: indat = {'binder1': {'conc1': '../rstoolbox/tests/data/cdk2_rand_001.fasq.gz',
      ...:                      'conc2': '../rstoolbox/tests/data/cdk2_rand_002.fasq.gz',

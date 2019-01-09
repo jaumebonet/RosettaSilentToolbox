@@ -19,6 +19,7 @@ import pytest
 # This Library
 from rstoolbox.io import parse_rosetta_fragments
 from rstoolbox.plot import plot_fragment_profiles
+from rstoolbox.utils import concat_fragments
 from rstoolbox.tests.helper import baseline_test_dir
 
 
@@ -121,3 +122,17 @@ class TestFragments( object ):
             if origin in G:
                 value = 1 - G.get_edge_data(origin, target)['weight']
                 assert matrix["R"].values[n] == pytest.approx(value)
+
+    def test_concat_fragments( self ):
+        # load fragments
+        _3mers = parse_rosetta_fragments(self.frag3)
+        # make chunks
+        _3mers_1 = _3mers[(_3mers['frame'] >= 9) & (_3mers['frame'] <= 12)]
+        _3mers_2 = _3mers[(_3mers['frame'] >= 22) & (_3mers['frame'] <= 24)]
+        _3mers_3 = _3mers[(_3mers['frame'] >= 45) & (_3mers['frame'] <= 46)]
+        # mix fragments
+        m = concat_fragments( [_3mers_3, _3mers_1, _3mers_2] )
+
+        # checkpoints
+        assert len(m) == 5400
+        assert list(m.drop_duplicates('frame')['frame']) == list(range(1, 10))

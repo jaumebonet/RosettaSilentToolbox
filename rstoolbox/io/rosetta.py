@@ -30,6 +30,7 @@ from collections import OrderedDict
 # External Libraries
 import six
 import pandas as pd
+import numpy as np
 import yaml
 
 # This Library
@@ -131,11 +132,15 @@ def _add_sequences( manager, data, chains ):
     # Correct by non polymer residues
     nonPoly = [x for x, v in enumerate(chains["seq"]) if v == 'Z']
     ochaini = chains["id"]
-    for index in sorted(nonPoly, reverse=True):
-        del chains["id"][index]
-        del chains["seq"][index]
-        if len(chains["dssp"]) > 0:
-            del chains["dssp"][index]
+    if len(nonPoly) != len(chains["seq"]):
+        for index in sorted(nonPoly, reverse=True):
+            try:
+                del chains["id"][index]
+                del chains["seq"][index]
+                if len(chains["dssp"]) > 0:
+                    del chains["dssp"][index]
+            except IndexError:
+                pass
 
     for seqname, seq in manager.get_expected_sequences( chains ):
         data.setdefault( seqname, [] ).append( seq )
@@ -155,6 +160,27 @@ def _add_sequences( manager, data, chains ):
     for x in [i for i in data if i.startswith("lbl_")]:
         data[x][-1] = rc.Selection(data[x][-1]).map_to_sequences(ochaini)
 
+    return data
+
+
+def _fix_unloaded( data ):
+    """Check errors in which data has not been loaded properly and
+    add :data:`~numpy.nan` to those.
+
+    Assumes the maximum amount of columns is that of the first content
+    read.
+
+    :return: data
+    """
+    if (len(data)) > 0:
+        datalens = [len(data[k]) for k in data]
+        if len(set(datalens)) == 1:
+            return data
+
+        datamax = max(datalens)
+        for k in data:
+            if len(data[k]) < datamax:
+                data[k].append(np.nan)
     return data
 
 
@@ -274,20 +300,27 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             per_res = {}
             chains  = {"id": [], "seq": "", "dssp": "", "psipred": "", "phi": [], "psi": []}
 
+            _fix_unloaded( data )
+
             # General scores
-            for cv, value in enumerate( line.strip().split()[1:] ):
+            for cv, value in enumerate( line.strip().split()[1:-1] ):
                 hcv = header[cv]
                 if manager.wanted_per_residue_score( hcv ):
-                    hcvn = re.sub("\d+$", "", hcv)
+                    hcvn = re.sub(r'\d+$', "", hcv)
                     per_res.setdefault( hcvn, {} )
-                    per_res[hcvn][int(re.findall('\d+$', hcv)[0])] = _check_type( value )
+                    per_res[hcvn][int(re.findall(r'\d+$', hcv)[0])] = _check_type( value )
                     continue
                 if manager.wanted_score( hcv ):
-                    data.setdefault( manager.score_name( hcv), [] ).append( _check_type( value ) )
+                    data.setdefault( manager.score_name(hcv), []).append( _check_type( value ) )
 
             # Namings from the description
+            # Also, description is added separately from the rest... in case there are weird
+            # changes in the number of score terms without the previously expected header line.
+            dscptn = line.strip().split()[-1]
+            if manager.wanted_score( 'description' ):
+                data.setdefault( manager.score_name('description'), []).append(_check_type(dscptn))
             manager.check_naming( header )
-            for namingID, namingVL in manager.get_naming_pairs( line.strip().split()[-1] ):
+            for namingID, namingVL in manager.get_naming_pairs(dscptn):
                 data.setdefault( namingID, [] ).append( _check_type( namingVL ) )
 
             # Fix per-residue
@@ -343,13 +376,19 @@ def parse_rosetta_file( filename, description=None, multi=False ):
                     data["lbl_" + labinfo[0].upper()][-1] = labinfo[1]
             continue
         if line.startswith("REMARK PHI"):
-            chains["phi"] = [float(x) for x in line.split()[2].strip().split(",")]
+            try:
+                chains["phi"] = [float(x) for x in line.split()[2].strip().split(",")]
+            except IndexError:
+                chains["phi"] = []
             continue
         if line.startswith("REMARK PSI"):
-            chains["psi"] = [float(x) for x in line.split()[2].strip().split(",")]
+            try:
+                chains["psi"] = [float(x) for x in line.split()[2].strip().split(",")]
+            except IndexError:
+                chains["psi"] = []
             continue
 
-    df = rc.DesignFrame( data )
+    df = rc.DesignFrame( _fix_unloaded( data ) )
     df.add_source_files( _gather_file_list( filename, multi ) )
     return df
 
@@ -525,7 +564,7 @@ def parse_rosetta_fragments( filename ):
                        "aa", "sse", "phi", "psi", "omega"], axis=1)
 
 
-def write_rosetta_fragments( df, frag_size, n_frags=200 ):
+def write_rosetta_fragments( df, frag_size, n_frags=200, prefix='rosetta_frags' ):
     """Writes a Rosetta fragment-file (new format) from an appropiate :class:`.FragmentFrame`.
 
     Supports varying size fragment sets.
@@ -538,14 +577,19 @@ def write_rosetta_fragments( df, frag_size, n_frags=200 ):
     """
     _STRING = " {:4s} {:1s} {:5d} {:1s} {:1s} {:8.3f} {:8.3f} {:8.3f}\n"
     _HEADER = "position:            {} neighbors:          {}\n\n"
-    with open("rosetta_frags.{}mers".format(frag_size), "w") as f:
+    with open("{}.{}mers".format(prefix, frag_size), "w") as f:
         frame_count = 0
         for i in range(len(df)):
             if i % ((frag_size * n_frags)) == 0:
                 frame_count += 1
                 f.write(_HEADER.format(frame_count, n_frags))
-            f.write(_STRING.format( df.loc[i]["pdb"], "X", int(0), df.loc[i]["aa"],
-                    df.loc[i]["sse"], df.loc[i]["phi"], df.loc[i]["psi"], df.loc[i]["omega"]) )
+            f.write(_STRING.format( df.iloc[i]["pdb"],
+                                    "X", int(0),
+                                    df.iloc[i]["aa"],
+                                    df.iloc[i]["sse"],
+                                    df.iloc[i]["phi"],
+                                    df.iloc[i]["psi"],
+                                    df.iloc[i]["omega"]) )
             if i != 0 and (i + 1) % frag_size == 0:
                 f.write("\n")
 
@@ -608,7 +652,7 @@ def write_fragment_sequence_profiles( df, filename=None, consensus=None ):
         return data
 
 
-def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized_res=True ):
+def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized_res=True, minimize=False ):
     """Provided a PDB file, it will run a small **RosettaScript** to capture its sequence and
     structure, i.e. dssp and phi-psi dihedrals.
 
@@ -627,6 +671,7 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
     :param bool mk_minisilent: If :data:`True`, transeform output into ``minisilent`` format.
     :param bool ignore_unrecognized_res: If :data:`True`, **Rosetta** ignores non-recognizable
         residues.
+    :param bool minimize: If :data:`True`, apply minimization before evaluating the structure.
 
     :return: :class:`.DesignFrame`.
 
@@ -649,9 +694,9 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
     if not os.path.isfile( pdbfile ):
         raise IOError("Structure {} cannot be found".format(pdbfile))
     if mk_minisilent:
-        minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.minisilent"
+        minisilent = re.sub(r'\.pdb|\.cif$', "", re.sub(r'\.gz$', "", pdbfile)) + ".dssp.minisilent"
     else:
-        minisilent = re.sub("\.pdb|\.cif$", "", re.sub("\.gz$", "", pdbfile)) + ".dssp.silent"
+        minisilent = re.sub(r'\.pdb|\.cif$', "", re.sub(r'\.gz$', "", pdbfile)) + ".dssp.silent"
 
     if os.path.isfile(minisilent):
         return parse_rosetta_file(minisilent,
@@ -663,7 +708,7 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
     sys.stdout.write("Generating file {}\n".format(minisilent))
 
     with open("dssp.xml", "w") as fd:
-        fd.write(baseline())
+        fd.write(baseline(minimize))
 
     # Check rosetta executable & run
     exe = make_rosetta_app_path('rosetta_scripts')
@@ -697,7 +742,7 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
         raise ValueError("Execution has failed\n")
 
 
-def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True ):
+def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True ):  # pragma: no cover
     """Extract the selected decoys (if any).
 
     .. note::

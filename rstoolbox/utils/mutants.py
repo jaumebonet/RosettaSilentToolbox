@@ -261,7 +261,7 @@ def generate_mutant_variants( self, seqID, mutations, keep_scores=False ):
         data = {seqNM: ["".join(x) for x in itertools.product(*seq)]}
         data[seqNM].insert(0, row[seqNM])
         name = row.get_id()
-        if not bool(re.search("_v\d+$", row.get_id())):
+        if not bool(re.search(r'_v\d+$', row.get_id())):
             data[idNM] = [name + "_v{0:04d}".format(x) for x in range(len(data[seqNM]))]
             data[idNM][0] = name
         else:
@@ -476,7 +476,7 @@ def generate_wt_reversions( self, seqID, key_residues=None ):
         if mutations != ['']:
             for m in mutations:
                 m = m.strip()
-                pos = int(re.search("(\d+)", m).group(1))
+                pos = int(re.search(r'(\d+)', m).group(1))
                 if pos in kr:
                     muts.append((pos, "".join([m[0], m[-1]])))
         return muts
@@ -672,7 +672,7 @@ def make_resfile( self, seqID, header, filename, write=True ):
     return self
 
 
-def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False ):
+def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False ):  # pragma: no cover
     """Apply a generated Rosetta `resfile
     <https://www.rosettacommons.org/docs/latest/rosetta_basics/file_types/resfiles>`_
     to the decoy.
@@ -771,7 +771,7 @@ def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False 
         errors = 0
         sys.stdout.write("Running Rosetta\n")
         for _, row in self.iterrows():
-            if re.search('_v\d{4}$', row['description']):
+            if re.search(r'_v\d{4}$', row['description']):
                 origin = "_".join(row['description'].split('_')[:-1])
             else:
                 origin = row['description']
@@ -779,7 +779,7 @@ def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False 
             cmd = command.format(exe, rscript, " ".join(self.get_source_files()),
                                  origin, outfiles[-1], row[resfile])
             sys.stdout.write(cmd + "\n")
-            error = execute_process( command )
+            error = execute_process( cmd )
             if bool(error):
                 errors += 1
                 sys.stdout.write("Execution for variant {} has failed\n".format(row['description']))
@@ -791,7 +791,7 @@ def apply_resfile( self, seqID, filename, rscript=None, keep_input_scores=False 
             cmd = command.format(exe, " ".join(outfiles), filename)
             sys.stdout.write("Merging all silent files\n")
             sys.stdout.write(cmd + "\n")
-            error = execute_process( command )
+            error = execute_process( cmd )
             if bool(error):
                 raise SystemError("A file with the new variants could not be created.")
         else:

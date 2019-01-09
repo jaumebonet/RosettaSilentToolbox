@@ -7,13 +7,13 @@
     <title>rstoolbox.io.get_sequence_and_structure &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/functions.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
     <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
@@ -116,7 +116,7 @@
 <h1>rstoolbox.io.get_sequence_and_structure<a class="headerlink" href="#rstoolbox-io-get-sequence-and-structure" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.io.get_sequence_and_structure">
-<code class="descclassname">rstoolbox.io.</code><code class="descname">get_sequence_and_structure</code><span class="sig-paren">(</span><em>pdbfile</em>, <em>mk_minisilent=True</em>, <em>ignore_unrecognized_res=True</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.get_sequence_and_structure" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.io.</code><code class="descname">get_sequence_and_structure</code><span class="sig-paren">(</span><em>pdbfile</em>, <em>mk_minisilent=True</em>, <em>ignore_unrecognized_res=True</em>, <em>minimize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.get_sequence_and_structure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provided a PDB file, it will run a small <strong>RosettaScript</strong> to capture its sequence and
 structure, i.e. dssp and phi-psi dihedrals.</p>
 <div class="admonition note">
@@ -140,6 +140,7 @@ already exists, it will be directly read. You can choose to compress it;
 <li><strong>mk_minisilent</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, transeform output into <code class="docutils literal notranslate"><span class="pre">minisilent</span></code> format.</li>
 <li><strong>ignore_unrecognized_res</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, <strong>Rosetta</strong> ignores non-recognizable
 residues.</li>
+<li><strong>minimize</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, apply minimization before evaluating the structure.</li>
 </ul>
 </td>
 </tr>
@@ -170,9 +171,18 @@ your computer) is:</p>
 <span class="go">&lt;ROSETTASCRIPTS&gt;</span>
 <span class="go">    &lt;MOVERS&gt;</span>
 <span class="go">        &lt;WriteSSEMover dssp=&quot;1&quot; name=&quot;w&quot; write_phipsi=&quot;true&quot; /&gt;</span>
+<span class="go">        &lt;MinMover name=&quot;m&quot; bb=&quot;true&quot; chi=&quot;true&quot; tolerance=&quot;.1&quot; /&gt;</span>
 <span class="go">    &lt;/MOVERS&gt;</span>
+<span class="go">    &lt;FILTERS&gt;</span>
+<span class="go">        &lt;CavityVolume name=&quot;cavity&quot; confidence=&quot;0&quot; /&gt;</span>
+<span class="go">        &lt;PackStat name=&quot;pack&quot; confidence=&quot;0&quot; /&gt;</span>
+<span class="go">        &lt;AverageDegree name=&quot;avdegree&quot; confidence=&quot;0&quot; /&gt;</span>
+<span class="go">    &lt;/FILTERS&gt;</span>
 <span class="go">    &lt;PROTOCOLS&gt;</span>
 <span class="go">        &lt;Add mover=&quot;w&quot; /&gt;</span>
+<span class="go">        &lt;Add filter=&quot;cavity&quot; /&gt;</span>
+<span class="go">        &lt;Add filter=&quot;pack&quot; /&gt;</span>
+<span class="go">        &lt;Add filter=&quot;avdegree&quot; /&gt;</span>
 <span class="go">    &lt;/PROTOCOLS&gt;</span>
 <span class="go">&lt;/ROSETTASCRIPTS&gt;</span>
 </pre></div>
@@ -202,7 +212,7 @@ your computer) is:</p>
     </p>
     <p>
         &copy; Copyright 2018, Jaume Bonet.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
     </p>
   </div>
 </footer>

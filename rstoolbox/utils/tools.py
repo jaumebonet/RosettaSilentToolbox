@@ -13,6 +13,7 @@
 .. func:: make_rosetta_app_path
 .. func:: execute_process
 .. func:: report
+.. func:: concat_fragments
 """
 # Standard Libraries
 import os
@@ -31,7 +32,7 @@ from six import string_types
 
 
 __all__ = ['format_Ipython', 'use_qgrid', 'add_column', 'split_values', 'make_rosetta_app_path',
-           'execute_process', 'report']
+           'execute_process', 'report', 'concat_fragments']
 
 
 def format_Ipython():
@@ -119,10 +120,8 @@ def add_column( df, name, value ):
 
     :return: :class:`~pandas.DataFrame` - The data container with the new column
     """
-    if not isinstance(value, (list, np.ndarray)):
-        data = pd.Series([value] * df.shape[0])
-    else:
-        data = pd.Series(value)
+    data = pd.Series([value] * df.shape[0])
+    data.index = df.index
     return df.assign(_placeholder=data).rename(columns={"_placeholder": name})
 
 
@@ -227,7 +226,7 @@ def make_rosetta_app_path( application ):
     return exe
 
 
-def execute_process( command ):
+def execute_process( command ):  # pragma: no cover
     """Execute the provided command.
 
     :param command: Command to be executed.
@@ -241,7 +240,11 @@ def execute_process( command ):
         command = shlex.split(command)
     try:
         return subprocess.call( command )
-    except OSError:
+    except OSError as e:
+        print('OS', e)
+        return 1
+    except subprocess.CalledProcessError as e:
+        print('CPE', e)
         return 1
 
 
@@ -275,7 +278,7 @@ def report( df ):
             return ''
         mutations = row.get_mutations(seqID).split(',')
         for i, m in enumerate(mutations):
-            g = re.match('^(\w+)(\d+)(\w+)$', m)
+            g = re.match(r'^(\w+)(\d+)(\w+)$', m)
             if isinstance(shift, int):
                 position = int(g.group(2)) + (shift - 1)
             else:
@@ -305,3 +308,31 @@ def report( df ):
         dcop[col] = dcop.apply(lambda row: translate_mutants(row, c, shift), axis=1)
 
     return dcop
+
+
+def concat_fragments( fragment_list ):
+    """Combine multiple :class:`.FragmentFrame`.
+
+    .. note::
+        Make sure to give an **ordered** ``fragment_list``, as the individual
+        :class:`.FragmentFrame` are processed one by one and the frame is
+        renumbered.
+
+    :param fragment_list: Command to be executed.
+    :type fragment_list: Union(:class:`.FragmentFrame`, :func:`list`)
+
+    :return: :class:`.FragmentFrame` - combined and renumbered.
+    """
+    fragment_list_renum = []
+    for i, e in enumerate(fragment_list):
+        shiftset = e.iloc[0]['frame']
+        if i == 0:
+            e['renum_frame'] = e['frame'] - shiftset + 1
+        else:
+            e['renum_frame'] = e['frame'] - shiftset + 1 + \
+                               fragment_list[i - 1]['renum_frame'].max()
+        fragment_list_renum.append(e)
+    df = pd.concat(fragment_list_renum, ignore_index=True, sort=False)
+    df = df[['pdb', 'renum_frame', 'neighbors', 'position', 'size', 'aa',
+             'sse', 'phi', 'psi', 'omega']].rename(columns={'renum_frame': 'frame'})
+    return df

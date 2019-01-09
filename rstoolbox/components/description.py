@@ -170,6 +170,15 @@ then be accessed through the appropiate getter functions of :class:`.DesignFrame
 and :class:`.DesignSeries`, and is expected for any of the sequence analysis
 functions and plots.
 
+Alternatively, ``*`` can be used to indicate that all sequence chains should be
+retrieved and ``$`` can be used to retrieve the data without keeping chain track.
+
+.. warning::
+
+    The ``$`` should only be used when the silentfile contains multiple poses with
+    different chain identifier in each **but with only one chain each**. Unexpected
+    behaviour will occur otherwise.
+
 .. _structure:
 
 structure
@@ -184,6 +193,8 @@ Similarly to ``sequence``, it can be loaded as extra data by calling the chains 
 interest::
 
     {'structure': 'AB'}
+
+or using the available wildcards.
 
 .. _psipred:
 
@@ -200,6 +211,8 @@ calling the chains of interest::
 
     {'psipred': 'AB'}
 
+or using the available wildcards.
+
 .. _dihedrals:
 
 dihedrals
@@ -213,6 +226,8 @@ of **Rosetta**'s ``WriteSSEMover``::
 Angle data from specific chains can be loaded as::
 
     {'dihedrals': 'AB'}
+
+or using the available wildcards.
 
 The data will be loaded as a single array of floats.
 
@@ -300,14 +315,14 @@ class Description( object ):
         for k in self._per_residues:
             if score_name.startswith(k) and score_name not in self.scores:
                 return False
+        if self.scores_rename is not None:
+            if score_name in self.scores_rename:
+                return True
         if self.scores_ignore is not None:
             if self.scores_ignore == "*" or score_name in self.scores_ignore:
                 return False
             elif any(re.match(s, score_name) for s in self.scores_ignore if "*" in s):
                 return False
-        if self.scores_rename is not None:
-            if score_name in self.scores_rename:
-                return True
         if self.scores is None:
             return False
         if self.scores == "*" or score_name in self.scores:
@@ -333,9 +348,7 @@ class Description( object ):
         for h in self.naming:
             if h in header and self.wanted_score(h):
                 if h == self.score_name(h):
-                    raise AttributeError(
-                        "New column {} ".format(h) +
-                        "cannot be created, a score has that name")
+                    raise AttributeError("New column {} cannot be created".format(h))
 
     def get_naming_pairs( self, description ):
         if self.naming is not None:
@@ -354,55 +367,67 @@ class Description( object ):
 
     def get_expected_sequences( self, chains ):
         if self.sequence is not None:
-            sele = set(chains["id"]) if self.sequence == "*" else set(self.sequence)
+            sele = set(chains["id"]) if self.sequence in ["*", "$"] else set(self.sequence)
             seq  = chains["seq"]
             if len(sele.difference(chains["id"])) > 0:
                 raise ValueError(
                     "Requested a chain not present in the file. "
                     "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
-            for ch in sele:
-                guidep = np.where(guide == ch)[0]
-                yield "sequence_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
+            if self.sequence == "$":
+                yield "sequence_$", "".join(seq)
+            else:
+                for ch in sele:
+                    guidep = np.where(guide == ch)[0]
+                    yield "sequence_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
 
     def get_expected_structures( self, chains ):
         if self.structure is not None:
-            sele = set(chains["id"]) if self.structure == "*" else set(self.structure)
+            sele = set(chains["id"]) if self.structure in ["*", "$"] else set(self.structure)
             seq  = chains["dssp"]
             if len(sele.difference(chains["id"])) > 0:
                 raise ValueError(
                     "Requested a chain not present in the file. "
                     "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
-            for ch in sele:
-                guidep = np.where(guide == ch)[0]
-                yield "structure_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
+            if self.structure == "$":
+                yield "structure_$", "".join(seq)
+            else:
+                for ch in sele:
+                    guidep = np.where(guide == ch)[0]
+                    yield "structure_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
 
     def get_expected_psipred( self, chains ):
         if self.psipred is not None:
-            sele = set(chains["id"]) if self.psipred == "*" else set(self.psipred)
+            sele = set(chains["id"]) if self.psipred in ["*", "$"] else set(self.psipred)
             seq  = chains["psipred"]
             if len(sele.difference(chains["id"])) > 0:
                 raise ValueError(
                     "Requested a chain not present in the file. "
                     "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
-            for ch in sele:
-                guidep = np.where(guide == ch)[0]
-                yield "psipred_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
+            if self.psipred == "$":
+                yield "psipred_$", "".join(seq)
+            else:
+                for ch in sele:
+                    guidep = np.where(guide == ch)[0]
+                    yield "psipred_" + ch, "".join(seq[guidep[0]:guidep[-1] + 1])
 
     def get_expected_dihedrals( self, chains, angle ):
         if self.dihedrals is not None:
-            sele = set(chains["id"]) if self.dihedrals == "*" else set(self.dihedrals)
+            sele = set(chains["id"]) if self.dihedrals in ["*", "$"] else set(self.dihedrals)
             seq  = chains[angle]
             if len(sele.difference(chains["id"])) > 0:
                 raise ValueError(
                     "Requested a chain not present in the file. "
                     "Available chain are {}".format(",".join(list(set(chains["id"])))))
             guide  = np.array(list(chains["id"]))
-            for ch in sele:
-                guidep = np.where(guide == ch)[0]
-                yield angle + "_" + ch, np.array(seq[guidep[0]:guidep[-1] + 1])
+            if self.dihedrals == "$":
+                yield angle + "_$", np.array(seq)
+            else:
+                for ch in sele:
+                    guidep = np.where(guide == ch)[0]
+                    yield angle + "_" + ch, np.array(seq[guidep[0]:guidep[-1] + 1])
 
     def to_json( self ):
         data = {}

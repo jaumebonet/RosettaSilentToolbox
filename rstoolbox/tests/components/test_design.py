@@ -17,6 +17,7 @@ import matplotlib as mpl
 if os.environ.get('DISPLAY', '') == '':
     mpl.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
 import pytest
 
 # This Library
@@ -41,6 +42,7 @@ class TestDesign( object ):
         self.silent2 = os.path.join(self.dirpath, 'input_sse.minsilent.gz')
         self.silent3 = os.path.join(self.dirpath, 'input_ssebig.minisilent.gz')
         self.silent4 = os.path.join(self.dirpath, 'input_3ssepred.minisilent.gz')
+        self.score1 = os.path.join(self.dirpath, 'remodel.sc.gz')
 
     @pytest.fixture(autouse=True)
     def setup( self, tmpdir ):
@@ -125,6 +127,17 @@ class TestDesign( object ):
         assert sr.get_phi("A").min() >= -180
         assert sr.get_psi("A").max() <= 180
         assert sr.get_psi("A").min() >= -180
+
+    def test_incomplete_read( self ):
+        """
+        Test that incomplete score files  without the proper header change (such as
+        is the case with non-successful remodel runs) are read properly
+        """
+        df = ri.parse_rosetta_file(self.score1)
+        assert (df[df['description'] == 'sketch4_0001']['dslf_fa13'].isna()).all()
+        assert df[~df['dslf_fa13'].isna()].shape[0] == 6
+        assert df[df['dslf_fa13'].isna()].shape[0] == 2
+        assert df.shape[0] == 8
 
     def test_reference( self ):
         """
@@ -265,6 +278,13 @@ class TestDesign( object ):
         assert 'rmsd_target' not in dfs1.columns
         assert 'rmsd_target' in dfs2.columns
 
+    def test_clean_rosetta_suffix(self):
+        # Start test
+        df = ri.parse_rosetta_file(self.silent1)
+        df2 = df.clean_rosetta_suffix()
+        assert len(df['description'].unique()) == df.shape[0]
+        assert len(df2['description'].unique()) == 1
+
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_global_preview.png')
     def test_global_preview(self):
@@ -273,9 +293,113 @@ class TestDesign( object ):
         values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
                   "cav_vol", "design_score", "packstat", "rmsd_drift"]
         fig = plt.figure(figsize=(25, 10))
-        rp.multiple_distributions(df, fig, (2, 4), values)
+        rp.multiple_distributions(df, fig, (2, 4), values=values)
         plt.tight_layout()
         return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_global_preview_ref1.png')
+    def test_global_preview_withref1(self):
+
+        df = ri.parse_rosetta_file(self.silent1, {'sequence': 'A'})
+        values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
+                  "cav_vol", "design_score", "packstat", "rmsd_drift"]
+        slength = len(df.iloc[0].get_sequence('A'))
+        refdf = ru.load_refdata('scop2')
+        refdf = refdf[(refdf['length'] >= slength - 5) &
+                      (refdf['length'] <= slength + 5)]
+        fig = plt.figure(figsize=(25, 10))
+        rp.multiple_distributions(df, fig, (2, 4), values=values, refdata=refdf)
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_global_preview_ref2.png')
+    def test_global_preview_withref2(self):
+
+        df = ri.parse_rosetta_file(self.silent1, {'sequence': 'A'})
+        values = ["score", "hbond_sr_bb", "B_ni_rmsd", "hbond_bb_sc",
+                  "cav_vol", "design_score", "packstat", "rmsd_drift"]
+        slength = len(df.iloc[0].get_sequence('A'))
+        refdf = ru.load_refdata('scop2')
+        refdf = refdf[(refdf['length'] >= slength - 5) &
+                      (refdf['length'] <= slength + 5)]
+        fig = plt.figure(figsize=(25, 10))
+        rp.multiple_distributions(df, fig, (2, 4), values=values, refdata=refdf,
+                                  ref_equivalences={'cavity': 'cav_vol',
+                                                    'pack': 'packstat'},
+                                  violins=False)
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_global_preview_ref3.png')
+    def test_global_preview_withref3(self):
+
+        slength = 100
+        df = ru.load_refdata('scop2')
+        df = df[(df['length'] >= slength - 5) &
+                (df['length'] <= slength + 5)]
+        refdf = ru.load_refdata('scop2', 50)
+        refdf = refdf[(refdf['length'] >= slength - 5) &
+                      (refdf['length'] <= slength + 5)]
+        values = ["score", "hbond_sr_bb", "avdegree", "hbond_bb_sc",
+                  "cavity", "CYDentropy", "pack", "radius"]
+        fig = plt.figure(figsize=(25, 10))
+        rp.multiple_distributions(df, fig, (2, 4), values=values, refdata=refdf)
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_incontext.png')
+    def test_in_context_plot(self):
+
+        slength = 100
+        df = ru.load_refdata('scop2')
+        df = df[(df['length'] >= slength - 5) &
+                (df['length'] <= slength + 5)].head(10)
+        refdf = ru.load_refdata('scop2', 50)
+        refdf = refdf[(refdf['length'] >= slength - 5) &
+                      (refdf['length'] <= slength + 5)]
+        values = ["score", "hbond_sr_bb", "avdegree", "hbond_bb_sc",
+                  "cavity", "CYDentropy", "pack", "radius"]
+        fig = plt.figure(figsize=(25, 10))
+        rp.plot_in_context(df, fig, (2, 4), refdata=refdf, values=values,
+                           point_ms=10, kde_color='red')
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_incontexts.png')
+    def test_in_contexts_plot(self):
+
+        df = ru.load_refdata('scop')
+        qr = pd.DataFrame([['2F4V', 'C'], ['3BFU', 'B'], ['2APJ', 'C'],
+                           ['2C37', 'V'], ['2I6E', 'H']], columns=['pdb', 'chain'])
+        qr = qr.merge(df, on=['pdb', 'chain'])
+
+        refs = []
+        for i, t in qr.iterrows():
+            refs.append(df[(df['length'] >= (t['length'] - 5)) &
+                           (df['length'] <= (t['length'] + 5))])
+
+        fig  = plt.figure(figsize=(20, 6))
+
+        rp.distribution_quality(df=qr, refdata=refs,
+                                values=['score', 'pack', 'avdegree',
+                                        'cavity', 'psipred'],
+                                ascending=[True, False, True, True, False],
+                                names=['pdb', 'chain'],
+                                fig=fig)
+        plt.tight_layout()
+        return fig
+
+    def test_get_homology(self):
+        #  Values are difficult to assess here, as this will change from one
+        #  download to the next.
+        #  Seems that downloading might not be possible in Travis... (?)
+        data = ru.make_redundancy_table(precalculated=True, select=[30])
+        assert len(data.groupby('c30')) > 1
 
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_mutants_alignment.png')
@@ -405,7 +529,7 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1)
         fig = plt.figure(figsize=(30, 30))
 
-        rp.multiple_distributions(df, fig, (3, 3),
+        rp.multiple_distributions(df, fig, (3, 3), (0, 0),
                                   ['score', 'GRMSD2Target', 'GRMSD2Template',
                                    'LRMSD2Target', 'LRMSDH2Target', 'LRMSDLH2Target',
                                    'design_score', 'packstat', 'rmsd_drift'])
@@ -424,7 +548,20 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1, sc_des)
         df.add_reference_sequence("B", refseq)
 
-        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
+        font = FontProperties()
+        font.set_size(35)
+        font.set_weight('bold')
+
+        fig, axs = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
+
+        for ax, ax2 in axs:
+            for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+                label.set_fontproperties(font)
+            if ax2 is None:
+                continue
+            for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
+                label.set_fontproperties(font)
+
         plt.tight_layout()
         return fig
 
@@ -436,7 +573,20 @@ class TestDesign( object ):
         # Start test
         df = ri.parse_rosetta_file(self.silent1, sc_des)
 
-        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
+        font = FontProperties()
+        font.set_size(35)
+        font.set_weight('bold')
+
+        fig, axs = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
+
+        for ax, ax2 in axs:
+            for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+                label.set_fontproperties(font)
+            if ax2 is None:
+                continue
+            for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
+                label.set_fontproperties(font)
+
         plt.tight_layout()
         return fig
 
@@ -453,7 +603,20 @@ class TestDesign( object ):
         df.add_reference_sequence("B", refseq)
         df = df.sequence_bits('B')
 
-        fig, _ = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
+        font = FontProperties()
+        font.set_size(35)
+        font.set_weight('bold')
+
+        fig, axs = rp.logo_plot( df, "B", refseq=True, line_break=50, hight_prop=2 )
+
+        for ax, ax2 in axs:
+            for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+                label.set_fontproperties(font)
+            if ax2 is None:
+                continue
+            for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
+                label.set_fontproperties(font)
+
         plt.tight_layout()
         return fig
 
@@ -466,7 +629,20 @@ class TestDesign( object ):
         df = ri.parse_rosetta_file(self.silent1, sc_des)
         df = df.sequence_bits('B')
 
-        fig, _ = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
+        font = FontProperties()
+        font.set_size(35)
+        font.set_weight('bold')
+
+        fig, axs = rp.logo_plot( df, "B", refseq=False, line_break=50, hight_prop=2 )
+
+        for ax, ax2 in axs:
+            for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+                label.set_fontproperties(font)
+            if ax2 is None:
+                continue
+            for label in (ax2.get_xticklabels() + ax2.get_yticklabels()):
+                label.set_fontproperties(font)
+
         plt.tight_layout()
         return fig
 

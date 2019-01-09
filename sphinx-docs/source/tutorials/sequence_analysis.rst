@@ -26,6 +26,7 @@ by Rosetta over the particular structure, *including the sequence*.
   As long as the naming schema for the file is maintained, if the function finds the file it will **skip the Rosetta execution**.
 
 .. ipython::
+  :okwarning:
 
   In [1]: import rstoolbox as rs
      ...: import pandas as pd
@@ -63,8 +64,9 @@ Additionally, to facilitate reading, we are going to add to the description a li
   Both ``reference_sequence`` and ``reference_shift`` need to be attached to the appropriate chain identifier.
 
 .. ipython::
+  :okwarning:
 
-  In [2]: rules = {'scores_ignore': ['fa_*', 'niccd_*', 'hbond_*', 'lk_ball_wtd', 'pro_close', 'dslf_fa13', 'C_ni_rmsd_threshold',
+  In [3]: rules = {'scores_ignore': ['fa_*', 'niccd_*', 'hbond_*', 'lk_ball_wtd', 'pro_close', 'dslf_fa13', 'C_ni_rmsd_threshold',
      ...:                            'omega', 'p_aa_pp', 'yhh_planarity', 'ref', 'rama_prepro', 'time'],
      ...:          'sequence': 'C',
      ...:          'labels': ['MOTIF', 'SSE03', 'SSE05']}
@@ -91,14 +93,15 @@ with most of the popular plotting solutions in python, such as :mod:`matplotlib`
   it has generated inside the :class:`~matplotlib.figure.Figure`. This way, one can always personalise all aspects of the plots.
 
 .. ipython::
+  :okwarning:
 
-   In [3]: fig  = plt.figure(figsize=(30, 10))
-      ...: grid = [2, 6]
-      ...: axes = rs.plot.multiple_distributions( df, fig, grid )
-      ...: plt.tight_layout()
+  In [4]: fig  = plt.figure(figsize=(30, 10))
+     ...: grid = [2, 6]
+     ...: axes = rs.plot.multiple_distributions( df, fig, grid )
+     ...: plt.tight_layout()
 
-   @savefig tutorial_seq_plt1.png width=10in
-   In [4]: plt.show()
+  @savefig tutorial_seq_plt1.png width=10in
+  In [5]: plt.show()
 
 .. tip::
   For :func:`.multiple_distributions`, the grid has to define enough positions for all the scores expected to be plotted. In this case, there are 12 numerical columns and
@@ -108,11 +111,12 @@ The structure of the :class:`.DesignFrame` is such that all one vs. one scores c
 some scores to minimize the final image):
 
 .. ipython::
+  :okwarning:
 
-   In [5]: grid = sns.pairplot(df[['score', 'packstat', 'cav_vol', 'finalRMSD']])
+  In [6]: grid = sns.pairplot(df[['score', 'packstat', 'cav_vol', 'finalRMSD']])
 
-   @savefig tutorial_seq_plt2.png width=10in
-   In [6]: plt.show()
+  @savefig tutorial_seq_plt2.png width=10in
+  In [7]: plt.show()
 
 .. note::
   As a general rule, anything that a :class:`~pandas.DataFrame` can do, a :class:`.DesignFrame` also can.
@@ -127,22 +131,25 @@ Let's make two populations: ``df_cr`` representing the ``top 10 scored`` decoys 
 ``df_sr`` with the ``top 10 scored`` decoys with a ``packstat >= 0.6`` and a ``finalRMSD <= 1.5``.
 
 .. ipython::
+  :okwarning:
 
-   In [7]: df_cr = df[(df['cav_vol'] <= 10) & (df['finalRMSD'] <= 1.5)].sort_values('score').head(10)
-      ...: df_sr = df[(df['packstat'] >= 0.6) & (df['finalRMSD'] <= 1.5)].sort_values('score').head(10)
+  In [8]: df_cr = df[(df['cav_vol'] <= 10) & (df['finalRMSD'] <= 1.5)].sort_values('score').head(10)
+     ...: df_sr = df[(df['packstat'] >= 0.6) & (df['finalRMSD'] <= 1.5)].sort_values('score').head(10)
 
 As can be seen in this example, selections can be concatenated with either ``&`` (**AND** - meaning that all conditions must be fulfilled) or ``|`` (**OR** - meaning that
 any of the conditions need to be met). After that, one can check the overlap between the two selected groups, either by checking the common identifiers as sets:
 
 .. ipython::
+  :okwarning:
 
-   In [8]: print(set(df_cr['description'].values).intersection(df_sr['description'].values))
+  In [9]: print(set(df_cr['description'].values).intersection(df_sr['description'].values))
 
 Or by merging only the common decoys, which will bring the full data:
 
 .. ipython::
+  :okwarning:
 
-   In [8]: df_cr_sr = df_cr.merge(df_sr, how='inner', on='description', suffixes=['', '_2x'])
+  In [10]: df_cr_sr = df_cr.merge(df_sr, how='inner', on='description', suffixes=['', '_2x'])
       ...: df_cr_sr.drop(list(df_cr_sr.filter(regex = '_2x')), axis = 1, inplace = True)
       ...: df_cr_sr
 
@@ -157,8 +164,9 @@ as is explained in :ref:`new_mutants`. Data referring to the identity and simila
 not currently informative for this example):
 
 .. ipython::
+  :okwarning:
 
-   In [8]: df_sr = df_sr.identify_mutants('C')
+  In [11]: df_sr = df_sr.identify_mutants('C')
       ...: cols = ['description']
       ...: cols.extend(list(df_sr.filter(regex = '_C')))
       ...: df_sr[cols].head(2)
@@ -169,32 +177,36 @@ not currently informative for this example):
   as numerical selection is performed that way, but to make a report the actual position might be more useful to get the count in the same range as the reference structure.
   One could get that format with :func:`.report()`.
 
-  .. ipython::
+.. ipython::
+  :okwarning:
 
-     In [9]: rs.utils.report(df_sr[cols].head(2))
+  In [12]: rs.utils.report(df_sr[['description']].head(2))
 
 Thanks to this quick identification, it is easy to select decoys with a particular sequence signature of interest through :meth:`.DesignFrame.get_sequence_with`.
 
 .. ipython::
+  :okwarning:
 
-   In [9]: df_sr.get_sequence_with('C', ((3, 'W'), (9, 'R')))
+  In [13]: df_sr.get_sequence_with('C', ((3, 'W'), (9, 'R')))
 
 One important issue when selecting which decoys will move to the next round or be selected for experimental validation is the sequence distance between them,
 to avoid (unless wanted) trying too similar designs:
 
 .. ipython::
+  :okwarning:
 
-   In [1]: df_inner = df_sr.sequence_distance('C')
+  In [14]: df_inner = df_sr.sequence_distance('C')
       ...: df_inner
 
 Or even to compare the sequences between two different selection criteria:
 
 .. ipython::
+  :okwarning:
 
-   In [2]: df_outer = df_sr.sequence_distance('C', df_cr)
+  In [15]: df_outer = df_sr.sequence_distance('C', df_cr)
       ...: df_outer
 
-   In [3]: fig = plt.figure(figsize=(30, 10))
+  In [16]: fig = plt.figure(figsize=(30, 10))
       ...: ax00 = plt.subplot2grid((1, 2), (0, 0))
       ...: _ = sns.heatmap(df_inner, ax=ax00)
       ...: rs.utils.add_top_title(ax00, 'Self Comparison')
@@ -203,8 +215,8 @@ Or even to compare the sequences between two different selection criteria:
       ...: rs.utils.add_top_title(ax01, 'Populations Comparison')
       ...: plt.tight_layout()
 
-   @savefig tutorial_seq_plt2b.png width=10in
-   In [9]: plt.show()
+  @savefig tutorial_seq_plt2b.png width=10in
+  In [17]: plt.show()
 
 Visual Analysis of Mutations
 ----------------------------
@@ -214,62 +226,65 @@ Amino acid variation over all the decoys can be visualised in a variety of ways,
 * Through a :func:`.sequence_frequency_plot`:
 
 .. ipython::
+  :okwarning:
 
-   In [8]: fig = plt.figure(figsize=(30, 10))
+  In [18]: fig = plt.figure(figsize=(30, 10))
       ...: ax = plt.subplot2grid((1, 1), (0, 0))
       ...: rs.plot.sequence_frequency_plot(df_cr, 'C', ax, cbar=False)
 
-   @savefig tutorial_seq_plt3.png width=10in
-   In [9]: plt.show()
+  @savefig tutorial_seq_plt3.png width=10in
+  In [19]: plt.show()
 
 * As a :func:`.logo_plot` (let's see here only for the labeled region ``SSE03``):
 
 .. ipython::
-   :okwarning:
+  :okwarning:
 
-   In [1]: sse03 = df_cr.get_label('SSE03', 'C').values[0]
+  In [20]: sse03 = df_cr.get_label('SSE03', 'C').values[0]
       ...: fig, axes = rs.plot.logo_plot(df_cr, 'C', key_residues=sse03)
 
-   @savefig tutorial_seq_plt4.png width=10in
-   In [2]: plt.show()
+  @savefig tutorial_seq_plt4.png width=10in
+  In [21]: plt.show()
 
 * As a :func:`.positional_sequence_similarity` (defaults to ``BLOSUM62`` similarity matrix):
 
 .. ipython::
-   :okwarning:
+  :okwarning:
 
-   In [3]: fig  = plt.figure(figsize=(30, 10))
+  In [22]: fig  = plt.figure(figsize=(30, 10))
       ...: ax = plt.subplot2grid((1, 1), (0, 0))
       ...: seqsim = rs.analysis.positional_sequence_similarity(df_cr, 'C')
       ...: rs.plot.positional_sequence_similarity_plot(seqsim, ax)
 
-   @savefig tutorial_seq_plt5.png width=10in
-   In [4]: plt.show()
+  @savefig tutorial_seq_plt5.png width=10in
+  In [23]: plt.show()
 
 * And, finally, as an alignment with :func:`.plot_alignment`:
 
 .. ipython::
+  :okwarning:
 
-   In [5]: fig  = plt.figure(figsize=(30, 10))
+  In [24]: fig  = plt.figure(figsize=(30, 10))
       ...: ax = plt.subplot2grid((1, 1), (0, 0))
       ...: rs.plot.plot_alignment(df_cr, 'C', ax)
 
-   @savefig tutorial_seq_plt6.png width=10in
-   In [6]: plt.show()
+  @savefig tutorial_seq_plt6.png width=10in
+  In [25]: plt.show()
 
 Finally, a single selected decoy can be plotted individually with :func:`.per_residue_matrix_score_plot`;
 in this case we will highlight the MOTIF ``region`` of interest and ``SSE05``:
 
 .. ipython::
+  :okwarning:
 
-   In [7]: fig  = plt.figure(figsize=(30, 10))
+  In [26]: fig  = plt.figure(figsize=(30, 10))
       ...: ax = plt.subplot2grid((1, 1), (0, 0))
       ...: motif = df_cr.get_label('MOTIF', 'C').values[0]
       ...: sse05 = df_cr.get_label('SSE05', 'C').values[0]
       ...: seles = [(motif, 'red'), (sse05, 'blue')]
       ...: rs.plot.per_residue_matrix_score_plot(df_cr.iloc[0], 'C', ax, selections=seles)
 
-   @savefig tutorial_seq_plt7.png width=10in
-   In [8]: plt.show()
+  @savefig tutorial_seq_plt7.png width=10in
+  In [27]: plt.show()
 
-   In [9]: plt.close('all')
+  In [28]: plt.close('all')
