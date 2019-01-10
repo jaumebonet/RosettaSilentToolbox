@@ -160,7 +160,7 @@ plotting and analysis, as is the one that allows to separate the different data 
 </div>
 <p>Currently, CD data can be obtained and plotted such as:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">rstoolbox</span> <span class="kn">as</span> <span class="nn">rs</span>
-<span class="gp">   ...: </span><span class="n">dfCD</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_CD</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/CD&quot;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">dfCD</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_CD</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/CD&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;J-815&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">dfCD</span><span class="o">.</span><span class="n">columns</span>
 <span class="gp">   ...: </span>
 <span class="gh">Out[1]: </span><span class="go">Index([&#39;Wavelength&#39;, &#39;MRE&#39;, &#39;voltage&#39;, &#39;title&#39;, &#39;bin&#39;, &#39;minw&#39;, &#39;Temp&#39;], dtype=&#39;object&#39;)</span>

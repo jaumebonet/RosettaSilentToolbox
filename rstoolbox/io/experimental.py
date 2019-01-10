@@ -44,7 +44,7 @@ class SPRFrame( pd.DataFrame ):
         return SPRFrame
 
 
-def read_CD( dirname, prefix=None, invert_temp=False, model='J-815'):
+def read_CD( dirname, prefix=None, invert_temp=False, model='Chirascan', outfile=None ):
     """Read `Circular Dichroism <https://www.wikiwand.com/en/Circular_dichroism>`_ data
     for multiple temperatures.
 
@@ -59,9 +59,12 @@ def read_CD( dirname, prefix=None, invert_temp=False, model='J-815'):
     :param str prefix: Prefix of the files inside the folder.
     :param bool invert_temp: Temperature assignation might be inverted. Switch it with this
         option.
-    :param str model: Format of the data. Available models are: ``['J-815']``
+    :param str model: Format of the data. Available models are: ``['J-815', 'Chirascan']``
+    :param bool outfile: Option to print individual csv files for each sample.
+        Works only for ``Chirascan``.
 
-    :return:  :class:`~pandas.DataFrame`.
+    :return:  Union[:class:`~pandas.DataFrame`, :class:`dict` of :class:`~pandas.DataFrame`] -
+        for `J-815` and `Chirascan` respectively.
 
     :raise:
         :IOError: If ``dirname`` is not a directory.
@@ -72,13 +75,15 @@ def read_CD( dirname, prefix=None, invert_temp=False, model='J-815'):
         :func:`.plot_CD`
 
     """
-    if model == 'J-815':
+    if model.lower() == 'j-815':
         return CDFrame(_read_CD_J815(dirname, prefix, invert_temp))
+    elif model.lower() == 'chirascan':
+        return _read_CD_Chirascan(dirname, outfile=outfile)
     else:
         raise AttributeError('Unknown CD format')
 
 
-def _read_CD_J815( dirname, prefix, invert_temp):
+def _read_CD_J815( dirname, prefix, invert_temp ):
     """CD read method for the J-815 output format.
 
     .. seealso::
@@ -139,6 +144,42 @@ def _read_CD_J815( dirname, prefix, invert_temp):
                                                                        (splits)))],
                            columns=['bin', 'Temp'])
         df = df.merge(tmp, on=['bin'])
+    return df
+
+
+def _read_CD_Chirascan( infile, outfile=None ):
+    """CD read method for the Chirascan output format.
+
+    .. seealso::
+        :func:`.read_CD`
+    """
+    def reshape(row):
+        df = ru.add_column(pd.DataFrame(row.iloc[1:]).reset_index(), 'w', row.iloc[0])
+        df = df.assign(bin=range(1, df.shape[0] + 1))
+        df.columns = ['Temp', 'MRE', 'Wavelength', 'bin']
+        df['MRE'] = df['MRE'].astype('float64')
+        df['Wavelength'] = df['Wavelength'].astype('float64')
+        return df
+
+    data = pd.read_csv(infile, names=list(range(80)), engine='python').dropna(axis=1, how='all').values
+    data_split = [[]]
+    for x in data:
+        if x[0] == 'Cell:':
+            data_split.append([])
+        data_split[-1].append(x)
+    header = pd.DataFrame(data_split[0])[[0]].dropna()
+    header = [x.strip() for x in list(header[header[0].str.startswith('#Sample')].apply(lambda row: row[0].split(':')[1], axis=1).values)]
+    df = {}
+    for i, h in enumerate(header):
+        df.setdefault(h, CDFrame(data_split[i + 1]))
+        columns = [float(x) for x in list(df[h].iloc[2].values)]
+        columns[0] = 'Wavelength'
+        df[h].columns = columns
+        df[h] = df[h].dropna().reset_index(drop=True)
+        df[h] = CDFrame(pd.concat(df[h].apply(reshape, axis=1).values).sort_values(['Temp', 'Wavelength'], ascending=[True, False]))
+        df[h] = ru.add_column(df[h], 'title', h)
+        if outfile:
+            df[h].to_csv('{}.csv'.format(h), index=False)
     return df
 
 

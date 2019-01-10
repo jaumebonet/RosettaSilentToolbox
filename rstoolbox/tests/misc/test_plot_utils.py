@@ -117,6 +117,19 @@ class TestPlotUtils( object ):
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
+                                   filename='plot_cd_chirascan.png')
+    def test_cd_read_chirascan( self ):
+        df = ri.read_CD(os.path.join(self.dirpath, 'chirascan_cd.csv'),  model='chirascan')
+        fig  = plt.figure(figsize=(15, 15))
+        grid = (3, 2)
+        for i, sample in enumerate(sorted(df.keys())):
+            ax = plt.subplot2grid(grid, (int(i / 2), i % 2), fig=fig)
+            rp.plot_CD(df[sample], ax, sample=5)
+            ru.add_top_title(ax, sample)
+        plt.tight_layout()
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_mals.png')
     def test_mals( self ):
         df = pd.read_csv(os.path.join(self.dirpath, 'mals.csv'))

@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rstoolbox.utils.baseline &#8212; rstoolbox 0.0.8 documentation</title>
+    <title>rstoolbox.utils.concat_fragments &#8212; rstoolbox 0.0.8 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/style.css" />
@@ -20,8 +20,8 @@
     <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="rstoolbox.utils.mutations" href="rstoolbox.utils.mutations.html" />
-    <link rel="prev" title="rstoolbox.utils.concat_fragments" href="rstoolbox.utils.concat_fragments.html" />
+    <link rel="next" title="rstoolbox.utils.baseline" href="rstoolbox.utils.baseline.html" />
+    <link rel="prev" title="rstoolbox.utils.report" href="rstoolbox.utils.report.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -82,7 +82,7 @@
   <ul class="dropdown-menu localtoc"
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">rstoolbox.utils.baseline</a></li>
+<li><a class="reference internal" href="#">rstoolbox.utils.concat_fragments</a></li>
 </ul>
 </ul>
 </li>
@@ -112,51 +112,28 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <div class="section" id="rstoolbox-utils-baseline">
-<h1>rstoolbox.utils.baseline<a class="headerlink" href="#rstoolbox-utils-baseline" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="rstoolbox-utils-concat-fragments">
+<h1>rstoolbox.utils.concat_fragments<a class="headerlink" href="#rstoolbox-utils-concat-fragments" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="rstoolbox.utils.baseline">
-<code class="descclassname">rstoolbox.utils.</code><code class="descname">baseline</code><span class="sig-paren">(</span><em>minimize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.utils.baseline" title="Permalink to this definition">¶</a></dt>
-<dd><p>RosettaScript to calculate DSSP secondary structure and
-phi-psi angles.</p>
+<dt id="rstoolbox.utils.concat_fragments">
+<code class="descclassname">rstoolbox.utils.</code><code class="descname">concat_fragments</code><span class="sig-paren">(</span><em>fragment_list</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.utils.concat_fragments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combine multiple <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Make sure to give an <strong>ordered</strong> <code class="docutils literal notranslate"><span class="pre">fragment_list</span></code>, as the individual
+<a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> are processed one by one and the frame is
+renumbered.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>minimize</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If <a class="reference external" href="https://docs.python.org/2/library/constants.html#True" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">True</span></code></a>, apply minimization before
-evaluating the structure.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fragment_list</strong> (Union(<a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code>)) – Command to be executed.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a> - combined and renumbered.</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sequence_and_structure()</span></code></a></p>
-</div>
-<p class="rubric">Example</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.utils</span> <span class="kn">import</span> <span class="n">baseline</span>
-<span class="gp">   ...: </span><span class="k">print</span><span class="p">(</span><span class="n">baseline</span><span class="p">())</span>
-<span class="gp">   ...: </span>
-<span class="go">&lt;ROSETTASCRIPTS&gt;</span>
-<span class="go">    &lt;MOVERS&gt;</span>
-<span class="go">        &lt;WriteSSEMover dssp=&quot;1&quot; name=&quot;w&quot; write_phipsi=&quot;true&quot; /&gt;</span>
-<span class="go">        &lt;MinMover name=&quot;m&quot; bb=&quot;true&quot; chi=&quot;true&quot; tolerance=&quot;.1&quot; /&gt;</span>
-<span class="go">    &lt;/MOVERS&gt;</span>
-<span class="go">    &lt;FILTERS&gt;</span>
-<span class="go">        &lt;CavityVolume name=&quot;cavity&quot; confidence=&quot;0&quot; /&gt;</span>
-<span class="go">        &lt;PackStat name=&quot;pack&quot; confidence=&quot;0&quot; /&gt;</span>
-<span class="go">        &lt;AverageDegree name=&quot;avdegree&quot; confidence=&quot;0&quot; /&gt;</span>
-<span class="go">    &lt;/FILTERS&gt;</span>
-<span class="go">    &lt;PROTOCOLS&gt;</span>
-<span class="go">        &lt;Add mover=&quot;w&quot; /&gt;</span>
-<span class="go">        &lt;Add filter=&quot;cavity&quot; /&gt;</span>
-<span class="go">        &lt;Add filter=&quot;pack&quot; /&gt;</span>
-<span class="go">        &lt;Add filter=&quot;avdegree&quot; /&gt;</span>
-<span class="go">    &lt;/PROTOCOLS&gt;</span>
-<span class="go">&lt;/ROSETTASCRIPTS&gt;</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </div>
