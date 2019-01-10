@@ -1,0 +1,12 @@
+{
+  "scores": [ "description", "packstat", "BUNS", "cav_vol" ],
+  "scores_rename": {
+    "GRMSD2Target": "GlobalRMSD",
+    "LRMSD2Target": "LocalRMSD",
+    "LRMSDH2Target": "LocalRMSDH",
+    "LRMSDLH2Target": "LocalRMSDL",
+    "design_score": "score",
+    "rmsd_drift": "driftRMSD"
+  },
+  "sequence": "B"
+}
