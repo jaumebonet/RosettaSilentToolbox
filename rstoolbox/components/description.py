@@ -26,7 +26,7 @@ definition term           description
 :ref:`scores_rename`      Rename some score names to others.
 :ref:`scores_by_residue`  Pick score by residue types into a single array
                           value.
-:ref:`score_missing`      Names of scores that might be missing in some decoys.
+:ref:`scores_missing`     Names of scores that might be missing in some decoys.
 :ref:`naming`             Use the decoy identifier's name to create extra
                           score terms.
 :ref:`sequence`           Pick sequence data from the silent file.
@@ -136,7 +136,7 @@ as provided by **Rosetta**'s' ``ddG`` mover::
 
 .. _scores_missing:
 
-_scores_missing
+scores_missing
 ---------------
 
 Sometimes a decoy is missing a column. It happens. By providing the name of those columns,
