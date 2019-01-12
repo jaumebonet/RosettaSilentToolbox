@@ -37,6 +37,7 @@ class TestReadSilentFiles( object ):
         self.silent1 = os.path.join(self.dirpath, 'input_2seq.minisilent.gz')
         self.silent2 = os.path.join(self.dirpath, 'input_sse.minsilent.gz')
         self.silent3 = os.path.join(self.dirpath, 'input_symmetry.minisilent.gz')
+        self.silent4 = os.path.join(self.dirpath, 'motifgraft.scores.gz')
         self.contact = os.path.join(self.dirpath, 'contacts.csv.gz')
         self.jsonscr = os.path.join(self.dirpath, 'score.json.gz')
         self.defhead = ["score", "fa_atr", "fa_rep", "fa_sol", "fa_intra_rep", "fa_elec",
@@ -218,6 +219,20 @@ class TestReadSilentFiles( object ):
 
         assert set(df.columns.values) == set(self.symhead + ["sequence_A", "sequence_B"])
         assert df.iloc[0]["sequence_A"] == df.iloc[0]["sequence_B"]
+
+    def test_motifgraft( self ):
+        """
+        Check reading from a 2-motif MotifGraftMover output with missing values.
+        """
+        sc_des = {'graft_ranges': 2,
+                  'scores_missing': ['rama_per_res_filter'],
+                  'scores_ignore': ['graft_out_scaffold_ranges']}
+        df = ri.parse_rosetta_file(self.silent4, sc_des)
+
+        assert df.columns[df.isna().any()].tolist() == ['rama_per_res_filter']
+        assert 'graft_out_scaffold_ranges01' not in df.columns
+        assert 'graft_scaffold_size_change01' in df.columns
+        assert len(df.columns) == 45
 
     def test_contacts( self ):
         """

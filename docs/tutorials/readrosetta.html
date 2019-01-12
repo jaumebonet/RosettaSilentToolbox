@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Reading Rosetta outputs &#8212; rstoolbox 0.9.0 documentation</title>
+    <title>Reading Rosetta outputs &#8212; rstoolbox 0.9.1 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/style.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           rstoolbox</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.9.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.9.1</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -87,12 +87,14 @@
 <li><a class="reference internal" href="#scores-ignore">scores_ignore</a></li>
 <li><a class="reference internal" href="#scores-rename">scores_rename</a></li>
 <li><a class="reference internal" href="#scores-by-residue">scores_by_residue</a></li>
+<li><a class="reference internal" href="#scores-missing">scores_missing</a></li>
 <li><a class="reference internal" href="#naming">naming</a></li>
 <li><a class="reference internal" href="#sequence">sequence</a></li>
 <li><a class="reference internal" href="#structure">structure</a></li>
 <li><a class="reference internal" href="#psipred">psipred</a></li>
 <li><a class="reference internal" href="#dihedrals">dihedrals</a></li>
 <li><a class="reference internal" href="#labels">labels</a></li>
+<li><a class="reference internal" href="#graft-ranges">graft_ranges</a></li>
 </ul>
 </li>
 </ul>
@@ -137,8 +139,8 @@ loaded.</p>
 <p>As of now, there are 10 different options that can be convined into a <code class="docutils literal notranslate"><span class="pre">definition</span></code>:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="33%" />
-<col width="67%" />
+<col width="32%" />
+<col width="68%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">definition term</th>
@@ -160,24 +162,32 @@ all scores.</td>
 <td>Pick score by residue types into a single array
 value.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#naming"><span class="std std-ref">naming</span></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#scores-missing"><span class="std std-ref">scores_missing</span></a></td>
+<td>Names of scores that might be missing in some decoys.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#naming"><span class="std std-ref">naming</span></a></td>
 <td>Use the decoy identifier’s name to create extra
 score terms.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#sequence"><span class="std std-ref">sequence</span></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#sequence"><span class="std std-ref">sequence</span></a></td>
 <td>Pick sequence data from the silent file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#structure"><span class="std std-ref">structure</span></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#structure"><span class="std std-ref">structure</span></a></td>
 <td>Pick structural data from the silent file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#psipred"><span class="std std-ref">psipred</span></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#psipred"><span class="std std-ref">psipred</span></a></td>
 <td>Pick PSIPRED data from the silent file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#dihedrals"><span class="std std-ref">dihedrals</span></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#dihedrals"><span class="std std-ref">dihedrals</span></a></td>
 <td>Retrieve dihedral data from the silent file.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#labels"><span class="std std-ref">labels</span></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#labels"><span class="std std-ref">labels</span></a></td>
 <td>Retrieve residue labels from the silent file.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#graft-ranges"><span class="std std-ref">graft_ranges</span></a></td>
+<td>When using the MotifGraftMover, multi-columns will
+be created when more than one segment is grafted.
+Provide here the number of segments.</td>
 </tr>
 </tbody>
 </table>
@@ -227,21 +237,23 @@ parameter):</p>
 <span class="gp">   ...: </span><span class="n">df1</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
 <span class="go">                                                                                                                                                                                                                                                                                                                                       Out[2]: </span>
-<span class="go">     score    fa_atr   fa_rep   fa_sol  fa_intra_rep  fa_elec  pro_close  hbond_sr_bb  hbond_lr_bb  hbond_bb_sc  hbond_sc  dslf_fa13    rama   omega   fa_dun  p_aa_pp  yhh_planarity     ref  BUNS  B_ni_mtcontacts  B_ni_rmsd  B_ni_rmsd_threshold  B_ni_trials  GRMSD2Target  GRMSD2Template  LRMSD2Target  LRMSDH2Target  LRMSDLH2Target  cav_vol  design_score  packstat  rmsd_drift    time                     description</span>
-<span class="go">0 -206.678 -1510.021  268.657  853.020  2.921        -145.015  5.825     -150.177     -2.452       -13.326      -36.936    0.0       -28.499  42.312  551.509 -23.219   0.000         -21.277  22.0  57.0             0.568      5.0                  1.0          1.976         1.927           4.404         4.055          2.490           387.371 -255.445       0.633     1.677       3194.0  test_3lhp_binder_labeled_00001</span>
-<span class="go">1 -214.362 -1490.968  267.328  824.258  3.019        -133.421  6.018     -151.609     -2.452       -12.584      -33.021    0.0       -29.998  38.315  545.056 -23.612   0.003         -20.693  14.0  54.0             0.333      5.0                  1.0          2.659         2.417           4.469         4.124          2.730           332.657 -264.239       0.577     2.240       3210.0  test_3lhp_binder_labeled_00002</span>
-<span class="go">2 -203.582 -1483.595  268.234  831.771  2.823        -133.837  6.049     -151.148     -3.091       -11.769      -35.851    0.0       -27.703  38.159  542.102 -25.758   0.007         -19.974  14.0  56.0             0.264      5.0                  1.0          2.026         1.607           5.208         4.598          2.907           333.851 -256.270       0.568     1.522       3235.0  test_3lhp_binder_labeled_00003</span>
-<span class="go">3 -213.779 -1519.755  271.747  863.244  2.763        -149.878  5.899     -153.525     -2.452       -11.957      -38.971    0.0       -26.899  42.948  553.487 -23.821   0.020         -26.629  25.0  54.0             0.580      5.0                  1.0          2.407         2.047           5.728         4.866          3.002           280.594 -260.461       0.614     1.791       3237.0  test_3lhp_binder_labeled_00004</span>
-<span class="go">4 -213.972 -1504.434  267.568  841.170  2.782        -129.666  5.839     -150.024     -2.452       -11.061      -35.585    0.0       -30.954  40.120  545.857 -23.642   0.001         -29.490  22.0  51.0             0.233      5.0                  1.0          2.245         1.907           3.787         3.258          2.692           330.420 -267.847       0.591     1.745       3239.0  test_3lhp_binder_labeled_00005</span>
+<span class="go">     score    fa_atr   fa_rep   fa_sol               ...                packstat  rmsd_drift    time                     description</span>
+<span class="go">0 -206.678 -1510.021  268.657  853.020               ...                0.633     1.677       3194.0  test_3lhp_binder_labeled_00001</span>
+<span class="go">1 -214.362 -1490.968  267.328  824.258               ...                0.577     2.240       3210.0  test_3lhp_binder_labeled_00002</span>
+<span class="go">2 -203.582 -1483.595  268.234  831.771               ...                0.568     1.522       3235.0  test_3lhp_binder_labeled_00003</span>
+<span class="go">3 -213.779 -1519.755  271.747  863.244               ...                0.614     1.791       3237.0  test_3lhp_binder_labeled_00004</span>
+<span class="go">4 -213.972 -1504.434  267.568  841.170               ...                0.591     1.745       3239.0  test_3lhp_binder_labeled_00005</span>
+
+<span class="go">[5 rows x 34 columns]</span>
 
 <span class="gp">In [3]: </span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">columns</span> <span class="o">==</span> <span class="n">df2</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            Out[3]: True</span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Out[3]: True</span>
 
 <span class="gp">In [4]: </span><span class="n">definition3</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="s1">&#39;-&#39;</span><span class="p">}</span>
 <span class="gp">   ...: </span><span class="n">df3</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="n">ifile</span><span class="p">,</span> <span class="n">definition3</span><span class="p">)</span>
 <span class="gp">   ...: </span><span class="n">df3</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gp">   ...: </span>
-<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         Out[4]: </span>
+<span class="go">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  Out[4]: </span>
 <span class="go">Empty DesignFrame</span>
 <span class="go">Columns: []</span>
 <span class="go">Index: []</span>
@@ -287,8 +299,16 @@ score is <code class="docutils literal notranslate"><span class="pre">residue_dd
 </pre></div>
 </div>
 </div>
+<div class="section" id="scores-missing">
+<span id="id5"></span><h2>scores_missing<a class="headerlink" href="#scores-missing" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes a decoy is missing a column. It happens. By providing the name of those columns,
+this issue can be corrected so other scores are not mistakenly assigned:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;scores_missing&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;rama_per_res_filter&#39;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="naming">
-<span id="id5"></span><h2>naming<a class="headerlink" href="#naming" title="Permalink to this headline">¶</a></h2>
+<span id="id6"></span><h2>naming<a class="headerlink" href="#naming" title="Permalink to this headline">¶</a></h2>
 <p>Naming conventions are important. As long as one keeps that in mind, one could target
 particular identifiers inside a decoy description as new score columns, thus allowing
 to cluster different decoys for analysis. As an example, let’s assume that the naming
@@ -308,7 +328,7 @@ in the definition. Thus:</p>
 <p>will create the three new scores with value <code class="docutils literal notranslate"><span class="pre">nubinitio</span></code>, <code class="docutils literal notranslate"><span class="pre">auto</span></code>, <code class="docutils literal notranslate"><span class="pre">binder</span></code>.</p>
 </div>
 <div class="section" id="sequence">
-<span id="id6"></span><h2>sequence<a class="headerlink" href="#sequence" title="Permalink to this headline">¶</a></h2>
+<span id="id7"></span><h2>sequence<a class="headerlink" href="#sequence" title="Permalink to this headline">¶</a></h2>
 <p>Sequence data is integrated into the silent file as default. It can be captured
 and used to evaluate mutants and sequence drift amongst others. To retrieve that
 data, a string with the identifiers of all the chains of interest need to be
@@ -330,7 +350,7 @@ behaviour will occur otherwise.</p>
 </div>
 </div>
 <div class="section" id="structure">
-<span id="id7"></span><h2>structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<span id="id8"></span><h2>structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
 <p>Secondary structure data can be loaded into the silent file by means of <strong>Rosetta</strong>’s
 <code class="docutils literal notranslate"><span class="pre">WriteSSEMover</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">WriteSSEMover</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(&amp;string;)&quot;</span> <span class="n">dssp</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="o">/&gt;</span>
@@ -344,7 +364,7 @@ interest:</p>
 <p>or using the available wildcards.</p>
 </div>
 <div class="section" id="psipred">
-<span id="id8"></span><h2>psipred<a class="headerlink" href="#psipred" title="Permalink to this headline">¶</a></h2>
+<span id="id9"></span><h2>psipred<a class="headerlink" href="#psipred" title="Permalink to this headline">¶</a></h2>
 <p>Secondary structure prediction data can be loaded into the silent file by means
 of <strong>Rosetta</strong>’s <code class="docutils literal notranslate"><span class="pre">WriteSSEMover</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">WriteSSEMover</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(&amp;string;)&quot;</span> <span class="n">cmd</span><span class="o">=</span><span class="s2">&quot;/path/to/psipred&quot;</span> <span class="o">/&gt;</span>
@@ -358,7 +378,7 @@ calling the chains of interest:</p>
 <p>or using the available wildcards.</p>
 </div>
 <div class="section" id="dihedrals">
-<span id="id9"></span><h2>dihedrals<a class="headerlink" href="#dihedrals" title="Permalink to this headline">¶</a></h2>
+<span id="id10"></span><h2>dihedrals<a class="headerlink" href="#dihedrals" title="Permalink to this headline">¶</a></h2>
 <p>Phi and psi dihedral angle data can be loaded into the silent file by means
 of <strong>Rosetta</strong>’s <code class="docutils literal notranslate"><span class="pre">WriteSSEMover</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">WriteSSEMover</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(&amp;string;)&quot;</span> <span class="n">write_phipsi</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="o">/&gt;</span>
@@ -372,7 +392,7 @@ of <strong>Rosetta</strong>’s <code class="docutils literal notranslate"><span
 <p>The data will be loaded as a single array of floats.</p>
 </div>
 <div class="section" id="labels">
-<span id="id10"></span><h2>labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h2>
+<span id="id11"></span><h2>labels<a class="headerlink" href="#labels" title="Permalink to this headline">¶</a></h2>
 <p>Residue labels allow to target residues through a simulation by a particular tag.
 They can also be used to highlight residues with particular properties during the
 simulation. They can be saved into the silent file with <strong>Rosetta</strong>’s
@@ -384,6 +404,28 @@ simulation. They can be saved into the silent file with <strong>Rosetta</strong>
 provided:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MOTIF&#39;</span><span class="p">,</span> <span class="s1">&#39;CONTEXT&#39;</span><span class="p">,</span> <span class="s1">&#39;HOTSPOTS&#39;</span><span class="p">]}</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="graft-ranges">
+<span id="id12"></span><h2>graft_ranges<a class="headerlink" href="#graft-ranges" title="Permalink to this headline">¶</a></h2>
+<p><strong>Rosetta</strong>’s <code class="docutils literal notranslate"><span class="pre">MotifGraftMover</span></code> allows the grafting of one or more segments into a
+target protein. The mover will generate several score terms with more than one column.
+In order to properly assign the repeated columns to the same header, the number of
+segments inserted needs to be provided in order to properly be processed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;graft_ranges&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The scores targeted by this definition are not compatible with <a class="reference internal" href="#scores-rename"><span class="std std-ref">scores_rename</span></a>.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The ranges format generated by <code class="docutils literal notranslate"><span class="pre">MotifGraftMover</span></code> are coma separated start,end positions,
+such as <code class="docutils literal notranslate"><span class="pre">10,35</span></code>. To cast this into the appropiate format to use with <a class="reference internal" href="../generated/rstoolbox.components.Selection.html#rstoolbox.components.Selection" title="rstoolbox.components.Selection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code></a>
+and, thus, with the <code class="docutils literal notranslate"><span class="pre">key_residues</span></code> attribute present in some functions, one can call
+string replace:
+<code class="docutils literal notranslate"><span class="pre">df['graft_out_scaffold_ranges']</span> <span class="pre">=</span> <span class="pre">df['graft_out_scaffold_ranges'].str.replace(',',</span> <span class="pre">'-')</span></code>.</p>
 </div>
 </div>
 </div>

@@ -293,7 +293,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
 
     for line, is_header, _, symm in open_rosetta_file( filename, multi ):
         if is_header:
-            header = line.strip().split()[1:]
+            header = manager.check_graft_columns(line.strip().split()[1:])
             continue
 
         if line.startswith("SCORE"):
@@ -303,7 +303,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
             _fix_unloaded( data )
 
             # General scores
-            for cv, value in enumerate( line.strip().split()[1:-1] ):
+            for cv, value in enumerate( manager.manage_missing(header[:-1], line.strip().split()[1:-1])):
                 hcv = header[cv]
                 if manager.wanted_per_residue_score( hcv ):
                     hcvn = re.sub(r'\d+$', "", hcv)
