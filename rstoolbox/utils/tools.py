@@ -335,3 +335,52 @@ def concat_fragments( fragment_list ):
     df = df[['pdb', 'renum_frame', 'neighbors', 'position', 'size', 'aa',
              'sse', 'phi', 'psi', 'omega']].rename(columns={'renum_frame': 'frame'})
     return df
+
+
+def fragment_mixer( fragment_list, n_neighbors=None ):
+    """Mix multiple :class:`.FragmentFrame` for an identical segment.
+
+    :param fragment_list: Command to be executed.
+    :type fragment_list: Union(:class:`.FragmentFrame`, :func:`list`)
+    :param int n_neighbors: Number of fragments per position. If not specified,
+                            all fragments from each segment are used. Otherwise,
+                            top N fragments are choosen from every segment in order
+                            to fill the requirement.
+
+    :return: :class:`.FragmentFrame` - mixed and renumbered.
+    """
+    _split_list = []
+    for k in range(len(fragment_list)):
+        assert fragment_list[0].shape == fragment_list[k].shape, 'Shape of FragmentFrames do not match.'
+        assert fragment_list[0].iloc[0]['size'] == fragment_list[k].iloc[0]['size'], 'Make sure fragment size matches.'
+        split_site = [idx for idx, (i, j) in enumerate(zip(fragment_list[k]['neighbor'], fragment_list[k]['neighbor'][1:]), 1) if i != j]
+        if n_neighbors == 'unlimited':
+            _split_list.append(np.split(fragment_list[k], split_site, axis=0))
+        else:
+            if k == len(fragment_list) - 1:
+                slice_size_last = n_neighbors - (int(n_neighbors/len(fragment_list)) * (len(fragment_list) - 1))
+                assert slice_size_last + (slice_size * (len(fragment_list) - 1)) == n_neighbors, "ERROR: unequal fragment interspersion."
+                _split_list.append(np.split(fragment_list[k], split_site, axis=0)[:slice_size_last])
+            else:
+                slice_size = int(n_neighbors/len(fragment_list))
+                _split_list.append(np.split(fragment_list[k], split_site, axis=0)[:slice_size])
+
+    _mixed_list = []
+    if n_neighbors:
+        neighbors_max = int(n_neighbors)
+    else:
+        neighbors_max = len(_split_list)*_split_list[0][0].iloc[0]['neighbors']
+    for j in range(len(_split_list[0])):
+        for i in range(len(_split_list)):
+            _mixed_list.append(_split_list[i][j])
+    df_mix = pd.concat(_mixed_list)
+
+    _neighbor_new = []
+    _neighbors_new = []
+    count = 1
+    for j in range(int(len(df_mix)/_split_list[0][0].iloc[0]['size'])):
+        _neighbor_new.extend(_split_list[0][0].iloc[0]['size']*[count])
+        _neighbors_new.extend(_split_list[0][0].iloc[0]['size']*[neighbors_max])
+        count += 1
+
+    return df_mix.assign(neighbor=_neighbor_new, neighbors=_neighbors_new)
