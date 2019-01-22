@@ -220,9 +220,17 @@ def open_rosetta_file( filename, multi=False, check_symmetry=True ):
     files = _gather_file_list( filename, multi )
     for file_count, f in enumerate( files ):
         if check_symmetry:
-            cmd = "zgrep SYMMETRY_INFO {}" if f.endswith(".gz") else "grep SYMMETRY_INFO {}"
-            process = execute_process(cmd.format(f))
-            symm = (process == 0)
+            counter = 0
+            fd = gzip.open( f ) if f.endswith(".gz") else open( f )
+            for line in fd:
+                line = line.decode('utf8') if f.endswith(".gz") else line
+                if line.startswith('SYMMETRY_INFO'):
+                    symm = True
+                if line.startswith('SCORE') and not line.strip().split()[-1] == "description":
+                    counter += 1
+                if counter == 2:
+                    break
+            fd.close()
         fd = gzip.open( f ) if f.endswith(".gz") else open( f )
         for line in fd:
             line = line.decode('utf8') if f.endswith(".gz") else line
