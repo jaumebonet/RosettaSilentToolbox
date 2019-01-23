@@ -186,7 +186,7 @@ def get_reference_sequence( self, seqID, key_residues=None ):
 
 
 def has_reference_structure( self, seqID ):
-    """Checks if there is a ``reference_structure`` for ``sequID``.
+    """Checks if there is a ``reference_structure`` for ``seqID``.
 
     :param str seqID: |seqID_param|.
 

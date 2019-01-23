@@ -140,6 +140,8 @@ def multiple_distributions( df, fig, grid, igrid=None, values="*", titles=None, 
     kwargs.pop("data", None)
     kwargs.pop("axis", None)
 
+    axis_args = {'rowspan': kwargs.pop('rowspan', 1), 'colspan': kwargs.pop('colspan', 1)}
+
     axis = []
     for _, pgrid in enumerate(itertools.product(*[range(grid[0]), range(grid[1])])):
         if _ >= len(values):
@@ -147,7 +149,7 @@ def multiple_distributions( df, fig, grid, igrid=None, values="*", titles=None, 
         pgrid = list(pgrid)
         pgrid[0] += igrid[0]
         pgrid[1] += igrid[1]
-        ax = plt.subplot2grid(grid, pgrid, fig=fig)
+        ax = plt.subplot2grid(grid, pgrid, fig=fig, rowspan=axis_args['rowspan'])
         if values[_] not in refvalues:
             sns.boxplot(y=values[_], data=df, ax=ax, **kwargs)
         else:
