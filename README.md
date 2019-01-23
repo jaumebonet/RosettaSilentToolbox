@@ -18,7 +18,7 @@ It is particularly aimed towards two distinct user profiles:
 1. Protein designers comfortable with light scripting to process their data. Ideally, used to work with **Ipython**, for which this library has a particular affinity.
 2. Developers that develop new protein design tools/protocols/approaches and wish to benchmark their innovations with previously existing methods.
 
-See a working example notebook at: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jaumebonet/RosettaSilentToolbox/0c65023?filepath=notebook)
+See a working example notebook at: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jaumebonet/RosettaSilentToolbox/69f29e1?filepath=notebook)
 
 Despite its name, the library **does not require a local installation of ROSETTA**, files can be imported from whatever cluster service the user has access to. That said, some functions can or need to exploit **ROSETTA**. Those functions are few and their requirements are
 clearly highlighted on their [documentation](http://jaumebonet.cat/RosettaSilentToolbox).
