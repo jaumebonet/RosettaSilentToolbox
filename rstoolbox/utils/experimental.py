@@ -300,7 +300,7 @@ def sequencing_enrichment( indata, enrichment=None, bounds=None, matches=None, s
             id1 = '{0}_{1}'.format(binder, eb[0])
             id2 = '{0}_{1}'.format(binder, eb[1])
             df['enrichment_{}'.format(binder)] = df[id1] / df[id2]
-    df = df.replace({np.inf: -1, -np.inf: -1}, regex=True).fillna(0)
+    df = df.replace({np.inf: -1, -np.inf: -1}).fillna(0)
     designf = DesignFrame(df.rename(columns={'sequence_A': 'sequence_{}'.format(seqID)}))
     designf = designf.reset_index().rename(columns={'index': 'description'})
     return designf
