@@ -7,57 +7,48 @@
 .. affiliation::
     Laboratory of Protein Design and Immunoengineering <lpdi.epfl.ch>
     Bruno Correia <bruno.correia@epfl.ch>
-
-.. class:: DesignSeries
-.. class:: DesignFrame
 """
 # Standard Libraries
 import os
 import multiprocessing
 
 # External Libraries
-from libconfig import *
+from libconfig import Config
 import distro
 
-with ifndef():
+core = Config()
+with core.ifndef():
     # Register IO control options
-    register_option('system', 'overwrite',  False, 'bool',
-                    'Allow overwriting already existing files')
-    register_option('system', 'output', './', 'path_out',
-                    'Default folder to output generated files')
-    register_option('system', 'cpu', multiprocessing.cpu_count() - 1, 'int',
-                    'Available CPU for multiprocessing')
+    core.register_option('system', 'overwrite',  False, 'bool',
+                         'Allow overwriting already existing files')
+    core.register_option('system', 'output', './', 'path_out',
+                         'Default folder to output generated files')
+    core.register_option('system', 'cpu', multiprocessing.cpu_count() - 1, 'int',
+                         'Available CPU for multiprocessing')
 
     # Register Rosetta-related options
-    register_option('rosetta', 'path',  os.path.expanduser('~'), 'path_in',
-                    'Path to the rosetta binaries')
+    core.register_option('rosetta', 'path',  os.path.expanduser('~'), 'path_in',
+                         'Path to the rosetta binaries')
     if distro.linux_distribution()[0] not in ['', 'Darwin']:
-        register_option('rosetta', 'compilation', 'linuxgccrelease', 'string',
-                        'Target binaries of rosetta')
+        core.register_option('rosetta', 'compilation', 'linuxgccrelease', 'string',
+                             'Target binaries of rosetta')
     elif distro.linux_distribution()[0] == 'Darwin':
-        register_option('rosetta', 'compilation', 'macosclangrelease', 'string',
-                        'Target binaries of rosetta')
+        core.register_option('rosetta', 'compilation', 'macosclangrelease', 'string',
+                             'Target binaries of rosetta')
     else:
-        register_option('rosetta', 'compilation', 'winccrelease', 'string',
-                        'Target binaries of rosetta')
+        core.register_option('rosetta', 'compilation', 'winccrelease', 'string',
+                             'Target binaries of rosetta')
 
-    # Let's assume one wants to give the option to generate a user's configuration file.
-    # First time the library is called, it can create this config file with the current defaults.
-    # The user can change those for further runs. Ideally, the file would be something such as:
-    config_file = os.path.join(os.getenv('HOME', os.path.expanduser('~')), '.rstoolbox.cfg')
+    # There are different levels of configuration files that can be picked.
+    # If any configuration file is set up, the priority goes as follows:
+    #   1) Local config file (in the actual executable directory)
+    #   2) Root of the current working repository (if any)
+    #   3) User's home path
+    config_file = core.get_local_config_file('.rstoolbox.cfg')
+    if config_file is not None:
+        core.set_options_from_YAML( config_file )
 
-    # Either make or read from the file.
-    if not os.path.isfile(config_file):
-        write_options_to_YAML( config_file )
-    else:
-        set_options_from_YAML( config_file )
-
-# Finally, register_option and reset_option are taken out from the global view so that
-# they are notimported with the rest of the functions. This way the user can not access
-# to them when importingthe library and has to work through the rest of the available
-# functions.
-for name in user_forbidden:
-    del globals()[name]
+    core.lock_configuration()
 
 __doc__ = """
 Global options are available to configure some of the library behaviour. Functions that depend on
@@ -123,5 +114,5 @@ some options (like executable paths) every time.
       overwrite: false
 
 """.format(
-    options_table=document_options()
+    options_table=core.document_options()
 )
