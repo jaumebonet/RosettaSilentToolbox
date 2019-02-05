@@ -7,7 +7,7 @@
     Bruno Correia <bruno.correia@epfl.ch>
 """
 
-from . import core
+from .core import core
 from . import utils
 from . import io
 from . import plot

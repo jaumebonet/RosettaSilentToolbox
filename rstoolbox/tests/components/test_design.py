@@ -278,6 +278,15 @@ class TestDesign( object ):
         assert 'rmsd_target' not in dfs1.columns
         assert 'rmsd_target' in dfs2.columns
 
+    def test_split_columns(self):
+        data = {'a': [[1, 2], [3, 4], [7, 8]],
+                'b': [[1, 2], [3, 4], [7, 8]],
+                'c': ['a', 'b', 'c']}
+        df = pd.DataFrame(data)
+        assert df.shape[0] == 3
+        df = ru.split_dataframe_rows(df, ['a', 'b'])
+        assert df.shape[0] == 6
+
     def test_clean_rosetta_suffix(self):
         # Start test
         df = ri.parse_rosetta_file(self.silent1)

@@ -31,7 +31,7 @@ from six import string_types
 
 
 __all__ = ['format_Ipython', 'use_qgrid', 'add_column', 'split_values', 'make_rosetta_app_path',
-           'execute_process', 'report', 'concat_fragments']
+           'execute_process', 'report', 'concat_fragments', 'split_dataframe_rows']
 
 
 def format_Ipython():
@@ -201,6 +201,49 @@ def split_values( df, keys ):
     return pd.concat(dataframes)
 
 
+def split_dataframe_rows(df, column_selectors, row_delimiter=None):
+    """Given a dataframe in which certain columns are lists, it splits these lists
+    making new rows in the :class:`~pandas.DataFrame` out of itself.
+
+    When multiple columns have lists of similar lengths, it assumes that same index
+    positions on the list go in the same new row.
+
+    :param df: Input data.
+    :type df: :class:`~pandas.DataFrame`
+    :param column_selectors: List of columns containg same-sized lists.
+    :type column_selectors: :func:`list` of :class:`str`
+    :param str row_delimiter: If provided, instead of list, it assumes data are strings
+        and uses the delimiter to make those strings into lists.
+    """
+    # https://gist.github.com/jlln/338b4b0b55bd6984f883#gistcomment-2698588
+    # we need to keep track of the ordering of the columns
+    def _split_list_to_rows(row, row_accumulator, column_selector, row_delimiter):
+        split_rows = {}
+        max_split = 0
+        for column_selector in column_selectors:
+            if row_delimiter is not None:
+                split_row = row[column_selector].split(row_delimiter)
+            else:
+                split_row = copy.deepcopy(row[column_selector])
+            split_rows[column_selector] = split_row
+            if len(split_row) > max_split:
+                max_split = len(split_row)
+
+        for i in range(max_split):
+            new_row = row.to_dict()
+            for column_selector in column_selectors:
+                try:
+                    new_row[column_selector] = split_rows[column_selector].pop(0)
+                except IndexError:
+                    new_row[column_selector] = ''
+            row_accumulator.append(new_row)
+
+    new_rows = []
+    df.apply(_split_list_to_rows, axis=1, args=(new_rows, column_selectors, row_delimiter))
+    new_df = pd.DataFrame(new_rows, columns=df.columns)
+    return new_df
+
+
 def make_rosetta_app_path( application ):
     """Provided the expected Rosetta application, add path and suffix.
 
@@ -269,7 +312,7 @@ def report( df ):
             if isinstance(shift, int):
                 mutations[i] += (shift - 1)
             else:
-                mutations[i] = shift[x - 1]
+                mutations[i] = shift[i - 1]
         return ','.join([str(x) for x in mutations])
 
     def translate_mutants(row, seqID, shift):
@@ -328,8 +371,7 @@ def concat_fragments( fragment_list ):
         if i == 0:
             newE = e.assign(renum_frame=e['frame'] - shiftset + 1)
         else:
-            newE = e.assign(renum_frame=e['frame'] - shiftset + 1 +
-                            fragment_list_renum[i - 1]['renum_frame'].max())
+            newE = e.assign(renum_frame=e['frame'] - shiftset + 1 + fragment_list_renum[i - 1]['renum_frame'].max())
         fragment_list_renum.append(newE)
     df = pd.concat(fragment_list_renum, ignore_index=True, sort=False)
     df = df[['pdb', 'renum_frame', 'neighbors', 'position', 'size', 'aa',

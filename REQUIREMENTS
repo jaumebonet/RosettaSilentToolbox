@@ -2,6 +2,6 @@ pyyaml >= 3.12
 distro >= 1.3
 pandas >= 0.23.0
 seaborn >= 0.8
-libconfig >= 0.8.0
+libconfig >= 0.9.0
 six >= 1.11
 networkx >=2.1
