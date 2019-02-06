@@ -19,7 +19,7 @@
 import os
 import copy
 import textwrap
-import subprocess
+import subprocess  # nosec
 import shlex
 import re
 
@@ -229,7 +229,7 @@ def split_dataframe_rows(df, column_selectors, row_delimiter=None):
             if len(split_row) > max_split:
                 max_split = len(split_row)
 
-        for i in range(max_split):
+        for _ in range(max_split):
             new_row = row.to_dict()
             for column_selector in column_selectors:
                 try:
@@ -281,7 +281,7 @@ def execute_process( command ):  # pragma: no cover
     if isinstance(command, string_types):
         command = shlex.split(command)
     try:
-        return subprocess.call( command )
+        return subprocess.call( command )  # nosec
     except OSError as e:
         print('OS', e)
         return 1

@@ -172,7 +172,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     if isinstance(data, DesignFrame):
         data = data.sequence_frequencies(seqID)
     if isinstance(data, SequenceFrame):
-        order = sorted(data.columns.values.tolist(), key=lambda x: order.index(x))
+        order = sorted(data.columns.values.tolist(), key=lambda x: order.index(x))  # nosec
         if not data.is_transposed():
             data = data.transpose().reindex(order)
         else:
@@ -187,7 +187,7 @@ def sequence_frequency_plot( df, seqID, ax, aminosY=True, clean_unused=-1,
     if clean_unused >= 0:
         data.delete_empty(clean_unused)
         data = data.clean()
-        order = sorted(data.index.values.tolist(), key=lambda x: order.index(x))
+        order = sorted(data.index.values.tolist(), key=lambda x: order.index(x))  # nosec
         data = data.reindex(order)
 
     # heatmap parameters and others

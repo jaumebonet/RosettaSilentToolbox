@@ -193,14 +193,14 @@ class SequenceFrame( pd.DataFrame, RSBaseFrequency ):
         def get_position_height( row ):
             def individual_entropy( cell ):
                 return np.log2(cell) * cell
-            return np.sum(row.apply(lambda cell: individual_entropy(cell)))
+            return np.sum(row.apply(individual_entropy))
 
         if self.measure() == "bits":
             return self
 
         df = self.copy(deep=True)
         df.measure("bits")
-        df["entropy"] = df.max_hight() + df.apply(lambda row: get_position_height( row ), axis=1)
+        df["entropy"] = df.max_hight() + df.apply(get_position_height, axis=1)
         aa_columns = [col for col in df.columns if len(col) == 1]
         df = df[aa_columns].multiply(df["entropy"], axis=0)
         df.measure("bits")

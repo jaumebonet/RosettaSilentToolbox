@@ -10,7 +10,7 @@
 """
 # Standard Libraries
 import os
-from ftplib import FTP
+from ftplib import FTP  # nosec
 from ast import literal_eval
 from io import BytesIO
 
@@ -92,17 +92,18 @@ def make_redundancy_table( precalculated=False, select=None ):
         cwd = os.path.dirname(os.path.abspath(__file__))
         return pd.read_csv(os.path.join(cwd, 'baselines', 'redundancies.gz'))
 
+    known_hom = [30, 40, 50, 70, 90, 95, 100]
     if select is not None:
         for s in select:
-            if s not in [30, 40, 50, 70, 90, 95, 100]:
-                raise ValueError('Homology threshold {} not provided by the PDB. '.format(s) +
-                                 'Available options are: {}'.format(','.join([30, 40, 50, 70,
-                                                                              90, 95, 100])))
+            if s not in known_hom:
+                wrn1 = 'Homology threshold {} not provided by the PDB. '.format(s)
+                wrn2 = 'Available options are: {}'.format(','.join(known_hom))
+                raise ValueError(wrn1 + wrn2)
 
     all_ = []
-    ftp = FTP('resources.rcsb.org')
+    ftp = FTP('resources.rcsb.org')  # nosec
     ftp.login()
-    for ident in [30, 40, 50, 70, 90, 95, 100]:
+    for ident in known_hom:
         if select is not None and ident not in select:
             continue
         r = BytesIO()
