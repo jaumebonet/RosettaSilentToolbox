@@ -284,7 +284,7 @@ def plot_alignment( df, seqID, ax, line_break=None, matrix=None ):
 
     def split(a, n):
         k, m = divmod(len(a), n)
-        return (a[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in xrange(n))
+        return (a[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n))
 
     if not isinstance(df, pd.DataFrame):
         raise ValueError("Input data must be in a DataFrame or DesignFrame")
