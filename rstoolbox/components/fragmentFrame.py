@@ -173,16 +173,37 @@ class FragmentFrame( pd.DataFrame ):
         columns = ['frame', 'neighbor', 'position']
 
         # Setup new frame range
-        frags['frame'] = frags['frame'] + ini - frags['frame'].values[0]
+        frags = frags.renumber(ini)
 
         if how.lower() == 'replace':
             df = df[(df['frame'] < ini) | (df['frame'] > max(frags['frame'].unique()))]
             df = pd.concat([df, frags.coerce()]).sort_values(columns).reset_index(drop=True)
         if how.lower() == 'append':
-            df = pd.concat([df, frags]).sort_values(columns).reset_index(drop=True)
-            df = df.coerce()
+            df = pd.concat([df, frags]).reset_index(drop=True)
+            df = df.coerce().sort_values(columns)
 
         return df
+
+    def renumber( self, ini=1 ):
+        """Make the fragment set start at the given position.
+
+        :param int ini: Initial position of the new :class:`.FragmentFrame`.
+
+        :return: :class:`.FragmentFrame` - with the requested modifications.
+        """
+        df = self.copy()
+        df['frame'] = df['frame'] + ini - df['frame'].values[0]
+        return df.coerce()
+
+    def sample_top_neighbors( self, max_count=200 ):
+        """Limit to the top selected neighbors for each frame.
+
+        :param int max_count: Maximum neighbors for frame
+
+        :return: :class:`.FragmentFrame` - with the requested modifications.
+        """
+        df = self.copy()
+        return df[df['neighbor'] <= max_count].coerce()
 
     def add_quality_measure( self, filename, pdbfile=None ):
         """Add RMSD quality measure to the fragment data.

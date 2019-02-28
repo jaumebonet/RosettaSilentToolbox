@@ -16,6 +16,8 @@ rstoolbox.components.FragmentFrame
       ~FragmentFrame.has_source_file
       ~FragmentFrame.slice_region
       ~FragmentFrame.is_comparable
+      ~FragmentFrame.renumber
+      ~FragmentFrame.sample_top_neighbors
       ~FragmentFrame.coerce
       ~FragmentFrame.add_fragments
       ~FragmentFrame.make_sequence_matrix

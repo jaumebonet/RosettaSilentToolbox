@@ -37,7 +37,7 @@ class TestFragments( object ):
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='plot_fragment_profiles.png')
     def test_quality_plot( self ):
-        df3 = parse_rosetta_fragments(self.frag3)
+        df3 = parse_rosetta_fragments(self.frag3).sample_top_neighbors()
         df9 = parse_rosetta_fragments(self.frag9)
         # auto-load
         df3 = df3.add_quality_measure(None)
