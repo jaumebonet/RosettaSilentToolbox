@@ -485,7 +485,7 @@ def parse_rosetta_contacts( filename ):
     return df, rows, cols
 
 
-def parse_rosetta_fragments( filename ):
+def parse_rosetta_fragments( filename, source=None ):
     """Read a Rosetta fragment-file and return the appropiate :class:`.FragmentFrame`.
 
     It supports both old and new fragment formats.
@@ -494,6 +494,7 @@ def parse_rosetta_fragments( filename ):
     data of each in a different variable.
 
     :param str filename: File containing the Rosetta fragments.
+    :param str source: If provided, add a column ``source`` with a source identifier.
 
     :return: :class:`.FragmentFrame`.
 
@@ -568,8 +569,12 @@ def parse_rosetta_fragments( filename ):
         df = df.merge(df2, on=["frame", "size"])
         df = df.drop(["neighbors_x"], axis=1)
         df = df.rename({"neighbors_y": "neighbors"}, axis=1)
-    return df.reindex(["pdb", "frame", "neighbors", "neighbor", "position", "size",
-                       "aa", "sse", "phi", "psi", "omega"], axis=1)
+    df = df.reindex(["pdb", "frame", "neighbors", "neighbor", "position", "size",
+                     "aa", "sse", "phi", "psi", "omega"], axis=1)
+
+    if source is not None:
+        df = df.assign(source=source)
+    return df
 
 
 def write_rosetta_fragments( df, frag_size, n_frags=200, prefix='rosetta_frags' ):

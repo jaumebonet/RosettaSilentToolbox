@@ -65,7 +65,7 @@ class TestFragments( object ):
     @pytest.mark.mpl_image_compare(baseline_dir=baseline_test_dir(),
                                    filename='add_fragments_replace.png')
     def test_add_fragments_replace( self ):
-        df = parse_rosetta_fragments(self.frag3)
+        df = parse_rosetta_fragments(self.frag3, source='testfrags')
         xx = df[(df['frame'] <= 10) & (df['neighbor'] <= 100)]
         dfrep = df.add_fragments(xx, 10)
 
