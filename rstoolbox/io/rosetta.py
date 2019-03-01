@@ -577,7 +577,7 @@ def parse_rosetta_fragments( filename, source=None ):
     return df
 
 
-def write_rosetta_fragments( df, frag_size, n_frags=200, prefix='rosetta_frags' ):
+def write_rosetta_fragments( df, frag_size=None, n_frags=200, prefix='rosetta_frags', strict=False ):
     """Writes a Rosetta fragment-file (new format) from an appropiate :class:`.FragmentFrame`.
 
     Supports varying size fragment sets.
@@ -587,10 +587,35 @@ def write_rosetta_fragments( df, frag_size, n_frags=200, prefix='rosetta_frags' 
     :param int frag_size: Size of the fragments.
     :param int n_frags: Number of fragments per frame.
         Default are 200 fragments per frame.
+    :param str prefix: Prefix for the fragment file.
+    :param bool strict: If :data:`False` (default), it will assume the :class:`.FragmentFrame`
+        starts in 1 and contains the same ``n_frags`` at each position. Otherwise, it adapts to
+        the actual content of the :class:`.FragmentFrame`. Also, ``strict==True`` will print new
+        fragments format while ``strict==False`` will print the old fragments format.
+
+    :return: :class:`str` - name of the newly generated file.
+
+    :raises:
+        :AttributeError: If ``strict==False`` and no ``frag_size`` is provided.
+    """
+
+    if not strict:
+        if frag_size is None:
+            raise AttributeError('Specify a frag_size!')
+        return _nonstrict_write_rosetta_fragments(df, frag_size, n_frags, prefix)
+    else:
+        return _strict_write_rosetta_fragments(df, prefix)
+
+
+def _nonstrict_write_rosetta_fragments( df, frag_size, n_frags=200, prefix='rosetta_frags' ):
+    """:func:`.write_rosetta_fragments` with ``strict`` as :data:`False`.
+
+    :return: :class:`str` - name of the newly generated file.
     """
     _STRING = " {:4s} {:1s} {:5d} {:1s} {:1s} {:8.3f} {:8.3f} {:8.3f}\n"
     _HEADER = "position:            {} neighbors:          {}\n\n"
-    with open("{}.{}mers".format(prefix, frag_size), "w") as f:
+    ofile = "{}.{}mers".format(prefix, frag_size)
+    with open(ofile, "w") as f:
         frame_count = 0
         for i in range(len(df)):
             if i % ((frag_size * n_frags)) == 0:
@@ -605,6 +630,33 @@ def write_rosetta_fragments( df, frag_size, n_frags=200, prefix='rosetta_frags' 
                                     df.iloc[i]["omega"]) )
             if i != 0 and (i + 1) % frag_size == 0:
                 f.write("\n")
+    return ofile
+
+
+def _strict_write_rosetta_fragments( df, prefix ):
+    """:func:`.write_rosetta_fragments` with ``strict`` as :data:`True`.
+
+    :return: :class:`str` - name of the newly generated file.
+    """
+
+    _STRING = '{position:>10d}{pdbpos:>6d} {pdb} BBTorsion {aa} {sse}{phi:>11.3f}{psi:>10.3f}{omega:>10.3f}\n'
+    _HEADER = 'FRAME{:>5d}{:>4d}\n'
+
+    df = df.copy().order()
+    n_frags = df.groupby(['frame']).head(1)['neighbors'].mode().max()
+    frag_size = df['size'].unique()[0]
+
+    ofile = "{}.{}.{}mers".format(prefix, n_frags, frag_size)
+    with open(ofile, "w") as f:
+        for frame, fdf in df.groupby(['frame']):
+            f.write(_HEADER.format(fdf['position'].min(), fdf['position'].max()))
+            i = 1
+            for nei, ndf in fdf.groupby(['neighbor']):
+                ndf = ndf.assign(pdbpos=range(i, i + ndf.shape[0]))
+                ndf.apply(lambda row: f.write(_STRING.format(**row)), axis=1)
+                f.write('\n\n')
+                i += 1
+    return ofile
 
 
 def write_fragment_sequence_profiles( df, filename=None, consensus=None ):

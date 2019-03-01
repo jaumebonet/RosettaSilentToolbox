@@ -109,6 +109,17 @@ class FragmentFrame( pd.DataFrame ):
         """
         return self[(self['frame'] >= ini) & (self['frame'] <= end)]
 
+    def top_limit( self, limit ):
+        """Remove all frames whose position puts the frames over a given limit.
+
+        :param int limit: Max position that the fragments are expected to reach.
+
+        :return: :class:`.FragmentFrame`
+        """
+        df = self.copy()
+        max_frame = df[df['position'] == limit]['frame'].min()
+        return df[df['frame'] <= max_frame]
+
     def is_comparable( self, df ):
         """Evaluate if the current :class:`.FragmentFrame` is comparable to
         the provided one.
@@ -136,13 +147,22 @@ class FragmentFrame( pd.DataFrame ):
         """
         df = self.copy()
         for frame_id, frame in df.groupby('frame'):
-            neighbors = len(frame.groupby(['neighbor', 'pdb']))
-            neighbor = list(frame.groupby(['neighbor', 'pdb']).ngroup() + 1)
-            position = list(frame.groupby(['neighbor', 'pdb']).cumcount() + frame_id)
+            g = frame.groupby(['neighbor', 'pdb'])
+            neighbors = len(g)
+            neighbor = list(g.ngroup() + 1)
+            position = list(g.cumcount() + frame_id)
             df.loc[(df['frame'] == frame_id), 'neighbors'] = [neighbors] * frame.shape[0]
             df.loc[(df['frame'] == frame_id), 'neighbor'] = neighbor
             df.loc[(df['frame'] == frame_id), 'position'] = position
         return df
+
+    def order( self ):
+        """Properly reorder the :class:`.FragmentFrame`.
+
+        :return: :class:`.FragmentFrame`
+        """
+        df = self.copy()
+        return df.sort_values(['frame', 'neighbor', 'position'])
 
     def add_fragments( self, fragments, ini, how='replace' ):
         """Add to a given position a set of fragments more fragments.
