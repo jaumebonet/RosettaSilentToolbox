@@ -146,8 +146,9 @@ class FragmentFrame( pd.DataFrame ):
         :return: :class:`.FragmentFrame`
         """
         df = self.copy()
+        gcond = ['neighbor', 'pdb'] if 'source' not in df.columns else ['neighbor', 'pdb', 'source']
         for frame_id, frame in df.groupby('frame'):
-            g = frame.groupby(['neighbor', 'pdb'])
+            g = frame.groupby(gcond)
             neighbors = len(g)
             neighbor = list(g.ngroup() + 1)
             position = list(g.cumcount() + frame_id)
