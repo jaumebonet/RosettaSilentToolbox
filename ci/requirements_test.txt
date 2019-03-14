@@ -6,4 +6,4 @@ pandas==0.24.1
 seaborn==0.9.0
 libconfig==0.9.0
 six==1.12.0
-networkx==2.1
+networkx==2.2
