@@ -9,15 +9,18 @@ exes = ['check_mutants.py', 'minisilent.py', 'plot_fragments_rmsd.py',
         'regplot_rosetta.py', 'rename_decoys.py'
         ]
 
+
+def read_file(path):
+    with open(os.path.join(os.path.dirname(__file__), path)) as fp:
+        return fp.read()
+
+
 setup(
     name='rstoolbox',
     version=versioneer.get_version(),
 
     description='management and analysis of design populations',
-    long_description='rstoolbox is a Python library to visualize, '
-                     'analyze and select the designs of interest from a design population. '
-                     'It exploits the power of pandas to ease on the selection of decoys of '
-                     'interest and provide a direct interface to matplotlib and seaborn plotting.',
+    long_description=read_file('README.rst'),
 
     # The project's main homepage.
     url='https://github.com/jaumebonet/RosettaSilentToolbox',
