@@ -28,7 +28,7 @@ The ``rstoolbox`` is a python library aimed to the analysis and management of bi
     :alt: bioRxiv
 
 .. image:: https://img.shields.io/badge/BMC%20Bioinformatics-submitted-green.svg
-    :target:
+    :target: https://doi.org/10.1101/428045
     :alt: BMC Bioinformatics
 
 Although inspired by the output of the protein design tool **ROSETTA**, the library aims to be of a wider applicability, and can be
@@ -50,8 +50,8 @@ clearly highlighted on their `documentation <http://jaumebonet.cat/RosettaSilent
 
 Start using the ``rstoolbox`` is as easy as installing it via pip:
 
-```
+.. code-block:: bash
   pip install rstoolbox
-```
+
 
 A complete `documentation <http://jaumebonet.cat/RosettaSilentToolbox>`_ with detailed explanation for each function is available.
