@@ -51,7 +51,8 @@ clearly highlighted on their `documentation <http://jaumebonet.cat/RosettaSilent
 Start using the ``rstoolbox`` is as easy as installing it via pip:
 
 .. code-block:: bash
-  pip install rstoolbox
+
+    pip install rstoolbox
 
 
 A complete `documentation <http://jaumebonet.cat/RosettaSilentToolbox>`_ with detailed explanation for each function is available.
