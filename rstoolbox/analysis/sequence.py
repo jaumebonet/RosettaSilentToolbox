@@ -459,7 +459,7 @@ def binary_similarity( df, seqID, key_residues=None, matrix="IDENTITY"):
     alicolumn = "{0}_{1}_ali".format(matrix.lower(), seqID)
     bincolumn = "{0}_{1}_binary".format(matrix.lower(), seqID)
 
-    dfss[bincolumn] = dfss.apply(lambda row: re.sub('\D', '1', re.sub('\.', '0', row[alicolumn])),
+    dfss[bincolumn] = dfss.apply(lambda row: re.sub(r'\D', '1', re.sub(r'\.', '0', row[alicolumn])),
                                  axis=1)
 
     return pd.concat([df.reset_index(drop=True),

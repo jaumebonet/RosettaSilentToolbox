@@ -709,7 +709,10 @@ class SelectionContainer( object ):
 
     def __cmp__( self, other ):
         if isinstance(other, SelectionContainer):
-            return cmp(self._content, other._content)
+            if six.PY2:
+                return cmp(self._content, other._content)
+            else:
+                return (self._content > other._content) - (self._content < other._content)
         else:
             raise NotImplementedError
 
