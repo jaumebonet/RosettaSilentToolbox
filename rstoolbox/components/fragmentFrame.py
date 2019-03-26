@@ -109,6 +109,24 @@ class FragmentFrame( pd.DataFrame ):
         """
         return self[(self['frame'] >= ini) & (self['frame'] <= end)]
 
+    def top_limit( self, limit ):
+        """Remove all frames whose position puts the frames over a given limit.
+
+        :param int limit: Max position that the fragments are expected to reach.
+
+        :return: :class:`.FragmentFrame`
+        """
+        df = self.copy()
+        max_frame = df[df['position'] == limit]['frame'].min()
+        # If we don't find the top limit frame
+        if max_frame is np.nan:
+            # If the fragments set is smaller, we fix it,
+            # otherwise we will return empty FragmentFrame, which is fine if the
+            # smallest frame is over the top limit.
+            if df['frame'].max() < limit:
+                max_frame = df['frame'].max()
+        return df[df['frame'] <= max_frame]
+
     def is_comparable( self, df ):
         """Evaluate if the current :class:`.FragmentFrame` is comparable to
         the provided one.
@@ -135,14 +153,24 @@ class FragmentFrame( pd.DataFrame ):
         :return: :class:`.FragmentFrame`
         """
         df = self.copy()
+        gcond = ['neighbor', 'pdb'] if 'source' not in df.columns else ['neighbor', 'pdb', 'source']
         for frame_id, frame in df.groupby('frame'):
-            neighbors = len(frame.groupby(['neighbor', 'pdb']))
-            neighbor = list(frame.groupby(['neighbor', 'pdb']).ngroup() + 1)
-            position = list(frame.groupby(['neighbor', 'pdb']).cumcount() + frame_id)
+            g = frame.groupby(gcond)
+            neighbors = len(g)
+            neighbor = list(g.ngroup() + 1)
+            position = list(g.cumcount() + frame_id)
             df.loc[(df['frame'] == frame_id), 'neighbors'] = [neighbors] * frame.shape[0]
             df.loc[(df['frame'] == frame_id), 'neighbor'] = neighbor
             df.loc[(df['frame'] == frame_id), 'position'] = position
         return df
+
+    def order( self ):
+        """Properly reorder the :class:`.FragmentFrame`.
+
+        :return: :class:`.FragmentFrame`
+        """
+        df = self.copy()
+        return df.sort_values(['frame', 'neighbor', 'position'])
 
     def add_fragments( self, fragments, ini, how='replace' ):
         """Add to a given position a set of fragments more fragments.
@@ -173,16 +201,37 @@ class FragmentFrame( pd.DataFrame ):
         columns = ['frame', 'neighbor', 'position']
 
         # Setup new frame range
-        frags['frame'] = frags['frame'] + ini - frags['frame'].values[0]
+        frags = frags.renumber(ini)
 
         if how.lower() == 'replace':
             df = df[(df['frame'] < ini) | (df['frame'] > max(frags['frame'].unique()))]
             df = pd.concat([df, frags.coerce()]).sort_values(columns).reset_index(drop=True)
         if how.lower() == 'append':
-            df = pd.concat([df, frags]).sort_values(columns).reset_index(drop=True)
-            df = df.coerce()
+            df = pd.concat([df, frags]).reset_index(drop=True)
+            df = df.coerce().sort_values(columns)
 
         return df
+
+    def renumber( self, ini=1 ):
+        """Make the fragment set start at the given position.
+
+        :param int ini: Initial position of the new :class:`.FragmentFrame`.
+
+        :return: :class:`.FragmentFrame` - with the requested modifications.
+        """
+        df = self.copy()
+        df['frame'] = df['frame'] + ini - df['frame'].values[0]
+        return df.coerce()
+
+    def sample_top_neighbors( self, max_count=200 ):
+        """Limit to the top selected neighbors for each frame.
+
+        :param int max_count: Maximum neighbors for frame
+
+        :return: :class:`.FragmentFrame` - with the requested modifications.
+        """
+        df = self.copy()
+        return df[df['neighbor'] <= max_count].coerce()
 
     def add_quality_measure( self, filename, pdbfile=None ):
         """Add RMSD quality measure to the fragment data.
@@ -336,6 +385,9 @@ class FragmentFrame( pd.DataFrame ):
         :return: :class:`~networkx.DiGraph` - with as many nodes as the 20 possible amino acids
             by the length of the sequence.
 
+        .. warning::
+            This is an experimental feature.
+
         .. seealso::
             :meth:`.FragmentFrame.make_frequency_network`
         """
@@ -367,6 +419,9 @@ class FragmentFrame( pd.DataFrame ):
 
         :return: :class:`~networkx.DiGraph` - with as many nodes as the 20 possible amino acids
             by the length of the sequence.
+
+        .. warning::
+            This is an experimental feature.
 
         .. seealso::
             :meth:`.FragmentFrame.make_per_position_frequency_network`
@@ -424,6 +479,9 @@ class FragmentFrame( pd.DataFrame ):
     def quick_consensus_sequence( self ):
         """Consensus sequence with the highest representative per position.
 
+        .. warning::
+            This is an experimental feature.
+
         :return: :class:`str` - consensus sequence
         """
         consensus = []
@@ -435,6 +493,9 @@ class FragmentFrame( pd.DataFrame ):
 
     def quick_consensus_secondary_structure( self ):
         """Consensus secondary structure with the highest representative per position.
+
+        .. warning::
+            This is an experimental feature.
 
         :return: :class:`str` - consensus secondary structure
         """

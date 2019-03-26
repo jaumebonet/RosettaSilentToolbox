@@ -101,11 +101,11 @@ def read_fasta( filename, expand=False, multi=False, defchain='A' ):
                 data[seqcol][-1] += line
 
     df = cp.DesignFrame( data )
-    if expand and bool(re.search("^\S{4}\:\S{1}", df.iloc[0]["description"])):
-        df["description"] = df["description"].apply(lambda col: col.split("|")[0])
+    if expand and bool(re.search(r'^\S{4}\:\S{1}', df.iloc[0]['description'])):
+        df['description'] = df['description'].apply(lambda col: col.split('|')[0])
         df[['description', 'seq']] = df['description'].str.split(':', expand=True)
         df = df.pivot('description', 'seq',
-                      seqcol).add_prefix("sequence_").rename_axis(None,
+                      seqcol).add_prefix('sequence_').rename_axis(None,
                                                                   axis=1).reset_index()
         df = cp.DesignFrame(df)
     df.add_source_files( files )
@@ -242,7 +242,7 @@ def write_clustalw( df, seqID, filename=None ):
     if df.has_reference_sequence(seqID):
         refname = mlcs(names)
         if len(refname) > 0 and refname not in names:
-            if re.match('[\w\d\_\.]+\_[0]*$', str(refname)):
+            if re.match(r'[\w\d\_\.]+\_[0]*$', str(refname)):
                 refname = refname.rstrip("0").rstrip("_")
         else:
             refname = "reference"
@@ -351,7 +351,7 @@ def read_hmmsearch( filename ):
     if not os.path.isfile(filename):
         raise IOError('{} cannot be found'.format(filename))
 
-    ali = re.compile('\d+\s[\!\?][\s\S]*')
+    ali = re.compile(r'\d+\s[\!\?][\s\S]*')
     fd = open(filename)if not filename.endswith("gz") else gzip.open(filename, 'rt')
     searches = fd.read().split("\n//")
     fd.close()

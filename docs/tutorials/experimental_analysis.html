@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Experimental Data &#8212; rstoolbox 0.9.2 documentation</title>
+    <title>Experimental Data &#8212; rstoolbox 0.9.3 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/style.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           rstoolbox</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.9.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.9.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -123,14 +123,14 @@
 <span id="experimental-analysis"></span><h1>Experimental Data<a class="headerlink" href="#experimental-data" title="Permalink to this headline">¶</a></h1>
 <p>Experimental data derived from the analysis of the design decoys can be added and processed through the library. For some experiments, like
 <strong>Circular Dichroism</strong> or <strong>Surface Plasmon Resonance</strong>, very specific formats exist. In those cases, the proper parser (<a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> or
-<a class="reference internal" href="../generated/rstoolbox.io.read_SPR.html#rstoolbox.io.read_SPR" title="rstoolbox.io.read_SPR"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_SPR()</span></code></a>) exists. Other cases provide different +*CSV* files. This can be imported to python with <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_csv.html#pandas.read_csv" title="(in pandas v0.23.4)"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_csv()</span></code></a>, but might
+<a class="reference internal" href="../generated/rstoolbox.io.read_SPR.html#rstoolbox.io.read_SPR" title="rstoolbox.io.read_SPR"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_SPR()</span></code></a>) exists. Other cases provide different +*CSV* files. This can be imported to python with <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html#pandas.read_csv" title="(in pandas v0.24.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_csv()</span></code></a>, but might
 need to be post-processed to work with them.</p>
 <p>Each plotting function shows in its documentation the exact naming of the column that it expects.</p>
 <div class="section" id="circular-dichroism">
 <h2>Circular Dichroism<a class="headerlink" href="#circular-dichroism" title="Permalink to this headline">¶</a></h2>
 <p>Circular dichroism data can be easily worked with.</p>
 <p>Currently the library can automatically import data compatible with the <a class="reference external" href="https://jascoinc.com/products/spectroscopy/circular-dichroism/">Jasco</a> J-815
-series by means of the <a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> function, but any data can be read as long as it finally produces a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> with, at least, the following
+series by means of the <a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> function, but any data can be read as long as it finally produces a <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.24.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> with, at least, the following
 two columns:</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -155,7 +155,7 @@ two columns:</p>
 it through the <a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> function.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">When loading data with <a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> notice that the <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> contains extra columns with extra information. From those, <code class="docutils literal notranslate"><span class="pre">Temp</span></code> is the more relevant for
+<p class="last">When loading data with <a class="reference internal" href="../generated/rstoolbox.io.read_CD.html#rstoolbox.io.read_CD" title="rstoolbox.io.read_CD"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_CD()</span></code></a> notice that the <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.24.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> contains extra columns with extra information. From those, <code class="docutils literal notranslate"><span class="pre">Temp</span></code> is the more relevant for
 plotting and analysis, as is the one that allows to separate the different data series.</p>
 </div>
 <p>Currently, CD data can be obtained and plotted such as:</p>
@@ -183,7 +183,7 @@ uses the <a class="reference external" href="http://en.wikipedia.org/wiki/Bresen
 </div>
 <div class="section" id="thermal-melt">
 <h2>Thermal Melt<a class="headerlink" href="#thermal-melt" title="Permalink to this headline">¶</a></h2>
-<p>As before, thermal melt data can be loaded by properly parsing any input file as long as the generated <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> contains at least the following columns:</p>
+<p>As before, thermal melt data can be loaded by properly parsing any input file as long as the generated <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.24.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> contains at least the following columns:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="23%" />

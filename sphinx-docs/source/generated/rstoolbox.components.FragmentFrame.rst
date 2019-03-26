@@ -15,10 +15,19 @@ rstoolbox.components.FragmentFrame
       ~FragmentFrame.add_source_file
       ~FragmentFrame.has_source_file
       ~FragmentFrame.slice_region
+      ~FragmentFrame.top_limit
       ~FragmentFrame.is_comparable
+      ~FragmentFrame.renumber
+      ~FragmentFrame.sample_top_neighbors
       ~FragmentFrame.coerce
+      ~FragmentFrame.order
       ~FragmentFrame.add_fragments
-      ~FragmentFrame.make_sequence_matrix
-      ~FragmentFrame.quick_consensus_sequence
+      ~FragmentFrame.renumber
+      ~FragmentFrame.sample_top_neighbors
       ~FragmentFrame.select_quantile
+      ~FragmentFrame.make_sequence_matrix
+      ~FragmentFrame.make_per_position_frequency_network
+      ~FragmentFrame.make_frequency_network
+      ~FragmentFrame.quick_consensus_sequence
+      ~FragmentFrame.quick_consensus_secondary_structure
 

@@ -68,14 +68,14 @@ def format_Ipython():
 
 def use_qgrid( df, **kwargs ):
     """Create a ``QgridWidget`` object from the
-    [qgrid library](https://qgrid.readthedocs.io/en/latest/) in
+    `qgrid library <https://qgrid.readthedocs.io/en/latest/>`_ in
     **Jupyter Notebooks**.
 
     This allows the creation of a interactive table in a cell with a whole
-    lot of functionalities (see [qgrid documentation](https://qgrid.readthedocs.io/en/latest/))
+    lot of functionalities (see `qgrid documentation <https://qgrid.readthedocs.io/en/latest/>`_)
 
     A part from the :class:`~pandas.DataFrame`, one can provide any named parameter that can
-    be applied to [qgrid.show_grid](https://qgrid.readthedocs.io/en/latest/#qgrid.show_grid).
+    be applied to `qgrid.show_grid <https://qgrid.readthedocs.io/en/latest/#qgrid.show_grid>`_.
     The only difference is that if there are more than 4 columns, the key ``forceFitColumns``
     from the attribute ``grid_options`` is forced into :data:`False`.
 
@@ -87,21 +87,24 @@ def use_qgrid( df, **kwargs ):
         qdf = qwdf.get_selected_df()
 
     See more in the documentation for
-    [get_changed_df](https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_changed_df)
-    or [get_selected_df](https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_selected_df).
+    `get_changed_df <https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_changed_df>`_
+    or `get_selected_df <https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_selected_df>`_.
 
     Best used together with :func:`.format_Ipython`.
 
     :param df: Data container.
     :type df: :class:`~pandas.DataFrame`
 
-    :return: [QgridWidget](https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget)
+    :return: `QgridWidget <https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget>`_
 
     :raises:
-        :ImportError: If [qgrid library](https://qgrid.readthedocs.io/en/latest/)
+        :ImportError: If `qgrid library <https://qgrid.readthedocs.io/en/latest/>`_
             is not present.
     """
-    import qgrid
+    try:
+        import qgrid
+    except ImportError:
+        raise ImportError('qgrid (not mandatory on rstoolbox install) is necessary to execute this function.')
 
     go = kwargs.pop('grid_options', {})
     if df.shape[1] > 4:
@@ -374,6 +377,6 @@ def concat_fragments( fragment_list ):
             newE = e.assign(renum_frame=e['frame'] - shiftset + 1 + fragment_list_renum[i - 1]['renum_frame'].max())
         fragment_list_renum.append(newE)
     df = pd.concat(fragment_list_renum, ignore_index=True, sort=False)
-    df = df[['pdb', 'renum_frame', 'neighbors', 'position', 'size', 'aa',
+    df = df[['pdb', 'renum_frame', 'neighbors', 'neighbor', 'position', 'size', 'aa',
              'sse', 'phi', 'psi', 'omega']].rename(columns={'renum_frame': 'frame'})
     return df

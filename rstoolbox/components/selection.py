@@ -699,7 +699,7 @@ class SelectionContainer( object ):
         return self._content[key]
 
     def __setitem__(self, key, value):
-            self._content[key] = value
+        self._content[key] = value
 
     def __iter__( self ):
         return self._content.__iter__()
@@ -709,7 +709,10 @@ class SelectionContainer( object ):
 
     def __cmp__( self, other ):
         if isinstance(other, SelectionContainer):
-            return cmp(self._content, other._content)
+            if six.PY2:
+                return cmp(self._content, other._content)
+            else:
+                return (self._content > other._content) - (self._content < other._content)
         else:
             raise NotImplementedError
 
