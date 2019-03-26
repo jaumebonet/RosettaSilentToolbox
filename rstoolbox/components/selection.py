@@ -699,7 +699,7 @@ class SelectionContainer( object ):
         return self._content[key]
 
     def __setitem__(self, key, value):
-            self._content[key] = value
+        self._content[key] = value
 
     def __iter__( self ):
         return self._content.__iter__()

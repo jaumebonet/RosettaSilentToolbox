@@ -8,6 +8,7 @@
 """
 # Standard Libraries
 import os
+from tempfile import NamedTemporaryFile
 
 # External Libraries
 import matplotlib as mpl
@@ -17,7 +18,7 @@ import matplotlib.pyplot as plt
 import pytest
 
 # This Library
-from rstoolbox.io import parse_rosetta_fragments
+from rstoolbox.io import parse_rosetta_fragments, write_rosetta_fragments
 from rstoolbox.plot import plot_fragment_profiles
 from rstoolbox.utils import concat_fragments
 from rstoolbox.tests.helper import baseline_test_dir
@@ -136,3 +137,13 @@ class TestFragments( object ):
         # checkpoints
         assert len(m) == 5400
         assert list(m.drop_duplicates('frame')['frame']) == list(range(1, 10))
+
+        f1 = NamedTemporaryFile(delete=False)
+        f1.close()
+        nonstrict = write_rosetta_fragments(m, 3, 300, f1.name, False)
+
+        f2 = NamedTemporaryFile(delete=False)
+        f2.close()
+        isstrict = write_rosetta_fragments(m.renumber(10).top_limit(30), prefix=f2.name, strict=True)
+
+        assert not parse_rosetta_fragments(nonstrict).is_comparable(parse_rosetta_fragments(isstrict))

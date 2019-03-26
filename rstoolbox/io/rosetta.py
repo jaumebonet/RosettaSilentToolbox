@@ -648,10 +648,10 @@ def _strict_write_rosetta_fragments( df, prefix ):
 
     ofile = "{}.{}.{}mers".format(prefix, n_frags, frag_size)
     with open(ofile, "w") as f:
-        for frame, fdf in df.groupby(['frame']):
+        for _, fdf in df.groupby(['frame']):
             f.write(_HEADER.format(fdf['position'].min(), fdf['position'].min() + frag_size - 1))
             i = 1
-            for nei, ndf in fdf.groupby(['neighbor']):
+            for _, ndf in fdf.groupby(['neighbor']):
                 if ndf.shape[0] > frag_size:
                     continue
                 ndf = ndf.assign(pdbpos=range(i, i + ndf.shape[0]))
