@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rstoolbox.plot.plot_ramachandran &#8212; rstoolbox 0.9.2 documentation</title>
+    <title>rstoolbox.plot.plot_ramachandran &#8212; rstoolbox 0.9.3 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/style.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           rstoolbox</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.9.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.9.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -126,17 +126,17 @@
 consider computing them using for example the <a class="reference internal" href="rstoolbox.io.get_sequence_and_structure.html#rstoolbox.io.get_sequence_and_structure" title="rstoolbox.io.get_sequence_and_structure"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_sequence_and_structure()</span></code></a>.
 Note that this function will only plot the ramachandran for a single decoy. If one
 would like to compute it for mutiple decoys, please see the example below.</p>
-<p>Parameters for <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="(in Matplotlib v3.0.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scatter()</span></code></a> can be provided with prefix <code class="docutils literal notranslate"><span class="pre">scatter_</span></code>.</p>
-<p>Parameters for <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.0.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot()</span></code></a> can be provided with prefix <code class="docutils literal notranslate"><span class="pre">line_</span></code>.</p>
+<p>Parameters for <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="(in Matplotlib v3.0.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scatter()</span></code></a> can be provided with prefix <code class="docutils literal notranslate"><span class="pre">scatter_</span></code>.</p>
+<p>Parameters for <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.0.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot()</span></code></a> can be provided with prefix <code class="docutils literal notranslate"><span class="pre">line_</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>) – Data container, where ONE column cotains the phi and a second column
+<li><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v0.24.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Series</span></code></a>) – Data container, where ONE column cotains the phi and a second column
 the psi angles.</li>
 <li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest</li>
-<li><strong>fig</strong> (<a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>) – Figure into which the data is going to be plotted.</li>
+<li><strong>fig</strong> (<a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>) – Figure into which the data is going to be plotted.</li>
 <li><strong>grid</strong> (<em>tuple</em>) – Grid of the figure. By default assumes the figure has nothing
 else and so, the grid is (2, 2).</li>
 <li><strong>positions</strong> (<code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>) – Positions in the grid (in case the image will contain more than
@@ -144,7 +144,7 @@ the Ramachandran). By default, it assumes a (2, 2) grid and fills all positions.
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.0.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> of <a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.0.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">

@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Compare Decoy Populations &#8212; rstoolbox 0.9.2 documentation</title>
+    <title>Compare Decoy Populations &#8212; rstoolbox 0.9.3 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/style.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           rstoolbox</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.9.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.9.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -160,7 +160,7 @@ available sequences on each decoy population.</div></blockquote>
 </div>
 <div class="section" id="merging-populations">
 <h2>Merging Populations<a class="headerlink" href="#merging-populations" title="Permalink to this headline">¶</a></h2>
-<p>Merging populations is a very useful way to a take advantage of the plotting and analysis tools compatible with <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> derived objects. In order
+<p>Merging populations is a very useful way to a take advantage of the plotting and analysis tools compatible with <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.24.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> derived objects. In order
 for it to be useful and possible, two conditions must meet:</p>
 <div class="section" id="the-two-populations-should-share-column-names">
 <h3>The two populations should share column names<a class="headerlink" href="#the-two-populations-should-share-column-names" title="Permalink to this headline">¶</a></h3>
@@ -311,7 +311,7 @@ represent residue types more present in the binder-design population per positio
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [18]: </span><span class="n">result</span> <span class="o">=</span> <span class="n">rs</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">positional_enrichment</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;binder&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;condition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;nobinder&#39;</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>When a position is represented in the first population but not in the second, the enrichment is <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/constants.html#numpy.inf" title="(in NumPy v1.15)"><code class="xref py py-data docutils literal notranslate"><span class="pre">inf</span></code></a>. To visualize it,
+<p>When a position is represented in the first population but not in the second, the enrichment is <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/constants.html#numpy.inf" title="(in NumPy v1.16)"><code class="xref py py-data docutils literal notranslate"><span class="pre">inf</span></code></a>. To visualize it,
 one would need to transform it into a numerical value. In this case, we transform it into a value such as <code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">+</span> <span class="pre">(max/2)</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [19]: </span><span class="n">maxval</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 <span class="gp">   ....: </span><span class="n">maxval</span> <span class="o">+=</span> <span class="p">(</span><span class="n">maxval</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>

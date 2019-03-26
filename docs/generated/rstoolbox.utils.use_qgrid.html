@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rstoolbox.utils.use_qgrid &#8212; rstoolbox 0.9.2 documentation</title>
+    <title>rstoolbox.utils.use_qgrid &#8212; rstoolbox 0.9.3 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/style.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           rstoolbox</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.9.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.9.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -118,15 +118,15 @@
 <dt id="rstoolbox.utils.use_qgrid">
 <code class="descclassname">rstoolbox.utils.</code><code class="descname">use_qgrid</code><span class="sig-paren">(</span><em>df</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.utils.use_qgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a <code class="docutils literal notranslate"><span class="pre">QgridWidget</span></code> object from the
-[qgrid library](<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/">https://qgrid.readthedocs.io/en/latest/</a>) in
+<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/">qgrid library</a> in
 <strong>Jupyter Notebooks</strong>.</p>
 <p>This allows the creation of a interactive table in a cell with a whole
-lot of functionalities (see [qgrid documentation](<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/">https://qgrid.readthedocs.io/en/latest/</a>))</p>
-<p>A part from the <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>, one can provide any named parameter that can
-be applied to [qgrid.show_grid](<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/#qgrid.show_grid">https://qgrid.readthedocs.io/en/latest/#qgrid.show_grid</a>).
+lot of functionalities (see <a class="reference external" href="https://qgrid.readthedocs.io/en/latest/">qgrid documentation</a>)</p>
+<p>A part from the <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.24.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>, one can provide any named parameter that can
+be applied to <a class="reference external" href="https://qgrid.readthedocs.io/en/latest/#qgrid.show_grid">qgrid.show_grid</a>.
 The only difference is that if there are more than 4 columns, the key <code class="docutils literal notranslate"><span class="pre">forceFitColumns</span></code>
 from the attribute <code class="docutils literal notranslate"><span class="pre">grid_options</span></code> is forced into <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a>.</p>
-<p>The actual <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> can be retrieved back with:</p>
+<p>The actual <a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.24.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a> can be retrieved back with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qwdf</span> <span class="o">=</span> <span class="n">rstoolbox</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">use_qgrid</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="n">qdf</span> <span class="o">=</span> <span class="n">qwdf</span><span class="o">.</span><span class="n">get_changed_df</span><span class="p">()</span>
 <span class="c1"># OR</span>
@@ -134,24 +134,24 @@ from the attribute <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 <p>See more in the documentation for
-[get_changed_df](<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_changed_df">https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_changed_df</a>)
-or [get_selected_df](<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_selected_df">https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_selected_df</a>).</p>
+<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_changed_df">get_changed_df</a>
+or <a class="reference external" href="https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget.get_selected_df">get_selected_df</a>.</p>
 <p>Best used together with <a class="reference internal" href="rstoolbox.utils.format_Ipython.html#rstoolbox.utils.format_Ipython" title="rstoolbox.utils.format_Ipython"><code class="xref py py-func docutils literal notranslate"><span class="pre">format_Ipython()</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data container.</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>df</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.24.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a>) – Data container.</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">[QgridWidget](<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget">https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget</a>)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://qgrid.readthedocs.io/en/latest/#qgrid.QgridWidget">QgridWidget</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">ImportError:</th><td class="field-body">If [qgrid library](<a class="reference external" href="https://qgrid.readthedocs.io/en/latest/">https://qgrid.readthedocs.io/en/latest/</a>)
+<tr class="field-odd field"><th class="field-name">ImportError:</th><td class="field-body">If <a class="reference external" href="https://qgrid.readthedocs.io/en/latest/">qgrid library</a>
 is not present.</td>
 </tr>
 </tbody>

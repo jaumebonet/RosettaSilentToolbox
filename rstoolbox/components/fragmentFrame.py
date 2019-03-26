@@ -118,6 +118,13 @@ class FragmentFrame( pd.DataFrame ):
         """
         df = self.copy()
         max_frame = df[df['position'] == limit]['frame'].min()
+        # If we don't find the top limit frame
+        if max_frame is np.nan:
+            # If the fragments set is smaller, we fix it,
+            # otherwise we will return empty FragmentFrame, which is fine if the
+            # smallest frame is over the top limit.
+            if df['frame'].max() < limit:
+                max_frame = df['frame'].max()
         return df[df['frame'] <= max_frame]
 
     def is_comparable( self, df ):
@@ -378,6 +385,9 @@ class FragmentFrame( pd.DataFrame ):
         :return: :class:`~networkx.DiGraph` - with as many nodes as the 20 possible amino acids
             by the length of the sequence.
 
+        .. warning::
+            This is an experimental feature.
+
         .. seealso::
             :meth:`.FragmentFrame.make_frequency_network`
         """
@@ -409,6 +419,9 @@ class FragmentFrame( pd.DataFrame ):
 
         :return: :class:`~networkx.DiGraph` - with as many nodes as the 20 possible amino acids
             by the length of the sequence.
+
+        .. warning::
+            This is an experimental feature.
 
         .. seealso::
             :meth:`.FragmentFrame.make_per_position_frequency_network`
@@ -466,6 +479,9 @@ class FragmentFrame( pd.DataFrame ):
     def quick_consensus_sequence( self ):
         """Consensus sequence with the highest representative per position.
 
+        .. warning::
+            This is an experimental feature.
+
         :return: :class:`str` - consensus sequence
         """
         consensus = []
@@ -477,6 +493,9 @@ class FragmentFrame( pd.DataFrame ):
 
     def quick_consensus_secondary_structure( self ):
         """Consensus secondary structure with the highest representative per position.
+
+        .. warning::
+            This is an experimental feature.
 
         :return: :class:`str` - consensus secondary structure
         """

@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>rstoolbox.io.write_rosetta_fragments &#8212; rstoolbox 0.9.2 documentation</title>
+    <title>rstoolbox.io.write_rosetta_fragments &#8212; rstoolbox 0.9.3 documentation</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/style.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           rstoolbox</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.9.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.9.3</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -116,19 +116,37 @@
 <h1>rstoolbox.io.write_rosetta_fragments<a class="headerlink" href="#rstoolbox-io-write-rosetta-fragments" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="rstoolbox.io.write_rosetta_fragments">
-<code class="descclassname">rstoolbox.io.</code><code class="descname">write_rosetta_fragments</code><span class="sig-paren">(</span><em>df</em>, <em>frag_size</em>, <em>n_frags=200</em>, <em>prefix='rosetta_frags'</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.write_rosetta_fragments" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">rstoolbox.io.</code><code class="descname">write_rosetta_fragments</code><span class="sig-paren">(</span><em>df</em>, <em>frag_size=None</em>, <em>n_frags=200</em>, <em>prefix='rosetta_frags'</em>, <em>strict=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.io.write_rosetta_fragments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes a Rosetta fragment-file (new format) from an appropiate <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>.</p>
 <p>Supports varying size fragment sets.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>df</strong> (<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>) – Selected set of fragments that have to be written.</li>
 <li><strong>frag_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Size of the fragments.</li>
 <li><strong>n_frags</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of fragments per frame.
 Default are 200 fragments per frame.</li>
+<li><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Prefix for the fragment file.</li>
+<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – If <a class="reference external" href="https://docs.python.org/2/library/constants.html#False" title="(in Python v2.7)"><code class="xref py py-data docutils literal notranslate"><span class="pre">False</span></code></a> (default), it will assume the <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>
+starts in 1 and contains the same <code class="docutils literal notranslate"><span class="pre">n_frags</span></code> at each position. Otherwise, it adapts to
+the actual content of the <a class="reference internal" href="rstoolbox.components.FragmentFrame.html#rstoolbox.components.FragmentFrame" title="rstoolbox.components.FragmentFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">FragmentFrame</span></code></a>. Also, <code class="docutils literal notranslate"><span class="pre">strict==True</span></code> will print new
+fragments format while <code class="docutils literal notranslate"><span class="pre">strict==False</span></code> will print the old fragments format.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> - name of the newly generated file.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">AttributeError:</th><td class="field-body">If <code class="docutils literal notranslate"><span class="pre">strict==False</span></code> and no <code class="docutils literal notranslate"><span class="pre">frag_size</span></code> is provided.</td>
+</tr>
+</tbody>
+</table>
 </td>
 </tr>
 </tbody>
