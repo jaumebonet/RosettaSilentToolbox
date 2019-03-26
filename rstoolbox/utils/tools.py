@@ -377,6 +377,6 @@ def concat_fragments( fragment_list ):
             newE = e.assign(renum_frame=e['frame'] - shiftset + 1 + fragment_list_renum[i - 1]['renum_frame'].max())
         fragment_list_renum.append(newE)
     df = pd.concat(fragment_list_renum, ignore_index=True, sort=False)
-    df = df[['pdb', 'renum_frame', 'neighbors', 'position', 'size', 'aa',
+    df = df[['pdb', 'renum_frame', 'neighbors', 'neighbor', 'position', 'size', 'aa',
              'sse', 'phi', 'psi', 'omega']].rename(columns={'renum_frame': 'frame'})
     return df
