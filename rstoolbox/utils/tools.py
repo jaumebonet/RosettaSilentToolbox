@@ -30,7 +30,7 @@ from six import string_types
 # This Library
 
 
-__all__ = ['format_Ipython', 'use_qgrid', 'add_column', 'split_values', 'make_rosetta_app_path',
+__all__ = ['format_Ipython', 'highlight', 'use_qgrid', 'add_column', 'split_values', 'make_rosetta_app_path',
            'execute_process', 'report', 'concat_fragments', 'split_dataframe_rows']
 
 
@@ -64,6 +64,33 @@ def format_Ipython():
         }
     """)
     return HTML('<style>{}</style>'.format(CSS))
+
+
+def highlight( row, selection, color='yellow', text_color='black', bold=True ):
+    """Highlight rows in **Jupyter Notebooks** that match the given index.
+
+    :param row: Row to which the formating is applied (directly provided by ``diplay.apply``)
+    :type row: :class:`~pandas.Series`
+    :param selection: :func:`list` of indexes to highlight.
+    :type selection: Union[:class:`~pandas.Index`, :class:`~pandas.DataFrame`]
+    :param str color: CSS defined color name for the background.
+    :param str text_color: CSS defined color name for the text.
+    :param bool bold: Make text bold.
+
+    :return: CSS properties for the cells.
+    """
+    if isinstance(selection, (pd.Index, pd.DataFrame)):
+        if isinstance(selection, pd.DataFrame):
+            selection = selection.index
+    else:
+        raise NotImplementedError('Unknown selection type provided.')
+    if row.name in selection:
+        txt = ['background-color: {}'.format(color), 'color: {}'.format(text_color)]
+        if bold:
+            txt.append('font-weight: bold')
+        return [';'.join(txt), ] * len(row)
+    else:
+        return ['', ] * len(row)
 
 
 def use_qgrid( df, **kwargs ):

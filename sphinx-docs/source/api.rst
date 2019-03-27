@@ -136,6 +136,7 @@ Special functions to help personalise your plot easily can be loaded through ``r
    :toctree: generated/
 
    ~utils.format_Ipython
+   ~utils.highlight
    ~utils.use_qgrid
    ~utils.add_left_title
    ~utils.add_right_title
