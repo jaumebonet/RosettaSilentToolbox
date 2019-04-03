@@ -5,3 +5,4 @@ v1.0.0 (xxx 2019)
 #. Added the ability to attach a source column to FragmentFrame.
 #. Adds write new Rosetta fragment format strictly from the fragment data.
 #. Adds highlight function to showcase rows following complex selection logics.
+#. Parse ``POSE_ENERGIES_TABLE`` from Rosetta-generated PDB files.

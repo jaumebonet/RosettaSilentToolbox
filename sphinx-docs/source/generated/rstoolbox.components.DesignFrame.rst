@@ -86,3 +86,4 @@ rstoolbox.components.DesignFrame
      :toctree: DesignFrame
 
       ~DesignFrame.clean_rosetta_suffix
+      ~DesignFrame.retrieve_sequences_from_pdbs
