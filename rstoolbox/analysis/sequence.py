@@ -19,6 +19,7 @@
 import copy
 import collections
 import re
+import operator
 
 # External Libraries
 import pandas as pd
@@ -30,7 +31,7 @@ from .SimilarityMatrix import SimilarityMatrix as SM
 __all__ = ['sequential_frequencies', 'sequence_similarity',
            'positional_sequence_similarity', 'binary_similarity',
            'binary_overlap', 'selector_percentage', 'label_percentage',
-           'positional_enrichment']
+           'label_sequence', 'positional_enrichment']
 
 
 def _get_sequential_table( seqType ):
@@ -624,6 +625,61 @@ def label_percentage( df, seqID, label ):
         seq1 = list(df.get_sequence(seqID))
         seq2 = list(df.get_sequence(seqID, df.get_label(label, seqID)))
         return df.append(pd.Series([float(len(seq2)) / len(seq1)], [colname]))
+    else:
+        raise NotImplementedError
+
+
+def label_sequence( df, seqID, label ):
+    """Gets the sequence of a ``label``.
+
+    Depends on label data for the ``seqID``.
+
+    Adds a new column to the data container:
+
+    ===========================  ====================================================
+    New Column                   Data Content
+    ===========================  ====================================================
+    **<label>_<seqID>_seq**      Trimmed sequence by the ``label``.
+    ===========================  ====================================================
+
+    :param df: |df_param|.
+    :type df: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
+    :param str seqID: |seqID_param|.
+    :param str lable: Label identifier.
+
+    :return: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
+
+    :raises:
+        :NotImplementedError: if the data passed is not in Union[:class:`.DesignFrame`,
+            :class:`.DesignSeries`].
+        :KeyError: |lblID_error|.
+
+    .. rubric:: Example
+
+    .. ipython::
+
+        In [1]: from rstoolbox.io import parse_rosetta_file
+           ...: from rstoolbox.analysis import label_percentage
+           ...: import pandas as pd
+           ...: pd.set_option('display.width', 1000)
+           ...: pd.set_option('display.max_columns', 500)
+           ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
+           ...:                         {'scores': ['score'], 'sequence': '*',
+           ...:                          'labels': ['MOTIF']})
+           ...: df = label_percentage(df, 'B', 'MOTIF')
+           ...: df.head()
+    """
+    from rstoolbox.components import DesignFrame, DesignSeries
+    colname = '{0}_{1}_seq'.format(label.upper(), seqID)
+
+    if isinstance(df, DesignFrame):
+        df2 = df.apply(lambda row: label_sequence(row, seqID, label),
+                       axis=1, result_type='expand')
+        return df2
+    elif isinstance(df, DesignSeries):
+        sele = df.get_label(label.upper(), seqID)
+        seq = df.get_sequence(seqID)
+        return df.append(pd.Series(''.join(operator.itemgetter(*np.array([*sele])-1)(list(seq))), [colname]))
     else:
         raise NotImplementedError
 
