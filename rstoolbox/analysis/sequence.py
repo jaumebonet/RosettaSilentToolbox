@@ -680,7 +680,7 @@ def label_sequence( df, seqID, label ):
         sele = df.get_label(label.upper(), seqID)
         seq = df.get_sequence(seqID)
         return df.append(pd.Series(''.join(operator.itemgetter(
-                         *np.array([*sele]) - 1 )(list(seq))), [colname]))
+                         *np.array(sele) - 1 )(list(seq))), [colname]))
     else:
         raise NotImplementedError
 
