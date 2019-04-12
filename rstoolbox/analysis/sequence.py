@@ -677,10 +677,10 @@ def label_sequence( df, seqID, label ):
                        axis=1, result_type='expand')
         return df2
     elif isinstance(df, DesignSeries):
-        sele = df.get_label(label.upper(), seqID)
+        sele = list(np.array(df.get_label(label.upper(), seqID).to_list()) - 1)  # Correct str count
         seq = df.get_sequence(seqID)
         return df.append(pd.Series(''.join(operator.itemgetter(
-                         *np.array(sele) - 1 )(list(seq))), [colname]))
+                         *sele)(list(seq))), [colname]))
     else:
         raise NotImplementedError
 
