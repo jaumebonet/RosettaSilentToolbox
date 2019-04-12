@@ -659,14 +659,14 @@ def label_sequence( df, seqID, label ):
     .. ipython::
 
         In [1]: from rstoolbox.io import parse_rosetta_file
-           ...: from rstoolbox.analysis import label_percentage
+           ...: from rstoolbox.analysis import label_sequence
            ...: import pandas as pd
            ...: pd.set_option('display.width', 1000)
            ...: pd.set_option('display.max_columns', 500)
            ...: df = parse_rosetta_file("../rstoolbox/tests/data/input_2seq.minisilent.gz",
            ...:                         {'scores': ['score'], 'sequence': '*',
            ...:                          'labels': ['MOTIF']})
-           ...: df = label_percentage(df, 'B', 'MOTIF')
+           ...: df = label_sequence(df, 'B', 'MOTIF')
            ...: df.head()
     """
     from rstoolbox.components import DesignFrame, DesignSeries

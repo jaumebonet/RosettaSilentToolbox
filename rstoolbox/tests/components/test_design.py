@@ -241,6 +241,13 @@ class TestDesign( object ):
         assert len(df['CONTACT_B_perc'].unique()) > 1
         assert df['CONTACT_B_perc'].mean() == pytest.approx(0.4669, rel=1e-3)
 
+    def test_label_sequence(self):
+        sc_des  = {'scores': ['score'], 'sequence': '*', 'labels': ['MOTIF']}
+        df = ri.parse_rosetta_file(self.silent1, sc_des)
+        df = label_sequence(df, 'B', 'MOTIF')
+        assert df.iloc[0]['MOTIF_B_seq'] == 'DMLPERMIAAALRAIGEIFNAE'
+        assert df.iloc[5]['MOTIF_B_seq'] == 'DMQPEWAIAAALRAIGEIFNQW'
+
     def test_getseqs(self):
         sc_des  = {"sequence": "B"}
 

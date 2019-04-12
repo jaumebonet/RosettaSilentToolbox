@@ -4,3 +4,4 @@ v1.0.0 (xxx 2019)
 #. Added renumber, order, top_position cut and sampling to FragmentFrame
 #. Added the ability to attach a source column to FragmentFrame.
 #. Adds write new Rosetta fragment format strictly from the fragment data.
+#. Adds function to get the sequence given certain residue labels.
