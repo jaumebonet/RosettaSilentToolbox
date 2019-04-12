@@ -39,6 +39,15 @@ Helper functions to read/write direct sequence information. They can be called t
    ~io.read_hmmsearch
    ~io.pymol_mutant_selector
 
+
+IO: Structure
+------------
+
+Helper functions to read/write outputs of programs based on protein structure. They can be called through ``rstoolbox.io``.
+
+   ~io.parse_master_file
+
+
 IO: Rosetta
 -----------
 
