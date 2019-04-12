@@ -244,7 +244,7 @@ class TestDesign( object ):
     def test_label_sequence(self):
         sc_des  = {'scores': ['score'], 'sequence': '*', 'labels': ['MOTIF']}
         df = ri.parse_rosetta_file(self.silent1, sc_des)
-        df = label_sequence(df, 'B', 'MOTIF')
+        df = ra.label_sequence(df, 'B', 'MOTIF')
         assert df.iloc[0]['MOTIF_B_seq'] == 'DMLPERMIAAALRAIGEIFNAE'
         assert df.iloc[5]['MOTIF_B_seq'] == 'DMQPEWAIAAALRAIGEIFNQW'
 
