@@ -39,7 +39,7 @@ def baseline_test_dir():
     :return: :class:`str`
     """
     py = 'py2' if six.PY2 else 'py3'
-    return os.path.join(test_dir(), 'baseline_images', py)
+    return os.path.join('..', 'baseline_images', py)
 
 
 def random_frequency_matrix(size, seed=None):

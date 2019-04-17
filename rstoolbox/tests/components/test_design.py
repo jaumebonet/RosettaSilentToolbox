@@ -249,10 +249,10 @@ class TestDesign( object ):
         assert df.iloc[5]['MOTIF_B_seq'] == 'DMQPEWAIAAALRAIGEIFNQW'
         df1 = ra.label_sequence(df, 'B', 'CONTACT', complete=True)
         df2 = ra.label_sequence(df, 'B', 'CONTACT')
-        assert df2.iloc[0]['CONTACT_B_seq'] == '-RAWRLAEIAMRKGWEEHE-EWWWAKGREMREMKEAWKIAYYWGLMAAYWIKQHREKERK'
-        assert df2.iloc[5]['CONTACT_B_seq'] == '-FAKEEMHKHEEKAY-EFL-EYLAKP-EEHLE-R-AK-LHEEAAKEIWKFMHEAMRRFE-'
-        assert df2.iloc[0]['CONTACT_B_seq'].replace('-', '') == df1.iloc[0]['CONTACT_B_seq']
-        assert df2.iloc[5]['CONTACT_B_seq'].replace('-', '') == df1.iloc[5]['CONTACT_B_seq']
+        assert df1.iloc[0]['CONTACT_B_seq'] == '-RAWRLAEIAMRKGWEEHE-EWWWAKGREMREMKEAWKIAYYWGLMAAYWIKQHREKERK'
+        assert df1.iloc[5]['CONTACT_B_seq'] == '-FAKEEMHKHEEKAY-EFL-EYLAKP-EEHLE-R-AK-LHEEAAKEIWKFMHEAMRRFE-'
+        assert df1.iloc[0]['CONTACT_B_seq'].replace('-', '') == df2.iloc[0]['CONTACT_B_seq']
+        assert df1.iloc[5]['CONTACT_B_seq'].replace('-', '') == df2.iloc[5]['CONTACT_B_seq']
 
     def test_getseqs(self):
         sc_des  = {"sequence": "B"}
