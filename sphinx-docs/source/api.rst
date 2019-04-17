@@ -98,6 +98,7 @@ Helper functions for sequence analysis. They can be called through ``rstoolbox.a
    ~analysis.secondary_structure_percentage
    ~analysis.selector_percentage
    ~analysis.label_percentage
+   ~analysis.label_sequence
    ~analysis.cumulative
 
 Plot

@@ -8,3 +8,4 @@ v1.0.0 (May 2019)
 #. Adds ``highlight`` function to showcase rows following complex selection logics.
 #. Parse ``POSE_ENERGIES_TABLE`` from Rosetta-generated PDB files.
 #. Read MASTER files with ``parse_master_file``.
+#. Adds function to get the sequence given certain residue labels.
