@@ -678,9 +678,7 @@ def label_sequence( df, seqID, label, complete=False ):
     from rstoolbox.components import DesignFrame, DesignSeries
     colname = '{0}_{1}_seq'.format(label.upper(), seqID)
 
-    def get_all_decoy_labels(row):
-        nonlocal label
-        nonlocal seqID
+    def get_all_decoy_labels(row, seqID, label):
         try:
             return list(np.array(row.get_label(label.upper(), seqID).to_list()) - 1)
         except KeyError:
@@ -688,7 +686,7 @@ def label_sequence( df, seqID, label, complete=False ):
 
     if isinstance(df, DesignFrame):
         if complete:
-            complete = set().union(*df.apply(get_all_decoy_labels, axis=1))
+            complete = set().union(*df.apply(get_all_decoy_labels, axis=1, args=(seqID, label)))
 
         df2 = df.apply(lambda row: label_sequence(row, seqID, label, complete), axis=1, result_type='expand')
         return df2
