@@ -183,9 +183,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         """
         from rstoolbox.io import parse_rosetta_pdb
 
-        def get_seq_from_pdb(fname):
-            nonlocal prefix
-            nonlocal dropna
+        def get_seq_from_pdb(fname, prefix, dropna):
             if prefix is not None:
                 ifile = os.path.join(prefix, fname + '.pdb')
             else:
@@ -193,7 +191,7 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
             return parse_rosetta_pdb(ifile, dropna=dropna)
 
         cols = ['description', ]
-        seq = pd.concat(list(self['description'].apply(get_seq_from_pdb))).reset_index(drop=True)
+        seq = pd.concat(list(self['description'].apply(get_seq_from_pdb, args=(prefix, dropna)))).reset_index(drop=True)
         cols.extend(list([x for x in seq.columns if x.startswith('sequence_')]))
         seq = seq[cols]
         return self.merge(seq, on=['description'])
