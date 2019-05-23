@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 # This Library
 from rstoolbox.io import read_fasta, write_fasta, read_hmmsearch
 from rstoolbox.io import parse_rosetta_file, pymol_mutant_selector
+from rstoolbox.io import parse_master_file
 from rstoolbox.plot import sequence_frequency_plot
 from rstoolbox.tests.helper import baseline_test_dir
 
@@ -153,3 +154,10 @@ class TestReadSilentFiles( object ):
         assert sel[0] == pick1
         assert len(sel[1]) != 0
         assert sel[1] == pick2
+
+    def test_master( self ):
+        df = parse_master_file(os.path.join(self.dirpath, 'master.search'),
+                               max_rmsd=1.4, piece_count=2, shift_0=True)
+        assert df.rmsd.max() == 1.3967
+        assert df.shape == (42, 5)
+        assert df.iloc[-1].match == [[34, 40], [42, 48]]
