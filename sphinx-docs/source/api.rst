@@ -41,9 +41,12 @@ Helper functions to read/write direct sequence information. They can be called t
 
 
 IO: Structure
-------------
+-------------
 
 Helper functions to read/write outputs of programs based on protein structure. They can be called through ``rstoolbox.io``.
+
+.. autosummary::
+   :toctree: generated/
 
    ~io.parse_master_file
 

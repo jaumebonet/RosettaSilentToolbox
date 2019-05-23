@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>rstoolbox.analysis.label_sequence &#8212; rstoolbox 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/functions.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="rstoolbox.analysis.cumulative" href="rstoolbox.analysis.cumulative.html" />
+    <link rel="prev" title="rstoolbox.analysis.label_percentage" href="rstoolbox.analysis.label_percentage.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          rstoolbox</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../scripts.html">Scripts</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">An introduction to rstoolbox</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../highlights.html">Highlighted works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing.html">Installing and Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts.html">Available direct executables</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../rosettascripts.html">RosettaScripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whatsnew.html">What’s new</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">rstoolbox.analysis.label_sequence</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="rstoolbox-analysis-label-sequence">
+<h1>rstoolbox.analysis.label_sequence<a class="headerlink" href="#rstoolbox-analysis-label-sequence" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="rstoolbox.analysis.label_sequence">
+<code class="descclassname">rstoolbox.analysis.</code><code class="descname">label_sequence</code><span class="sig-paren">(</span><em>df</em>, <em>seqID</em>, <em>label</em>, <em>complete=False</em><span class="sig-paren">)</span><a class="headerlink" href="#rstoolbox.analysis.label_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the sequence of a <code class="docutils literal notranslate"><span class="pre">label</span></code>.</p>
+<p>Depends on label data for the <code class="docutils literal notranslate"><span class="pre">seqID</span></code>.</p>
+<p>Adds a new column to the data container:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">New Column</th>
+<th class="head">Data Content</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>&lt;label&gt;_&lt;seqID&gt;_seq</strong></td>
+<td>Trimmed sequence by the <code class="docutils literal notranslate"><span class="pre">label</span></code>.</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.DesignSeries.html#rstoolbox.components.DesignSeries" title="rstoolbox.components.DesignSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignSeries</span></code></a>]) – Data container.</li>
+<li><strong>seqID</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Identifier of the sequence of interest.</li>
+<li><strong>label</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Label identifier.</li>
+<li><strong>complete</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Only applies when input is a <a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>.
+Generates a gapped alignment considering the maches of <code class="docutils literal notranslate"><span class="pre">label</span></code> as those
+of the highest matching decoy.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>, <a class="reference internal" href="rstoolbox.components.DesignSeries.html#rstoolbox.components.DesignSeries" title="rstoolbox.components.DesignSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignSeries</span></code></a>]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">NotImplementedError:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">if the data passed is not in Union[<a class="reference internal" href="rstoolbox.components.DesignFrame.html#rstoolbox.components.DesignFrame" title="rstoolbox.components.DesignFrame"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignFrame</span></code></a>,
+<a class="reference internal" href="rstoolbox.components.DesignSeries.html#rstoolbox.components.DesignSeries" title="rstoolbox.components.DesignSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">DesignSeries</span></code></a>].</td>
+</tr>
+<tr class="field-even field"><th class="field-name">KeyError:</th><td class="field-body">if there is no label information for chain <code class="docutils literal notranslate"><span class="pre">seqID</span></code> of the decoys.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">rstoolbox.io</span> <span class="kn">import</span> <span class="n">parse_rosetta_file</span>
+<span class="gp">   ...: </span><span class="kn">from</span> <span class="nn">rstoolbox.analysis</span> <span class="kn">import</span> <span class="n">label_sequence</span>
+<span class="gp">   ...: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">parse_rosetta_file</span><span class="p">(</span><span class="s2">&quot;../rstoolbox/tests/data/input_2seq.minisilent.gz&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                        <span class="p">{</span><span class="s1">&#39;scores&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="s1">&#39;sequence&#39;</span><span class="p">:</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                         <span class="s1">&#39;labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;MOTIF&#39;</span><span class="p">]})</span>
+<span class="gp">   ...: </span><span class="n">df</span> <span class="o">=</span> <span class="n">label_sequence</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;MOTIF&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[1]: </span><span class="go"></span>
+<span class="go">     score lbl_MOTIF                                                                                                                                                     sequence_A                                                                                                            sequence_B             MOTIF_B_seq</span>
+<span class="go">0 -206.678  [B, A]    AYSTREILLALCIRDSRVHGNGTLHPVLELAARETPLRLSPEDTVVLRYHVLLEEIIERNSETFTETWNRFITHTEHVDLDFNSVFLEIFHRGDPSLGRALAWMAWCMHACRTLCCNQSTPYYVVDLSVRGMLEASEGLDGWIHQQGGWSTLIEDNI  TRPEEARERAWRLAEIAMRKGWEEHEREWEWWKRASKGREERDMLPERMIAAALRAIGEIFNAEWQMRLEMEKERKNPNAGEEKMKEQKKEAWKIAYYWGLMAAYWIKQHREKERK  DMLPERMIAAALRAIGEIFNAE</span>
+<span class="go">1 -214.362  [B, A]    AYSTREILLALCIRDSRVHGNGTLHPVLELAARETPLRLSPEDTVVLRYHVLLEEIIERNSETFTETWNRFITHTEHVDLDFNSVFLEIFHRGDPSLGRALAWMAWCMHACRTLCCNQSTPYYVVDLSVRGMLEASEGLDGWIHQQGGWSTLIEDNI  PKPEEAMREAYKLIKKYMLKAQKEAQEEWERMRRTDGTKEEKDMFPEKMIAQALRAIGEIFNAYYWAFLKLQEFKKYPSVRWEEQEEARKRLKIMMKIGAEWAREIAREMKERIKR  DMFPEKMIAQALRAIGEIFNAY</span>
+<span class="go">2 -203.582  [B, A]    AYSTREILLALCIRDSRVHGNGTLHPVLELAARETPLRLSPEDTVVLRYHVLLEEIIERNSETFTETWNRFITHTEHVDLDFNSVFLEIFHRGDPSLGRALAWMAWCMHACRTLCCNQSTPYYVVDLSVRGMLEASEGLDGWIHQQGGWSTLIEDNI  TKPEEMAREAYKRMLKALKQGEEEMKRMYEQMKKGVDSKEERDMEPEKMIAIALRAIGELFNAWMKALRHMKELRKLGTSGPKEEEKHWRWIFELHRWAGEEIQRAAEIQERKARW  DMEPEKMIAIALRAIGELFNAW</span>
+<span class="go">3 -213.779  [B, A]    AYSTREILLALCIRDSRVHGNGTLHPVLELAARETPLRLSPEDTVVLRYHVLLEEIIERNSETFTETWNRFITHTEHVDLDFNSVFLEIFHRGDPSLGRALAWMAWCMHACRTLCCNQSTPYYVVDLSVRGMLEASEGLDGWIHQQGGWSTLIEDNI  TKPEEWARWAYKEHLKMAEKHRKEMEIEWEELKRRDGKEEEKDMWPERMIAMALRAIGELFNHHMYAEMRAKEEKKKPEAKTEEARRARREIMKYHHEAGRLIEEAMRRLMERHKK  DMWPERMIAMALRAIGELFNHH</span>
+<span class="go">4 -213.972  [B, A]    AYSTREILLALCIRDSRVHGNGTLHPVLELAARETPLRLSPEDTVVLRYHVLLEEIIERNSETFTETWNRFITHTEHVDLDFNSVFLEIFHRGDPSLGRALAWMAWCMHACRTLCCNQSTPYYVVDLSVRGMLEASEGLDGWIHQQGGWSTLIEDNI  KKWEEMMREAERQGKEYAQKAWKEALLEWKWMRKRPVTEEMKDMAPEWMIAAALRAIGEHFNIYWQQKLEHEKLRKIPNVPEEELEKGKEELKRIEEEAARMAEKYMQELRKKMES  DMAPEWMIAAALRAIGEHFNIY</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, Jaume Bonet.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.<br/>
+    </p>
+  </div>
+</footer>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-74877325-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-74877325-2');
+</script>
+
+  </body>
+</html>
