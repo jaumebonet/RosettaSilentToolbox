@@ -90,6 +90,19 @@ class TestReadSilentFiles( object ):
         assert df2.shape == (2, 24)
         assert 'label' in df2
 
+    def test_read_score_and_complete( self ):
+        """
+        Read a score file and add sequences from the PDB.
+        """
+        df = ri.parse_rosetta_file(os.path.join(self.dirpath, 'INPUT_score.sc'))
+        assert df.shape == (3, 53)
+        assert 'sequence_A' not in df
+
+        df = df.retrieve_sequences_from_pdbs()
+        assert df.shape == (3, 55)
+        assert 'sequence_A' in df
+        assert 'sequence_B' in df
+
     def test_select_scores( self ):
         """
         Select only some scores of interest.
