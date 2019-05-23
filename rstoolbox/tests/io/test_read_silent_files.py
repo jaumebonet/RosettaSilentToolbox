@@ -12,6 +12,7 @@ import os
 # External Libraries
 import six
 import pytest
+import pandas as pd
 
 # This Library
 import rstoolbox.io as ri
@@ -72,6 +73,22 @@ class TestReadSilentFiles( object ):
     def test_read_json( self ):
         df = ri.parse_rosetta_json(self.jsonscr)
         assert df.shape == (88, 39)
+
+    def test_read_pdb( self ):
+        """
+        Read a PDB file.
+        """
+        df = []
+        for x in range(1, 4):
+            df.append(ri.parse_rosetta_pdb(os.path.join(self.dirpath, 'INPUT_000{}.pdb'.format(x))))
+        df = pd.concat(df).reset_index(drop=True)
+        assert df.shape == (3, 23)
+        assert 'label' not in df
+        assert 'sequence_A' in df
+
+        df2 = ri.parse_rosetta_pdb(os.path.join(self.dirpath, 'INPUT_0001.pdb'), keep_weights=True)
+        assert df2.shape == (2, 24)
+        assert 'label' in df2
 
     def test_select_scores( self ):
         """
