@@ -30,7 +30,7 @@ from six import string_types
 # This Library
 
 
-__all__ = ['format_Ipython', 'use_qgrid', 'add_column', 'split_values', 'make_rosetta_app_path',
+__all__ = ['format_Ipython', 'highlight', 'use_qgrid', 'add_column', 'split_values', 'make_rosetta_app_path',
            'execute_process', 'report', 'concat_fragments', 'split_dataframe_rows']
 
 
@@ -64,6 +64,51 @@ def format_Ipython():
         }
     """)
     return HTML('<style>{}</style>'.format(CSS))
+
+
+def highlight( row, selection, color='yellow', text_color='black', bold=True, for_image=False ):
+    """Highlight rows in **Jupyter Notebooks** that match the given index.
+
+    :param row: Row to which the formating is applied (directly provided by ``diplay.apply``)
+    :type row: :class:`~pandas.Series`
+    :param selection: :func:`list` of indexes to highlight.
+    :type selection: Union[:class:`~pandas.Index`, :class:`~pandas.DataFrame`]
+    :param str color: CSS defined color name for the background.
+    :param str text_color: CSS defined color name for the text.
+    :param bool bold: Make text bold.
+    :param str outfile: If provided, generate an image with the table.
+    :param str for_image: If provided, makes some format changes to better show in an image.
+
+    :return: CSS properties for the cells.
+
+    .. note::
+        Make the html output into an image with ``wkhtmltopdf`` and its python wrapper ``imgkit``.
+        ``wkhtmltopdf`` installation depends on the operating system. While for linux it might work
+        with get-apt or similar, `here <http://macappstore.org/wkhtmltopdf/>`_ are some tips for the
+        macOS installation.
+        Then, one might make it with a call such as::
+
+            imgkit.from_string(df.style.apply(rstoolbox.utils.highlight, selection=topside,
+                                              for_image=True, axis=1).render(),
+                               'out.png')
+
+        Take notice of the use of the ``for_image`` attribute. You can try to add more CSS rules with
+        :meth:`pandas.Styler.set_table_styles`. This seems to work properly for ``td`` and ``th`` but not for
+        ``table`` or ``tr``.
+    """
+    if isinstance(selection, (pd.Index, pd.DataFrame)):
+        if isinstance(selection, pd.DataFrame):
+            selection = selection.index
+    else:
+        raise NotImplementedError('Unknown selection type provided.')
+    txt = []
+    if for_image:
+        txt.extend(['font-family: monospace', 'text-align: right'])
+    if row.name in selection:
+        txt.extend(['background-color: {}'.format(color), 'color: {}'.format(text_color)])
+        if bold:
+            txt.append('font-weight: bold')
+    return [';'.join(txt), ] * len(row)
 
 
 def use_qgrid( df, **kwargs ):

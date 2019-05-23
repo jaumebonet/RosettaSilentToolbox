@@ -242,11 +242,17 @@ class TestDesign( object ):
         assert df['CONTACT_B_perc'].mean() == pytest.approx(0.4669, rel=1e-3)
 
     def test_label_sequence(self):
-        sc_des  = {'scores': ['score'], 'sequence': '*', 'labels': ['MOTIF']}
+        sc_des  = {'scores': ['score'], 'sequence': '*', 'labels': ['MOTIF', 'CONTACT']}
         df = ri.parse_rosetta_file(self.silent1, sc_des)
         df = ra.label_sequence(df, 'B', 'MOTIF')
         assert df.iloc[0]['MOTIF_B_seq'] == 'DMLPERMIAAALRAIGEIFNAE'
         assert df.iloc[5]['MOTIF_B_seq'] == 'DMQPEWAIAAALRAIGEIFNQW'
+        df1 = ra.label_sequence(df, 'B', 'CONTACT', complete=True)
+        df2 = ra.label_sequence(df, 'B', 'CONTACT')
+        assert df1.iloc[0]['CONTACT_B_seq'] == '-RAWRLAEIAMRKGWEEHE-EWWWAKGREMREMKEAWKIAYYWGLMAAYWIKQHREKERK'
+        assert df1.iloc[5]['CONTACT_B_seq'] == '-FAKEEMHKHEEKAY-EFL-EYLAKP-EEHLE-R-AK-LHEEAAKEIWKFMHEAMRRFE-'
+        assert df1.iloc[0]['CONTACT_B_seq'].replace('-', '') == df2.iloc[0]['CONTACT_B_seq']
+        assert df1.iloc[5]['CONTACT_B_seq'].replace('-', '') == df2.iloc[5]['CONTACT_B_seq']
 
     def test_getseqs(self):
         sc_des  = {"sequence": "B"}

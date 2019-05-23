@@ -41,7 +41,7 @@ from rstoolbox.utils import baseline, make_rosetta_app_path, execute_process
 __all__ = ['open_rosetta_file', 'parse_rosetta_file', 'parse_rosetta_contacts',
            'parse_rosetta_fragments', 'write_rosetta_fragments',
            'write_fragment_sequence_profiles', 'get_sequence_and_structure',
-           'make_structures', 'parse_rosetta_json']
+           'make_structures', 'parse_rosetta_json', 'parse_rosetta_pdb']
 
 _headers = ["SCORE", "REMARK", "RES_NUM", "FOLD_TREE", "RT",
             "ANNOTATED_SEQUENCE", "NONCANONICAL_CONNECTION",
@@ -442,6 +442,75 @@ def parse_rosetta_json( filename ):
     df.rename(columns={'decoy': 'description'})
     df.add_source_file( filename )
     return df
+
+
+def parse_rosetta_pdb( filename, keep_weights=False, per_residue=False, dropna=True ):
+    """Read the ``POSE_ENERGIES_TABLE`` from a Rosetta output PDB file.
+
+    The ``POSE_ENERGIES_TABLE`` only contain the score terms contained inside
+    the executed score function. It will not add other score terms added through
+    filters.
+
+    :param str filename: Name of the PDB file.
+    :param bool keep_weights: If :data:`True`, keep the weights row.
+    :param bool per_residue: If :data:`True`, keep a row of data for each residue.
+        Otherwise, compress the sequence into ``sequence_{}`` columns.
+    :param bool dropna: If :data:`True`, non-standard residues are dropped when making
+        the sequence. Otherwise, it appears as ``X``. Consider that modifications of
+        residues that are known by Rosetta such as ``LYS:CtermProteinFull`` or ``HIS_D``
+        are considered standard in this context.
+
+    :return: :class:`.DesignFrame`
+    """
+    def chain_ids(infile):
+        with open(infile) as fp:
+            for result in re.findall(r'ATOM.{17}(\w)', fp.read(), re.S):
+                yield result
+
+    def data_between(infile):
+        with open(infile) as fp:
+            for result in re.findall(r'(#BEGIN_POSE_ENERGIES_TABLE.*?#END_POSE_ENERGIES_TABLE)',
+                                     fp.read(), re.S):
+                return result
+    d = {'CYS': 'C', 'ASP': 'D', 'SER': 'S', 'GLN': 'Q', 'LYS': 'K',
+         'ILE': 'I', 'PRO': 'P', 'THR': 'T', 'PHE': 'F', 'ASN': 'N',
+         'GLY': 'G', 'HIS': 'H', 'LEU': 'L', 'ARG': 'R', 'TRP': 'W',
+         'ALA': 'A', 'VAL': 'V', 'GLU': 'E', 'TYR': 'Y', 'MET': 'M'}
+
+    chains = list(pd.Series(chain_ids(filename)).unique())
+    idata = data_between(filename)
+    name = idata.split('\n')[0].strip().split()[-1].replace('.pdb', '')
+    df = pd.read_csv(six.StringIO(idata), comment='#', sep=r'\s+')
+    df = df.assign(description=[name, ] * df.shape[0])[~df['label'].str.startswith('VRT_')]
+
+    chcol = ['', '']
+    pick = ['pose', ]
+    if not keep_weights:
+        df = df[df['label'] != 'weights']
+    else:
+        pick.append('weights')
+    if len(chains) == 1:
+        chcol.extend([chains[0], ] * (df.shape[0] - len(chcol) + 1))
+    else:
+        chain_chng = list(df[df['label'].str.contains('NtermProteinFull')].index)
+        chain_chng.append(int(df.iloc[-1].name) + 1)
+        for i in range(0, len(chain_chng) - 1):
+            chcol.extend([chains[i], ] * (int(chain_chng[i + 1]) - int(chain_chng[i])))
+
+    df = df.assign(chain=pd.Series(chcol), )
+    if not per_residue:
+        sdata = {'description': [name, ]}
+        for g, gdf in df[df['chain'] != ''].groupby('chain'):
+            sdata.setdefault('sequence_{}'.format(g),
+                             [''.join(gdf['label'].str.split('[:_]').str[0].map(d).fillna('X'))])
+            if dropna:
+                sdata['sequence_{}'.format(g)][-1] = sdata['sequence_{}'.format(g)][-1].replace('X', '')
+        df = df[df['label'].isin(pick)].merge(pd.DataFrame(sdata), on='description')
+        df = df.drop(columns=['chain'])
+        if not keep_weights:
+            df = df.drop(columns=['label'])
+
+    return rc.DesignFrame( df )
 
 
 def parse_rosetta_contacts( filename ):

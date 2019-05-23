@@ -27,8 +27,8 @@ The ``rstoolbox`` is a python library aimed to the analysis and management of bi
     :target: https://doi.org/10.1101/428045
     :alt: bioRxiv
 
-.. image:: https://img.shields.io/badge/BMC%20Bioinformatics-submitted-green.svg
-    :target: https://doi.org/10.1101/428045
+.. image:: https://img.shields.io/badge/BMC%20Bioinformatics-doi.org/10.1186/s12859--019--2796--3-green.svg
+    :target: https://doi.org/10.1186/s12859-019-2796-3
     :alt: BMC Bioinformatics
 
 Although inspired by the output of the protein design tool **ROSETTA**, the library aims to be of a wider applicability, and can be

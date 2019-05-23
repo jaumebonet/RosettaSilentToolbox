@@ -22,7 +22,15 @@ import six
 from rstoolbox.components import DesignFrame, Selection
 
 __all__ = ['baseline_test_dir', 'random_frequency_matrix',
-           'random_fastq', 'random_proteins']
+           'random_fastq', 'random_proteins', 'test_dir']
+
+
+def test_dir():
+    """Provide global tests path directory
+
+    return :class:`str`
+    """
+    return os.path.abspath(os.path.dirname(__file__))
 
 
 def baseline_test_dir():

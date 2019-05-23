@@ -39,6 +39,15 @@ Helper functions to read/write direct sequence information. They can be called t
    ~io.read_hmmsearch
    ~io.pymol_mutant_selector
 
+
+IO: Structure
+------------
+
+Helper functions to read/write outputs of programs based on protein structure. They can be called through ``rstoolbox.io``.
+
+   ~io.parse_master_file
+
+
 IO: Rosetta
 -----------
 
@@ -49,6 +58,7 @@ Helper functions to read/write data generated with `Rosetta <https://www.rosetta
 
    ~io.parse_rosetta_file
    ~io.parse_rosetta_json
+   ~io.parse_rosetta_pdb
    ~io.parse_rosetta_contacts
    ~io.parse_rosetta_fragments
    ~io.write_rosetta_fragments
@@ -137,6 +147,7 @@ Special functions to help personalise your plot easily can be loaded through ``r
    :toctree: generated/
 
    ~utils.format_Ipython
+   ~utils.highlight
    ~utils.use_qgrid
    ~utils.add_left_title
    ~utils.add_right_title

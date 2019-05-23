@@ -10,6 +10,7 @@
 .. class:: DesignFrame
 """
 # Standard Libraries
+import os
 from distutils.version import LooseVersion
 import itertools
 
@@ -164,6 +165,38 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         df = self.copy()
         df['description'] = df['description'].str.replace(r'\_\d+$', '', regex=True)
         return df
+
+    def retrieve_sequences_from_pdbs( self, prefix=None, dropna=True  ):
+        """Obtain sequence data related to the decoys through their Rosetta-generated PDB files.
+
+        This is a method that might be necessary when reading from score files, as they do not
+        contain sequence information.
+
+        :param str prefix: ``description`` might not point to the path of the PDB if we have read
+            the score file from a different directory. Apply a prefix to properly find them.
+            Consider that one will need to add the path to the score file if the path to the PDB
+            inside it starts from the score file position.
+        :param bool dropna: If :data:`True`, non-standard residues are dropped when making
+            the sequence. Otherwise, it appears as ``X``. Consider that modifications of
+            residues that are known by Rosetta such as ``LYS:CtermProteinFull`` or ``HIS_D``
+            are considered standard in this context.
+
+        :return: :class:`.DataFrame` with the new sequence data.
+        """
+        from rstoolbox.io import parse_rosetta_pdb
+
+        def get_seq_from_pdb(fname, prefix, dropna):
+            if prefix is not None:
+                ifile = os.path.join(prefix, fname + '.pdb')
+            else:
+                ifile = fname + '.pdb'
+            return parse_rosetta_pdb(ifile, dropna=dropna)
+
+        cols = ['description', ]
+        seq = pd.concat(list(self['description'].apply(get_seq_from_pdb, args=(prefix, dropna)))).reset_index(drop=True)
+        cols.extend(list([x for x in seq.columns if x.startswith('sequence_')]))
+        seq = seq[cols]
+        return self.merge(seq, on=['description'])
 
     def get_sequence_with( self, seqID, selection, confidence=1, invert=False ):
         """Selects those decoys with a particular set of residue matches.

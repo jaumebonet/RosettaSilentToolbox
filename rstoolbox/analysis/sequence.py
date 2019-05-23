@@ -622,14 +622,17 @@ def label_percentage( df, seqID, label ):
                        axis=1, result_type='expand')
         return df2
     elif isinstance(df, DesignSeries):
-        seq1 = list(df.get_sequence(seqID))
-        seq2 = list(df.get_sequence(seqID, df.get_label(label, seqID)))
-        return df.append(pd.Series([float(len(seq2)) / len(seq1)], [colname]))
+        try:
+            seq1 = list(df.get_sequence(seqID))
+            seq2 = list(df.get_sequence(seqID, df.get_label(label, seqID)))
+            return df.append(pd.Series([float(len(seq2)) / len(seq1)], [colname]))
+        except KeyError:
+            return df.append(pd.Series([0], [colname]))
     else:
         raise NotImplementedError
 
 
-def label_sequence( df, seqID, label ):
+def label_sequence( df, seqID, label, complete=False ):
     """Gets the sequence of a ``label``.
 
     Depends on label data for the ``seqID``.
@@ -645,7 +648,10 @@ def label_sequence( df, seqID, label ):
     :param df: |df_param|.
     :type df: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
     :param str seqID: |seqID_param|.
-    :param str lable: Label identifier.
+    :param str label: Label identifier.
+    :param bool complete: Only applies when input is a :class:`.DesignFrame`.
+        Generates a gapped alignment considering the maches of ``label`` as those
+        of the highest matching decoy.
 
     :return: Union[:class:`.DesignFrame`, :class:`.DesignSeries`]
 
@@ -672,15 +678,29 @@ def label_sequence( df, seqID, label ):
     from rstoolbox.components import DesignFrame, DesignSeries
     colname = '{0}_{1}_seq'.format(label.upper(), seqID)
 
+    def get_all_decoy_labels(row, seqID, label):
+        try:
+            return list(np.array(row.get_label(label.upper(), seqID).to_list()) - 1)
+        except KeyError:
+            return []
+
     if isinstance(df, DesignFrame):
-        df2 = df.apply(lambda row: label_sequence(row, seqID, label),
-                       axis=1, result_type='expand')
+        if complete:
+            complete = set().union(*df.apply(get_all_decoy_labels, axis=1, args=(seqID, label)))
+
+        df2 = df.apply(lambda row: label_sequence(row, seqID, label, complete), axis=1, result_type='expand')
         return df2
     elif isinstance(df, DesignSeries):
-        sele = list(np.array(df.get_label(label.upper(), seqID).to_list()) - 1)  # Correct str count
-        seq = df.get_sequence(seqID)
-        return df.append(pd.Series(''.join(operator.itemgetter(
-                         *sele)(list(seq))), [colname]))
+        try:
+            sele = list(np.array(df.get_label(label.upper(), seqID).to_list()) - 1)  # Correct str count
+            seq = df.get_sequence(seqID)
+            if isinstance(complete, set):
+                gaps = complete.difference(set(sele))
+                seq = [s if i not in gaps else '-' for i, s in enumerate(list(seq))]
+                sele = sorted(list(complete))
+            return df.append(pd.Series(''.join(operator.itemgetter(*sele)(list(seq))), [colname]))
+        except KeyError:
+            return df.append(pd.Series('', [colname]))
     else:
         raise NotImplementedError
 
