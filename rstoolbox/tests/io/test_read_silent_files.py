@@ -98,7 +98,7 @@ class TestReadSilentFiles( object ):
         assert df.shape == (3, 53)
         assert 'sequence_A' not in df
 
-        df = df.retrieve_sequences_from_pdbs()
+        df = df.retrieve_sequences_from_pdbs(prefix=self.dirpath)
         assert df.shape == (3, 55)
         assert 'sequence_A' in df
         assert 'sequence_B' in df

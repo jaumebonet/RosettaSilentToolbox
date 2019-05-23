@@ -196,8 +196,6 @@ class DesignFrame( pd.DataFrame, RSBaseDesign ):
         seq = pd.concat(list(self['description'].apply(get_seq_from_pdb, args=(prefix, dropna)))).reset_index(drop=True)
         cols.extend(list([x for x in seq.columns if x.startswith('sequence_')]))
         seq = seq[cols]
-        print(self)
-        print(seq)
         return self.merge(seq, on=['description'])
 
     def get_sequence_with( self, seqID, selection, confidence=1, invert=False ):
