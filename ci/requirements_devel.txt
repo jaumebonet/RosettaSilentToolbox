@@ -8,7 +8,7 @@ python-coveralls
 codacy-coverage
 
 
-Ipython==7.4.0;python_version>="3.5"
+Ipython==7.5.0;python_version>="3.5"
 Ipython==5.8.0;python_version<="2.7"
 sphinx>=1.7
 sphinx_bootstrap_theme>=0.6
