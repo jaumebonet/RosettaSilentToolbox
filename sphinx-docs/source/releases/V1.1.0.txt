@@ -3,3 +3,4 @@ v1.1.0 (TBD 2019)
 
 #. :func:`.make_structures` accepts the option to provide extra parameters to the ``extract_pdbs`` application.
 #. :func:`.parse_rosetta_file` now accepts a ``check_symmetry`` as :data:`False` to improve reading speed.
+#. Adds wildcard selection to descriptions in :func:`.parse_rosetta_file`.
