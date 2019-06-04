@@ -69,7 +69,8 @@ When using a list, wildcards can be applied to select groups of scores, thus::
 
     {'scores': ['fa_*']}
 
-will select all scores starting with ``fa_``.
+will select all scores starting with ``fa_`` (wildcard must only be placed at the end
+of the score name).
 
 .. rubric:: Example
 
@@ -117,7 +118,8 @@ When using a list, wildcards can be applied to ignore groups of scores, thus::
 
     {'scores_ignore': ['fa_*']}
 
-will ignore all scores starting with ``fa_``.
+will ignore all scores starting with ``fa_`` (wildcard must only be placed at the end
+of the score name).
 
 .. _scores_rename:
 
@@ -377,7 +379,7 @@ class Description( object ):
         if self.scores_ignore is not None:
             if self.scores_ignore == "*" or score_name in self.scores_ignore:
                 return False
-            elif any(re.match(s, score_name) for s in self.scores_ignore if "*" in s):
+            elif any(re.search(s, score_name) for s in self.scores_ignore if "*" in s):
                 return False
         if self.scores is None:
             return False
@@ -385,8 +387,8 @@ class Description( object ):
             if self.scores == "*" or score_name in self.scores:
                 return True
             if isinstance(self.scores, list):
-                if any(re.match(s, score_name) for s in self.scores if "*" in s):
-                    return False
+                if any(re.search(s, score_name) for s in self.scores if "*" in s):
+                    return True
         return False
 
     def score_name( self, score_name ):
