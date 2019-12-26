@@ -202,10 +202,8 @@ def open_rosetta_file( filename, multi=False, check_symmetry=True ):
 
     :param filename: file name, file pattern to search or list of files.
     :type filename: Union[:class:`str`, :func:`list`]
-    :param multi: Tell if a file name (single file) or pattern (multifile) is provided.
-    :type multi: :class:`bool`
-    :param check_symmetry: Check if the silent file contains symmetry info.
-    :type check_symmetry: :class:`bool`
+    :param bool multi: Tell if a file name (single file) or pattern (multifile) is provided.
+    :param bool check_symmetry: Check if the silent file contains symmetry info.
 
     :yields: Union[:class:`str`, :class:`bool`, :class:`int`, :class:`bool`]
 
@@ -239,7 +237,7 @@ def open_rosetta_file( filename, multi=False, check_symmetry=True ):
         fd.close()
 
 
-def parse_rosetta_file( filename, description=None, multi=False ):
+def parse_rosetta_file( filename, description=None, multi=False, check_symmetry=True ):
     """Read a Rosetta score or silent file and returns the design population
     in a :class:`.DesignFrame`.
 
@@ -276,6 +274,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
         dictionary definition is explained in :ref:`tutorial: reading Rosetta <readrosetta>`.
     :type description: Union[:class:`str`, :class:`dict`]
     :param bool multi: When :data:`True`, indicates that data is readed from multiple files.
+    :param bool check_symmetry: Check if the silent file contains symmetry info.
 
     :return: :class:`.DesignFrame`.
 
@@ -299,7 +298,7 @@ def parse_rosetta_file( filename, description=None, multi=False ):
     header  = []
     data    = OrderedDict()
 
-    for line, is_header, _, symm in open_rosetta_file( filename, multi ):
+    for line, is_header, _, symm in open_rosetta_file( filename, multi, check_symmetry ):
         if is_header:
             header = manager.check_graft_columns(line.strip().split()[1:])
             continue
@@ -878,7 +877,8 @@ def get_sequence_and_structure( pdbfile, mk_minisilent=True, ignore_unrecognized
         raise ValueError("Execution has failed\n")
 
 
-def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True ):  # pragma: no cover
+def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tagfile=True,
+                     options=None ):  # pragma: no cover
     """Extract the selected decoys (if any).
 
     .. note::
@@ -893,6 +893,13 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
     .. code-block:: bash
 
        extract_pdbs.linuxgccrelease -in:file:silent <pdb> -tags <selected>
+
+    If ``options`` are provided, they'll be added at the end of the command. Thus, providing
+    ``options=['-extra_res_fa', '9RU.params']`` will execute the call:
+
+    .. code-block:: bash
+
+       extract_pdbs.linuxgccrelease -in:file:silent <pdb> -tags <selected> -extra_res_fa 9RU.params
 
     It requires the :class:`.DesignFrame` to have ``source_file`` attached identifying the
     silent files from which the data can be extracted. **minisilent files will not work here**.
@@ -913,6 +920,8 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
         overwritten if the global option :ref:`system.overwrite <options>` is :data:`False`.
     :param str prefix: If provided, a prefix is added to the PDB files.
     :param bool keep_tagfile: If :data:`True`, do not delete the tag file after using it.
+    :param options: List of extra options for the command.
+    :type options: :func:`list` of :class:`str`
 
     :raises:
         :ValueError: if the provided data does not have a **description** column.
@@ -971,6 +980,8 @@ def make_structures( df, outdir=None, tagsfilename="tags", prefix=None, keep_tag
     sfiles = " ".join(sfiles)
     command = "{0} -in:file:silent {1} -in:file:tagfile {2} -out:prefix {3}"
     command = command.format( exe, sfiles, tagsfilename, outdir )
+    if options is not None:
+        command = command + ' ' + ' '.join(options)
     sys.stdout.write("Executing Rosetta's extract_pdbs app\n")
     sys.stdout.write("(depending on the total number of decoys and how many have "
                      "been requested this might take a while...)\n")

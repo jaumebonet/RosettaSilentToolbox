@@ -65,6 +65,13 @@ or add a minus sign, which will ignore all scores::
 
     {'scores': '-'}
 
+When using a list, wildcards can be applied to select groups of scores, thus::
+
+    {'scores': ['fa_*']}
+
+will select all scores starting with ``fa_`` (wildcard respond to python ``match``; thus
+to use it at the beginning use ``.*``).
+
 .. rubric:: Example
 
 .. ipython::
@@ -106,6 +113,13 @@ different data containers as per :mod:`pandas` constraints. There are two ways t
 or a string asterisc if aiming to ignore all scores::
 
     {'scores_ignore': '*'}
+
+When using a list, wildcards can be applied to ignore groups of scores, thus::
+
+    {'scores_ignore': ['fa_*']}
+
+will ignore all scores starting with ``fa_`` (wildcard respond to python ``match``; thus
+to use it at the beginning use ``.*``).
 
 .. _scores_rename:
 
@@ -369,8 +383,12 @@ class Description( object ):
                 return False
         if self.scores is None:
             return False
-        if self.scores == "*" or score_name in self.scores:
-            return True
+        else:
+            if self.scores == "*" or score_name in self.scores:
+                return True
+            if isinstance(self.scores, list):
+                if any(re.match(s, score_name) for s in self.scores if "*" in s):
+                    return True
         return False
 
     def score_name( self, score_name ):
