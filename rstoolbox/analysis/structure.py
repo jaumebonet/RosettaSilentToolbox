@@ -245,8 +245,10 @@ def secondary_structure_percentage( df, seqID, key_residues=None ):
     elif isinstance(df, DesignSeries):
         sse = list(df.get_structure(seqID, key_residues))
         csse = collections.Counter(sse)
-        dfp = df.append(pd.Series([float(csse['H']) / len(sse), float(csse['E']) / len(sse),
-                        float(csse['L']) / len(sse)], [H, E, L]))
+        dfp = copy.deepcopy(df)
+        dfp[H] = float(csse['H']) / len(sse)
+        dfp[E] = float(csse['E']) / len(sse)
+        dfp[L] = float(csse['L']) / len(sse)
         dfp.transfer_reference(df)
         return dfp
     else:
