@@ -13,6 +13,7 @@
 
 # Standard Libraries
 import collections
+import copy
 
 # External Libraries
 import pandas as pd
