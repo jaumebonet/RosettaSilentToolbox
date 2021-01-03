@@ -752,22 +752,25 @@ def write_fragment_sequence_profiles( df, filename=None, consensus=None ):
     def format_row(row, aa, row0):
         val1 = "".join(row.apply("{0:>3d}".format))
         val0 = "".join(row0.apply("{0:>4d}".format))
-        data = "{0:>5d} {1}  ".format(row.name + 1, aa)
+        data = "{0:>5d} {1}  ".format(row.name, aa)
         return data + val1 + " " + val0 + \
             "{0:>6.2f}{0:>8.2f}".format(0)
 
     if isinstance(df, rc.FragmentFrame):
-        matrix = df.make_sequence_matrix(round=True)
+        matrix = df.make_sequence_matrix(round_data=True)
+        if consensus is None:
+            consensus = df.quick_consensus_sequence()
     else:
         matrix = df.copy()
-    if consensus is None:
-        consensus = df.quick_consensus_sequence()
+        if consensus is None:
+            consensus = ['V']*len(df)
+
     if len(consensus) != matrix.shape[0]:
         raise ValueError('Sequence need to be the same length.')
     matrix2 = matrix.copy()
     matrix2[:] = 0
-    data = list(matrix.apply(lambda row: format_row(row, consensus[row.name],
-                                                    matrix2.iloc[row.name]),
+    data = list(matrix.apply(lambda row: format_row(row, consensus[int(row.name) - 1],
+                                                    matrix2.iloc[int(row.name) - 1]),
                              axis=1))
     head = "{0:>11}".format(" ") + \
            "  ".join(list(matrix.columns)) + "   " + "   ".join(list(matrix.columns))
